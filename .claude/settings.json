@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(git push --force*)",
+      "PowerShell(git push --force*)",
+      "Bash(git push -f*)",
+      "PowerShell(git push -f*)",
+      "Bash(git commit --no-verify*)",
+      "PowerShell(git commit --no-verify*)",
+      "Bash(git commit -n *)",
+      "PowerShell(git commit -n *)",
+      "Bash(git reset --hard*)",
+      "PowerShell(git reset --hard*)",
+      "Bash(git worktree add*)",
+      "PowerShell(git worktree add*)",
+      "Bash(git config --global *)",
+      "PowerShell(git config --global *)",
+      "Bash(rm -rf *)",
+      "PowerShell(Remove-Item * -Recurse*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python contracts/validate.py --quiet || exit 2"
+          }
+        ]
+      }
+    ]
+  }
+}

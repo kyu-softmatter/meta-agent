@@ -1,0 +1,5 @@
+{
+  "schema_version": "0.1",
+  "note": "Read-only paths of built agents that the meta-harness may observe (plan.md 5.5). Empty until M5; a built agent is added only after its owning seat and the person name the paths.",
+  "agents": []
+}
