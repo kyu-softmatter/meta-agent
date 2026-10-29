@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+.pixi/
+.DS_Store
+
+# A usage tracker on this computer writes its ledger into .agent/ at whatever
+# directory a session starts in. It is not a record of this repository (the
+# same entry exists in soft-matter-agents).
+.agent/

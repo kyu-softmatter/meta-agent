@@ -1,0 +1,3 @@
+# LF on commit and on checkout, everywhere: records are compared by their bytes
+# and must hash the same on every computer (PLAN.ko.md section 7 and 15).
+* text=auto eol=lf
