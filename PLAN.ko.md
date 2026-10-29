@@ -1,11 +1,26 @@
 # meta-agent 계획서
 
-버전 v0.3 · 2026-10-29 · 상태: **구축 전 초안, 사람 승인 대기**
+버전 v0.3.1 · 2026-10-29 · 상태: **구축 전 초안, 사람 승인 대기**
 부제: Meta-Agents for Scientific Agent Development and Self-Improvement
 
 ---
 
 ## 변경 이력
+
+### v0.3.1 변경 요약 (v0.3 → v0.3.1)
+
+자료 투입구 하나만 손봤다. v0.3은 자리와 형식을 정했지만, 사람이 날짜 폴더를 만들고 `MATERIAL.json`의 일곱 필드를 직접 써야 했다. v0.3.1은 **사람은 링크 한 줄이나 파일 하나만 넣고, 나머지는 Meta-Agent가 채워 사람이 확정하도록** 바꾼다(사용자 지시: "추후 사용자가 해당 링크를 넣을 수 있도록 디자인").
+
+| 변경 | 내용 | 출처 |
+|---|---|---|
+| 투입의 최소 단위 (§0, §5.0) | 사람이 하는 일은 둘 중 하나: `inbox/materials/LINKS.md`에 링크 한 줄, 또는 `inbox/materials/drop/`에 파일 하나. 폴더 생성과 `MATERIAL.json` 작성은 Meta-Agent가 한다(`added_by: human`, 메타데이터는 `inferred`, 확정은 사람) | 사용자 지시 |
+| 들어오는 길 다섯 (§5.0, §5.7) | LINKS.md · drop 폴더 · 마법사 질문 0의 답 · (M2 이후) `add-material` 명령 · (M9, 선택) GUI의 "Add material". 어느 길로 와도 같은 `material` 카드가 된다 | 이 문서 |
+| 접수와 재진입 (§5.0) | 접수(Meta-Agent가 메타데이터를 채움) → 사람 확정 → F1 증류 → S0 발견 단계를 그 항목에 대해서만 재실행 → `v<N>_lab_profile`·레지스트리·`tool_profile` 개정 **제안**. 진행 중인 요청에는 `superseded` 알림만, 자동 교체 없음 | 이 문서 |
+| 링크의 기록 규칙 (§5.0, §9) | URL은 내용이 바뀌므로 `retrieved_at`과 `content_hash`를 반드시 적고, 원문 사본은 `may_quote`·라이선스가 허락할 때만. 자격 증명이 필요한 링크는 접근하지 않고 `held` | REA(증거 출처 보존), 이 문서 |
+| `material` 상태기계 (§6.5) | `queued → registered → distilled / declined / held` | 이 문서 |
+| 체크 17 (§8) | `location`은 `url`과 `path` 중 정확히 하나; 메타데이터는 세 상태 어휘; `distilled`인 URL 자료에 스냅샷 없으면 FAIL; `may_quote`가 `true`가 아니면 원문 사본 금지; `held`·`declined`에 사유 | 이 문서 |
+| 레이아웃·M0·M2 (§7, §12, §15) | `inbox/materials/{README.md, LINKS.md, drop/}`가 M0에 생긴다(README는 "A link on one line is enough"로 시작). 접수 로직과 `add-material` 명령은 M2 | 이 문서 |
+| §14-18 | 질문이 아니라 **자리**로 고쳐 쓴다. 2026-10-29 현재 자료 없음, 나중에 투입 예정 | 사용자 지시 |
 
 ### v0.3 변경 요약 (v0.2 → v0.3)
 
@@ -66,7 +81,7 @@
 
 **미확인 사실의 표시.** 대화에서 온 데이터베이스·라이브러리·엔진 정보(존재, 접근 방식, 수록 범위, 라이선스)는 **이 문서가 검증하지 않았다**. 그런 항목은 "(확인 필요)"로 표시하고, 확인은 M2/M3의 첫 작업이며 결과는 `knowledge/sources/`의 출처 기록이나 레지스트리 항목으로 남긴다. 확인되지 않은 것을 확인된 것처럼 적지 않는다(SMA P1, 수는 실행에서 읽는다).
 
-**자료 투입구.** 선호하는 시뮬레이션 엔진이나 실험 플랫폼의 매뉴얼·논문·사양서·저장소 링크는 **언제든** `meta_agent/inbox/materials/`에 넣을 수 있다(형식은 §5.0). 계획 단계인 지금은 이 문서의 §14-18이 그 자리다. 지금까지 이 계획이 알고 있는 도구는 다음 넷이고, 각각에 대한 자료는 아직 받지 않았다.
+**자료 투입구.** 선호하는 시뮬레이션 엔진이나 실험 플랫폼의 매뉴얼·논문·사양서·저장소 링크는 **언제든** 넣을 수 있다. 사람이 하는 일은 `meta_agent/inbox/materials/LINKS.md`에 링크 한 줄을 쓰거나 `inbox/materials/drop/`에 파일 하나를 두는 것뿐이고, 분류·출처 기록·레지스트리 반영은 Meta-Agent가 하고 사람은 확정만 한다(절차와 형식은 §5.0). 계획 단계인 지금은 이 문서의 §14-18이 그 자리다. 지금까지 이 계획이 알고 있는 도구는 다음 넷이고, 각각에 대한 자료는 아직 받지 않았다. 없어도 설계와 M0는 진행된다.
 
 | 도구 | 종류 | 아는 경로 | 기다리는 자료 |
 |---|---|---|---|
@@ -126,7 +141,7 @@
 5. `tool_profile`의 모든 주장이 observed / derived / inferred / unknown 중 하나이고, unknown은 무엇이 있어야 풀리는지를 적는다.
 6. 네 조건 비교가 같은 과제 묶음·같은 실행기·같은 시드로 **실행 가능**하고, 기준선이 먼저 판정된다.
 7. 첫 과학적 유효 실행까지의 시간과 개입 횟수가 **기록에서** 읽힌다.
-8. 마법사가 묻는 질문은 모두 그 시점에 `unknown`이거나 정책 필드다. 자료가 이미 답한 것을 다시 묻지 않고, 정책·권한·공개 범위는 사람이 확정하기 전에 빌드로 가지 않는다 (체크 15·16).
+8. 마법사가 묻는 질문은 모두 그 시점에 `unknown`이거나 정책 필드다. 자료가 이미 답한 것을 다시 묻지 않고, 정책·권한·공개 범위는 사람이 확정하기 전에 빌드로 가지 않는다 (체크 15·16). 자료 투입도 같은 규율이다: 사람이 쓰는 것은 위치 한 줄이고, 분류·출처 기록은 Meta-Agent가 채워 사람이 확정한다 (체크 17).
 9. 위 전부를 실행 결과에서 센다. 문서의 수는 세지 않는다.
 
 ### 1.6 실패 징후
@@ -229,7 +244,7 @@ SMA P0–P16은 그대로 구속한다. 다음은 이 레포에만 추가되는 
 ## 4. 시스템 개요
 
 ```
- 사람 ──(자료: 깃허브·문서·PDF·링크·기존 카드)──▶ S0 Onboarding (설치 마법사)
+ 사람 ──(자료: 깃허브·문서·PDF·링크·기존 카드; 언제든 inbox/materials/)──▶ S0 Onboarding (설치 마법사)
             │  Step 0 발견 → discovery_report (inferred, 근거 포함)
             │  Step 1 적응형 질문 (unknown과 정책만) → onboarding_record
             │  Step 2 구성 제안 → lab_profile + agent_goal 초안 + 검증 계획 개요
@@ -292,7 +307,7 @@ SMA P0–P16은 그대로 구속한다. 다음은 이 레포에만 추가되는 
 
 | 묶음 | 질문 | 생략·추론 조건 |
 |---|---|---|
-| 0 자료 | 분석할 깃허브·문서·매뉴얼·기존 에이전트 카드가 있습니까? **선호하는 시뮬레이션 엔진이나 실험 플랫폼의 PDF·링크가 있습니까?** (지금 없어도 언제든 `inbox/materials/`에 넣을 수 있다) | 항상 묻는다. 이미 연결된 자료는 재활용 |
+| 0 자료 | 분석할 깃허브·문서·매뉴얼·기존 에이전트 카드가 있습니까? **선호하는 시뮬레이션 엔진이나 실험 플랫폼의 PDF·링크가 있습니까?** (지금 없어도 언제든 `inbox/materials/LINKS.md`에 한 줄로 넣을 수 있다; 대화에서 답으로 준 링크도 Meta-Agent가 같은 자리에 옮겨 적는다) | 항상 묻는다. 이미 연결된 자료는 재활용 |
 | 1 연구실 | 연구실의 첫 에이전트입니까? | 기존 에이전트 카드·저장소가 발견되면 `inferred: no`로 추천 |
 | 2 협업 | 기존 에이전트와 협업하게 구성합니까? (→ 브릿지 계획 여부) | 첫 에이전트면 건너뛰거나 뒤로. 기존 에이전트가 발견되면 중요해진다 |
 | 3 연구 종류 | 시뮬레이션 / 실험 / 분석 중 무엇을 합니까? **복수 선택** | 자료에서 추론 가능하면 추천 |
@@ -306,18 +321,51 @@ SMA P0–P16은 그대로 구속한다. 다음은 이 레포에만 추가되는 
 
 **이 연구실에 적용하면** (예시; 실제 값은 Step 0가 기록으로 낸다): SMA 저장소가 있으므로 "첫 에이전트"는 `inferred: no`, 엔진 `HOOMD-blue`와 언어 `Python`은 `inferred`, 장비 하나(현미경)와 브릿지의 존재도 `inferred`. 공개 범위, 승인 방식, 추가 방법론, 선호 엔진·플랫폼 자료는 `unknown`이라 묻는다. 그래서 §14-18·19가 이 문서에 있다.
 
-**자료 투입구의 형식.** `meta_agent/inbox/materials/<YYYYMMDD>-<slug>/`에 파일 또는 링크와 `MATERIAL.json`:
+**자료 투입구 (materials inbox).** 설계 원칙은 하나다: **사람은 위치만 주고, 나머지는 Meta-Agent가 채우고, 사람은 확정한다.** 마법사와 같은 규율이다(먼저 분석하고 나중에 묻는다; MP11).
+
+*사람이 하는 일* (둘 중 하나, 설치 전·중·후 언제든):
+
+| 방법 | 하는 일 | 예 |
+|---|---|---|
+| 링크 | `meta_agent/inbox/materials/LINKS.md`의 표에 한 줄 추가. URL 칸만 필수, 나머지는 비워도 된다 | 아래 LINKS.md 형식 |
+| 파일 | `meta_agent/inbox/materials/drop/`에 PDF·문서·압축 파일을 둔다. 이름을 바꿀 필요 없다 | `drop/TA_DHR_API_guide.pdf` |
 
 ```
-kind:        manual | paper | spec_sheet | api_doc | repo | dataset | link
-about:       {name, role: engine | instrument | platform | analysis_software, methods[]}
-location:    {path} 또는 {url}
-added_by, added_at
-license_note, may_quote: true | false | unknown
-state:       queued | distilled | declined        (F1이 바꾼다)
+LINKS.md (영어, 표 하나; url 칸만 필수, card 칸은 Meta-Agent가 채운다)
+
+| url | name (optional) | role (optional) | note (optional) | card (filled by Meta-Agent) |
+|---|---|---|---|---|
+| https://hoomd-blue.readthedocs.io/ | HOOMD-blue | engine | lab uses v4 | |
 ```
 
-F1이 큐를 읽어 `knowledge/sources/`의 출처 기록으로 만들고, 필요하면 S2가 `tool_profile`을 만들고, 레지스트리 갱신은 제안으로 낸다. **설치 뒤에도** 새 엔진·장비·코드·자료가 오면 Step 0만 그 항목에 대해 다시 돌고 `v<N>_lab_profile`이 생긴다.
+*들어오는 길*은 다섯이지만 모두 같은 `material` 카드가 된다: (a) `LINKS.md`의 줄, (b) `drop/`의 파일, (c) 마법사 질문 0의 답(사람이 대화에서 준 링크를 Meta-Agent가 `LINKS.md`에 옮겨 적는다), (d) M2 이후 `add-material <url|path> [--about <name>]` 명령, (e) M9(선택) GUI의 Project 탭 "Add material". 브릿지를 거쳐 오는 자료는 `inbox/<thread>/`의 observation으로 오고, 사람이 승인하면 (a)나 (b)로 옮긴다(다른 에이전트가 직접 투입하지 않는다).
+
+*Meta-Agent가 하는 일* (접수; `meta-…` 좌석; 읽기 전용):
+
+1. 새 줄·새 파일을 발견하면 `inbox/materials/<YYYYMMDD>-<slug>/`를 만들고, 파일은 그 안으로 옮기며, `MATERIAL.json`을 쓴다. `LINKS.md`의 그 줄에는 카드 id를 적어 준다.
+2. `kind`, `about`(이름·역할·방법), `license_note`는 내용에서 **`inferred`로 채우고 근거를 적는다**. 못 채우면 `unknown`으로 두고 질문 목록에 올린다(한 자료에 질문은 하나 또는 소수).
+3. URL은 접근해 `retrieved_at`과 `content_hash`를 적는다. 자격 증명이 필요하거나 로그인 벽 뒤면 접근하지 않고 `held`(사유 `permission_required`). 원문 사본은 `may_quote: true`이거나 라이선스가 허락할 때만 `knowledge/sources/raw/`에 두고, 아니면 해시와 위치(`locus`)만 남긴다.
+4. 사람에게 한 번 보여 준다: 채운 값과 질문. 사람이 확정하면 `registered`.
+
+*그 다음* (F1·S0·S2): F1이 `registered`인 자료를 `knowledge/sources/`의 출처 기록과 증류 노트로 만들고 `distilled`로 바꾼다. 자료가 새 엔진·장비에 관한 것이면 S0의 Step 0이 **그 항목에 대해서만** 다시 돌아 `discovery_report`에 차이를 적고 `v<N>_lab_profile`과 레지스트리 갱신을 **제안**한다(확정은 사람). 도구의 동작에 관한 자료면 S2가 `tool_profile`의 개정을 제안한다. 진행 중인 요청(`requests/<rid>/`)이 그 도구를 쓰고 있으면 `superseded` 알림만 남기고 자동으로 바꾸지 않는다. 받아들이지 않을 자료(중복, 범위 밖, 라이선스 불가)는 `declined`과 사유로 남긴다. 자료가 없는 동안에도 설계와 빌드는 멈추지 않는다: 그 도구의 `tool_profile`에 `unknown`과 `requires`가 남을 뿐이다.
+
+`MATERIAL.json`의 필드(스키마가 기록이다):
+
+```
+id
+kind:            manual | paper | spec_sheet | api_doc | repo | dataset | link | unknown
+about:           {name, role: engine | instrument | platform | analysis_software | unknown, methods[]}
+                 필드마다 {value, state: confirmed | inferred | unknown, evidence[]}
+location:        {url} 또는 {path}                       (정확히 하나; 사람이 쓴 유일한 필드)
+source_snapshot: {retrieved_at, content_hash, archived: path | null}   (url이면 필수)
+added_by, added_at, entry_path: links_md | drop | wizard | cli | gui
+license_note:    {value, state, evidence[]}             (확정은 사람)
+may_quote:       true | false | unknown                 (사람만 쓴다)
+state:           queued | registered | distilled | declined | held
+state_reason, questions[]
+```
+
+사람이 직접 쓰는 것은 `location`뿐이다(원하면 `about.name`도). 나머지는 Meta-Agent가 쓰고 사람이 확정하며, `may_quote`와 `license_note`의 확정은 사람만 한다(§9).
 
 **산출물의 자리.** `meta_agent/profiles/<lab_id>/{discovery_report, onboarding_record, v<N>_lab_profile}.json`. 요청이 시작되면 `requests/<rid>/agent_goal.json`이 `lab_profile_ref`를 가진다.
 
@@ -401,7 +449,7 @@ F1이 큐를 읽어 `knowledge/sources/`의 출처 기록으로 만들고, 필�
 
 v0.1의 세 층(출처 / 증류 노트 / 항목)을 유지한다. 바뀌는 것:
 
-- **입력의 범위**: 논문, 기술 문서, API 문서, 매뉴얼, 실행 기록, `inbox/materials/`의 큐. S2의 `tool_profile`과 S0의 `discovery_report`도 입력이다.
+- **입력의 범위**: 논문, 기술 문서, API 문서, 매뉴얼, 실행 기록, `inbox/materials/`의 큐(`registered` 상태). S2의 `tool_profile`과 S0의 `discovery_report`도 입력이다.
 - **`value_kind`**: 모든 수치에 `measured | correlation | computed | predicted | literature | estimated | model_generated` 중 하나. 등급은 (`source` 종류, `value_kind`)에서 **유도**된다. DB 유래 값과 예측 구조의 유도 규칙은 §14-12.
 - **충돌**: 기존 항목과 다른 값은 `conflict`로 기록하고 둘 다 남긴다(SMA 사서의 `kb_conflicts`). 근거가 부족하면 `gap(unqualified_source)`.
 - **문헌 평가**: 후보 생성 → 비판 → 정련(제안서 §2.3이 인용한 방식)을 **증류 노트 안에서** 한다. 정련된 주장만 항목이 되고, 비판 기록은 노트에 남는다.
@@ -540,7 +588,7 @@ electronic / atomistic / coarse-grained / mesoscale / continuum
 
 | 층 | 내용 | 공통화 |
 |---|---|---|
-| 공통 틀 | Project · Parameters · Validation · Execution · Results, 카드 입출력 | **공통** (작업 흐름과 카드 인터페이스) |
+| 공통 틀 | Project(자료 투입 "Add material" 포함; §5.0의 길 (e)) · Parameters · Validation · Execution · Results, 카드 입출력 | **공통** (작업 흐름과 카드 인터페이스) |
 | 도메인 편집기 | Particle editor (MD·BD) / Mesh editor (CFD·FEM) / Structure editor (DFT·분자) / Instrument panel (장비) | 도메인별. 물리 모델을 하나의 범용 스키마로 억지로 합치지 않는다 (MD의 입자와 CFD의 mesh는 다른 도메인 모델) |
 | 도구별 과학 코어·어댑터 | 검증, 코드 생성, 실행 인터페이스, 결과 처리 | 도구별. GUI 밖에 있고 CLI·에이전트도 같은 것을 쓴다 |
 
@@ -558,7 +606,7 @@ electronic / atomistic / coarse-grained / mesoscale / continuum
 
 | 카드 | 쓰는 이 | 무엇 | 대화 1의 범주 |
 |---|---|---|---|
-| `material` | 사람 (inbox) | 투입된 매뉴얼·논문·링크 한 건과 그 상태 | |
+| `material` | 사람(위치) + 접수 좌석(메타데이터, `inferred`) | 투입된 매뉴얼·논문·링크 한 건, 출처 스냅샷, 상태 | |
 | `discovery_report` | 온보딩 좌석 | Step 0의 발견: 필드마다 `inferred` + 근거, 또는 `unknown` | |
 | `onboarding_record` | 온보딩 좌석 (+ 사람의 답) | 물은 것, 답, 건너뛴 것과 이유 | |
 | `lab_profile` | 온보딩 좌석 (+ 사람의 `confirmed`) | §5.6의 표, 필드마다 상태와 근거 | |
@@ -592,7 +640,7 @@ electronic / atomistic / coarse-grained / mesoscale / continuum
 
 ### 6.5 상태기계
 
-`draft → validated → (approved) → done | refused | held | superseded`. `held`는 MP10의 상태이고 사람이 푼다. 기록은 추가 전용, 수정은 새 개정 `v<N>_`. `material`은 따로 `queued → distilled | declined`.
+`draft → validated → (approved) → done | refused | held | superseded`. `held`는 MP10의 상태이고 사람이 푼다. 기록은 추가 전용, 수정은 새 개정 `v<N>_`. `material`은 따로 `queued → registered → distilled | declined | held`(`registered`는 사람의 확정, `held`는 접근 권한이나 라이선스가 막을 때; §5.0).
 
 ---
 
@@ -624,17 +672,20 @@ meta-agent/
     CLAUDE.md / README.md / .claude/settings.json   (Tier 0, builds/ 밖 쓰기 금지, 두 셸 쌍둥이)
     tasks/ · failures.jsonl · envelope/observed.json
     inbox/<thread>/           브릿지·사람의 observation
-    inbox/materials/<YYYYMMDD>-<slug>/   투입 자료 + MATERIAL.json  (언제든 추가)
+    inbox/materials/README.md            "A link on one line is enough" (영어; 투입 방법과 그 뒤 절차)
+    inbox/materials/LINKS.md             사람이 링크를 한 줄씩 적는 표  (언제든 추가)
+    inbox/materials/drop/                사람이 파일을 두는 곳  (언제든 추가; 접수 뒤 아래 폴더로 이동)
+    inbox/materials/<YYYYMMDD>-<slug>/   접수된 자료 + MATERIAL.json  (Meta-Agent가 만든다)
     profiles/<lab_id>/        discovery_report, onboarding_record, v<N>_lab_profile
     requests/<rid>/           agent_goal, tool_profile, knowledge_brief, parameter_sheet, spec_a1..a6, synthesis,
                               agent_spec, gui_spec, build, validation_report, refusal, failures.jsonl  (평평하게, v<N>_ 개정)
-    knowledge/{sources, distilled, entries, index.json}
+    knowledge/{sources, distilled, entries, index.json}   sources/raw/는 may_quote: true인 사본만
     cases/<case_id>.json + index.json
     harness/{incidents.jsonl, proposals/, ledger.jsonl, retro/, library/<domain>/<build_id>/}
     templates/agent@<hash>/   번들 템플릿 (하네스 표면 + tools/ + validation/ + envelope/ 스켈레톤 + gui/ 공통 구성요소)
     builds/<agent>/<build_id>/  번들 + build 카드 + validation_report
     eval/                     네 조건 비교의 과제 묶음, 설정, 결과 (§11)
-    src/                      onboarding/, intake/, tooling/(tool understanding), knowledge/, sources/(어댑터), parameters/,
+    src/                      onboarding/, materials/(투입구 접수), intake/, tooling/(tool understanding), knowledge/, sources/(어댑터), parameters/,
                               spec/, build/, gui/, validate/, cases/, harness/   (의존은 한 방향, 형제 import 금지)
     tests/
 
@@ -665,6 +716,7 @@ meta-agent/
 | 14 | `held[]`의 항목이 번들에 없음; `held` 해제는 사람의 말 + 커밋 | fail-closed |
 | 15 | `lab_profile`의 모든 필드에 `state`; `inferred`는 `evidence[]` 비어 있지 않음; `confirmed`는 `confirmed_by: human`; `policy.*`·`collaboration.mode`·실행 권한 필드는 빌드 참조 시 `confirmed` 아니면 FAIL; `inferred → confirmed` 전이에 사람 외 작성자 있으면 FAIL | 온보딩 |
 | 16 | `onboarding_record.questions[]`의 각 질문이 그 시점 `unknown`인 필드 또는 정책 필드를 가리킴 (이미 `confirmed`인 필드를 물으면 FAIL); `skipped[]`에 이유(`inferred` 근거 또는 조건) | 온보딩 |
+| 17 | `material`: `location`에 `url`과 `path` 중 정확히 하나; `about.*`·`license_note`가 세 상태 어휘를 따르고 `inferred`는 `evidence[]` 비어 있지 않음; `added_by: human`이고 메타데이터 작성자는 접수 좌석; `url` 자료가 `distilled`인데 `source_snapshot.retrieved_at`·`content_hash` 없으면 FAIL; `may_quote`가 `true`가 아닌데 `archived`가 있으면 FAIL; `held`·`declined`에 `state_reason` 필수 | 자료 투입 |
 | B1 | 번들 필수 파일 (§5.1 S5 표) | 빌드 |
 | B2 | 모든 `Bash(...)` deny/ask에 `PowerShell(...)` 쌍둥이, 그 역도 | 빌드 |
 | B3 | `envelope/safety.json` 값 전부 `null` | 빌드 |
@@ -684,11 +736,11 @@ meta-agent/
 
 **좌석**: `design-…`(루트 파일, `contracts/`, `docs/`, `meta_agent/CLAUDE.md`, `meta_agent/.claude/`), `meta-…`(`meta_agent/` 나머지; 온보딩도 이 좌석), M5부터 `harness-…`(`meta_agent/harness/`). 사람이 세션마다 직접 배정한다. 이름은 `<role>-<machine>-<YYYYMMDD>-<n>`.
 
-**사람만 하는 일**: 안전 값, 좌석 배정, 번들 인계(`landed_at`), 풀기·은퇴·핵심 변경의 허락, 임계값(허용 오차, k, N), 이전 항목의 판정, **분석 권한의 확인**(`analysis_permission`), `held`의 해제, 하드웨어 위에서의 검증 과제 실행, **온보딩 정책 질문의 답과 `inferred → confirmed` 전이**, 공개 범위, 자료 투입과 그 인용 허락(`may_quote`).
+**사람만 하는 일**: 안전 값, 좌석 배정, 번들 인계(`landed_at`), 풀기·은퇴·핵심 변경의 허락, 임계값(허용 오차, k, N), 이전 항목의 판정, **분석 권한의 확인**(`analysis_permission`), `held`의 해제, 하드웨어 위에서의 검증 과제 실행, **온보딩 정책 질문의 답과 `inferred → confirmed` 전이**, 공개 범위, 자료 투입(위치를 주는 일)과 접수된 메타데이터의 확정, 인용 허락(`may_quote`)과 라이선스 판단.
 
 **하나의 작업 사본, 워크트리 없음**(SMA의 결정). 경로를 이름 붙여 커밋한다.
 
-**격리**: 소프트웨어 도구의 어댑터 검증은 작업 폴더 밖의 격리 환경(컨테이너 또는 WSL의 별도 디렉터리)에서, 네트워크는 필요한 호스트만. 장비 컴퓨터에서는 모의만. GUI의 Local Runner가 있으면 loopback 전용(HOOMD_GUI의 기본).
+**격리**: 소프트웨어 도구의 어댑터 검증은 작업 폴더 밖의 격리 환경(컨테이너 또는 WSL의 별도 디렉터리)에서, 네트워크는 필요한 호스트만. 장비 컴퓨터에서는 모의만. GUI의 Local Runner가 있으면 loopback 전용(HOOMD_GUI의 기본). 자료 투입구의 URL 접근은 읽기 전용이고 저장된 자격 증명이나 로그인 세션을 쓰지 않는다(필요하면 `held`).
 
 ---
 
@@ -718,7 +770,7 @@ meta-agent/
 
 | 묶음 | 지표 | 어디서 읽나 |
 |---|---|---|
-| 에이전트 개발 | 작업 시간, 연구자의 수동 설정·개입 횟수, **마법사의 질문 수와 불필요했던 질문 수**, 검증을 통과한 기능의 범위, 새 인터페이스 적응(C 대 기존), **첫 과학적 유효 실행까지의 시간** | `profiles/`의 `onboarding_record`, `requests/<rid>/`의 타임스탬프, `docs/ideas/`의 개입 기록, `validation_report` |
+| 에이전트 개발 | 작업 시간, 연구자의 수동 설정·개입 횟수, **마법사의 질문 수와 불필요했던 질문 수**, 자료 투입 1건당 사람이 직접 쓴 필드 수(목표 1: 위치), 검증을 통과한 기능의 범위, 새 인터페이스 적응(C 대 기존), **첫 과학적 유효 실행까지의 시간** | `profiles/`의 `onboarding_record`, `inbox/materials/*/MATERIAL.json`의 `added_by`·`entry_path`, `requests/<rid>/`의 타임스탬프, `docs/ideas/`의 개입 기록, `validation_report` |
 | 과학적 성능 | 물리량·단위 정확성, 파라미터 추천의 타당성, 재현성, 기준 결과와의 일치, 실패 탐지·회복 | `validation_report`, `case` |
 | 자기 개선 | 네 조건 사이의 차이, 재발률(사건 클래스가 다시 나오는가), 되돌림 횟수 | `incidents.jsonl`, `ledger.jsonl`, `eval/` |
 | 운영 효율 | 사람의 개입 시간, 오류 복구율, 지연, 토큰·비용, 개선에 따른 성능 저하 발생률 | `ledger.jsonl`, 실행 로그 |
@@ -733,9 +785,9 @@ meta-agent/
 
 | M | 덩어리 | 완료 조건 (실행에서 읽는다) |
 |---|---|---|
-| **M0** | 계약: 스키마 전부, `validate.py` 체크 1·2·3·6·7·11·15·16, 예시 + 거부 픽스처, `seats.json`, 레지스트리 빈 틀, `inbox/materials/` 형식, 훅, `CLAUDE.md`, `plan.md` | `0 failed`; `--expect-fail` 두 총계 전부 거부; 첫 커밋부터 좌석 커미터 |
+| **M0** | 계약: 스키마 전부, `validate.py` 체크 1·2·3·6·7·11·15·16·17, 예시 + 거부 픽스처, `seats.json`, 레지스트리 빈 틀, `inbox/materials/`(README, LINKS.md, drop/), 훅, `CLAUDE.md`, `plan.md` | `0 failed`; `--expect-fail` 두 총계 전부 거부; 첫 커밋부터 좌석 커미터 |
 | **M1** | 온보딩 + Designer 골격: Step 0(자료 폴더와 저장소 읽기) → Step 1(`unknown`만 질문) → Step 2 → Step 3 → `agent_goal` → `tool_profile`(문서만으로) → `agent_spec` → 템플릿 v1 → **echo 번들** → 인터페이스 게이트 B1–B9 → `validation_report` | 자료가 가득한 픽스처 연구실에서는 **정책 질문만** 나오고, 빈 연구실에서는 전체 질문이 나온다(둘 다 `onboarding_record`에서 읽는다); echo 번들이 두 게이트(과학 게이트는 자명한 과제 하나)를 통과하고 Meta-Agent 없이 `replay/` 하나를 처리 |
-| **M2** | Knowledge Engine: 출처/증류/항목, `value_kind`, 충돌, 인덱스, `knowledge_brief`, `inbox/materials/` 큐 처리; **출처 어댑터 후보와 레지스트리 대표 항목의 확인**(존재·접근·범위·라이선스)과 첫 어댑터 하나 | 유도 등급을 통과한 항목과 `searched`가 있는 공백 각 하나 이상; 확인 결과가 `knowledge/sources/`와 `registry/*.json`의 `verified`로 존재 |
+| **M2** | Knowledge Engine: 출처/증류/항목, `value_kind`, 충돌, 인덱스, `knowledge_brief`, `inbox/materials/` 접수(메타데이터 추론, URL 스냅샷, 사람 확정)와 큐 처리, `add-material` 명령; **출처 어댑터 후보와 레지스트리 대표 항목의 확인**(존재·접근·범위·라이선스)과 첫 어댑터 하나 | 유도 등급을 통과한 항목과 `searched`가 있는 공백 각 하나 이상; 확인 결과가 `knowledge/sources/`와 `registry/*.json`의 `verified`로 존재 |
 | **M3** | Parameter Intelligence: 세 단계, 계층형 검색, 도우미, 둘 이상 어댑터의 비교 시험, `protein` 카드 형식(구성과 조건의 분리 포함) | 안전 행이 빈 시트가 체크 4를 통과; 채운 시트가 거부 픽스처; 비교 시험의 행마다 `value_kind`가 남음 |
 | **M4** | Experience Memory: 스키마(`cue`…), 어휘, `recall.py`, 주입, 승격 규칙, (허락 시) SMA 씨앗 이전 | 새 `agent_goal`에 `case_refs` 또는 `case_gaps`; 같은 입력 같은 출력 |
 | **M5** | Meta-Harness: 사건/제안/장부/회고/라이브러리, `edit_rows`, `observed.json`, 재생, 래칫, **네 조건 평가 하네스(모의)** | 조이기 하나가 픽스처+재생으로 착륙; 풀기 하나가 사람의 말 없이 거부(픽스처); 네 조건이 echo 과제 묶음에서 돈다 |
@@ -778,7 +830,7 @@ meta-agent/
 15. **임계값 목록(UNDECIDED).** 과학 검증의 허용 오차, 빌드 수준 재귀의 k, 승격 건수 N, 네 조건 비교의 표본 수. 전부 기준선 뒤에 사람이 고른다.
 16. **GUI의 범위와 기술 스택.** M9를 할지, 할 때 HOOMD_GUI의 `web/` + `python/` 구조를 공통 틀의 출발점으로 쓸지(라이선스가 정해진 뒤), 파라미터 폼만으로 시작할지(권고).
 17. **Lab Profile의 범위.** 이 연구실 하나만(권고, 지금) 또는 복수 연구실. 복수라면 `lab_id`의 부여와 프로필 사이의 공유 규칙.
-18. **선호하는 시뮬레이션 엔진·실험 플랫폼의 자료.** 매뉴얼·API 문서·논문·사양서의 **PDF나 링크**가 있으면 알려 달라. §0의 표에 있는 넷(HOOMD-blue, 현미경, TA 레오미터, RheoTool/OpenFOAM) 각각에 대해, 그리고 그 밖에 연구실이 쓰거나 쓰려는 엔진(예: LAMMPS, GROMACS, OpenMM, OpenFOAM, FEniCSx)과 장비가 있으면 함께. **지금 없어도 된다.** M0 뒤에는 `meta_agent/inbox/materials/`에 언제든 넣을 수 있고, 들어오면 S0의 발견 단계만 다시 돈다.
+18. **선호하는 시뮬레이션 엔진·실험 플랫폼의 자료 (자리; 질문이 아니다).** 매뉴얼·API 문서·논문·사양서의 PDF나 링크는 **지금 없어도 되고**, 생기면 언제든 넣는다. M0 전에는 이 대화에 링크나 파일을 주면 되고, M0 뒤에는 `meta_agent/inbox/materials/LINKS.md`에 한 줄 또는 `drop/`에 파일 하나면 된다(§5.0). 대상은 §0의 표에 있는 넷(HOOMD-blue, 현미경, TA 레오미터, RheoTool/OpenFOAM)과 그 밖에 연구실이 쓰거나 쓰려는 엔진(예: LAMMPS, GROMACS, OpenMM, OpenFOAM, FEniCSx)·장비. 들어오면 접수 → 확정 → 증류 → 그 항목에 대한 발견 재실행의 순서로 처리되고, 없는 동안 설계와 빌드는 멈추지 않는다. **2026-10-29 현재: 없음, 나중에 투입 예정.**
 19. **이 연구실의 온보딩 답.** 마법사가 묻게 될 것 중 자료로 추론할 수 없는 것: 주로 할 연구 종류와 방법론(복수 선택), 선호 언어·환경, 에이전트와 결과의 공개 범위, 승인 방식(어느 행위에 사람의 승인이 필요한가), 기존 SMA 에이전트와의 협업 방식(브릿지). 지금 답해도 되고 M1의 마법사가 물을 때 답해도 된다.
 
 ---
@@ -789,11 +841,11 @@ meta-agent/
 2. `plan.md` 생성(영어, 기록). 이 문서는 `docs/origin/`으로.
 3. `contracts/seats.json`에 `design-…`, `meta-…` 등록. 사람이 두 세션을 배정.
 4. `contracts/schemas/` 전부(§7), `units.json`, `case_classes.json`, `claim_kinds.json`, `tool_contract` · `error_contract` 스키마, `registry/{methods,engines,instruments}.json`의 빈 틀(항목은 `verified` 없이 "확인 필요"로 시작).
-5. `contracts/validate.py`: 체크 1·2·3·6·7·11·15·16 + `--expect-fail` + verdict 줄.
-6. `contracts/examples/` 한 벌(`material`·`lab_profile`·`onboarding_record`·`tool_profile`·`validation_report` 포함)과 `rejected/` 픽스처(체크당 하나 이상; 15·16은 "정책 필드가 inferred인 프로필"과 "이미 확정된 필드를 묻는 기록"). 실패하는 것을 본 사실을 커밋 메시지에.
+5. `contracts/validate.py`: 체크 1·2·3·6·7·11·15·16·17 + `--expect-fail` + verdict 줄.
+6. `contracts/examples/` 한 벌(`material`·`lab_profile`·`onboarding_record`·`tool_profile`·`validation_report` 포함)과 `rejected/` 픽스처(체크당 하나 이상; 15·16은 "정책 필드가 inferred인 프로필"과 "이미 확정된 필드를 묻는 기록", 17은 "url과 path를 둘 다 가진 자료"와 "may_quote 없이 사본을 가진 자료"). 실패하는 것을 본 사실을 커밋 메시지에.
 7. `contracts/hooks/pre-commit`, `.claude/settings.json`(루트와 `meta_agent/`, 두 셸 쌍둥이, PostToolUse 검증 훅).
-8. 루트 `CLAUDE.md`(짧게), `README.md`, `meta_agent/CLAUDE.md`, `meta_agent/README.md`, `meta_agent/inbox/materials/README.md`(투입 형식), `meta_agent/tasks/001-onboard-this-lab-on-fixtures.md`, `tasks/002-echo-agent-on-mock.md`.
-9. `docs/ideas/20261029.md`에 이 계획을 낳은 사람의 말(요구 다섯 가지, 참고 자료 네 건 + 대화 2 + HOOMD_GUI, "AWS 부분 제외", "선호 엔진·플랫폼 자료는 언제든 넣을 수 있게")을 원문으로. `docs/reference/hoomd_gui.md`에 §2.6의 사실 확인.
+8. 루트 `CLAUDE.md`(짧게), `README.md`, `meta_agent/CLAUDE.md`, `meta_agent/README.md`, `meta_agent/inbox/materials/{README.md, LINKS.md, drop/.gitkeep}`(README는 "A link on one line is enough"로 시작하고 접수 뒤 절차를 적는다; LINKS.md는 머리글만 있는 빈 표), `meta_agent/tasks/001-onboard-this-lab-on-fixtures.md`, `tasks/002-echo-agent-on-mock.md`.
+9. `docs/ideas/20261029.md`에 이 계획을 낳은 사람의 말(요구 다섯 가지, 참고 자료 네 건 + 대화 2 + HOOMD_GUI, "AWS 부분 제외", "선호 엔진·플랫폼 자료는 언제든 넣을 수 있게", "추후 사용자가 해당 링크를 넣을 수 있도록 디자인")을 원문으로. `docs/reference/hoomd_gui.md`에 §2.6의 사실 확인.
 10. 첫 실행: `python contracts/validate.py` → `0 failed`; `--expect-fail` 두 총계 전부 거부. 수는 실행에서 읽어 보고.
 
 ---
@@ -848,14 +900,20 @@ meta-agent/
  "numbers": [], "degraded": [], "status": "draft"}
 ```
 
-`material`:
+`material` (사람이 `LINKS.md`에 쓴 것은 URL 한 줄; 아래는 접수 뒤, 사람 확정 전):
 
 ```json
-{"card": "material", "id": "mat-20261030-001", "kind": "manual",
- "about": {"name": "RheoTool", "role": "engine", "methods": ["cfd", "viscoelastic_flow"]},
+{"card": "material", "id": "mat-20261030-001", "kind": "repo",
+ "about": {"name":    {"value": "RheoTool", "state": "inferred", "evidence": [{"source_ref": "src_mat_20261030_001", "locus": "README.md:1"}]},
+           "role":    {"value": "engine", "state": "inferred", "evidence": [{"source_ref": "src_mat_20261030_001", "locus": "README.md:3-8"}]},
+           "methods": {"value": ["cfd", "viscoelastic_flow"], "state": "inferred", "evidence": [{"source_ref": "src_mat_20261030_001", "locus": "README.md:3-8"}]}},
  "location": {"url": "https://github.com/fppimenta/rheoTool"},
- "added_by": "human", "added_at": "2026-10-30", "license_note": "GPL-3.0 (to verify)", "may_quote": "unknown",
- "state": "queued"}
+ "source_snapshot": {"retrieved_at": "2026-10-30T09:12:00Z", "content_hash": "sha256:<...>", "archived": null},
+ "added_by": "human", "added_at": "2026-10-30", "entry_path": "links_md",
+ "license_note": {"value": "GPL-3.0", "state": "inferred", "evidence": [{"source_ref": "src_mat_20261030_001", "locus": "LICENSE"}]},
+ "may_quote": "unknown",
+ "state": "queued", "state_reason": null,
+ "questions": ["may_quote: may excerpts of the tutorial dictionaries be stored verbatim?"]}
 ```
 
 `tool_profile`의 주장 세 개:
