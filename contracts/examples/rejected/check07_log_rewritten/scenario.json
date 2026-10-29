@@ -1,0 +1,15 @@
+{
+  "check": 7,
+  "changes": [
+    {
+      "status": "M",
+      "path": "meta_agent/failures.jsonl"
+    }
+  ],
+  "old": {
+    "meta_agent/failures.jsonl": "{\"id\": 1}\n{\"id\": 2}\n"
+  },
+  "new": {
+    "meta_agent/failures.jsonl": "{\"id\": 1}\n"
+  }
+}

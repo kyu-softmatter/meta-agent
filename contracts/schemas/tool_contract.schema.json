@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/tool_contract.schema.json",
+  "title": "tool_contract",
+  "description": "A callable tool's contract inside a bundle: tools/<name>/tool.json (plan.md 5.1 S5, 6.4). Check B7.",
+  "type": "object",
+  "properties": {
+    "artifact": {
+      "const": "tool_contract"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "inputs": {
+      "type": "object",
+      "description": "a JSON Schema for the input object"
+    },
+    "outputs": {
+      "type": "object",
+      "description": "a JSON Schema for the output object"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "invalid_input",
+          "unsupported_target",
+          "integrity_mismatch",
+          "truncated",
+          "cancelled",
+          "timeout",
+          "resource_constraint",
+          "unavailable",
+          "execution_failure",
+          "refused_by_safety",
+          "permission_required"
+        ]
+      },
+      "minItems": 1
+    },
+    "side_effects": {
+      "enum": [
+        "none",
+        "writes_files",
+        "controls_instrument",
+        "runs_process",
+        "network"
+      ]
+    },
+    "safety_gate": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "place": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "required"
+      ]
+    },
+    "idempotent": {
+      "type": "boolean"
+    },
+    "timeout_s": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "calls_external": {
+      "type": "object",
+      "properties": {
+        "program": {
+          "type": "string"
+        },
+        "license": {
+          "type": "string"
+        },
+        "bundled": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "artifact",
+    "schema_version",
+    "name",
+    "description",
+    "inputs",
+    "outputs",
+    "errors",
+    "side_effects",
+    "safety_gate",
+    "idempotent"
+  ],
+  "additionalProperties": false
+}

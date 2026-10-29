@@ -1,0 +1,121 @@
+{
+  "card": "onboarding_record",
+  "schema_version": "0.1",
+  "id": "ob-fixture-01",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "lab_id": "lab-fixture-01",
+  "discovery_ref": "dr-fixture-01",
+  "questions": [
+    {
+      "field": "policy.publication_scope",
+      "group": 8,
+      "question": "Who may see the agents and their results: this lab, collaborators, or the public?",
+      "state_at_ask": "policy",
+      "answer": "this lab until the person says otherwise",
+      "answered_by": "human",
+      "asked_at": "2026-10-29T18:00:00Z"
+    },
+    {
+      "field": "policy.approval_mode",
+      "group": 8,
+      "question": "Which actions need a person's approval before they run?",
+      "state_at_ask": "policy",
+      "answer": "every bundle hand-over, every held release, every safety value",
+      "answered_by": "human",
+      "asked_at": "2026-10-29T18:00:00Z"
+    },
+    {
+      "field": "policy.working_mode",
+      "group": 8,
+      "question": "How does the lab want to work with the Meta-Agent: card by card with review, or in batches?",
+      "state_at_ask": "policy",
+      "answer": "card by card",
+      "answered_by": "human",
+      "asked_at": "2026-10-29T18:00:00Z"
+    },
+    {
+      "field": "policy.execution_permission",
+      "group": 8,
+      "question": "May a built agent run anything on its own, and if so what?",
+      "state_at_ask": "policy",
+      "answer": "mock and sandbox only; nothing on an instrument",
+      "answered_by": "human",
+      "asked_at": "2026-10-29T18:00:00Z"
+    },
+    {
+      "field": "policy.external_transfer_of_private_code",
+      "group": 8,
+      "question": "May private code leave the lab's computers, for example to an analysis service?",
+      "state_at_ask": "policy",
+      "answer": false,
+      "answered_by": "human",
+      "asked_at": "2026-10-29T18:00:00Z"
+    },
+    {
+      "field": "collaboration.mode",
+      "group": 2,
+      "question": "Should the new agent be configured to collaborate with the existing agents through the bridge?",
+      "state_at_ask": "policy",
+      "answer": "yes, later, through the bridge",
+      "answered_by": "human",
+      "asked_at": "2026-10-29T18:00:00Z"
+    },
+    {
+      "field": "gui_preference",
+      "group": 7,
+      "question": "Do you want a GUI: none, a parameter form, a visual editor, or reuse of the lab's GUI?",
+      "state_at_ask": "unknown",
+      "answer": "parameter_form",
+      "answered_by": "human",
+      "asked_at": "2026-10-29T18:00:00Z"
+    },
+    {
+      "field": "software_env.os",
+      "group": 5,
+      "question": "Which operating systems run the agents?",
+      "state_at_ask": "unknown",
+      "answer": [
+        "windows",
+        "macos"
+      ],
+      "answered_by": "human",
+      "asked_at": "2026-10-29T18:00:00Z"
+    }
+  ],
+  "skipped": [
+    {
+      "field": "preferred_engines",
+      "reason": "",
+      "basis": "inferred"
+    },
+    {
+      "field": "software_env.language",
+      "reason": "inferred from pyproject.toml and pixi.toml; shown as a recommendation",
+      "basis": "inferred"
+    },
+    {
+      "field": "collaboration.first_agent",
+      "reason": "three agents are registered in soft-matter-agents' seats.json",
+      "basis": "inferred"
+    },
+    {
+      "field": "hardware.gpu",
+      "reason": "deferred: not needed before the first engine is chosen (14-20)",
+      "basis": "condition"
+    }
+  ],
+  "held": [
+    "hardware.gpu",
+    "hardware.hpc"
+  ]
+}

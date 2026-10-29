@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1",
+  "note": "Cause class vocabulary for case.cause_class and harness_incident.class (plan.md 5.4). A class not listed here is an ordering, not a refusal: add it with a description in the same commit as the first case that uses it.",
+  "classes": {
+    "correctly_graded_but_wrong_for_this_instance": "the value's grade was right for its source and the value did not hold for this physical part",
+    "vendor_spec_vs_bench": "a vendor specification was used where the bench value differed",
+    "unit_mismatch": "a quantity was carried in a unit its consumer did not expect",
+    "interface_contract_violation": "a tool call or response broke the tool's contract (shape, error contract, timeout)",
+    "configuration_not_transferred": "a setting shown to a person or a GUI was not what the tool received",
+    "missing_permission": "an analysis or an action ran without the permission record it needed",
+    "inferred_treated_as_observed": "an inference was written or used as an observation",
+    "stale_snapshot": "the envelope snapshot no longer matched the store it was pinned to",
+    "unnecessary_question": "the wizard asked what the materials had already answered",
+    "wrong_inference": "a discovered setting was inferred wrongly and a person corrected it",
+    "guard_covers_one_route_of_two": "a deny rule named one shell and the other shell was open",
+    "numerical_instability": "a simulation setting violated a stability condition",
+    "reference_result_mismatch": "a scientific validation task disagreed with its reference beyond the tolerance",
+    "tool_unavailable": "the tool or its environment could not be reached when needed",
+    "held_item_shipped": "an item in held[] was found in the bundle",
+    "unknown": "cause not classified yet"
+  }
+}

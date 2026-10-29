@@ -1,0 +1,289 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/case.schema.json",
+  "title": "case",
+  "description": "One experience, one file (plan.md 5.4): signature for recall, cause with its status, cue / lesson / evidence / confidence, falsification and counts. Check 8.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "case"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "failure",
+        "success",
+        "incident"
+      ]
+    },
+    "signature": {
+      "type": "object",
+      "properties": {
+        "science_task": {
+          "type": "string"
+        },
+        "executes": {
+          "enum": [
+            "instrument",
+            "engine",
+            "analysis",
+            "none"
+          ]
+        },
+        "instrument": {
+          "type": "string"
+        },
+        "engine": {
+          "type": "string"
+        },
+        "methods": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "observables": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "parameter_names": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "cause_class": {
+          "type": "string"
+        },
+        "condition_tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "science_task",
+        "executes",
+        "observables",
+        "parameter_names",
+        "condition_tags"
+      ]
+    },
+    "what_happened": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cause_class": {
+      "type": "string",
+      "minLength": 1,
+      "description": "a key of contracts/case_classes.json"
+    },
+    "cause_status": {
+      "enum": [
+        "observed",
+        "suspected",
+        "confirmed"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "run",
+              "commit",
+              "card",
+              "observation"
+            ]
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "ref"
+        ]
+      }
+    },
+    "intervention": {
+      "type": "string"
+    },
+    "cue": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lesson": {
+      "type": "string",
+      "minLength": 1
+    },
+    "confidence": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "why": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "why"
+      ]
+    },
+    "falsification": {
+      "type": "string",
+      "minLength": 1
+    },
+    "count": {
+      "type": "object",
+      "properties": {
+        "supports": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "contradicts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_seen": {
+          "$ref": "common.schema.json#/$defs/date"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "supports",
+        "contradicts",
+        "last_seen"
+      ]
+    },
+    "source_agent": {
+      "type": "string"
+    },
+    "source_repo_commit": {
+      "type": "string"
+    },
+    "grade": {
+      "$ref": "common.schema.json#/$defs/grade"
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "kind",
+    "signature",
+    "what_happened",
+    "cause_class",
+    "cause_status",
+    "evidence",
+    "cue",
+    "lesson",
+    "confidence",
+    "falsification",
+    "count",
+    "grade",
+    "superseded_by"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,14 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "RT-INPUT-001",
+  "category": "invalid_input",
+  "message": "constant/constitutiveProperties is missing from the case directory",
+  "retryable": false,
+  "remediation": {
+    "action": "add the constitutive dictionary; the template is tools/run_case/templates/constitutiveProperties"
+  },
+  "evidence": {
+    "case_dir": "cases/couette_01"
+  }
+}

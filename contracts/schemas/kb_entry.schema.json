@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/kb_entry.schema.json",
+  "title": "kb_entry",
+  "description": "One claim, one file (plan.md 5.2). The grade is derived from the source kind and value_kind.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "kb_entry"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1
+    },
+    "claim": {
+      "type": "string",
+      "minLength": 1
+    },
+    "symbol": {
+      "type": "string"
+    },
+    "identifiers": {
+      "type": "object"
+    },
+    "conditions": {
+      "type": "object"
+    },
+    "source": {
+      "$ref": "common.schema.json#/$defs/source"
+    },
+    "grade": {
+      "$ref": "common.schema.json#/$defs/grade"
+    },
+    "value_kind": {
+      "$ref": "common.schema.json#/$defs/value_kind"
+    },
+    "validity": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "$ref": "common.schema.json#/$defs/date"
+        },
+        "until": {
+          "$ref": "common.schema.json#/$defs/date"
+        },
+        "conditions": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "relations": {
+      "type": "object",
+      "properties": {
+        "supports": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "refutes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "supersedes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "conflict_with": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "distilled_from": {
+      "type": "string",
+      "description": "the distillation note"
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "subject",
+    "claim",
+    "source",
+    "grade",
+    "value_kind",
+    "relations"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/onboarding_record.schema.json",
+  "title": "onboarding_record",
+  "description": "Step 1 of onboarding: what was asked, the answers, what was skipped and why (plan.md 5.0). Check 16: a question targets a field unknown in the referenced discovery_report or a policy field.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "onboarding_record"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "lab_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "discovery_ref": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "group": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 8
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "state_at_ask": {
+            "enum": [
+              "unknown",
+              "policy",
+              "inferred",
+              "confirmed"
+            ]
+          },
+          "answer": {},
+          "answered_by": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "asked_at": {
+            "$ref": "common.schema.json#/$defs/datetime"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "question",
+          "state_at_ask",
+          "answer",
+          "answered_by"
+        ]
+      }
+    },
+    "skipped": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string"
+          },
+          "basis": {
+            "enum": [
+              "inferred",
+              "condition",
+              "answered_earlier"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "reason",
+          "basis"
+        ]
+      }
+    },
+    "held": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/held_item"
+      }
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "lab_id",
+    "discovery_ref",
+    "questions",
+    "skipped",
+    "held"
+  ],
+  "additionalProperties": false
+}

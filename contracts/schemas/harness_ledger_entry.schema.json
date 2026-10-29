@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/harness_ledger_entry.schema.json",
+  "title": "harness_ledger_entry",
+  "description": "One line of harness/ledger.jsonl: a proposal, the commit, the configuration and the cost (plan.md 5.5). Check 10.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "harness_ledger_entry"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "proposal_ref": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "commit": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/commit"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "runner": {
+          "type": "string"
+        },
+        "k": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "seed": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "model",
+        "runner",
+        "k",
+        "seed"
+      ]
+    },
+    "cost": {
+      "$ref": "common.schema.json#/$defs/cost"
+    },
+    "outcome": {
+      "enum": [
+        "proposed",
+        "landed",
+        "refused",
+        "reverted",
+        "measured"
+      ]
+    },
+    "reverted_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "proposal_ref",
+    "commit",
+    "configuration",
+    "cost",
+    "outcome"
+  ],
+  "additionalProperties": false
+}

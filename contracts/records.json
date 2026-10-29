@@ -1,0 +1,34 @@
+{
+  "schema_version": "0.1",
+  "note": "What check 7 reads (plan.md 6.5, 8). Records are append-only: under an append-only root a committed file is never modified or deleted; a change is a new file v<N>_<name> with revision N, whose predecessor (v<N-1>_<name>, or <name> for N = 2) exists in the same folder. A JSONL log only grows: the committed content must be a prefix of the new content.",
+  "append_only_roots": [
+    "meta_agent/requests/",
+    "meta_agent/profiles/",
+    "meta_agent/cases/",
+    "meta_agent/knowledge/entries/",
+    "meta_agent/knowledge/sources/",
+    "meta_agent/knowledge/distilled/",
+    "meta_agent/harness/proposals/",
+    "meta_agent/harness/retro/",
+    "meta_agent/harness/library/",
+    "meta_agent/builds/",
+    "meta_agent/inbox/"
+  ],
+  "append_only_jsonl": [
+    "meta_agent/failures.jsonl",
+    "meta_agent/harness/incidents.jsonl",
+    "meta_agent/harness/ledger.jsonl"
+  ],
+  "mutable_names_within_roots": [
+    "index.json",
+    "LINKS.md",
+    "README.md",
+    ".gitkeep",
+    "MATERIAL.json"
+  ],
+  "mutable_names_note": "index.json is generated; LINKS.md takes the card id the Meta-Agent writes back; MATERIAL.json is a queue card whose state moves queued -> registered -> distilled in place (git history keeps the trail; the record of a material is the source record F1 writes under knowledge/sources/).",
+  "mutable_dirs_within_roots": [
+    "meta_agent/inbox/materials/drop/"
+  ],
+  "revision_prefix_regex": "^v([0-9]+)_(.+)$"
+}

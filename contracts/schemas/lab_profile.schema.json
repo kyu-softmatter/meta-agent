@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/lab_profile.schema.json",
+  "title": "lab_profile",
+  "description": "The lab's environment and constraints for agent generation, every field in the three-state vocabulary (plan.md 5.6). Check 15.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "lab_profile"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "lab_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "preferred_engines": {
+      "$ref": "common.schema.json#/$defs/stated"
+    },
+    "preferred_instruments": {
+      "$ref": "common.schema.json#/$defs/stated"
+    },
+    "hardware": {
+      "$ref": "common.schema.json#/$defs/stated_group"
+    },
+    "software_env": {
+      "$ref": "common.schema.json#/$defs/stated_group"
+    },
+    "existing_code": {
+      "$ref": "common.schema.json#/$defs/stated"
+    },
+    "existing_data": {
+      "$ref": "common.schema.json#/$defs/stated"
+    },
+    "validated_workflows": {
+      "$ref": "common.schema.json#/$defs/stated"
+    },
+    "conventions": {
+      "$ref": "common.schema.json#/$defs/stated_group"
+    },
+    "gui_preference": {
+      "$ref": "common.schema.json#/$defs/stated"
+    },
+    "operational_constraints": {
+      "$ref": "common.schema.json#/$defs/stated_group"
+    },
+    "collaboration": {
+      "type": "object",
+      "properties": {
+        "first_agent": {
+          "$ref": "common.schema.json#/$defs/stated"
+        },
+        "existing_agents": {
+          "$ref": "common.schema.json#/$defs/stated"
+        },
+        "bridge": {
+          "$ref": "common.schema.json#/$defs/stated"
+        },
+        "mode": {
+          "$ref": "common.schema.json#/$defs/stated"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "first_agent",
+        "mode"
+      ]
+    },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "working_mode": {
+          "$ref": "common.schema.json#/$defs/stated"
+        },
+        "approval_mode": {
+          "$ref": "common.schema.json#/$defs/stated"
+        },
+        "publication_scope": {
+          "$ref": "common.schema.json#/$defs/stated"
+        },
+        "execution_permission": {
+          "$ref": "common.schema.json#/$defs/stated"
+        },
+        "external_transfer_of_private_code": {
+          "$ref": "common.schema.json#/$defs/stated"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "working_mode",
+        "approval_mode",
+        "publication_scope",
+        "execution_permission",
+        "external_transfer_of_private_code"
+      ]
+    },
+    "held": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/held_item"
+      }
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "lab_id",
+    "preferred_engines",
+    "preferred_instruments",
+    "hardware",
+    "software_env",
+    "conventions",
+    "gui_preference",
+    "operational_constraints",
+    "collaboration",
+    "policy",
+    "held"
+  ],
+  "additionalProperties": false
+}

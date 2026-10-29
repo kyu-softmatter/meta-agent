@@ -1,0 +1,88 @@
+{
+  "card": "parameter_sheet",
+  "schema_version": "0.1",
+  "id": "ps-fixture-001",
+  "rid": "req-fixture-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "tool": "RheoTool",
+  "search_tiers_used": [
+    1,
+    3,
+    4
+  ],
+  "rows": [
+    {
+      "name": "solvent_viscosity",
+      "value": 0.00089,
+      "unit": "Pa.s",
+      "source": "database:nist_webbook_water_298K",
+      "grade": "E2",
+      "value_kind": "measured",
+      "conditions": {
+        "temperature": {
+          "value": 298,
+          "unit": "K"
+        }
+      },
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery",
+      "note": "a fixture; the database record is not real"
+    },
+    {
+      "name": "fluid_density",
+      "value": 998.0,
+      "unit": "kg/m^3",
+      "source": "literature:src_textbook_0000000",
+      "grade": "E2",
+      "value_kind": "literature",
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery"
+    },
+    {
+      "name": "relaxation_time",
+      "value": 0.5,
+      "unit": "s",
+      "source": "literature:src_rheotool_tutorial_0000000",
+      "grade": "E2",
+      "value_kind": "literature",
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery"
+    },
+    {
+      "name": "weissenberg_number",
+      "value": 0.25,
+      "unit": "1",
+      "source": "computed:Wi_eq_lambda_gammadot",
+      "grade": "E4",
+      "value_kind": "computed",
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "reasoning"
+    },
+    {
+      "name": "max_shear_rate_for_instrument",
+      "value": null,
+      "unit": "1/s",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": true,
+      "bench_confirmed": false,
+      "stage": "recommendation",
+      "note": "a safety row: the person writes it at the destination"
+    }
+  ]
+}

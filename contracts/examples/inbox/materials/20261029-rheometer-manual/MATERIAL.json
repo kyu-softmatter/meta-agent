@@ -1,0 +1,64 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261029-002",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "manual",
+  "about": {
+    "name": {
+      "value": "rheometer operating manual (fixture)",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "date": "2026-10-29"
+    },
+    "role": {
+      "value": "instrument",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "date": "2026-10-29"
+    },
+    "methods": {
+      "value": [
+        "rheometry"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "src_mat_20261029_002",
+          "locus": "p.1"
+        }
+      ]
+    }
+  },
+  "location": {
+    "path": "meta_agent/inbox/materials/20261029-rheometer-manual/manual.pdf"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-10-29T18:00:00Z",
+    "content_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "archived": "meta_agent/knowledge/sources/raw/src_mat_20261029_002.pdf"
+  },
+  "added_by": "human",
+  "added_at": "2026-10-29",
+  "entry_path": "drop",
+  "license_note": {
+    "value": "vendor manual; internal lab use; excerpts permitted by the person",
+    "state": "confirmed",
+    "confirmed_by": "human",
+    "date": "2026-10-29"
+  },
+  "may_quote": true,
+  "state": "registered",
+  "state_reason": null,
+  "questions": []
+}

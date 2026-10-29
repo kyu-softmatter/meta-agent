@@ -1,0 +1,129 @@
+{
+  "schema_version": "0.1",
+  "note": "Modelling methods between physical scale and engine (plan.md 5.6). A list, not a ranking (MP12). Scales overlap; method to engine is many-to-many. Seeded in M0 from Conversation 2 without verification.",
+  "scales": [
+    "electronic",
+    "atomistic",
+    "coarse_grained",
+    "mesoscale",
+    "continuum"
+  ],
+  "methods": [
+    {
+      "id": "dft",
+      "name": "density functional theory",
+      "scale": [
+        "electronic"
+      ],
+      "settings_that_matter": [
+        "atomic structure",
+        "electronic state",
+        "basis",
+        "k-points"
+      ],
+      "verified": null
+    },
+    {
+      "id": "md",
+      "name": "molecular dynamics",
+      "scale": [
+        "atomistic",
+        "coarse_grained"
+      ],
+      "settings_that_matter": [
+        "atoms and molecules",
+        "force field",
+        "topology"
+      ],
+      "verified": null
+    },
+    {
+      "id": "bd_cg",
+      "name": "Brownian and coarse-grained dynamics",
+      "scale": [
+        "coarse_grained",
+        "mesoscale"
+      ],
+      "settings_that_matter": [
+        "particles",
+        "potentials",
+        "diffusion",
+        "friction",
+        "boundary conditions"
+      ],
+      "verified": null
+    },
+    {
+      "id": "mesoscale_multiphase",
+      "name": "mesoscale and multiphase methods (LBM, DPD, phase field)",
+      "scale": [
+        "mesoscale"
+      ],
+      "settings_that_matter": [
+        "phase composition",
+        "particle-fluid interaction",
+        "interfaces"
+      ],
+      "verified": null
+    },
+    {
+      "id": "cfd",
+      "name": "computational fluid dynamics",
+      "scale": [
+        "continuum"
+      ],
+      "settings_that_matter": [
+        "geometry",
+        "mesh",
+        "boundary conditions",
+        "solver"
+      ],
+      "verified": null
+    },
+    {
+      "id": "viscoelastic_flow",
+      "name": "viscoelastic constitutive flow (a CFD specialisation)",
+      "scale": [
+        "continuum"
+      ],
+      "settings_that_matter": [
+        "constitutive model",
+        "relaxation time",
+        "stabilisation",
+        "mesh",
+        "time step"
+      ],
+      "verified": null
+    },
+    {
+      "id": "fem",
+      "name": "finite element structural analysis",
+      "scale": [
+        "continuum"
+      ],
+      "settings_that_matter": [
+        "mesh",
+        "constitutive model",
+        "loads",
+        "constraints"
+      ],
+      "verified": null
+    },
+    {
+      "id": "rheometry",
+      "name": "rheometry (measurement, not simulation)",
+      "scale": [
+        "continuum"
+      ],
+      "settings_that_matter": [
+        "geometry",
+        "gap",
+        "temperature",
+        "shear rate or stress protocol",
+        "calibration",
+        "safety limits"
+      ],
+      "verified": null
+    }
+  ]
+}

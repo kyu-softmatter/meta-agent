@@ -1,0 +1,225 @@
+{
+  "card": "lab_profile",
+  "schema_version": "0.1",
+  "id": "lab-fixture-01",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "validated",
+  "supersedes": "lab-fixture-01",
+  "lab_id": "lab-fixture-01",
+  "preferred_engines": {
+    "value": [
+      "hoomd_blue"
+    ],
+    "state": "inferred",
+    "evidence": [
+      {
+        "source_ref": "repo_soft-matter-agents@0000000",
+        "locus": "simulation_agent/"
+      },
+      {
+        "source_ref": "repo_HOOMD_GUI@0000000",
+        "locus": "README.md"
+      }
+    ]
+  },
+  "preferred_instruments": {
+    "value": [
+      "sma_microscope"
+    ],
+    "state": "inferred",
+    "evidence": [
+      {
+        "source_ref": "repo_soft-matter-agents@0000000",
+        "locus": "microscope_agent/"
+      }
+    ]
+  },
+  "hardware": {
+    "gpu": {
+      "value": null,
+      "state": "unknown"
+    },
+    "hpc": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "software_env": {
+    "language": {
+      "value": [
+        "python"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "pyproject.toml"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@0000000",
+          "locus": "pixi.toml"
+        }
+      ]
+    },
+    "package_manager": {
+      "value": [
+        "pixi"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_HOOMD_GUI@0000000",
+          "locus": "pixi.toml"
+        }
+      ]
+    },
+    "os": {
+      "value": [
+        "windows",
+        "macos"
+      ],
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "date": "2026-10-29"
+    }
+  },
+  "existing_code": {
+    "value": [
+      "https://github.com/kyu-softmatter/soft-matter-agents",
+      "https://github.com/kyu-softmatter/HOOMD_GUI"
+    ],
+    "state": "inferred",
+    "evidence": [
+      {
+        "source_ref": "repo_soft-matter-agents@0000000",
+        "locus": "README.md"
+      },
+      {
+        "source_ref": "repo_HOOMD_GUI@0000000",
+        "locus": "README.md"
+      }
+    ]
+  },
+  "conventions": {
+    "unit_system": {
+      "value": "SI, kelvin only",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "contracts/units.json"
+        }
+      ]
+    }
+  },
+  "gui_preference": {
+    "value": "parameter_form",
+    "state": "confirmed",
+    "confirmed_by": "human",
+    "date": "2026-10-29"
+  },
+  "operational_constraints": {
+    "licenses": {
+      "value": [
+        "MIT (soft-matter-agents)"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "LICENSE"
+        }
+      ]
+    },
+    "execution_permission": {
+      "value": "mock and sandbox only; nothing on an instrument",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "date": "2026-10-29"
+    }
+  },
+  "collaboration": {
+    "first_agent": {
+      "value": false,
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "contracts/seats.json"
+        }
+      ]
+    },
+    "existing_agents": {
+      "value": [
+        "microscope_agent",
+        "simulation_agent",
+        "librarian_agent"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "contracts/seats.json"
+        }
+      ]
+    },
+    "bridge": {
+      "value": true,
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "bridge/"
+        }
+      ]
+    },
+    "mode": {
+      "value": "through the bridge, later",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "date": "2026-10-29"
+    }
+  },
+  "policy": {
+    "working_mode": {
+      "value": "card by card",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "date": "2026-10-29"
+    },
+    "approval_mode": {
+      "value": "every bundle hand-over, every held release, every safety value",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "date": "2026-10-29"
+    },
+    "publication_scope": {
+      "value": "this lab",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "date": "2026-10-29"
+    },
+    "execution_permission": {
+      "value": "mock and sandbox only; nothing on an instrument",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "date": "2026-10-29"
+    },
+    "external_transfer_of_private_code": {
+      "value": false,
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "date": "2026-10-29"
+    }
+  },
+  "held": []
+}

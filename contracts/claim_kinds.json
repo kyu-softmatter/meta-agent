@@ -1,0 +1,146 @@
+{
+  "schema_version": "0.1",
+  "note": "Vocabularies the checks read (plan.md 5.0, 5.1 S2, 5.4, 6.3, 6.4). JSON is the record; the plan cites it.",
+  "claim_kinds": {
+    "observed": "seen directly: a source line, a documented statement read, a run record, an instrument reading",
+    "derived": "follows deterministically from observed facts (a computation, a parse); the derivation is the evidence",
+    "inferred": "a reading of partial evidence; a recommendation, never a specification",
+    "unknown": "no evidence; the claim says what would resolve it (requires)"
+  },
+  "claim_bases": {
+    "documentation": "manuals, vendor specifications, API documentation, papers",
+    "source": "source code, configuration files, scripts, repositories read with ordinary tools",
+    "binary": "a binary or package analysed (REA); needs analysis_permission",
+    "runtime": "runtime behaviour captured in a replica environment (REA); needs analysis_permission",
+    "run_record": "logs, result files and run records"
+  },
+  "claim_bases_needing_analysis_permission": [
+    "binary",
+    "runtime"
+  ],
+  "cause_status": {
+    "observed": "the phenomenon was seen; no cause claimed",
+    "suspected": "a cause is proposed without run or commit evidence",
+    "confirmed": "the cause is shown by a run or a commit named in evidence[]"
+  },
+  "setting_states": {
+    "confirmed": "a person checked it or stated it; confirmed_by: human and a date",
+    "inferred": "inferred from code or documents; evidence[] required; a recommendation only",
+    "unknown": "no evidence or not decided; asked, or carried as held"
+  },
+  "value_kinds": {
+    "measured": "a measurement of the thing itself under stated conditions",
+    "correlation": "the output of a published correlation or fitted expression",
+    "computed": "computed from other values by a stated expression",
+    "predicted": "the output of a predictive model (e.g. a predicted structure)",
+    "literature": "a value quoted from a publication without its measurement record",
+    "estimated": "a person's estimate or an assumption with a stated rationale",
+    "model_generated": "a value an LLM produced; E6; enters no card and no store"
+  },
+  "value_kinds_forbidden_in_cards": [
+    "model_generated"
+  ],
+  "grades": {
+    "E1": "measured by this system under these conditions (measured:<run_id>)",
+    "E2": "a calibration with an expiry, a literature or database measurement",
+    "E3": "a vendor specification, an operator reading, a run from another repository",
+    "E4": "computed or a correlation",
+    "E5": "estimated, assumed, predicted, recalled",
+    "E6": "a model's guess; forbidden in cards and stores"
+  },
+  "grades_forbidden_in_cards": [
+    "E6"
+  ],
+  "policy_fields": [
+    "policy.working_mode",
+    "policy.approval_mode",
+    "policy.publication_scope",
+    "policy.execution_permission",
+    "policy.external_transfer_of_private_code",
+    "collaboration.mode",
+    "operational_constraints.execution_permission"
+  ],
+  "policy_fields_note": "Never inferred (MP11). Must be confirmed before a build or an agent_goal references the profile (check 15). A wizard question may target them at any time (check 16).",
+  "error_categories": [
+    "invalid_input",
+    "unsupported_target",
+    "integrity_mismatch",
+    "truncated",
+    "cancelled",
+    "timeout",
+    "resource_constraint",
+    "unavailable",
+    "execution_failure",
+    "refused_by_safety",
+    "permission_required"
+  ],
+  "edit_verdicts": [
+    "helped",
+    "hurt",
+    "no_observed_effect",
+    "confounded"
+  ],
+  "proposal_kinds": [
+    "tighten",
+    "loosen",
+    "reshape",
+    "retire"
+  ],
+  "harness_components": [
+    "system_prompt",
+    "guardrails",
+    "memory",
+    "tool_guidance",
+    "skills",
+    "subagents",
+    "scripts",
+    "hooks"
+  ],
+  "card_states": [
+    "draft",
+    "validated",
+    "approved",
+    "done",
+    "refused",
+    "held",
+    "superseded"
+  ],
+  "material_states": [
+    "queued",
+    "registered",
+    "distilled",
+    "declined",
+    "held"
+  ],
+  "material_kinds": [
+    "manual",
+    "paper",
+    "spec_sheet",
+    "api_doc",
+    "repo",
+    "dataset",
+    "link",
+    "unknown"
+  ],
+  "material_roles": [
+    "engine",
+    "instrument",
+    "platform",
+    "analysis_software",
+    "unknown"
+  ],
+  "entry_paths": [
+    "links_md",
+    "drop",
+    "wizard",
+    "cli",
+    "gui"
+  ],
+  "tool_kinds": [
+    "instrument",
+    "engine",
+    "analysis_software",
+    "none"
+  ],
+  "human_author": "human"
+}

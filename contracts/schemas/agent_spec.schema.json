@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/agent_spec.schema.json",
+  "title": "agent_spec",
+  "description": "The six axes and the synthesis, as references, plus held[] (plan.md 5.1 S4).",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "agent_spec"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "rid": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "thread": {
+      "type": "string"
+    },
+    "axis_refs": {
+      "type": "object",
+      "properties": {
+        "A1": {
+          "type": "string",
+          "minLength": 1
+        },
+        "A2": {
+          "type": "string",
+          "minLength": 1
+        },
+        "A3": {
+          "type": "string",
+          "minLength": 1
+        },
+        "A4": {
+          "type": "string",
+          "minLength": 1
+        },
+        "A5": {
+          "type": "string",
+          "minLength": 1
+        },
+        "A6": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "A6"
+      ]
+    },
+    "synthesis_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "goal_ref": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "tool_profile_ref": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "lab_profile_ref": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "held": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/held_item"
+      }
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "axis_refs",
+    "synthesis_ref",
+    "goal_ref",
+    "tool_profile_ref",
+    "lab_profile_ref",
+    "held"
+  ],
+  "additionalProperties": false
+}

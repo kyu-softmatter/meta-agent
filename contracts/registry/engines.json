@@ -1,0 +1,235 @@
+{
+  "schema_version": "0.1",
+  "note": "Simulation engines (plan.md 5.6). A list, not a ranking (MP12). Every entry is unverified until M2 reads the engine's own documentation and license and writes verified {by, date, evidence}. License strings marked 'to verify' were not read; the others name a LICENSE file read on GitHub on 2026-10-29, which is a license fact and not a verification of the entry.",
+  "engines": [
+    {
+      "id": "quantum_espresso",
+      "name": "Quantum ESPRESSO",
+      "scale": [
+        "electronic"
+      ],
+      "methods": [
+        "dft"
+      ],
+      "interface": "input_file_cli",
+      "language": "Fortran",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null
+    },
+    {
+      "id": "cp2k",
+      "name": "CP2K",
+      "scale": [
+        "electronic",
+        "atomistic"
+      ],
+      "methods": [
+        "dft",
+        "md"
+      ],
+      "interface": "input_file_cli",
+      "language": "Fortran",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null
+    },
+    {
+      "id": "vasp",
+      "name": "VASP",
+      "scale": [
+        "electronic"
+      ],
+      "methods": [
+        "dft"
+      ],
+      "interface": "input_file_cli",
+      "language": "Fortran",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null,
+      "note": "commercial"
+    },
+    {
+      "id": "gromacs",
+      "name": "GROMACS",
+      "scale": [
+        "atomistic",
+        "coarse_grained"
+      ],
+      "methods": [
+        "md"
+      ],
+      "interface": "input_file_cli",
+      "language": "C++",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null
+    },
+    {
+      "id": "lammps",
+      "name": "LAMMPS",
+      "scale": [
+        "atomistic",
+        "coarse_grained",
+        "mesoscale"
+      ],
+      "methods": [
+        "md",
+        "bd_cg",
+        "mesoscale_multiphase"
+      ],
+      "interface": "input_file_cli",
+      "language": "C++",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null
+    },
+    {
+      "id": "openmm",
+      "name": "OpenMM",
+      "scale": [
+        "atomistic"
+      ],
+      "methods": [
+        "md"
+      ],
+      "interface": "python_api",
+      "language": "C++/Python",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null
+    },
+    {
+      "id": "hoomd_blue",
+      "name": "HOOMD-blue",
+      "scale": [
+        "atomistic",
+        "coarse_grained"
+      ],
+      "methods": [
+        "md",
+        "bd_cg"
+      ],
+      "interface": "python_api",
+      "language": "C++/Python",
+      "license": "BSD-3-Clause (LICENSE read on GitHub 2026-10-29; entry unverified)",
+      "material_refs": [],
+      "verified": null,
+      "note": "in use in soft-matter-agents' simulation agent; a candidate for suspension rheology (plan.md 14-20)"
+    },
+    {
+      "id": "openfoam",
+      "name": "OpenFOAM",
+      "scale": [
+        "continuum"
+      ],
+      "methods": [
+        "cfd",
+        "mesoscale_multiphase"
+      ],
+      "interface": "input_file_cli",
+      "language": "C++",
+      "license": "GPL-3.0 per the OpenFOAM Foundation (GitHub shows NOASSERTION; COPYING to read in M2). OpenFOAM is a registered trademark.",
+      "material_refs": [],
+      "verified": null,
+      "note": "called out of process only (plan.md 14-10)"
+    },
+    {
+      "id": "rheotool",
+      "name": "RheoTool",
+      "scale": [
+        "continuum"
+      ],
+      "methods": [
+        "cfd",
+        "viscoelastic_flow"
+      ],
+      "interface": "input_file_cli",
+      "language": "C++",
+      "license": "GPL-3.0 (LICENSE read on GitHub 2026-10-29; entry unverified)",
+      "material_refs": [],
+      "verified": null,
+      "note": "OpenFOAM-based viscoelastic solvers; the proposal's candidate for testbed C (plan.md 14-20); called out of process only"
+    },
+    {
+      "id": "su2",
+      "name": "SU2",
+      "scale": [
+        "continuum"
+      ],
+      "methods": [
+        "cfd"
+      ],
+      "interface": "input_file_cli",
+      "language": "C++",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null
+    },
+    {
+      "id": "fenicsx",
+      "name": "FEniCSx",
+      "scale": [
+        "continuum"
+      ],
+      "methods": [
+        "fem"
+      ],
+      "interface": "python_api",
+      "language": "C++/Python",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null,
+      "note": "general PDEs beyond structural analysis"
+    },
+    {
+      "id": "deal_ii",
+      "name": "deal.II",
+      "scale": [
+        "continuum"
+      ],
+      "methods": [
+        "fem"
+      ],
+      "interface": "sdk",
+      "language": "C++",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null
+    },
+    {
+      "id": "abaqus",
+      "name": "Abaqus",
+      "scale": [
+        "continuum"
+      ],
+      "methods": [
+        "fem"
+      ],
+      "interface": "gui",
+      "language": "proprietary",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null,
+      "note": "commercial"
+    },
+    {
+      "id": "comsol",
+      "name": "COMSOL Multiphysics",
+      "scale": [
+        "continuum"
+      ],
+      "methods": [
+        "fem",
+        "cfd"
+      ],
+      "interface": "gui",
+      "language": "proprietary",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null,
+      "note": "commercial"
+    }
+  ]
+}

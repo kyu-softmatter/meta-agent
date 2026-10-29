@@ -1,0 +1,10 @@
+{
+  "check": 6,
+  "committer_email": "meta-office-20261029-1@seat.invalid",
+  "changes": [
+    {
+      "status": "M",
+      "path": "meta_agent/CLAUDE.md"
+    }
+  ]
+}

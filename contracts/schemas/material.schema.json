@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/material.schema.json",
+  "title": "material",
+  "description": "One manual, paper, spec sheet, repository or link dropped into meta_agent/inbox/materials/ (plan.md 5.0). The person writes only location (and optionally about.name); the intake seat fills the rest as inferred; the person confirms. Check 17.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "material"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "manual",
+        "paper",
+        "spec_sheet",
+        "api_doc",
+        "repo",
+        "dataset",
+        "link",
+        "unknown"
+      ]
+    },
+    "about": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "common.schema.json#/$defs/stated"
+        },
+        "role": {
+          "$ref": "common.schema.json#/$defs/stated"
+        },
+        "methods": {
+          "$ref": "common.schema.json#/$defs/stated"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "role",
+        "methods"
+      ]
+    },
+    "location": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9+.-]*://.+"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "description": "exactly one of url or path (check 17)"
+    },
+    "source_snapshot": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "retrieved_at": {
+              "$ref": "common.schema.json#/$defs/datetime"
+            },
+            "content_hash": {
+              "$ref": "common.schema.json#/$defs/sha256"
+            },
+            "archived": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "added_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "added_at": {
+      "$ref": "common.schema.json#/$defs/date"
+    },
+    "entry_path": {
+      "enum": [
+        "links_md",
+        "drop",
+        "wizard",
+        "cli",
+        "gui"
+      ]
+    },
+    "license_note": {
+      "$ref": "common.schema.json#/$defs/stated"
+    },
+    "may_quote": {
+      "enum": [
+        true,
+        false,
+        "unknown"
+      ]
+    },
+    "state": {
+      "enum": [
+        "queued",
+        "registered",
+        "distilled",
+        "declined",
+        "held"
+      ]
+    },
+    "state_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "kind",
+    "about",
+    "location",
+    "source_snapshot",
+    "added_by",
+    "added_at",
+    "entry_path",
+    "license_note",
+    "may_quote",
+    "state",
+    "state_reason",
+    "questions"
+  ],
+  "additionalProperties": false
+}

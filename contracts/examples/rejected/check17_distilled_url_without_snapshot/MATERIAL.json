@@ -1,0 +1,75 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261029-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "repo",
+  "about": {
+    "name": {
+      "value": "RheoTool",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "src_mat_20261029_001",
+          "locus": "README.md:1"
+        }
+      ]
+    },
+    "role": {
+      "value": "engine",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "src_mat_20261029_001",
+          "locus": "README.md:3-8"
+        }
+      ]
+    },
+    "methods": {
+      "value": [
+        "cfd",
+        "viscoelastic_flow"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "src_mat_20261029_001",
+          "locus": "README.md:3-8"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://github.com/fppimenta/rheoTool"
+  },
+  "source_snapshot": null,
+  "added_by": "human",
+  "added_at": "2026-10-29",
+  "entry_path": "links_md",
+  "license_note": {
+    "value": "GPL-3.0",
+    "state": "inferred",
+    "evidence": [
+      {
+        "source_ref": "src_mat_20261029_001",
+        "locus": "LICENSE"
+      }
+    ]
+  },
+  "may_quote": "unknown",
+  "state": "distilled",
+  "state_reason": null,
+  "questions": [
+    "may_quote: may excerpts of the tutorial dictionaries be stored verbatim?"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-fixture-001-a3",
+  "rid": "req-fixture-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A3",
+  "title": "Knowledge",
+  "content": {
+    "snapshot": [
+      "kb-fixture-001"
+    ],
+    "kb_version": "kb-fixture-0001",
+    "gaps": [
+      "planar Couette analytic solution for Oldroyd-B"
+    ]
+  },
+  "reads": [
+    "tp-fixture-001",
+    "ps-fixture-001",
+    "kb-brief-fixture-001",
+    "lab-fixture-01"
+  ],
+  "held": []
+}

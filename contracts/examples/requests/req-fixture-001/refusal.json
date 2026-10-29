@@ -1,0 +1,24 @@
+{
+  "card": "refusal",
+  "schema_version": "0.1",
+  "id": "ref-fixture-001",
+  "rid": "req-fixture-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "refused",
+  "refuses": "bundling RheoTool's solver sources inside the agent bundle",
+  "reason": "RheoTool is GPL-3.0; the bundle is handed to a destination the Meta-Agent does not control",
+  "counterexample": "a bundle that calls a locally installed RheoTool out of process is accepted",
+  "principle": "14-10",
+  "alternatives": [
+    "tools/run_case calls the installed solver and records its version"
+  ]
+}

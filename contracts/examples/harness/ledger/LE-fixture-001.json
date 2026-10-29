@@ -1,0 +1,34 @@
+{
+  "card": "harness_ledger_entry",
+  "schema_version": "0.1",
+  "id": "LE-fixture-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "proposal_ref": "HP-fixture-001",
+  "commit": null,
+  "configuration": {
+    "model": "fixture",
+    "runner": "mock",
+    "k": 1,
+    "seed": 0
+  },
+  "cost": {
+    "rollouts": 2,
+    "sessions": 1,
+    "tokens_in": 0,
+    "tokens_out": 0,
+    "usd": 0.0,
+    "usd_basis": "provider"
+  },
+  "outcome": "proposed",
+  "reverted_by": null
+}

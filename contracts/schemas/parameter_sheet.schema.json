@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/parameter_sheet.schema.json",
+  "title": "parameter_sheet",
+  "description": "Parameter rows for one request (plan.md 5.3). Rows are numbers: check 2 reads them. A safety-relevant row has value null until a person writes it (check 4).",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "parameter_sheet"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "rid": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "thread": {
+      "type": "string"
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "unit": {
+            "$ref": "common.schema.json#/$defs/unit"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/source"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "grade": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/grade"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "value_kind": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/value_kind"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "uncertainty": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "conditions": {
+            "type": "object"
+          },
+          "valid_range": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "max": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "unit": {
+                "$ref": "common.schema.json#/$defs/unit"
+              }
+            },
+            "additionalProperties": false
+          },
+          "safety_relevant": {
+            "type": "boolean"
+          },
+          "bench_confirmed": {
+            "type": "boolean"
+          },
+          "author": {
+            "type": "string"
+          },
+          "protein_ref": {
+            "type": "string"
+          },
+          "stage": {
+            "enum": [
+              "discovery",
+              "reasoning",
+              "recommendation"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "value",
+          "unit",
+          "source",
+          "grade",
+          "value_kind",
+          "safety_relevant"
+        ]
+      }
+    },
+    "tool": {
+      "type": "string"
+    },
+    "search_tiers_used": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5
+      }
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "rows"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/gui_spec.schema.json",
+  "title": "gui_spec",
+  "description": "Screens and input fields, each mapped to a tool parameter or a capability item; no numeric threshold (plan.md 5.7). Check B10.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "gui_spec"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "rid": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "thread": {
+      "type": "string"
+    },
+    "derived_from": {
+      "type": "object",
+      "properties": {
+        "capabilities_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tool_contract_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "capabilities_ref",
+        "tool_contract_refs"
+      ]
+    },
+    "frame": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "project",
+          "parameters",
+          "validation",
+          "execution",
+          "results"
+        ]
+      }
+    },
+    "domain_editor": {
+      "enum": [
+        "none",
+        "particle",
+        "mesh",
+        "structure",
+        "instrument_panel"
+      ]
+    },
+    "screens": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "maps_to": {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "tool_parameter",
+                        "capability"
+                      ]
+                    },
+                    "ref": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "kind",
+                    "ref"
+                  ]
+                },
+                "validated_by": {
+                  "type": "string",
+                  "description": "the scientific-core validator called"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "field",
+                "maps_to"
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "inputs"
+        ]
+      }
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "origin": {
+            "enum": [
+              "common",
+              "tool_specific"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "origin"
+        ]
+      }
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "derived_from",
+    "frame",
+    "domain_editor",
+    "screens",
+    "components"
+  ],
+  "additionalProperties": false
+}

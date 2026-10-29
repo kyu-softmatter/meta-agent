@@ -1,0 +1,128 @@
+{
+  "schema_version": "0.1",
+  "note": "Grade derivation (plan.md 6.3). A number's source is <source_kind>:<locator>; the grade is looked up by (source_kind, value_kind) and never self-reported. Check 2 compares. Open question 14-12 may revise database and predicted rows; a revision is a new row, and the old row stays with retired_on.",
+  "forbidden_grades": [
+    "E6"
+  ],
+  "forbidden_value_kinds": [
+    "model_generated"
+  ],
+  "unregistered_source_kind": "FAIL",
+  "rules": [
+    {
+      "source_kind": "measured",
+      "value_kinds": [
+        "measured"
+      ],
+      "grade": "E1",
+      "note": "a run of this system; the locator is a run_id"
+    },
+    {
+      "source_kind": "calibration",
+      "value_kinds": [
+        "measured"
+      ],
+      "grade": "E2",
+      "note": "a calibration event; expires is mandatory on the number"
+    },
+    {
+      "source_kind": "literature",
+      "value_kinds": [
+        "measured",
+        "literature"
+      ],
+      "grade": "E2"
+    },
+    {
+      "source_kind": "database",
+      "value_kinds": [
+        "measured"
+      ],
+      "grade": "E2"
+    },
+    {
+      "source_kind": "database",
+      "value_kinds": [
+        "correlation",
+        "computed"
+      ],
+      "grade": "E4"
+    },
+    {
+      "source_kind": "literature",
+      "value_kinds": [
+        "correlation",
+        "computed"
+      ],
+      "grade": "E4"
+    },
+    {
+      "source_kind": "spec",
+      "value_kinds": [
+        "measured",
+        "literature"
+      ],
+      "grade": "E3",
+      "note": "a vendor specification is not this instrument's measurement"
+    },
+    {
+      "source_kind": "prior_run",
+      "value_kinds": [
+        "measured",
+        "computed"
+      ],
+      "grade": "E3",
+      "note": "a run over there is not a run over here"
+    },
+    {
+      "source_kind": "operator_read",
+      "value_kinds": [
+        "measured"
+      ],
+      "grade": "E3"
+    },
+    {
+      "source_kind": "computed",
+      "value_kinds": [
+        "computed"
+      ],
+      "grade": "E4"
+    },
+    {
+      "source_kind": "correlation",
+      "value_kinds": [
+        "correlation"
+      ],
+      "grade": "E4"
+    },
+    {
+      "source_kind": "predicted",
+      "value_kinds": [
+        "predicted"
+      ],
+      "grade": "E5"
+    },
+    {
+      "source_kind": "assumed",
+      "value_kinds": [
+        "estimated"
+      ],
+      "grade": "E5"
+    },
+    {
+      "source_kind": "operator_recall",
+      "value_kinds": [
+        "estimated"
+      ],
+      "grade": "E5"
+    },
+    {
+      "source_kind": "model",
+      "value_kinds": [
+        "model_generated"
+      ],
+      "grade": "E6",
+      "note": "listed so that the lookup names the grade it refuses"
+    }
+  ]
+}

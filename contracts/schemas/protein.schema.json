@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/protein.schema.json",
+  "title": "protein",
+  "description": "A protein entry: composition and structure apart from condition-dependent measurements, which are parameter_sheet rows (plan.md 5.3).",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "protein"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "identifiers": {
+      "type": "object",
+      "properties": {
+        "uniprot": {
+          "type": "string"
+        },
+        "pdb": {
+          "type": "string"
+        },
+        "design_id": {
+          "type": "string"
+        },
+        "other": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    "origin": {
+      "enum": [
+        "natural",
+        "de_novo",
+        "engineered"
+      ]
+    },
+    "composition": {
+      "type": "object",
+      "properties": {
+        "sequence": {
+          "type": "string"
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "molecular_weight_ref": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "structure": {
+      "type": "object",
+      "properties": {
+        "secondary": {
+          "type": "string"
+        },
+        "coordinates_ref": {
+          "type": "string"
+        },
+        "assembly": {
+          "type": "string"
+        },
+        "value_kind": {
+          "enum": [
+            "measured",
+            "predicted"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "function": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string"
+        },
+        "affinity_ref": {
+          "type": "string"
+        },
+        "activity": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "validation_state": {
+      "enum": [
+        "experimental",
+        "computational",
+        "unverified"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "doi": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "dataset_version": {
+            "type": "string"
+          },
+          "conditions": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "identifiers",
+    "origin",
+    "composition",
+    "validation_state",
+    "evidence"
+  ],
+  "additionalProperties": false
+}

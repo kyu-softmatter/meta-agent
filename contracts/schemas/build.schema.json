@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/build.schema.json",
+  "title": "build",
+  "description": "A bundle and its gate verdict and lineage (plan.md 5.1 S5). landed_at is written by a person.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "build"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "rid": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "thread": {
+      "type": "string"
+    },
+    "spec_ref": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "lab_profile_ref": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "template_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "diff_from_template": {
+      "type": "string",
+      "description": "path of the diff or 'none'"
+    },
+    "bundle_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "bundle_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "held": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/held_item"
+      }
+    },
+    "gate_verdict": {
+      "type": "object",
+      "properties": {
+        "interface": {
+          "enum": [
+            "pass",
+            "fail",
+            "not_run",
+            "undecided"
+          ]
+        },
+        "scientific": {
+          "enum": [
+            "pass",
+            "fail",
+            "not_run",
+            "undecided"
+          ]
+        },
+        "validation_report_ref": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "scientific",
+        "validation_report_ref"
+      ]
+    },
+    "lineage": {
+      "type": "object",
+      "properties": {
+        "parent_build": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "candidate_of": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "k": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "parent_build"
+      ]
+    },
+    "landed_at": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "by": {
+              "type": "string",
+              "minLength": 1
+            },
+            "date": {
+              "$ref": "common.schema.json#/$defs/date"
+            },
+            "destination": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "by",
+            "date",
+            "destination"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "spec_ref",
+    "lab_profile_ref",
+    "template_version",
+    "diff_from_template",
+    "bundle_path",
+    "bundle_sha256",
+    "held",
+    "gate_verdict",
+    "lineage",
+    "landed_at"
+  ],
+  "additionalProperties": false
+}

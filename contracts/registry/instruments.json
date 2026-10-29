@@ -1,0 +1,40 @@
+{
+  "schema_version": "0.1",
+  "note": "Experimental platforms beside the engines (plan.md 5.6). Unverified until a material or a person settles each field. The lab's rheometer is the first testbed; its model, control software and API are open question 14-21.",
+  "instruments": [
+    {
+      "id": "lab_rheometer",
+      "name": "the lab's rheometer",
+      "scale": [
+        "continuum"
+      ],
+      "methods": [
+        "rheometry"
+      ],
+      "interface": "to verify",
+      "language": "to verify",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null,
+      "vendor": "TA Instruments per the proposal (to verify)",
+      "model": "to verify",
+      "control_software": "to verify",
+      "analysis_permission": null,
+      "note": "first testbed B (plan.md 10). Safety values (torque, temperature, gap) are written by a person and never appear here."
+    },
+    {
+      "id": "sma_microscope",
+      "name": "the microscope of soft-matter-agents' microscope agent",
+      "scale": [
+        "mesoscale"
+      ],
+      "methods": [],
+      "interface": "to verify",
+      "language": "Python",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null,
+      "note": "testbed A; observed read-only or through the bridge; never built here"
+    }
+  ]
+}

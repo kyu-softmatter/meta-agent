@@ -1,0 +1,44 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-fixture-001-a2",
+  "rid": "req-fixture-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A2",
+  "title": "Interface",
+  "content": {
+    "cards_in": [
+      "agent_goal"
+    ],
+    "cards_out": [
+      "validation_report"
+    ],
+    "callable_tools": [
+      "run_case",
+      "parse_result"
+    ],
+    "gui_fields": [
+      "relaxation_time",
+      "shear_rate"
+    ]
+  },
+  "reads": [
+    "tp-fixture-001",
+    "ps-fixture-001",
+    "kb-brief-fixture-001",
+    "lab-fixture-01"
+  ],
+  "held": [
+    "gui parameter form"
+  ]
+}

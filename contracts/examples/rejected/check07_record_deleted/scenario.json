@@ -1,0 +1,9 @@
+{
+  "check": 7,
+  "changes": [
+    {
+      "status": "D",
+      "path": "meta_agent/cases/case-1.json"
+    }
+  ]
+}

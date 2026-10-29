@@ -1,0 +1,15 @@
+[project]
+name = "meta-agent"
+version = "0.0.0"
+description = "One agent that builds scientific agents and maintains them: cards on disk, a deterministic gate, proposals that land nothing."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = [
+  "jsonschema>=4.16",
+]
+
+[tool.meta-agent]
+# The validator is the only code shared by everything in this repository (plan.md 7, 8).
+validator = "contracts/validate.py"
+hooks_path = "contracts/hooks"

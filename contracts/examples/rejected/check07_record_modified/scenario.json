@@ -1,0 +1,9 @@
+{
+  "check": 7,
+  "changes": [
+    {
+      "status": "M",
+      "path": "meta_agent/requests/req-1/agent_goal.json"
+    }
+  ]
+}

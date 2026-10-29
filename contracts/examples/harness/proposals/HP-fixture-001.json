@@ -1,0 +1,60 @@
+{
+  "card": "harness_proposal",
+  "schema_version": "0.1",
+  "id": "HP-fixture-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "tighten",
+  "class": "guard-covers-one-route-of-two",
+  "answers": [
+    "INC-fixture-001"
+  ],
+  "changes": [
+    {
+      "path": "builds/rheology-agent/0007/.claude/settings.json",
+      "owner": "meta-office-20261029-1",
+      "change": "add the PowerShell twin for each Bash deny line"
+    }
+  ],
+  "edit_rows": [
+    {
+      "component": "guardrails",
+      "change": "PowerShell twins added",
+      "observed": "replay/003: the shell route that bypassed the deny in build 0006 is refused in 0007 at step 4",
+      "verdict": "helped"
+    }
+  ],
+  "proof": {
+    "fixtures": [
+      {
+        "path": "contracts/examples/rejected/checkB2_bash_without_powershell_twin/",
+        "watched_failing_before": null,
+        "watched_passing_after": null
+      }
+    ],
+    "replay": {
+      "range": null,
+      "new_fail": null
+    }
+  },
+  "persons_words": null,
+  "touches_core": [],
+  "needs_threshold": false,
+  "cost": {
+    "rollouts": 2,
+    "sessions": 1,
+    "tokens_in": 0,
+    "tokens_out": 0,
+    "usd": 0.0,
+    "usd_basis": "provider"
+  }
+}

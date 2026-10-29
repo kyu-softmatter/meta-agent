@@ -1,0 +1,10 @@
+{
+  "check": 6,
+  "committer_email": "design-office-20261029-1@seat.invalid",
+  "changes": [
+    {
+      "status": "A",
+      "path": "meta_agent/requests/req-1/tool_profile.json"
+    }
+  ]
+}

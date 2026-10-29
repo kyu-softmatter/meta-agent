@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/error_contract.schema.json",
+  "title": "error_contract",
+  "description": "The structured error a callable tool returns (plan.md 6.4). Categories start from REA's vocabulary plus refused_by_safety and permission_required.",
+  "type": "object",
+  "properties": {
+    "artifact": {
+      "const": "error_contract"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "code": {
+      "type": "string",
+      "minLength": 1
+    },
+    "category": {
+      "enum": [
+        "invalid_input",
+        "unsupported_target",
+        "integrity_mismatch",
+        "truncated",
+        "cancelled",
+        "timeout",
+        "resource_constraint",
+        "unavailable",
+        "execution_failure",
+        "refused_by_safety",
+        "permission_required"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1
+    },
+    "retryable": {
+      "type": "boolean"
+    },
+    "remediation": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "action"
+      ]
+    },
+    "evidence": {}
+  },
+  "required": [
+    "artifact",
+    "schema_version",
+    "code",
+    "category",
+    "message",
+    "retryable",
+    "remediation"
+  ],
+  "additionalProperties": false
+}

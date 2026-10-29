@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/agent_goal.schema.json",
+  "title": "agent_goal",
+  "description": "Why and what for an agent is needed (plan.md 5.1 S1). The model makes no numbers: numbers is empty.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "agent_goal"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      },
+      "maxItems": 0
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "rid": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "thread": {
+      "type": "string"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "science_task": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "instrument",
+            "engine",
+            "analysis_software",
+            "none"
+          ]
+        },
+        "registry_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "material_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "kind",
+        "material_refs"
+      ]
+    },
+    "methods": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "executes": {
+      "enum": [
+        "instrument",
+        "engine",
+        "analysis",
+        "none"
+      ]
+    },
+    "must_not": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "knowledge_needs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "parameter_scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "destination": {
+      "type": "string",
+      "minLength": 1
+    },
+    "priorities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "lab_profile_ref": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "gui_choice": {
+      "enum": [
+        "none",
+        "parameter_form",
+        "visual_editor",
+        "reuse_existing",
+        "undecided"
+      ]
+    },
+    "analysis_permission": {
+      "$ref": "common.schema.json#/$defs/analysis_permission"
+    },
+    "requested_by": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "purpose",
+    "science_task",
+    "tool",
+    "methods",
+    "executes",
+    "must_not",
+    "knowledge_needs",
+    "parameter_scope",
+    "destination",
+    "priorities",
+    "lab_profile_ref",
+    "gui_choice",
+    "analysis_permission",
+    "requested_by"
+  ],
+  "additionalProperties": false
+}

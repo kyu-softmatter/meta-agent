@@ -1,0 +1,37 @@
+{
+  "card": "harness_experience",
+  "schema_version": "0.1",
+  "id": "exp-fixture-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "domain": "cfd_solver",
+  "build_ref": "build-fixture-001",
+  "proposal_ref": "HP-fixture-001",
+  "cue": "a deny rule names one shell on a machine that has two",
+  "lesson": "write the PowerShell twin in the same edit as the Bash line",
+  "evidence": [
+    {
+      "kind": "run",
+      "ref": "replay/003",
+      "contrast": "build 0006 bypassed, build 0007 refused"
+    }
+  ],
+  "confidence": {
+    "level": "medium",
+    "why": "one contrast, one rollout each"
+  },
+  "rests_on_verdicts": [
+    "helped"
+  ],
+  "library_entry": "entered",
+  "diff_ref": "harness/library/cfd_solver/build-fixture-001/diff"
+}

@@ -1,0 +1,403 @@
+{
+  "schema_version": "0.1",
+  "note": "Authoritative unit registry, in soft-matter-agents' shape: multiplicative, si_factor converts to SI base units, dim is the dimension vector (L length, T time, M mass, Th temperature, A angle, N count, I electric current). Offset units (Celsius, Fahrenheit) are not registered: temperature is carried in kelvin and a reading given in Celsius is noted on the number. Rheology units (Pa, Pa.s, 1/s, N.m, rad/s) are here from the start because the first testbed is the rheometer and a rheology engine (plan.md 10). kDa is 1000 g/mol, so its si_factor is 1.0 kg/mol.",
+  "dimensions": {
+    "L": "length",
+    "T": "time",
+    "M": "mass",
+    "Th": "thermodynamic temperature",
+    "A": "plane angle",
+    "N": "amount or count",
+    "I": "electric current"
+  },
+  "units": {
+    "1": {
+      "si_factor": 1.0,
+      "dim": {}
+    },
+    "%": {
+      "si_factor": 0.01,
+      "dim": {}
+    },
+    "ppm": {
+      "si_factor": 1e-06,
+      "dim": {}
+    },
+    "count": {
+      "si_factor": 1.0,
+      "dim": {
+        "N": 1
+      }
+    },
+    "mol": {
+      "si_factor": 1.0,
+      "dim": {
+        "N": 1
+      }
+    },
+    "m": {
+      "si_factor": 1.0,
+      "dim": {
+        "L": 1
+      }
+    },
+    "cm": {
+      "si_factor": 0.01,
+      "dim": {
+        "L": 1
+      }
+    },
+    "mm": {
+      "si_factor": 0.001,
+      "dim": {
+        "L": 1
+      }
+    },
+    "um": {
+      "si_factor": 1e-06,
+      "dim": {
+        "L": 1
+      }
+    },
+    "nm": {
+      "si_factor": 1e-09,
+      "dim": {
+        "L": 1
+      }
+    },
+    "m^2": {
+      "si_factor": 1.0,
+      "dim": {
+        "L": 2
+      }
+    },
+    "m^3": {
+      "si_factor": 1.0,
+      "dim": {
+        "L": 3
+      }
+    },
+    "L": {
+      "si_factor": 0.001,
+      "dim": {
+        "L": 3
+      }
+    },
+    "mL": {
+      "si_factor": 1e-06,
+      "dim": {
+        "L": 3
+      }
+    },
+    "uL": {
+      "si_factor": 1e-09,
+      "dim": {
+        "L": 3
+      }
+    },
+    "s": {
+      "si_factor": 1.0,
+      "dim": {
+        "T": 1
+      }
+    },
+    "ms": {
+      "si_factor": 0.001,
+      "dim": {
+        "T": 1
+      }
+    },
+    "us": {
+      "si_factor": 1e-06,
+      "dim": {
+        "T": 1
+      }
+    },
+    "min": {
+      "si_factor": 60.0,
+      "dim": {
+        "T": 1
+      }
+    },
+    "h": {
+      "si_factor": 3600.0,
+      "dim": {
+        "T": 1
+      }
+    },
+    "kg": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1
+      }
+    },
+    "g": {
+      "si_factor": 0.001,
+      "dim": {
+        "M": 1
+      }
+    },
+    "mg": {
+      "si_factor": 1e-06,
+      "dim": {
+        "M": 1
+      }
+    },
+    "K": {
+      "si_factor": 1.0,
+      "dim": {
+        "Th": 1
+      }
+    },
+    "rad": {
+      "si_factor": 1.0,
+      "dim": {
+        "A": 1
+      }
+    },
+    "deg": {
+      "si_factor": 0.017453292519943295,
+      "dim": {
+        "A": 1
+      }
+    },
+    "Hz": {
+      "si_factor": 1.0,
+      "dim": {
+        "T": -1
+      }
+    },
+    "1/s": {
+      "si_factor": 1.0,
+      "dim": {
+        "T": -1
+      }
+    },
+    "rad/s": {
+      "si_factor": 1.0,
+      "dim": {
+        "A": 1,
+        "T": -1
+      }
+    },
+    "rpm": {
+      "si_factor": 0.10471975511965977,
+      "dim": {
+        "A": 1,
+        "T": -1
+      }
+    },
+    "m/s": {
+      "si_factor": 1.0,
+      "dim": {
+        "L": 1,
+        "T": -1
+      }
+    },
+    "m/s^2": {
+      "si_factor": 1.0,
+      "dim": {
+        "L": 1,
+        "T": -2
+      }
+    },
+    "m^2/s": {
+      "si_factor": 1.0,
+      "dim": {
+        "L": 2,
+        "T": -1
+      }
+    },
+    "kg/m^3": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": -3
+      }
+    },
+    "g/cm^3": {
+      "si_factor": 1000.0,
+      "dim": {
+        "M": 1,
+        "L": -3
+      }
+    },
+    "g/mL": {
+      "si_factor": 1000.0,
+      "dim": {
+        "M": 1,
+        "L": -3
+      }
+    },
+    "mol/L": {
+      "si_factor": 1000.0,
+      "dim": {
+        "N": 1,
+        "L": -3
+      }
+    },
+    "g/mol": {
+      "si_factor": 0.001,
+      "dim": {
+        "M": 1,
+        "N": -1
+      }
+    },
+    "kDa": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "N": -1
+      }
+    },
+    "N": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": 1,
+        "T": -2
+      }
+    },
+    "mN": {
+      "si_factor": 0.001,
+      "dim": {
+        "M": 1,
+        "L": 1,
+        "T": -2
+      }
+    },
+    "N.m": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2
+      }
+    },
+    "mN.m": {
+      "si_factor": 0.001,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2
+      }
+    },
+    "uN.m": {
+      "si_factor": 1e-06,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2
+      }
+    },
+    "Pa": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -2
+      }
+    },
+    "kPa": {
+      "si_factor": 1000.0,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -2
+      }
+    },
+    "MPa": {
+      "si_factor": 1000000.0,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -2
+      }
+    },
+    "Pa.s": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -1
+      }
+    },
+    "mPa.s": {
+      "si_factor": 0.001,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -1
+      }
+    },
+    "N/m": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "T": -2
+      }
+    },
+    "mN/m": {
+      "si_factor": 0.001,
+      "dim": {
+        "M": 1,
+        "T": -2
+      }
+    },
+    "J": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2
+      }
+    },
+    "kJ/mol": {
+      "si_factor": 1000.0,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2,
+        "N": -1
+      }
+    },
+    "kcal/mol": {
+      "si_factor": 4184.0,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2,
+        "N": -1
+      }
+    },
+    "W": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -3
+      }
+    },
+    "V": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -3,
+        "I": -1
+      }
+    },
+    "A": {
+      "si_factor": 1.0,
+      "dim": {
+        "I": 1
+      }
+    },
+    "1/K": {
+      "si_factor": 1.0,
+      "dim": {
+        "Th": -1
+      }
+    }
+  }
+}

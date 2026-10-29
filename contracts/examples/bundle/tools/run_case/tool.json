@@ -1,0 +1,57 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "run_case",
+  "description": "run one prepared RheoTool case out of process and return where the result files are",
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "case_dir": {
+        "type": "string"
+      },
+      "relaxation_time": {
+        "type": "number"
+      },
+      "shear_rate": {
+        "type": "number"
+      }
+    },
+    "required": [
+      "case_dir"
+    ]
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "result_dir": {
+        "type": "string"
+      },
+      "solver_version": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "result_dir",
+      "solver_version"
+    ]
+  },
+  "errors": [
+    "invalid_input",
+    "unavailable",
+    "timeout",
+    "execution_failure",
+    "refused_by_safety"
+  ],
+  "side_effects": "runs_process",
+  "safety_gate": {
+    "required": true,
+    "place": "src/gate.py before the process starts"
+  },
+  "idempotent": false,
+  "timeout_s": 3600,
+  "calls_external": {
+    "program": "rheoTool solver",
+    "license": "GPL-3.0",
+    "bundled": false
+  }
+}

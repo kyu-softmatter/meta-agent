@@ -1,0 +1,289 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/validation_report.schema.json",
+  "title": "validation_report",
+  "description": "Per-task verdicts of the interface gate and the scientific gate (plan.md 5.1 S6). not_run is not a pass; without a tolerance the scientific verdict is undecided. Check 12.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "validation_report"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "rid": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "thread": {
+      "type": "string"
+    },
+    "build_ref": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "environment": {
+      "enum": [
+        "mock",
+        "sandbox",
+        "bench"
+      ]
+    },
+    "interface": {
+      "type": "object",
+      "properties": {
+        "tasks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "verdict": {
+                "$ref": "common.schema.json#/$defs/verdict"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "evidence": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "name",
+              "verdict"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "tasks"
+      ]
+    },
+    "scientific": {
+      "type": "object",
+      "properties": {
+        "tasks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "verdict": {
+                "$ref": "common.schema.json#/$defs/verdict"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "evidence": {
+                "type": "string"
+              },
+              "reference": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "entry",
+                      "source",
+                      "analytic"
+                    ]
+                  },
+                  "ref": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "number_names": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "kind",
+                  "ref"
+                ]
+              },
+              "tolerance": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "number"
+                      },
+                      "unit": {
+                        "$ref": "common.schema.json#/$defs/unit"
+                      },
+                      "chosen_by": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                      "value",
+                      "unit",
+                      "chosen_by"
+                    ]
+                  }
+                ]
+              },
+              "agreement": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "number"
+                      },
+                      "unit": {
+                        "$ref": "common.schema.json#/$defs/unit"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                      "value",
+                      "unit"
+                    ]
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "name",
+              "verdict",
+              "reference",
+              "tolerance"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "tasks"
+      ]
+    },
+    "overall": {
+      "enum": [
+        "pass",
+        "fail",
+        "undecided",
+        "not_run"
+      ]
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "build_ref",
+    "environment",
+    "interface",
+    "scientific",
+    "overall"
+  ],
+  "additionalProperties": false
+}

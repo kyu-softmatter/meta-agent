@@ -1,0 +1,209 @@
+{
+  "card": "discovery_report",
+  "schema_version": "0.1",
+  "id": "dr-fixture-01",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "lab_id": "lab-fixture-01",
+  "inputs": [
+    {
+      "kind": "repo",
+      "ref": "https://github.com/kyu-softmatter/soft-matter-agents",
+      "commit": "0000000",
+      "note": "a fixture: the commit is a placeholder, not a reading"
+    },
+    {
+      "kind": "repo",
+      "ref": "https://github.com/kyu-softmatter/HOOMD_GUI",
+      "commit": "0000000"
+    }
+  ],
+  "fields": {
+    "preferred_engines": {
+      "value": [
+        "hoomd_blue"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "simulation_agent/"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@0000000",
+          "locus": "README.md"
+        }
+      ]
+    },
+    "preferred_instruments": {
+      "value": [
+        "sma_microscope"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "microscope_agent/"
+        }
+      ]
+    },
+    "software_env.language": {
+      "value": [
+        "python"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "pyproject.toml"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@0000000",
+          "locus": "pixi.toml"
+        }
+      ]
+    },
+    "software_env.package_manager": {
+      "value": [
+        "pixi"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_HOOMD_GUI@0000000",
+          "locus": "pixi.toml"
+        }
+      ]
+    },
+    "software_env.os": {
+      "value": null,
+      "state": "unknown"
+    },
+    "hardware.gpu": {
+      "value": null,
+      "state": "unknown"
+    },
+    "hardware.hpc": {
+      "value": null,
+      "state": "unknown"
+    },
+    "conventions.unit_system": {
+      "value": "SI, kelvin only",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "contracts/units.json"
+        }
+      ]
+    },
+    "existing_code": {
+      "value": [
+        "https://github.com/kyu-softmatter/soft-matter-agents",
+        "https://github.com/kyu-softmatter/HOOMD_GUI"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "README.md"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@0000000",
+          "locus": "README.md"
+        }
+      ]
+    },
+    "gui_preference": {
+      "value": "parameter_form",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "date": "2026-10-29"
+    },
+    "operational_constraints.licenses": {
+      "value": [
+        "MIT (soft-matter-agents)"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "LICENSE"
+        }
+      ]
+    },
+    "operational_constraints.execution_permission": {
+      "value": null,
+      "state": "unknown"
+    },
+    "collaboration.first_agent": {
+      "value": false,
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "contracts/seats.json"
+        }
+      ]
+    },
+    "collaboration.existing_agents": {
+      "value": [
+        "microscope_agent",
+        "simulation_agent",
+        "librarian_agent"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "contracts/seats.json"
+        }
+      ]
+    },
+    "collaboration.bridge": {
+      "value": true,
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "bridge/"
+        }
+      ]
+    },
+    "collaboration.mode": {
+      "value": null,
+      "state": "unknown"
+    },
+    "policy.working_mode": {
+      "value": null,
+      "state": "unknown"
+    },
+    "policy.approval_mode": {
+      "value": null,
+      "state": "unknown"
+    },
+    "policy.publication_scope": {
+      "value": null,
+      "state": "unknown"
+    },
+    "policy.execution_permission": {
+      "value": null,
+      "state": "unknown"
+    },
+    "policy.external_transfer_of_private_code": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "materials_seen": [],
+  "scope": "full"
+}

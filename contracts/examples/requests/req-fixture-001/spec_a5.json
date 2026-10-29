@@ -1,0 +1,36 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-fixture-001-a5",
+  "rid": "req-fixture-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A5",
+  "title": "Safety",
+  "content": {
+    "rows": [
+      "max_shear_rate_for_instrument"
+    ],
+    "gate": "src/gate.py reads envelope/safety.json before run_case",
+    "human_only": [
+      "safety values",
+      "hand-over"
+    ]
+  },
+  "reads": [
+    "tp-fixture-001",
+    "ps-fixture-001",
+    "kb-brief-fixture-001",
+    "lab-fixture-01"
+  ],
+  "held": []
+}

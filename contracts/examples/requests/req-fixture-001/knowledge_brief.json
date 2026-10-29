@@ -1,0 +1,39 @@
+{
+  "card": "knowledge_brief",
+  "schema_version": "0.1",
+  "id": "kb-brief-fixture-001",
+  "rid": "req-fixture-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "need": [
+    "Oldroyd-B steady shear viscosity",
+    "planar Couette analytic solution"
+  ],
+  "kb_version": "kb-fixture-0001",
+  "entries": [
+    {
+      "id": "kb-fixture-001",
+      "version": "kb-fixture-0001"
+    }
+  ],
+  "gaps": [
+    {
+      "what": "planar Couette analytic solution for Oldroyd-B",
+      "searched": [
+        "knowledge/entries",
+        "knowledge/distilled"
+      ],
+      "reason": "no entry yet",
+      "requires": "distillation of a textbook source"
+    }
+  ]
+}

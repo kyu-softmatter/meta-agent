@@ -1,0 +1,201 @@
+{
+  "card": "lab_profile",
+  "schema_version": "0.1",
+  "id": "lab-fixture-01",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "lab_id": "lab-fixture-01",
+  "preferred_engines": {
+    "value": [
+      "hoomd_blue"
+    ],
+    "state": "inferred",
+    "evidence": []
+  },
+  "preferred_instruments": {
+    "value": [
+      "sma_microscope"
+    ],
+    "state": "inferred",
+    "evidence": [
+      {
+        "source_ref": "repo_soft-matter-agents@0000000",
+        "locus": "microscope_agent/"
+      }
+    ]
+  },
+  "hardware": {
+    "gpu": {
+      "value": null,
+      "state": "unknown"
+    },
+    "hpc": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "software_env": {
+    "language": {
+      "value": [
+        "python"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "pyproject.toml"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@0000000",
+          "locus": "pixi.toml"
+        }
+      ]
+    },
+    "package_manager": {
+      "value": [
+        "pixi"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_HOOMD_GUI@0000000",
+          "locus": "pixi.toml"
+        }
+      ]
+    },
+    "os": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "existing_code": {
+    "value": [
+      "https://github.com/kyu-softmatter/soft-matter-agents",
+      "https://github.com/kyu-softmatter/HOOMD_GUI"
+    ],
+    "state": "inferred",
+    "evidence": [
+      {
+        "source_ref": "repo_soft-matter-agents@0000000",
+        "locus": "README.md"
+      },
+      {
+        "source_ref": "repo_HOOMD_GUI@0000000",
+        "locus": "README.md"
+      }
+    ]
+  },
+  "conventions": {
+    "unit_system": {
+      "value": "SI, kelvin only",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "contracts/units.json"
+        }
+      ]
+    }
+  },
+  "gui_preference": {
+    "value": null,
+    "state": "unknown"
+  },
+  "operational_constraints": {
+    "licenses": {
+      "value": [
+        "MIT (soft-matter-agents)"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "LICENSE"
+        }
+      ]
+    },
+    "execution_permission": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "collaboration": {
+    "first_agent": {
+      "value": false,
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "contracts/seats.json"
+        }
+      ]
+    },
+    "existing_agents": {
+      "value": [
+        "microscope_agent",
+        "simulation_agent",
+        "librarian_agent"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "contracts/seats.json"
+        }
+      ]
+    },
+    "bridge": {
+      "value": true,
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@0000000",
+          "locus": "bridge/"
+        }
+      ]
+    },
+    "mode": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "policy": {
+    "working_mode": {
+      "value": null,
+      "state": "unknown"
+    },
+    "approval_mode": {
+      "value": null,
+      "state": "unknown"
+    },
+    "publication_scope": {
+      "value": null,
+      "state": "unknown"
+    },
+    "execution_permission": {
+      "value": null,
+      "state": "unknown"
+    },
+    "external_transfer_of_private_code": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "held": [
+    "policy.working_mode",
+    "policy.approval_mode",
+    "policy.publication_scope",
+    "policy.execution_permission",
+    "collaboration.mode",
+    "gui_preference"
+  ]
+}
