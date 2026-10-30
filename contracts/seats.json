@@ -46,7 +46,7 @@
       "role": "meta",
       "machine": "office",
       "seated_by": "registered 2026-10-29 by the design seat on the plan's instruction (15-3); the person seats the session",
-      "status": "registered, not yet seated",
+      "status": "active",
       "owns": [
         "meta_agent"
       ],
@@ -57,7 +57,8 @@
         "meta_agent/CLAUDE.md",
         "meta_agent/.claude/"
       ],
-      "note": "The one agent's working seat: onboarding, intake, requests, knowledge, cases, builds, and its own src/ and tests/. It writes nothing outside meta_agent/ and nothing into the two excluded paths, which are the design seat's."
+      "note": "The one agent's working seat: onboarding, intake, requests, knowledge, cases, builds, and its own src/ and tests/. It writes nothing outside meta_agent/ and nothing into the two excluded paths, which are the design seat's.",
+      "seated": "2026-10-29, by the person: \"Do this task here: M1: onboarding skeleton and echo agent as the meta seat\""
     }
   ]
 }
