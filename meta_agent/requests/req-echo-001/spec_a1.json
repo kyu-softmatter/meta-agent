@@ -1,0 +1,50 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-echo-001-a1",
+  "rid": "req-echo-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T19:30:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A1",
+  "title": "Boundary",
+  "content": {
+    "directory": "meta_agent/builds/echo/0001/bundle",
+    "writes": [
+      "failures.jsonl",
+      "runs/"
+    ],
+    "reads": [
+      "envelope/",
+      "tools/",
+      "validation/",
+      "replay/",
+      "tasks/"
+    ],
+    "forbidden": [
+      "envelope/safety.json",
+      "CLAUDE.md",
+      ".claude/",
+      "any path outside the bundle",
+      "network hosts",
+      "credentials"
+    ],
+    "seat": "echo-<machine>-<YYYYMMDD>-<n>",
+    "tier": 0
+  },
+  "reads": [
+    "goal-echo-001",
+    "tp-echo-001",
+    "kb-brief-echo-001",
+    "lab-fixture-rich"
+  ],
+  "held": []
+}

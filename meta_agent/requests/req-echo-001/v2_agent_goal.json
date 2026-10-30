@@ -1,0 +1,56 @@
+{
+  "card": "agent_goal",
+  "schema_version": "0.1",
+  "id": "goal-echo-001",
+  "rid": "req-echo-001",
+  "revision": 2,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T19:30:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [
+    {
+      "what": "a prior case for tool echo or task \"return the text it is given and report that text's character count\"",
+      "searched": [
+        "meta_agent/cases (absent)"
+      ],
+      "reason": "no case matched by tool or science task",
+      "requires": "a case written after this agent's first failures"
+    }
+  ],
+  "degraded": [],
+  "status": "validated",
+  "purpose": "Build the first, harmless agent: one whose only tool is echo, a command that returns the text it is given together with the text's length, so that the Designer's whole path from intake to a handed-over bundle is exercised on a tool that cannot hurt anything. The agent must run its own regression and validation gates where it lands, without the Meta-Agent, and must refuse nothing it was not told to refuse and invent no number.",
+  "science_task": "return the text it is given and report that text's character count",
+  "tool": {
+    "name": "echo",
+    "kind": "analysis_software",
+    "registry_id": null,
+    "material_refs": []
+  },
+  "methods": [],
+  "executes": "analysis",
+  "must_not": [
+    "touch an instrument",
+    "reach a network host",
+    "invent a number or choose a tolerance",
+    "bundle GPL code"
+  ],
+  "knowledge_needs": [],
+  "parameter_scope": [],
+  "destination": "chosen by the person at hand-over; the bundle stays under meta_agent/builds/ until then",
+  "priorities": [
+    "the whole path runs end to end",
+    "nothing outside the bundle is touched",
+    "small bundle"
+  ],
+  "lab_profile_ref": "lab-fixture-rich",
+  "gui_choice": "none",
+  "analysis_permission": null,
+  "requested_by": "human",
+  "note": "lab_profile_ref names the material-rich fixture lab, whose policy fields the fixture's answers confirmed; this lab's own profile (lab-kyu-softmatter) still waits for the person's answers and cannot be referenced by a goal (check 15).",
+  "supersedes": "goal-echo-001"
+}

@@ -1,0 +1,38 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-echo-001-a6",
+  "rid": "req-echo-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T19:30:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A6",
+  "title": "Validation",
+  "content": {
+    "interface": [
+      "a message comes back unchanged with its length",
+      "an empty message returns the documented error, not a crash",
+      "a missing message returns the documented error"
+    ],
+    "scientific": [
+      "length equals an independent character count of the same text"
+    ],
+    "completion": "every interface task passes and every scientific task passes against a person's tolerance",
+    "refusal": "an error contract or a gate refusal is reported as such; not_run and undecided are not passes"
+  },
+  "reads": [
+    "goal-echo-001",
+    "tp-echo-001",
+    "kb-brief-echo-001",
+    "lab-fixture-rich"
+  ],
+  "held": []
+}

@@ -1,0 +1,97 @@
+{
+  "rid": "req-echo-001",
+  "agent_name": "echo",
+  "requested_by": "human",
+  "request_source": "meta_agent/tasks/002-echo-agent.md, opened by the design seat on plan.md 15-8; the plan and its milestones are the person's",
+  "paragraph": "Build the first, harmless agent: one whose only tool is echo, a command that returns the text it is given together with the text's length, so that the Designer's whole path from intake to a handed-over bundle is exercised on a tool that cannot hurt anything. The agent must run its own regression and validation gates where it lands, without the Meta-Agent, and must refuse nothing it was not told to refuse and invent no number.",
+  "science_task": "return the text it is given and report that text's character count",
+  "tool": {
+    "name": "echo",
+    "kind": "analysis_software",
+    "registry_id": null,
+    "material_refs": [],
+    "documentation": "meta_agent/tests/fixtures/echo/README.md",
+    "language": "any; the bundle carries a mock adapter in Python",
+    "license": "not stated in the documentation",
+    "adapter_source": "tests/fixtures/echo/adapter.py"
+  },
+  "methods": [],
+  "executes": "analysis",
+  "must_not": [
+    "touch an instrument",
+    "reach a network host",
+    "invent a number or choose a tolerance",
+    "bundle GPL code"
+  ],
+  "knowledge_needs": [],
+  "parameter_scope": [],
+  "destination": "chosen by the person at hand-over; the bundle stays under meta_agent/builds/ until then",
+  "priorities": [
+    "the whole path runs end to end",
+    "nothing outside the bundle is touched",
+    "small bundle"
+  ],
+  "lab_profile_ref": "lab-fixture-rich",
+  "gui_choice": "none",
+  "analysis_permission": null,
+  "note": "lab_profile_ref names the material-rich fixture lab, whose policy fields the fixture's answers confirmed; this lab's own profile (lab-kyu-softmatter) still waits for the person's answers and cannot be referenced by a goal (check 15).",
+  "tool_reading": [
+    {"claim": "echo reads one JSON object from standard input and writes one JSON object to standard output", "kind": "observed", "basis": "documentation", "loci": ["## Command"], "capability": "io_format"},
+    {"claim": "the exit status is zero whether echo answers or reports an error; the error is in the output", "kind": "observed", "basis": "documentation", "loci": ["## Command"], "capability": "io_format"},
+    {"claim": "the input is an object with one required string field, message, which must not be empty", "kind": "observed", "basis": "documentation", "loci": ["## Input"], "capability": "parameter"},
+    {"claim": "the output carries message, the same text, and length, the number of characters in message", "kind": "observed", "basis": "documentation", "loci": ["## Output"], "capability": "observable"},
+    {"claim": "a missing, non-string or empty message returns the error ECHO-INPUT-001 of category invalid_input, not retryable", "kind": "observed", "basis": "documentation", "loci": ["## Errors"], "capability": "error_contract"},
+    {"claim": "length equals the character count of message, so it can be checked against an independent count of the same text", "kind": "derived", "basis": "documentation", "loci": ["## Output"], "limitations": "derived from the output table's wording; whether length counts code points or UTF-16 units is not stated", "capability": "observable"},
+    {"claim": "echo has no state and no side effects", "kind": "observed", "basis": "documentation", "loci": ["(preamble)"], "capability": "constraint"},
+    {"claim": "a maximum message length exists", "kind": "unknown", "basis": "documentation", "loci": [], "requires": "a statement in the documentation, or a run in a sandbox with growing messages", "gap_reason": "no_material", "capability": "constraint"},
+    {"claim": "the real echo binary behaves as the mock adapter does", "kind": "unknown", "basis": "runtime", "loci": [], "requires": "analysis_permission from a person and a sandbox run of the real command", "capability": "constraint"}
+  ],
+  "tool_contract": {
+    "artifact": "tool_contract",
+    "schema_version": "0.1",
+    "name": "echo",
+    "description": "return the given text and its character count; the mock adapter in this bundle stands in for the command",
+    "inputs": {
+      "type": "object",
+      "properties": {"message": {"type": "string", "minLength": 1}},
+      "required": ["message"]
+    },
+    "outputs": {
+      "type": "object",
+      "properties": {"message": {"type": "string"}, "length": {"type": "integer", "minimum": 0}},
+      "required": ["message", "length"]
+    },
+    "errors": ["invalid_input"],
+    "side_effects": "none",
+    "safety_gate": {"required": false, "place": "no side effects; src/gate.py is consulted by the runner and finds no gate required"},
+    "idempotent": true,
+    "timeout_s": null
+  },
+  "error_contracts": [
+    {
+      "artifact": "error_contract",
+      "schema_version": "0.1",
+      "code": "ECHO-INPUT-001",
+      "category": "invalid_input",
+      "message": "message is missing, not a string, or empty",
+      "retryable": false,
+      "remediation": {"action": "send a JSON object with a non-empty string field message"}
+    }
+  ],
+  "interface_tasks": [
+    {"id": "if-1", "name": "a message comes back unchanged with its length", "call": {"tool": "echo", "input": {"message": "hello"}}, "expected": {"output": {"message": "hello", "length": 5}}, "expected_verdict": "pass"},
+    {"id": "if-2", "name": "an empty message returns the documented error, not a crash", "call": {"tool": "echo", "input": {"message": ""}}, "expected": {"error": {"category": "invalid_input", "code": "ECHO-INPUT-001"}}, "expected_verdict": "pass"},
+    {"id": "if-3", "name": "a missing message returns the documented error", "call": {"tool": "echo", "input": {}}, "expected": {"error": {"category": "invalid_input", "code": "ECHO-INPUT-001"}}, "expected_verdict": "pass"}
+  ],
+  "scientific_tasks": [
+    {"id": "sci-1", "name": "length equals an independent character count of the same text", "call": {"tool": "echo", "input": {"message": "soft matter"}},
+     "measure": {"output_field": "length", "reference_function": "len_message"},
+     "reference": {"kind": "analytic", "ref": "len(message): the character count of the input text, computed by the runner without the tool", "number_names": ["sci1_reference_count", "sci1_agreement"]},
+     "tolerance": null, "expected_verdict": "undecided",
+     "note": "the tolerance is a person's number; until one is chosen the verdict is undecided"}
+  ],
+  "replay_items": [
+    {"id": "rp-001", "name": "echo returns the text and its length", "call": {"tool": "echo", "input": {"message": "replay"}}, "expected": {"output": {"message": "replay", "length": 6}}, "expected_verdict": "pass"},
+    {"id": "rp-002", "name": "an empty message is refused with ECHO-INPUT-001", "call": {"tool": "echo", "input": {"message": ""}}, "expected": {"error": {"category": "invalid_input", "code": "ECHO-INPUT-001"}}, "expected_verdict": "pass"}
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "card": "agent_spec",
+  "schema_version": "0.1",
+  "id": "spec-echo-001",
+  "rid": "req-echo-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T19:30:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "validated",
+  "axis_refs": {
+    "A1": "spec_a1.json",
+    "A2": "spec_a2.json",
+    "A3": "spec_a3.json",
+    "A4": "spec_a4.json",
+    "A5": "spec_a5.json",
+    "A6": "spec_a6.json"
+  },
+  "synthesis_ref": "synthesis.json",
+  "goal_ref": "goal-echo-001",
+  "tool_profile_ref": "tp-echo-001",
+  "lab_profile_ref": "lab-fixture-rich",
+  "held": []
+}

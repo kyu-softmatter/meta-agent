@@ -1,0 +1,137 @@
+{
+  "card": "tool_profile",
+  "schema_version": "0.1",
+  "id": "tp-echo-001",
+  "rid": "req-echo-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T19:30:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "tool": {
+    "name": "echo",
+    "kind": "analysis_software",
+    "registry_id": null,
+    "source": "meta_agent/tests/fixtures/echo/README.md",
+    "language": "any; the bundle carries a mock adapter in Python",
+    "license": "not stated in the documentation"
+  },
+  "analysis_permission": null,
+  "claims": [
+    {
+      "claim": "echo reads one JSON object from standard input and writes one JSON object to standard output",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_echo",
+          "locus": "## Command"
+        }
+      ],
+      "capability": "io_format"
+    },
+    {
+      "claim": "the exit status is zero whether echo answers or reports an error; the error is in the output",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_echo",
+          "locus": "## Command"
+        }
+      ],
+      "capability": "io_format"
+    },
+    {
+      "claim": "the input is an object with one required string field, message, which must not be empty",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_echo",
+          "locus": "## Input"
+        }
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "the output carries message, the same text, and length, the number of characters in message",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_echo",
+          "locus": "## Output"
+        }
+      ],
+      "capability": "observable"
+    },
+    {
+      "claim": "a missing, non-string or empty message returns the error ECHO-INPUT-001 of category invalid_input, not retryable",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_echo",
+          "locus": "## Errors"
+        }
+      ],
+      "capability": "error_contract"
+    },
+    {
+      "claim": "length equals the character count of message, so it can be checked against an independent count of the same text",
+      "kind": "derived",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_echo",
+          "locus": "## Output"
+        }
+      ],
+      "limitations": "derived from the output table's wording; whether length counts code points or UTF-16 units is not stated",
+      "capability": "observable"
+    },
+    {
+      "claim": "echo has no state and no side effects",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_echo",
+          "locus": "(preamble)"
+        }
+      ],
+      "capability": "constraint"
+    },
+    {
+      "claim": "a maximum message length exists",
+      "kind": "unknown",
+      "basis": "documentation",
+      "evidence": [],
+      "requires": "a statement in the documentation, or a run in a sandbox with growing messages",
+      "capability": "constraint"
+    }
+  ],
+  "parameter_candidates": [
+    "message"
+  ],
+  "gaps": [
+    {
+      "what": "a maximum message length exists",
+      "reason": "no_material",
+      "requires": "a statement in the documentation, or a run in a sandbox with growing messages"
+    },
+    {
+      "what": "the real echo binary behaves as the mock adapter does",
+      "reason": "permission_required",
+      "requires": "analysis_permission confirmed by a person (granted_by, scope, basis, date)"
+    }
+  ],
+  "material_refs": []
+}
