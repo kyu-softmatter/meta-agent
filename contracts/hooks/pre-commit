@@ -1,8 +1,8 @@
 #!/bin/sh
 # contracts/hooks/pre-commit -- the gate at commit time (plan.md 8, 9).
 # Install once per clone:  git config core.hooksPath contracts/hooks
-# Judges every card in the working tree (checks 1, 2, 3, 7, 11, 15, 16, 17) and the index's paths
-# against the committer seat and the append-only roots (checks 6, 7).
+# Judges every card in the working tree (checks 1, 2, 3, 7, 11, 15, 16, 17), every bundle a build card
+# points at (B1-B9), and the index's paths against the committer seat and the append-only roots (checks 6, 7).
 # --no-verify skips this hook. If that ever happens, the commit message says so (SMA 8.3).
 export PYTHONUTF8=1
 cd "$(git rev-parse --show-toplevel)" || exit 1

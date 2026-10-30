@@ -646,7 +646,7 @@ meta-agent/
 
 ## 8. Validation layer (`contracts/validate.py`)
 
-Numbers are fixed and never reused after retirement. M0 implements 1, 2, 3, 6, 7, 11, 15, 16, 17.
+Numbers are fixed and never reused after retirement. M0 implements 1, 2, 3, 6, 7, 11, 15, 16, 17; M1 added B1–B9 (`--bundle PATH`, and every bundle a `build` card outside `contracts/examples/` points at; a template is not a bundle and is not judged by them).
 
 | # | Check | Kind |
 |---|---|---|

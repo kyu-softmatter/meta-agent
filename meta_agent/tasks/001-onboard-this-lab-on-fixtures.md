@@ -1,6 +1,6 @@
 # 001 — Onboard this lab on fixtures
 
-**Status:** open (M1). **Opened:** 2026-10-29 by the design seat on the plan's instruction (plan.md 15-8).
+**Status:** done (M1), 2026-10-29, by `meta-office-20261029-1` in commit `1a0a0be`; read off the committed `onboarding_record` cards: the rich fixture lab was asked 6 questions (the policy fields only) and the empty lab 22 (the bank minus the deferred ones); this lab's own run (`profiles/lab-kyu-softmatter/`) stopped with 7 questions for the person. The validator printed `0 failed, 0 pending`. The research-kind and methods leaves were proposed under `conventions.*` because the lab_profile schema has no such leaves (a schema proposal for the design seat). **Opened:** 2026-10-29 by the design seat on the plan's instruction (plan.md 15-8).
 
 **Seat:** the `meta-…` seat the person assigns.
 

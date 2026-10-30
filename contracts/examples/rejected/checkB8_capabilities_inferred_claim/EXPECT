@@ -1,0 +1,3 @@
+check B8
+
+CAPABILITIES.json lists an inferred claim under observed[]; inferred goes to unverified[], never into a capability.

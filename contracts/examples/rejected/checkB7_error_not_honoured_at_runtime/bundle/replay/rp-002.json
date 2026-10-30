@@ -1,0 +1,16 @@
+{
+  "id": "rp-002",
+  "name": "boom returns an execution_failure error contract",
+  "call": {
+    "tool": "echo",
+    "input": {
+      "message": "boom"
+    }
+  },
+  "expected": {
+    "error": {
+      "category": "execution_failure"
+    }
+  },
+  "expected_verdict": "pass"
+}

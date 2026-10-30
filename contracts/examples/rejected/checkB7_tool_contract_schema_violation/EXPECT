@@ -1,0 +1,3 @@
+check 1, check B7
+
+tools/echo/tool.json lacks idempotent and names no error category: it fails tool_contract (check 1 by the artifact key, B7 in the bundle).

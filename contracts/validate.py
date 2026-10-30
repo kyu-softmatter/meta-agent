@@ -7,8 +7,10 @@ Usage
   python contracts/validate.py --staged                 # pre-commit: adds checks 6 and 7 on the index
   python contracts/validate.py --commit-range A..B      # checks 6 and 7 over commits
   python contracts/validate.py --expect-fail            # every fixture under contracts/examples/rejected/ must be refused
+  python contracts/validate.py --bundle PATH            # the B checks on one built bundle
 
-M0 implements checks 1, 2, 3, 6, 7, 11, 15, 16 and 17. Check numbers are fixed and never reused.
+M0 implements checks 1, 2, 3, 6, 7, 11, 15, 16 and 17; M1 adds B1-B9 on bundles (plan.md 8), run on
+every bundle a build card points at. Check numbers are fixed and never reused.
 Every number printed here is read off this run. The verdict line names the judged tree.
 UNDECIDED and PENDING are not passes: --strict counts PENDING as failure.
 
@@ -70,15 +72,15 @@ class Report:
     def fail(self, check, path, message):
         self.fails.append((check, path, message))
         if not self.quiet:
-            print("FAIL    check %-2d %s: %s" % (check, path, message))
+            print("FAIL    check %-3s %s: %s" % (check, path, message))
 
     def pending(self, check, path, message):
         self.pendings.append((check, path, message))
         if not self.quiet:
-            print("PENDING check %-2d %s: %s" % (check, path, message))
+            print("PENDING check %-3s %s: %s" % (check, path, message))
 
     def failed_checks(self):
-        return sorted({c for c, _, _ in self.fails})
+        return sorted({c for c, _, _ in self.fails}, key=check_key)
 
 
 class Contracts:
@@ -663,6 +665,402 @@ def check17(cards, c, report, tree):
 # ----------------------------------------------------------------------------
 # drivers
 # ----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# B checks: one built bundle (plan.md 5.1 S5, 8). Run with --bundle PATH, on every
+# bundle a build card points at, and on <fixture>/bundle/ under --expect-fail.
+# ----------------------------------------------------------------------------
+B_IMPLEMENTED = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9"]
+BUNDLE_FILES = ["CLAUDE.md", ".claude/settings.json", "CAPABILITIES.json", "envelope/safety.json",
+                "envelope/snapshot.json", "envelope/parameters.json", "failures.jsonl",
+                "src/gate.py", "src/run_tool.py", "src/replay.py", "src/validate_tasks.py"]
+BUNDLE_DIRS = ["tools", "validation/interface", "validation/scientific", "replay", "tasks"]
+SHELL_RE = re.compile(r"^(Bash|PowerShell)\((.*)\)$")
+SCRIPT_RE = re.compile(r"\bsrc/[A-Za-z0-9_./-]+\.py\b")
+VERDICTS = ("pass", "fail", "not_run", "undecided")
+
+
+def check_key(ch):
+    """Sort key over mixed check ids: numeric checks first, then B1, B2, ..."""
+    if isinstance(ch, str):
+        return (1, int(ch[1:]) if ch[1:].isdigit() else 0, ch)
+    return (0, ch, "")
+
+
+def parse_check(tok):
+    tok = tok.strip()
+    if tok.upper().startswith("B"):
+        return "B" + tok[1:]
+    return int(tok)
+
+
+def bundle_json(bundle, relpath, report, check):
+    """Load one JSON file of the bundle; a missing or malformed file is that check's failure (None)."""
+    path = os.path.join(bundle, *relpath.split("/"))
+    if not os.path.exists(path):
+        return None
+    try:
+        return load_json(path)
+    except (ValueError, UnicodeDecodeError) as e:
+        report.fail(check, relpath, "malformed JSON: %s" % e)
+        return None
+
+
+def bundle_items(bundle, sub):
+    """(relpath, item) for every JSON item under a validation or replay folder."""
+    d = os.path.join(bundle, *sub.split("/"))
+    out = []
+    if not os.path.isdir(d):
+        return out
+    for fn in sorted(os.listdir(d)):
+        if fn.endswith(".json"):
+            try:
+                out.append((sub + "/" + fn, load_json(os.path.join(d, fn))))
+            except (ValueError, UnicodeDecodeError):
+                out.append((sub + "/" + fn, None))
+    return out
+
+
+def tool_dirs(bundle):
+    d = os.path.join(bundle, "tools")
+    if not os.path.isdir(d):
+        return []
+    return sorted(n for n in os.listdir(d) if os.path.isdir(os.path.join(d, n)))
+
+
+def checkB1(bundle, label, report):
+    for f in BUNDLE_FILES:
+        if not os.path.isfile(os.path.join(bundle, *f.split("/"))):
+            report.fail("B1", label, "required file %s is missing" % f)
+    for d in BUNDLE_DIRS:
+        if not os.path.isdir(os.path.join(bundle, *d.split("/"))):
+            report.fail("B1", label, "required directory %s/ is missing" % d)
+    tasks = os.path.join(bundle, "tasks")
+    if os.path.isdir(tasks) and not any(n.endswith(".md") for n in os.listdir(tasks)):
+        report.fail("B1", label, "tasks/ holds no task")
+    claude = os.path.join(bundle, "CLAUDE.md")
+    if os.path.isfile(claude) and "{{" in open(claude, encoding="utf-8").read():
+        report.fail("B1", label, "CLAUDE.md still carries a template placeholder")
+
+
+def checkB2(bundle, label, report):
+    settings = bundle_json(bundle, ".claude/settings.json", report, "B2")
+    if settings is None:
+        return
+    perms = settings.get("permissions") or {}
+    for kind in ("deny", "ask"):
+        rules = perms.get(kind) or []
+        if not isinstance(rules, list):
+            report.fail("B2", label, "permissions.%s is not a list" % kind)
+            continue
+        have = set(r for r in rules if isinstance(r, str))
+        for r in sorted(have):
+            m = SHELL_RE.match(r)
+            if not m:
+                continue
+            shell, body = m.groups()
+            twin = "%s(%s)" % ("PowerShell" if shell == "Bash" else "Bash", body)
+            if twin not in have:
+                report.fail("B2", label, "permissions.%s: %s has no %s twin" % (kind, r, twin))
+
+
+def checkB3(bundle, label, report):
+    safety = bundle_json(bundle, "envelope/safety.json", report, "B3")
+    if safety is None:
+        return
+    if not isinstance(safety, dict):
+        report.fail("B3", label, "envelope/safety.json is not an object")
+        return
+    for k, v in safety.items():
+        if v is not None:
+            report.fail("B3", label, "envelope/safety.json: %s is %r, not null" % (k, v))
+
+
+def checkB4(bundle, label, report, knowledge_root):
+    snap = bundle_json(bundle, "envelope/snapshot.json", report, "B4")
+    if snap is None:
+        return
+    kb = snap.get("kb_version")
+    if not (isinstance(kb, str) and kb.strip()):
+        report.fail("B4", label, "envelope/snapshot.json: kb_version is not pinned")
+    entries = snap.get("entries")
+    if not isinstance(entries, list):
+        report.fail("B4", label, "envelope/snapshot.json: entries is not a list")
+        return
+    for i, e in enumerate(entries):
+        if not (isinstance(e, dict) and isinstance(e.get("id"), str)):
+            report.fail("B4", label, "snapshot entries[%d] has no id" % i)
+            continue
+        h = e.get("hash")
+        if not (isinstance(h, str) and re.match(r"^sha256:[0-9a-f]{64}$", h)):
+            report.fail("B4", label, "snapshot entry %s has no sha256 hash" % e["id"])
+            continue
+        candidates = []
+        if isinstance(e.get("path"), str):
+            candidates.append(os.path.join(REPO, *e["path"].split("/")))
+        if knowledge_root:
+            candidates.append(os.path.join(knowledge_root, "entries", e["id"] + ".json"))
+        found = [p for p in candidates if os.path.isfile(p)]
+        if not found:
+            report.fail("B4", label, "snapshot entry %s: no file under knowledge/entries/ (looked at %s)" % (
+                e["id"], [c.replace(os.sep, "/") for c in candidates] or "nothing: no knowledge root"))
+            continue
+        actual = "sha256:" + sha256_of(found[0])
+        if actual != h:
+            report.fail("B4", label, "snapshot entry %s: hash %s does not match %s (%s)" % (
+                e["id"], h[:19] + "...", rel(found[0], REPO), actual[:19] + "..."))
+
+
+def sha256_of(path):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def checkB5(bundle, label, report):
+    tools = set(tool_dirs(bundle))
+    for sub in ("replay", "validation/interface", "validation/scientific"):
+        if not os.path.isdir(os.path.join(bundle, *sub.split("/"))):
+            continue  # B1 reports the missing directory
+        items = bundle_items(bundle, sub)
+        good = 0
+        for relpath, item in items:
+            if item is None:
+                report.fail("B5", relpath, "malformed JSON")
+                continue
+            ev = item.get("expected_verdict")
+            if ev not in VERDICTS:
+                report.fail("B5", relpath, "expected_verdict %r is not one of %s" % (ev, "|".join(VERDICTS)))
+                continue
+            call = item.get("call") or {}
+            if not isinstance(call, dict) or not isinstance(call.get("tool"), str):
+                report.fail("B5", relpath, "item names no call.tool")
+                continue
+            if call["tool"] not in tools:
+                report.fail("B5", relpath, "call.tool %r is not a tool of this bundle" % call["tool"])
+                continue
+            good += 1
+        if good == 0:
+            report.fail("B5", label, "%s/ has no task with an expected verdict" % sub)
+
+
+def checkB6(bundle, label, report):
+    claude = os.path.join(bundle, "CLAUDE.md")
+    snap = bundle_json(bundle, "envelope/snapshot.json", report, "B6")
+    if not os.path.isfile(claude) or snap is None:
+        return
+    available = set()
+    json_numbers(snap, available)
+    text = open(claude, encoding="utf-8").read()
+    for s in STRIP_RES:
+        text = s.sub(" ", text)
+    for m in NUM_RE.finditer(text):
+        try:
+            val = float(m.group(0))
+        except ValueError:
+            continue
+        if val not in available:
+            report.fail("B6", label, "CLAUDE.md: number %s is not in envelope/snapshot.json" % m.group(0))
+
+
+def run_fixture_call(bundle, tool, payload):
+    """Call the bundle's runner the way the agent would, in a fresh isolated interpreter."""
+    env = {k: v for k, v in os.environ.items() if k != "PYTHONPATH"}
+    env.update(PYTHONUTF8="1", PYTHONDONTWRITEBYTECODE="1")
+    try:
+        p = subprocess.run([sys.executable, "-I", os.path.join("src", "run_tool.py"), tool], cwd=bundle, input=json.dumps(payload),
+                           capture_output=True, text=True, encoding="utf-8", errors="replace", env=env, timeout=120)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return None, "the runner did not finish: %s" % e
+    try:
+        return json.loads(p.stdout), None
+    except ValueError:
+        return None, "the runner printed no JSON (exit %s): %s" % (p.returncode, (p.stderr or p.stdout).strip()[-300:])
+
+
+def checkB7(bundle, label, report, c):
+    contracts = {}
+    for name in tool_dirs(bundle):
+        relpath = "tools/%s/tool.json" % name
+        tc = bundle_json(bundle, relpath, report, "B7")
+        if tc is None:
+            report.fail("B7", relpath, "missing or malformed tool contract")
+            continue
+        errors = sorted(c.validator("tool_contract").iter_errors(tc), key=lambda e: list(e.absolute_path))
+        for e in errors[:5]:
+            loc = "$" + "".join("[%r]" % p if isinstance(p, int) else "." + str(p) for p in e.absolute_path)
+            report.fail("B7", relpath, "%s: %s" % (loc, e.message[:200]))
+        if tc.get("name") != name:
+            report.fail("B7", relpath, "name %r differs from the folder tools/%s/" % (tc.get("name"), name))
+        if not os.path.isfile(os.path.join(bundle, "tools", name, "adapter.py")):
+            report.fail("B7", relpath, "tools/%s/adapter.py is missing" % name)
+        contracts[name] = tc
+        errs_dir = os.path.join(bundle, "tools", name, "errors")
+        if os.path.isdir(errs_dir):
+            for fn in sorted(os.listdir(errs_dir)):
+                if not fn.endswith(".json"):
+                    continue
+                er = "tools/%s/errors/%s" % (name, fn)
+                ec = bundle_json(bundle, er, report, "B7")
+                if ec is None:
+                    continue
+                for e in sorted(c.validator("error_contract").iter_errors(ec), key=lambda e: list(e.absolute_path))[:3]:
+                    report.fail("B7", er, "error contract: %s" % e.message[:200])
+                if ec.get("category") not in (tc.get("errors") or []):
+                    report.fail("B7", er, "category %r is not in the tool's errors %s" % (ec.get("category"), tc.get("errors")))
+    # fixture calls: every item that expects an error must get a well-formed error contract of that category
+    for sub in ("replay", "validation/interface"):
+        for relpath, item in bundle_items(bundle, sub):
+            if not isinstance(item, dict):
+                continue
+            want = (item.get("expected") or {}).get("error")
+            call = item.get("call") or {}
+            if not isinstance(want, dict) or call.get("tool") not in contracts:
+                continue
+            out, err = run_fixture_call(bundle, call["tool"], call.get("input"))
+            if err:
+                report.fail("B7", relpath, err)
+                continue
+            if not (isinstance(out, dict) and out.get("artifact") == "error_contract"):
+                report.fail("B7", relpath, "expected an error contract, the runner returned %s" % type(out).__name__)
+                continue
+            schema_errors = list(c.validator("error_contract").iter_errors(out))
+            for e in sorted(schema_errors, key=lambda e: list(e.absolute_path))[:3]:
+                report.fail("B7", relpath, "the returned error does not honour the error contract: %s" % e.message[:200])
+            if want.get("category") and out.get("category") != want["category"]:
+                report.fail("B7", relpath, "expected category %s, the runner returned %s" % (want["category"], out.get("category")))
+            if want.get("code") and out.get("code") != want["code"]:
+                report.fail("B7", relpath, "expected code %s, the runner returned %s" % (want["code"], out.get("code")))
+            if out.get("category") not in (contracts[call["tool"]].get("errors") or []):
+                report.fail("B7", relpath, "returned category %r is not in the tool's errors" % out.get("category"))
+
+
+def checkB8(bundle, label, report):
+    claude_path = os.path.join(bundle, "CLAUDE.md")
+    claude = open(claude_path, encoding="utf-8").read() if os.path.isfile(claude_path) else ""
+    skills = os.path.join(bundle, "skills")
+    if os.path.isdir(skills):
+        for name in sorted(os.listdir(skills)):
+            sdir = os.path.join(skills, name)
+            if not os.path.isdir(sdir):
+                continue
+            skill_md = os.path.join(sdir, "SKILL.md")
+            if not os.path.isfile(skill_md):
+                report.fail("B8", "skills/%s" % name, "no SKILL.md")
+                continue
+            if "`%s`" % name not in claude:
+                report.fail("B8", "skills/%s" % name, "no trigger sentence names `%s` in CLAUDE.md" % name)
+            for script in sorted(set(SCRIPT_RE.findall(open(skill_md, encoding="utf-8").read()))):
+                if not os.path.isfile(os.path.join(bundle, *script.split("/"))):
+                    report.fail("B8", "skills/%s/SKILL.md" % name, "named script %s does not exist" % script)
+    for script in sorted(set(SCRIPT_RE.findall(claude))):
+        if not os.path.isfile(os.path.join(bundle, *script.split("/"))):
+            report.fail("B8", "CLAUDE.md", "named script %s does not exist" % script)
+    settings = bundle_json(bundle, ".claude/settings.json", report, "B8")
+    if isinstance(settings, dict):
+        for event, groups in (settings.get("hooks") or {}).items():
+            for g in groups if isinstance(groups, list) else []:
+                for h in (g.get("hooks") or []) if isinstance(g, dict) else []:
+                    for script in sorted(set(SCRIPT_RE.findall(str(h.get("command", ""))))):
+                        if not os.path.isfile(os.path.join(bundle, *script.split("/"))):
+                            report.fail("B8", ".claude/settings.json", "hook %s names script %s, which does not exist" % (event, script))
+    cap = bundle_json(bundle, "CAPABILITIES.json", report, "B8")
+    if isinstance(cap, dict):
+        if "inferred" in cap:
+            report.fail("B8", "CAPABILITIES.json", "carries an inferred[] list; inferred claims go to unverified[]")
+        for key in ("observed", "derived"):
+            for i, item in enumerate(cap.get(key) or []):
+                if isinstance(item, dict) and item.get("kind") not in (None, key):
+                    report.fail("B8", "CAPABILITIES.json", "%s[%d] has kind %r" % (key, i, item.get("kind")))
+        for key in ("observed", "derived", "unverified", "gaps"):
+            for i, item in enumerate(cap.get(key) or []):
+                if isinstance(item, dict) and item.get("kind") == "inferred":
+                    report.fail("B8", "CAPABILITIES.json", "%s[%d] is an inferred claim" % (key, i))
+
+
+def checkB9(bundle, label, report):
+    runner = os.path.join(bundle, "src", "run_tool.py")
+    runner_text = open(runner, encoding="utf-8").read() if os.path.isfile(runner) else ""
+    for name in tool_dirs(bundle):
+        relpath = "tools/%s/tool.json" % name
+        tc = bundle_json(bundle, relpath, report, "B9")
+        if not isinstance(tc, dict):
+            continue
+        gate = tc.get("safety_gate") if isinstance(tc.get("safety_gate"), dict) else {}
+        relevant = tc.get("side_effects") not in (None, "none") or bool(gate.get("required"))
+        if not relevant:
+            continue
+        if not gate.get("required"):
+            report.fail("B9", relpath, "side effects %r without safety_gate.required true" % tc.get("side_effects"))
+            continue
+        place = gate.get("place")
+        if not (isinstance(place, str) and place.strip()):
+            report.fail("B9", relpath, "safety_gate.place does not name where the deterministic gate runs")
+            continue
+        scripts = SCRIPT_RE.findall(place)
+        if not scripts:
+            report.fail("B9", relpath, "safety_gate.place %r names no src/ script" % place)
+        for script in scripts:
+            if not os.path.isfile(os.path.join(bundle, *script.split("/"))):
+                report.fail("B9", relpath, "safety_gate.place names %s, which does not exist" % script)
+        if "check_before" not in runner_text:
+            report.fail("B9", "src/run_tool.py", "the runner does not consult the gate (no check_before) while %s needs one" % name)
+
+
+def run_bundle_checks(bundle, c, report, checks, knowledge_root, label=None):
+    bundle = os.path.abspath(bundle)
+    label = label or rel(bundle, REPO)
+    if not os.path.isdir(bundle):
+        report.fail("B1", label, "bundle directory does not exist")
+        report.ran.update(ch for ch in checks if isinstance(ch, str))
+        return
+    if "B1" in checks:
+        checkB1(bundle, label, report)
+    if "B2" in checks:
+        checkB2(bundle, label, report)
+    if "B3" in checks:
+        checkB3(bundle, label, report)
+    if "B4" in checks:
+        checkB4(bundle, label, report, knowledge_root)
+    if "B5" in checks:
+        checkB5(bundle, label, report)
+    if "B6" in checks:
+        checkB6(bundle, label, report)
+    if "B7" in checks:
+        checkB7(bundle, label, report, c)
+    if "B8" in checks:
+        checkB8(bundle, label, report)
+    if "B9" in checks:
+        checkB9(bundle, label, report)
+    report.ran.update(ch for ch in checks if isinstance(ch, str))
+
+
+def knowledge_root_for(tree):
+    for base in (tree, REPO):
+        k = os.path.join(base, "meta_agent", "knowledge")
+        if os.path.isdir(k):
+            return k
+    return None
+
+
+def bundles_of(cards, tree):
+    """The bundles the tree's build cards point at: (label, path) per build card outside
+    contracts/examples/, resolved against the judged tree first and the repository second."""
+    out = []
+    for path, data in cards:
+        if data.get("card") != "build" or not isinstance(data.get("bundle_path"), str):
+            continue
+        if rel(path, tree).startswith("contracts/examples/"):
+            continue  # a shape example of the card, not a build; the B fixtures live under rejected/
+        bp = data["bundle_path"]
+        candidates = [os.path.join(tree, *bp.split("/")), os.path.join(REPO, *bp.split("/"))]
+        found = next((p for p in candidates if os.path.isdir(p)), candidates[0])
+        out.append((rel(path, tree) + " -> " + bp, found))
+    return out
+
+
 def run_static(tree, c, report, checks, include_rejected=False):
     cards, md_by_dir = scan(tree, report, include_rejected=include_rejected)
     if 1 in checks:
@@ -681,9 +1079,9 @@ def run_static(tree, c, report, checks, include_rejected=False):
         check16(cards, c, report, tree)
     if 17 in checks:
         check17(cards, c, report, tree)
-    report.ran.update(checks)
+    report.ran.update(ch for ch in checks if isinstance(ch, int))
     card_dirs = {os.path.dirname(p) for p, _ in cards}
-    return len(cards), sum(len(v) for d, v in md_by_dir.items() if d in card_dirs)
+    return len(cards), sum(len(v) for d, v in md_by_dir.items() if d in card_dirs), cards
 
 
 def run_scenario(path, c, report, checks):
@@ -717,9 +1115,13 @@ def expect_fail(c, checks, strict, quiet):
         if not os.path.exists(expect_path):
             print("ACCEPTED %-55s no EXPECT file" % name)
             continue
-        expected = sorted({int(m) for m in re.findall(r"check\s+(\d+)", open(expect_path, encoding="utf-8").read())})
+        expected = sorted({parse_check(m) for m in re.findall(r"check\s+(B?\d+)", open(expect_path, encoding="utf-8").read())}, key=check_key)
         sub = Report(quiet=True)
         run_static(d, c, sub, checks, include_rejected=True)
+        fixture_bundle = os.path.join(d, "bundle")
+        if os.path.isdir(fixture_bundle):
+            kroot = os.path.join(d, "knowledge")
+            run_bundle_checks(fixture_bundle, c, sub, checks, kroot if os.path.isdir(kroot) else None, label=name + "/bundle")
         scenario = os.path.join(d, "scenario.json")
         if os.path.exists(scenario):
             run_scenario(scenario, c, sub, checks)
@@ -738,7 +1140,7 @@ def expect_fail(c, checks, strict, quiet):
                     print("    FAIL check %d %s: %s" % (ch, p, m))
     verdict = "PASS" if (rejected == total and exp_rejected == exp_total and total > 0) else "FAIL"
     print("expect-fail: %d of %d fixtures rejected; %d of %d expected checks rejected; checks run %s" % (
-        rejected, total, exp_rejected, exp_total, sorted(checks)))
+        rejected, total, exp_rejected, exp_total, sorted(checks, key=check_key)))
     print("VERDICT %s mode=expect-fail tree=%s head=%s fixtures=%d rejected=%d expected_checks=%d rejected_checks=%d" % (
         verdict, REJECTED.replace(os.sep, "/"), head_sha(), total, rejected, exp_total, exp_rejected))
     return 0 if verdict == "PASS" else 1
@@ -751,16 +1153,17 @@ def main(argv=None):
     ap.add_argument("--staged", action="store_true", help="also judge the index: checks 6 and 7")
     ap.add_argument("--commit-range", default=None, help="also judge commits A..B: checks 6 and 7")
     ap.add_argument("--expect-fail", action="store_true", help="every fixture in contracts/examples/rejected/ must be refused")
+    ap.add_argument("--bundle", default=None, help="judge one built bundle with the B checks only")
     ap.add_argument("--strict", action="store_true", help="PENDING counts as failure")
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args(argv)
 
-    checks = set(IMPLEMENTED)
+    checks = set(IMPLEMENTED) | set(B_IMPLEMENTED)
     if args.checks:
-        checks = {int(x) for x in args.checks.split(",") if x.strip()}
-        unknown = checks - set(IMPLEMENTED)
+        checks = {parse_check(x) for x in args.checks.split(",") if x.strip()}
+        unknown = checks - set(IMPLEMENTED) - set(B_IMPLEMENTED)
         if unknown:
-            ap.error("checks %s are not implemented in M0 (implemented: %s)" % (sorted(unknown), IMPLEMENTED))
+            ap.error("checks %s are not implemented (implemented: %s and %s)" % (sorted(unknown, key=check_key), IMPLEMENTED, B_IMPLEMENTED))
     c = Contracts()
 
     if args.expect_fail:
@@ -768,7 +1171,20 @@ def main(argv=None):
 
     tree = os.path.abspath(args.tree)
     report = Report(quiet=args.quiet)
-    n_cards, n_md = run_static(tree, c, report, checks)
+    if args.bundle:
+        b_checks = {ch for ch in checks if isinstance(ch, str)}
+        bundle = os.path.abspath(args.bundle)
+        run_bundle_checks(bundle, c, report, b_checks, knowledge_root_for(tree))
+        failed, pending = len(report.fails), len(report.pendings)
+        verdict = "PASS" if failed == 0 else "FAIL"
+        print("1 bundle judged; %d failed, %d pending; checks run %s" % (failed, pending, sorted(b_checks, key=check_key)))
+        print("VERDICT %s mode=bundle tree=%s head=%s bundles=1 failed=%d pending=%d failed_checks=%s" % (
+            verdict, bundle.replace(os.sep, "/"), head_sha(), failed, pending, report.failed_checks()))
+        return 0 if verdict == "PASS" else 1
+    n_cards, n_md, cards = run_static(tree, c, report, checks)
+    bundles = bundles_of(cards, tree)
+    for label, path in bundles:
+        run_bundle_checks(path, c, report, checks, knowledge_root_for(tree), label=label)
     n_changes = n_commits = None
     if args.staged and (6 in checks or 7 in checks):
         n_changes = run_staged(c, report)
@@ -783,10 +1199,10 @@ def main(argv=None):
         extra += " staged_changes=%d" % n_changes
     if n_commits is not None:
         extra += " commits=%d" % n_commits
-    print("%d cards, %d md files judged; %d failed, %d pending; checks run %s" % (
-        n_cards, n_md, failed, pending, sorted(checks)))
-    print("VERDICT %s tree=%s head=%s cards=%d md=%d failed=%d pending=%d failed_checks=%s%s" % (
-        verdict, tree.replace(os.sep, "/"), head_sha(), n_cards, n_md, failed, pending, report.failed_checks(), extra))
+    print("%d cards, %d md files, %d bundle(s) judged; %d failed, %d pending; checks run %s" % (
+        n_cards, n_md, len(bundles), failed, pending, sorted(checks, key=check_key)))
+    print("VERDICT %s tree=%s head=%s cards=%d md=%d bundles=%d failed=%d pending=%d failed_checks=%s%s" % (
+        verdict, tree.replace(os.sep, "/"), head_sha(), n_cards, n_md, len(bundles), failed, pending, report.failed_checks(), extra))
     return 0 if verdict == "PASS" else 1
 
 

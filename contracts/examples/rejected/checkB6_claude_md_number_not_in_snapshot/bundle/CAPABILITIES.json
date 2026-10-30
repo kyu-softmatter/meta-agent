@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1",
+  "agent": "echo",
+  "tool": "echo",
+  "source": "fixture",
+  "observed": [
+    {
+      "claim": "echo returns the given text and its length",
+      "capability": "observable",
+      "evidence": [
+        "## Output"
+      ],
+      "kind": "observed"
+    }
+  ],
+  "derived": [],
+  "unverified": [],
+  "gaps": []
+}

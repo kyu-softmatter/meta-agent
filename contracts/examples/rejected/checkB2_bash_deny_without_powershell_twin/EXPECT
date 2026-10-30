@@ -1,0 +1,3 @@
+check B2
+
+Bash(ssh *) is denied and PowerShell(ssh *) is not: a command deny must name both shells.

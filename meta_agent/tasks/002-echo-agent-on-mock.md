@@ -1,6 +1,6 @@
 # 002 — The echo agent on mock
 
-**Status:** open (M1), after 001. **Opened:** 2026-10-29 by the design seat on the plan's instruction (plan.md 15-8).
+**Status:** done except the person's tolerance (M1), 2026-10-29. The Designer ran S1–S6 as `meta-office-20261029-1` in commit `992b28c`: `templates/agent@21f0dd569975/`, `builds/echo/0001/` with the bundle, the `build` card and `validation_report` `vr-echo-0001`; read off that run: interface gate `pass` on three tasks, replay two items as expected in a fresh interpreter without the Meta-Agent, scientific gate `undecided` because `sci-1` has no tolerance yet. The B checks B1–B9 landed in `../../contracts/validate.py` (`--bundle PATH`, and every bundle a `build` card points at) with eleven rejected fixtures under `../../contracts/examples/rejected/checkB*/`, watched accepted before the checks existed and rejected after. **Open:** the one number only a person chooses — the tolerance of `sci-1` (`length` against an independent count; the run's agreement was zero). When the person names it, it goes into `requests/req-echo-001/intake.json` as `{value, unit, chosen_by: human}` and the Designer writes build `0002`; records are not edited. **Opened:** 2026-10-29 by the design seat on the plan's instruction (plan.md 15-8).
 
 **Seat:** the `meta-…` seat the person assigns.
 

@@ -1,0 +1,3 @@
+check B9
+
+The tool runs a process and its contract requires no gate: a safety-relevant call path needs the place of a deterministic gate (A5).

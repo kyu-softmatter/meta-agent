@@ -1,0 +1,3 @@
+check B7
+
+The replay item rp-002 expects an error; the runner returns an object that calls itself an error_contract but lacks category, message, retryable and remediation.

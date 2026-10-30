@@ -2,7 +2,7 @@
 
 One agent that builds scientific agents and keeps them improving: it reads a lab's environment first (onboarding), designs and validates an agent for a new instrument or simulation engine (Agent Designer), and improves built agents from the knowledge and experience they gather (meta-harness). Everything it hands over is a card on disk, and a deterministic validator judges every card.
 
-**Status: M0 — the contracts exist, nothing runs yet.** Schemas, vocabularies, the registry seeds, the seat registry, the validator with nine checks, an accepted example set and forty rejected fixtures are in `contracts/`. The agent's code starts in M1 (`plan.md` 12).
+**Status: M1 — onboarding and the Agent Designer run on fixtures.** Schemas, vocabularies, the registry seeds, the seat registry, the validator with nine card checks and nine bundle checks (B1–B9), an accepted example set and fifty-one rejected fixtures are in `contracts/`. `meta_agent/src/onboarding/` reads a lab and asks only what is unknown; `meta_agent/src/designer.py` takes a request from intake to a validated bundle under `meta_agent/builds/` (the echo agent is the first, `meta_agent/tasks/002`). Hand-over, safety values and tolerances stay the person's (`plan.md` 12).
 
 ## Read first
 
@@ -17,6 +17,7 @@ One agent that builds scientific agents and keeps them improving: it reads a lab
 python contracts/validate.py                 # judge the repository: 0 failed is the only pass
 python contracts/validate.py --expect-fail   # every fixture in contracts/examples/rejected/ must be refused
 python contracts/validate.py --staged        # what the pre-commit hook runs
+python contracts/validate.py --bundle PATH   # the B checks on one built bundle
 ```
 
 Install the hook once per clone with `git config core.hooksPath contracts/hooks`. Set `PYTHONUTF8=1` on Windows. The validator needs `jsonschema`; without it, it re-executes itself through `uv` when `uv` is present.
