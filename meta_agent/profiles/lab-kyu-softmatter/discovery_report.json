@@ -1,0 +1,361 @@
+{
+  "card": "discovery_report",
+  "schema_version": "0.1",
+  "id": "dr-lab-kyu-softmatter",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T20:30:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "lab_id": "lab-kyu-softmatter",
+  "inputs": [
+    {
+      "kind": "repo",
+      "ref": "https://github.com/kyu-softmatter/soft-matter-agents",
+      "commit": "53746af",
+      "note": "3101 files listed; code and configuration read, nothing executed"
+    },
+    {
+      "kind": "repo",
+      "ref": "https://github.com/kyu-softmatter/HOOMD_GUI",
+      "commit": "785727e",
+      "note": "32 files listed; code and configuration read, nothing executed"
+    }
+  ],
+  "fields": {
+    "existing_code": {
+      "value": [
+        "https://github.com/kyu-softmatter/soft-matter-agents",
+        "https://github.com/kyu-softmatter/HOOMD_GUI"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": ".claude/end-of-turn-commit-check.py"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@785727e",
+          "locus": "python/hoomd_gui_core/__init__.py"
+        }
+      ]
+    },
+    "collaboration.first_agent": {
+      "value": false,
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "contracts/seats.json"
+        }
+      ]
+    },
+    "collaboration.mode": {
+      "value": null,
+      "state": "unknown"
+    },
+    "collaboration.existing_agents": {
+      "value": [
+        "microscope_agent",
+        "simulation_agent",
+        "librarian_agent"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "contracts/seats.json"
+        }
+      ]
+    },
+    "collaboration.bridge": {
+      "value": true,
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "bridge/"
+        }
+      ]
+    },
+    "conventions.research_kind": {
+      "value": [
+        "simulation",
+        "experiment"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "pyproject.toml"
+        },
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "microscope_agent/"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@785727e",
+          "locus": "pixi.toml"
+        }
+      ]
+    },
+    "conventions.methods": {
+      "value": [
+        "md",
+        "bd_cg"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "pyproject.toml"
+        },
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "console/src/sma_console/agents/mock_sim.py"
+        },
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "librarian_agent/src/export_snapshot.py"
+        },
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "simulation_agent/src/abp_backend.py"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@785727e",
+          "locus": "pixi.toml"
+        }
+      ]
+    },
+    "preferred_engines": {
+      "value": [
+        "hoomd_blue"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "pyproject.toml"
+        },
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "console/src/sma_console/agents/simulation.py"
+        },
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "console/tests/agents/test_agents_simulation.py"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@785727e",
+          "locus": "pixi.toml"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@785727e",
+          "locus": "pyproject.toml"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@785727e",
+          "locus": "python/hoomd_gui_runner/__main__.py"
+        }
+      ]
+    },
+    "preferred_instruments": {
+      "value": [
+        "sma_microscope"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "microscope_agent/"
+        }
+      ]
+    },
+    "software_env.language": {
+      "value": [
+        "python",
+        "typescript",
+        "javascript"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "pyproject.toml"
+        },
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "console/web/vite.config.ts"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@785727e",
+          "locus": "pyproject.toml"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@785727e",
+          "locus": "web/scripts/analysis.js"
+        }
+      ]
+    },
+    "software_env.os": {
+      "value": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "pyproject.toml"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@785727e",
+          "locus": "pixi.toml"
+        }
+      ]
+    },
+    "software_env.package_manager": {
+      "value": [
+        "pixi",
+        "uv"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "pyproject.toml"
+        },
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "uv.lock"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@785727e",
+          "locus": "pixi.toml"
+        }
+      ]
+    },
+    "hardware.gpu": {
+      "value": true,
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "microscope_agent/autofocus/scripts/bench_latency.py"
+        },
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "microscope_agent/autofocus/src/dino_autofocus/backbone.py"
+        },
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "microscope_agent/autofocus/tests/synth/test_gpu.py"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@785727e",
+          "locus": "scripts/check_environment.py"
+        }
+      ]
+    },
+    "hardware.hpc": {
+      "value": null,
+      "state": "unknown"
+    },
+    "existing_data": {
+      "value": [
+        "soft-matter-agents:microscope_agent/"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "microscope_agent/autofocus/models/heads/head_k100x_dinov2_vits14_L1.npz"
+        }
+      ]
+    },
+    "validated_workflows": {
+      "value": [
+        "HOOMD_GUI:tests/"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_HOOMD_GUI@785727e",
+          "locus": "tests/"
+        }
+      ]
+    },
+    "operational_constraints.licenses": {
+      "value": [
+        "MIT (soft-matter-agents)"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "LICENSE"
+        }
+      ]
+    },
+    "conventions.unit_system": {
+      "value": "SI, kelvin only",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "contracts/units.json"
+        }
+      ]
+    },
+    "gui_preference": {
+      "value": "parameter_form",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "repo_soft-matter-agents@53746af",
+          "locus": "pyproject.toml"
+        },
+        {
+          "source_ref": "repo_HOOMD_GUI@785727e",
+          "locus": "pixi.toml"
+        }
+      ],
+      "note": "a recommendation from the research kind and methods, not a reading of a preference; a visual editor or reuse of the lab's own GUI are the alternatives"
+    },
+    "policy.working_mode": {
+      "value": null,
+      "state": "unknown"
+    },
+    "policy.approval_mode": {
+      "value": null,
+      "state": "unknown"
+    },
+    "policy.publication_scope": {
+      "value": null,
+      "state": "unknown"
+    },
+    "policy.execution_permission": {
+      "value": null,
+      "state": "unknown"
+    },
+    "policy.external_transfer_of_private_code": {
+      "value": null,
+      "state": "unknown"
+    },
+    "operational_constraints.execution_permission": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "materials_seen": [],
+  "scope": "full",
+  "note": "Step zero over 2 input(s): 17 field(s) inferred with evidence, 8 unknown."
+}

@@ -1,0 +1,299 @@
+{
+  "card": "discovery_report",
+  "schema_version": "0.1",
+  "id": "dr-lab-fixture-rich",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T20:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "lab_id": "lab-fixture-rich",
+  "inputs": [
+    {
+      "kind": "folder",
+      "ref": "D:/codes/github/meta-agent/meta_agent/tests/fixtures/labs/rich",
+      "note": "13 files listed; code and configuration read, nothing executed"
+    },
+    {
+      "kind": "material",
+      "ref": "https://hoomd-blue.readthedocs.io/"
+    }
+  ],
+  "fields": {
+    "existing_code": {
+      "value": [
+        "D:/codes/github/meta-agent/meta_agent/tests/fixtures/labs/rich"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "scripts/run_hoomd.py"
+        }
+      ]
+    },
+    "collaboration.first_agent": {
+      "value": false,
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "contracts/seats.json"
+        }
+      ]
+    },
+    "collaboration.mode": {
+      "value": null,
+      "state": "unknown"
+    },
+    "collaboration.existing_agents": {
+      "value": [
+        "microscope_agent",
+        "simulation_agent"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "contracts/seats.json"
+        }
+      ]
+    },
+    "collaboration.bridge": {
+      "value": true,
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "bridge/"
+        }
+      ]
+    },
+    "conventions.research_kind": {
+      "value": [
+        "simulation",
+        "experiment"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "pixi.toml"
+        },
+        {
+          "source_ref": "folder_rich",
+          "locus": "microscope_agent/"
+        }
+      ]
+    },
+    "conventions.methods": {
+      "value": [
+        "md",
+        "bd_cg"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "pixi.toml"
+        },
+        {
+          "source_ref": "folder_rich",
+          "locus": "scripts/run_hoomd.py"
+        }
+      ]
+    },
+    "preferred_engines": {
+      "value": [
+        "hoomd_blue"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "pixi.toml"
+        },
+        {
+          "source_ref": "folder_rich",
+          "locus": "scripts/run_hoomd.py"
+        },
+        {
+          "source_ref": "folder_rich",
+          "locus": "inbox/materials/LINKS.md",
+          "note": "https://hoomd-blue.readthedocs.io/"
+        }
+      ]
+    },
+    "preferred_instruments": {
+      "value": [
+        "sma_microscope"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "microscope_agent/"
+        }
+      ]
+    },
+    "software_env.language": {
+      "value": [
+        "python"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "pyproject.toml"
+        }
+      ]
+    },
+    "software_env.os": {
+      "value": [
+        "windows",
+        "macos",
+        "linux"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "pixi.toml"
+        },
+        {
+          "source_ref": "folder_rich",
+          "locus": "scripts/submit.slurm",
+          "note": "a batch scheduler implies a Linux cluster"
+        }
+      ]
+    },
+    "software_env.package_manager": {
+      "value": [
+        "pixi"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "pixi.toml"
+        }
+      ]
+    },
+    "hardware.gpu": {
+      "value": true,
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "scripts/run_hoomd.py"
+        },
+        {
+          "source_ref": "folder_rich",
+          "locus": "scripts/submit.slurm"
+        }
+      ]
+    },
+    "hardware.hpc": {
+      "value": "slurm",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "scripts/submit.slurm"
+        }
+      ]
+    },
+    "existing_data": {
+      "value": [
+        "rich:data/"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "data/"
+        }
+      ]
+    },
+    "validated_workflows": {
+      "value": [
+        "rich:replay/"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "replay/"
+        }
+      ]
+    },
+    "operational_constraints.licenses": {
+      "value": [
+        "MIT (rich)"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "LICENSE"
+        }
+      ]
+    },
+    "conventions.unit_system": {
+      "value": "SI, kelvin only",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "contracts/units.json"
+        }
+      ]
+    },
+    "gui_preference": {
+      "value": "parameter_form",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "folder_rich",
+          "locus": "pixi.toml"
+        }
+      ],
+      "note": "a recommendation from the research kind and methods, not a reading of a preference; a visual editor or reuse of the lab's own GUI are the alternatives"
+    },
+    "policy.working_mode": {
+      "value": null,
+      "state": "unknown"
+    },
+    "policy.approval_mode": {
+      "value": null,
+      "state": "unknown"
+    },
+    "policy.publication_scope": {
+      "value": null,
+      "state": "unknown"
+    },
+    "policy.execution_permission": {
+      "value": null,
+      "state": "unknown"
+    },
+    "policy.external_transfer_of_private_code": {
+      "value": null,
+      "state": "unknown"
+    },
+    "operational_constraints.execution_permission": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "materials_seen": [
+    "https://hoomd-blue.readthedocs.io/"
+  ],
+  "scope": "full",
+  "note": "Step zero over 1 input(s): 18 field(s) inferred with evidence, 7 unknown."
+}

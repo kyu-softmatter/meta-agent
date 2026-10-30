@@ -1,0 +1,1 @@
+{"schema_version": "0.1", "note": "a fixture unit registry: SI, kelvin only", "units": {"m": {"si_factor": 1.0, "dim": {"L": 1}}, "K": {"si_factor": 1.0, "dim": {"Th": 1}}}}

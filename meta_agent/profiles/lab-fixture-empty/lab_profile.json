@@ -1,0 +1,157 @@
+{
+  "card": "lab_profile",
+  "schema_version": "0.1",
+  "id": "lab-fixture-empty",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T20:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "lab_id": "lab-fixture-empty",
+  "preferred_engines": {
+    "value": null,
+    "state": "unknown"
+  },
+  "preferred_instruments": {
+    "value": null,
+    "state": "unknown"
+  },
+  "existing_code": {
+    "value": null,
+    "state": "unknown"
+  },
+  "existing_data": {
+    "value": null,
+    "state": "unknown"
+  },
+  "validated_workflows": {
+    "value": null,
+    "state": "unknown"
+  },
+  "gui_preference": {
+    "value": null,
+    "state": "unknown"
+  },
+  "hardware": {
+    "gpu": {
+      "value": null,
+      "state": "unknown"
+    },
+    "hpc": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "software_env": {
+    "language": {
+      "value": null,
+      "state": "unknown"
+    },
+    "os": {
+      "value": null,
+      "state": "unknown"
+    },
+    "package_manager": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "conventions": {
+    "unit_system": {
+      "value": null,
+      "state": "unknown"
+    },
+    "research_kind": {
+      "value": null,
+      "state": "unknown"
+    },
+    "methods": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "operational_constraints": {
+    "licenses": {
+      "value": null,
+      "state": "unknown"
+    },
+    "execution_permission": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "collaboration": {
+    "first_agent": {
+      "value": null,
+      "state": "unknown"
+    },
+    "existing_agents": {
+      "value": null,
+      "state": "unknown"
+    },
+    "bridge": {
+      "value": null,
+      "state": "unknown"
+    },
+    "mode": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "policy": {
+    "working_mode": {
+      "value": null,
+      "state": "unknown"
+    },
+    "approval_mode": {
+      "value": null,
+      "state": "unknown"
+    },
+    "publication_scope": {
+      "value": null,
+      "state": "unknown"
+    },
+    "execution_permission": {
+      "value": null,
+      "state": "unknown"
+    },
+    "external_transfer_of_private_code": {
+      "value": null,
+      "state": "unknown"
+    }
+  },
+  "held": [
+    "existing_code",
+    "collaboration.first_agent",
+    "collaboration.mode",
+    "collaboration.existing_agents",
+    "collaboration.bridge",
+    "conventions.research_kind",
+    "conventions.methods",
+    "preferred_engines",
+    "preferred_instruments",
+    "software_env.language",
+    "software_env.os",
+    "software_env.package_manager",
+    "hardware.gpu",
+    "hardware.hpc",
+    "existing_data",
+    "validated_workflows",
+    "operational_constraints.licenses",
+    "conventions.unit_system",
+    "gui_preference",
+    "policy.working_mode",
+    "policy.approval_mode",
+    "policy.publication_scope",
+    "policy.execution_permission",
+    "policy.external_transfer_of_private_code",
+    "operational_constraints.execution_permission"
+  ],
+  "note": "Step two proposal: inferred values are recommendations with evidence; unknown values are held until a person answers. Nothing here is confirmed."
+}

@@ -1,0 +1,177 @@
+{
+  "card": "onboarding_record",
+  "schema_version": "0.1",
+  "id": "ob-lab-kyu-softmatter",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T20:30:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "lab_id": "lab-kyu-softmatter",
+  "discovery_ref": "dr-lab-kyu-softmatter",
+  "questions": [
+    {
+      "field": "collaboration.mode",
+      "group": 2,
+      "question": "Should the new agent be configured to collaborate with existing agents (a bridge plan), work alone, or decide later?",
+      "state_at_ask": "policy",
+      "answer": null,
+      "answered_by": null,
+      "asked_at": "2026-10-29T20:30:00Z"
+    },
+    {
+      "field": "hardware.hpc",
+      "group": 5,
+      "question": "Is there an HPC cluster or a scheduler (SLURM, PBS, other)?",
+      "state_at_ask": "unknown",
+      "answer": null,
+      "answered_by": null,
+      "asked_at": "2026-10-29T20:30:00Z"
+    },
+    {
+      "field": "policy.working_mode",
+      "group": 8,
+      "question": "How does the lab want to work with the Meta-Agent: card by card with review, or in batches?",
+      "state_at_ask": "policy",
+      "answer": null,
+      "answered_by": null,
+      "asked_at": "2026-10-29T20:30:00Z"
+    },
+    {
+      "field": "policy.approval_mode",
+      "group": 8,
+      "question": "Which actions need a person's approval before they run?",
+      "state_at_ask": "policy",
+      "answer": null,
+      "answered_by": null,
+      "asked_at": "2026-10-29T20:30:00Z"
+    },
+    {
+      "field": "policy.publication_scope",
+      "group": 8,
+      "question": "Who may see the agents and their results: this lab, collaborators, or the public?",
+      "state_at_ask": "policy",
+      "answer": null,
+      "answered_by": null,
+      "asked_at": "2026-10-29T20:30:00Z"
+    },
+    {
+      "field": "policy.execution_permission",
+      "group": 8,
+      "question": "May a built agent run anything on its own, and if so what: mock, sandbox, an engine, an instrument?",
+      "state_at_ask": "policy",
+      "answer": null,
+      "answered_by": null,
+      "asked_at": "2026-10-29T20:30:00Z"
+    },
+    {
+      "field": "policy.external_transfer_of_private_code",
+      "group": 8,
+      "question": "May private code leave the lab's computers, for example to an analysis service?",
+      "state_at_ask": "policy",
+      "answer": null,
+      "answered_by": null,
+      "asked_at": "2026-10-29T20:30:00Z"
+    }
+  ],
+  "skipped": [
+    {
+      "field": "existing_code",
+      "reason": "inferred from .claude/end-of-turn-commit-check.py, python/hoomd_gui_core/__init__.py; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "collaboration.first_agent",
+      "reason": "inferred from contracts/seats.json; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "collaboration.existing_agents",
+      "reason": "inferred from contracts/seats.json; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "collaboration.bridge",
+      "reason": "inferred from bridge/; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "conventions.research_kind",
+      "reason": "inferred from microscope_agent/, pixi.toml, pyproject.toml; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "conventions.methods",
+      "reason": "inferred from console/src/sma_console/agents/mock_sim.py, librarian_agent/src/export_snapshot.py, pixi.toml, pyproject.toml, simulation_agent/src/abp_backend.py; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "preferred_engines",
+      "reason": "inferred from console/src/sma_console/agents/simulation.py, console/tests/agents/test_agents_simulation.py, pixi.toml, pyproject.toml, python/hoomd_gui_runner/__main__.py; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "preferred_instruments",
+      "reason": "inferred from microscope_agent/; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "software_env.language",
+      "reason": "inferred from console/web/vite.config.ts, pyproject.toml, web/scripts/analysis.js; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "software_env.os",
+      "reason": "inferred from pixi.toml, pyproject.toml; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "software_env.package_manager",
+      "reason": "inferred from pixi.toml, pyproject.toml, uv.lock; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "hardware.gpu",
+      "reason": "inferred from microscope_agent/autofocus/scripts/bench_latency.py, microscope_agent/autofocus/src/dino_autofocus/backbone.py, microscope_agent/autofocus/tests/synth/test_gpu.py, scripts/check_environment.py; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "existing_data",
+      "reason": "inferred from microscope_agent/autofocus/models/heads/head_k100x_dinov2_vits14_L1.npz; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "validated_workflows",
+      "reason": "inferred from tests/; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "operational_constraints.licenses",
+      "reason": "inferred from LICENSE; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "conventions.unit_system",
+      "reason": "inferred from contracts/units.json; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "gui_preference",
+      "reason": "inferred from pixi.toml, pyproject.toml; shown as a recommendation in Step 2",
+      "basis": "inferred"
+    },
+    {
+      "field": "operational_constraints.execution_permission",
+      "reason": "filled from the answer to policy.execution_permission",
+      "basis": "condition"
+    }
+  ],
+  "held": [],
+  "note": "Step one: 7 question(s), 6 of them policy, 1 unknown; 18 skipped; 0 held. Answers are empty until a person writes them."
+}

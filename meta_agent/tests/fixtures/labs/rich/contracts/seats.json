@@ -1,0 +1,8 @@
+{
+  "schema_version": "0.1",
+  "note": "a fixture in the shape of soft-matter-agents' seat registry",
+  "seats": [
+    {"seat": "microscope-office-20261001-1", "committer_email": "microscope-office-20261001-1@seat.invalid", "owns": ["microscope_agent"], "paths": ["microscope_agent/"]},
+    {"seat": "simulation-office-20261001-1", "committer_email": "simulation-office-20261001-1@seat.invalid", "owns": ["simulation_agent"], "paths": ["simulation_agent/"]}
+  ]
+}

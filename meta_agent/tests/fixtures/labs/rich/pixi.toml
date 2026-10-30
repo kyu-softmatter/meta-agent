@@ -1,0 +1,8 @@
+[project]
+name = "rich-lab"
+channels = ["conda-forge"]
+platforms = ["win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.12.*"
+hoomd = "4.*"

@@ -1,0 +1,13 @@
+{
+  "note": "The person's answers for the rich fixture lab, used by the tests to exercise Step 3. A real run reads the person's answers from a file like this one that the person wrote.",
+  "answered_by": "human",
+  "date": "2026-10-29",
+  "answers": {
+    "policy.working_mode": "card by card, with review",
+    "policy.approval_mode": "every bundle hand-over, every held release, every safety value",
+    "policy.publication_scope": "this lab",
+    "policy.execution_permission": "mock and sandbox only; nothing on an instrument",
+    "policy.external_transfer_of_private_code": false,
+    "collaboration.mode": "through the bridge, later"
+  }
+}
