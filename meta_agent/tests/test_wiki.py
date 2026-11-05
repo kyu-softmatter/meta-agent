@@ -3,6 +3,7 @@
 Run from the repository root:
     PYTHONUTF8=1 python -m unittest discover -s meta_agent/tests -t .
 """
+import json
 import os
 import re
 import shutil
@@ -107,6 +108,49 @@ class WikiView(unittest.TestCase):
                                env=dict(os.environ, PYTHONUTF8="1"))
             self.assertNotEqual(p.returncode, 0, p.stdout)
             self.assertIn("number 0.5 is in no field of the record this page renders", p.stdout)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def graph_data(self, folder=None):
+        with open(os.path.join(folder or self.out, "graph.html"), encoding="utf-8") as f:
+            text = f.read()
+        m = re.search(r'<script id="wiki-graph" type="application/json">(.*?)</script>', text, re.S)
+        self.assertIsNotNone(m)
+        return text, json.loads(m.group(1))
+
+    def test_the_map_holds_the_pages_nodes_and_edges(self):
+        text, data = self.graph_data()
+        nodes, edges = wiki.build_graph(self.tmp)
+        self.assertEqual([n["id"] for n in data["nodes"]], sorted(nodes))
+        self.assertEqual(set(n["id"] for n in data["nodes"]), self.pages - {"index"})
+        self.assertEqual([tuple(e) for e in data["edges"]], edges)
+        self.assertEqual(self.result["graph_nodes"], len(nodes))
+        self.assertEqual(self.result["graph_edges"], len(edges))
+        goal = [n for n in data["nodes"] if n["id"] == "goal-echo-001@r2"][0]
+        self.assertEqual((goal["card"], goal["status"]), ("agent_goal", "validated"))
+
+    def test_the_map_loads_nothing_from_outside(self):
+        text, _ = self.graph_data()
+        self.assertNotRegex(text, r"""(?i)\b(?:src|href)\s*=\s*["']?\s*(?:[a-z][a-z0-9+.-]*:)?//""")
+        self.assertNotIn("http", text.split('<script id="wiki-graph"')[0])
+        self.assertNotIn("__WIKI_GRAPH_DATA__", text)
+
+    def test_check_18_refuses_a_map_with_an_edge_no_page_holds(self):
+        tmp = scratch_tree()
+        try:
+            out = os.path.join(tmp, "meta_agent", "wiki")
+            wiki.render(tmp)
+            text, data = self.graph_data(out)
+            data["edges"].append(["tp-echo-001@r1", "supports", "lab-kyu-softmatter@r1"])
+            blob = json.dumps(data, sort_keys=True, separators=(",", ":"))
+            text = re.sub(r'(<script id="wiki-graph" type="application/json">)(.*?)(</script>)',
+                          lambda m: m.group(1) + blob + m.group(3), text, flags=re.S)
+            with open(os.path.join(out, "graph.html"), "w", encoding="utf-8", newline="\n") as f:
+                f.write(text)
+            p = subprocess.run([sys.executable, VALIDATE, tmp, "--checks", "18"], capture_output=True, text=True,
+                               env=dict(os.environ, PYTHONUTF8="1"))
+            self.assertNotEqual(p.returncode, 0, p.stdout)
+            self.assertIn("edge tp-echo-001@r1 supports lab-kyu-softmatter@r1 is on neither page", p.stdout)
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
 

@@ -7,6 +7,9 @@ order, so two runs on one tree write identical bytes. A page carries no number, 
 card holds (check 18): numbers appear as the card's own values, card text appears verbatim in code spans,
 and a link exists only where one record names the other.
 
+Besides the pages and ontology.owl it writes graph.html (tasks/004): the same nodes and edges drawn in 3D
+with a 2D switch by graph_template.html, which loads nothing from outside.
+
 Nodes: one per card revision, named <id>@r<revision>, and one per artifact a card points at (a template
 directory, a bundle directory). Edges: a revision N > 1 supersedes N - 1; any string field whose value is
 another card's id (linked to that card's latest revision), the file name of a card in the same folder, a
@@ -28,6 +31,8 @@ SUMMARY_KEYS = ("purpose", "science_task", "subject", "claim", "symbol", "lab_id
                 "overall", "gate_verdict", "held", "landed_at", "template_version", "bundle_sha256")
 GAP_KEYS = ("gaps", "kb_gaps", "case_gaps")
 NS = "https://github.com/kyu-softmatter/meta-agent/ontology#"
+GRAPH_TEMPLATE = os.path.join(HERE, "graph_template.html")
+OWN_FILES = (".md", ".owl", "graph.html")
 
 
 def load_json(path):
@@ -243,6 +248,19 @@ def ontology(root, nodes, edges):
     return "\n".join(x) + "\n", len(classes), len(props)
 
 
+def graph_html(nodes, edges):
+    """graph.html (tasks/004): the template with the same nodes and edges as the pages, nothing from outside."""
+    data = {"nodes": [{"id": name, "card": n["card"]["card"] if n["kind"] == "card" else n["type"],
+                       "status": n["card"].get("status", "") if n["kind"] == "card" else "artifact"}
+                      for name, n in sorted(nodes.items())],
+            "edges": [list(e) for e in edges]}
+    blob = json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":")).replace("</", "<\\/")
+    with open(GRAPH_TEMPLATE, encoding="utf-8") as f:
+        template = f.read()
+    assert template.count("__WIKI_GRAPH_DATA__") == 1
+    return template.replace("__WIKI_GRAPH_DATA__", blob), len(data["nodes"]), len(data["edges"])
+
+
 def write(path, text):
     with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write(text)
@@ -254,7 +272,7 @@ def render(root=REPO, out=None):
     nodes, edges = build_graph(root)
     os.makedirs(out, exist_ok=True)
     for f in os.listdir(out):  # the view's own files only; .obsidian/ and the like stay
-        if f.endswith((".md", ".owl")) and os.path.isfile(os.path.join(out, f)):
+        if f.endswith(OWN_FILES) and os.path.isfile(os.path.join(out, f)):
             os.remove(os.path.join(out, f))
     out_e, in_e = defaultdict(list), defaultdict(list)
     for s, r, t in edges:
@@ -267,7 +285,9 @@ def render(root=REPO, out=None):
     write(os.path.join(out, "index.md"), index_page(nodes))
     owl, n_classes, n_props = ontology(root, nodes, edges)
     write(os.path.join(out, "ontology.owl"), owl)
-    return {"out": out, "pages": len(nodes) + 1,
+    html, g_nodes, g_edges = graph_html(nodes, edges)
+    write(os.path.join(out, "graph.html"), html)
+    return {"out": out, "pages": len(nodes) + 1, "graph_nodes": g_nodes, "graph_edges": g_edges,
             "cards": sum(1 for n in nodes.values() if n["kind"] == "card"),
             "artifacts": sum(1 for n in nodes.values() if n["kind"] == "artifact"),
             "references": len(edges),
@@ -286,4 +306,6 @@ def main(argv=None):
           "%d relation names -> %s/" % (r["pages"], r["cards"], r["artifacts"], r["references"], r["card_types"],
                                         r["relations"], where))
     print("ontology: %d classes, %d object properties -> %s/ontology.owl" % (r["classes"], r["properties"], where))
+    print("map: %d nodes, %d edges, 3D with a 2D switch, no library -> %s/graph.html" % (
+        r["graph_nodes"], r["graph_edges"], where))
     return 0
