@@ -1,6 +1,6 @@
 # 003 — A derived wiki view and an ontology of the cards
 
-**Status:** proposed, 2026-11-04, by the design seat on the person's words (`../../docs/ideas/20261104.md`). Waiting for the person's word on the four decisions below; nothing is built in the repository yet. A prototype ran the same day outside the repository on this tree at `7ffa87a`: it found 27 nodes (25 card revisions and 2 artifacts, the template and the bundle), 62 references among them, 13 node types and 14 relation names, wrote one Obsidian-style page per node, and wrote an RDF/XML ontology that parses as XML. It was not loaded into Ontology Playground.
+**Status:** decided, 2026-11-04: the person confirmed the four decisions below as recommended ("권장안으로 확정", `../../docs/ideas/20261104.md`). The design seat's part landed the same day: check 18 in `../../contracts/validate.py` with three rejected fixtures `../../contracts/examples/rejected/check18_*/`, an accepted example `../../contracts/examples/wiki/`, `../../plan.md` 5.2 and 8, `../../.gitignore`. **Open:** the renderer, which waits for the person to seat a `meta-…` session. Proposed the same day by the design seat. A prototype ran the same day outside the repository on this tree at `7ffa87a`: it found 27 nodes (25 card revisions and 2 artifacts, the template and the bundle), 62 references among them, 13 node types and 14 relation names, wrote one Obsidian-style page per node, and wrote an RDF/XML ontology that parses as XML. It was not loaded into Ontology Playground.
 
 **Seat:** a `meta-…` seat the person seats for this task (the M1 seat was seated for M1). The new check and its fixture are the design seat's.
 
@@ -21,7 +21,7 @@ How the two pieces map onto the plan:
 
 Ontology Playground is the viewer and editor for the ontology half: the card types and their references now, and a lab domain ontology later if the person wants one.
 
-**Decisions only the person makes:**
+**Decisions (the person's; all four confirmed as recommended on 2026-11-04):**
 
 1. **Derived or authored.** Recommended: the wiki is rendered from cards and never edited by a model. An authored wiki, as in the gist, rewrites pages in place, which breaks the append-only records (check 7) and makes two stores that can disagree (plan.md 1.4).
 2. **Which ontology.** (a) The card ontology, derivable today from the schemas and the references. (b) A rheology domain ontology (material, sample, instrument, method, measurement, model, parameter) that `kb_entry.subject` would use. (b) is a lab decision; the Meta-Agent may propose terms, each `inferred`, and only the person confirms them.
@@ -37,8 +37,10 @@ Ontology Playground is the viewer and editor for the ontology half: the card typ
 **Done when (read off a run):**
 - `python -m meta_agent.src.wiki` renders one page per node and an `index.md`, every `[[link]]` names a rendered page, and a second run on the same tree writes byte-identical files.
 - The exported ontology loads in Ontology Playground and shows the card types and relations (the person or a browser session checks, and says which).
-- A new check, numbered by the design seat, refuses a wiki page whose link or number is not in the card it renders; it lands with its rejected fixture, watched failing first.
+- `python ../../contracts/validate.py` judges the rendered `wiki/` with check 18 and prints `0 failed` (check 18 landed 2026-11-04; its three fixtures were watched accepted before it existed and rejected after).
 - `python ../../contracts/validate.py` prints `0 failed`.
+
+**What check 18 asks of the renderer:** every page but `index.md` carries `- record: <path>` relative to the repository root; a card page is titled and named `<id>@r<revision>`; an artifact page (template, bundle) has a filename-safe name and a record line naming the real directory; numbers appear only inside code spans or as numbers of the rendered card. Judged by check 18, the prototype's view failed six times, all on the two artifact pages and the links to them (names with `:` and `/`, records that were labels rather than paths); its card pages passed.
 
 **Must not:** put a number, claim or relation in a page that no card holds; let a model edit a page; mark a domain term `confirmed`; add a dependency, a JavaScript build or a web service; write outside `meta_agent/`.
 

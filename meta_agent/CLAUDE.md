@@ -36,4 +36,5 @@ Infer a policy. Write a safety value. Treat an inference as an observation or co
 - Before you start and before you report: `python ../contracts/validate.py` from the repository root. Every number in a report is read off a run.
 - Failures go to `failures.jsonl`, one line each, append only.
 - Decisions by the person go to `../docs/ideas/<YYYYMMDD>.md` verbatim, through the design seat if the file is not yours.
+- `wiki/` is rendered from the cards (`tasks/003`); never edit a page. A page that adds a number or a relation fails check 18.
 - Nothing is built here yet (M0). The first tasks are `tasks/001` and `tasks/002`.

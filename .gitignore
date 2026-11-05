@@ -8,3 +8,6 @@ __pycache__/
 # directory a session starts in. It is not a record of this repository (the
 # same entry exists in soft-matter-agents).
 .agent/
+
+# The wiki is a view rendered from the cards on demand (plan.md 5.2, tasks/003); the cards are the record.
+meta_agent/wiki/

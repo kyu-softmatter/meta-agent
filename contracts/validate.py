@@ -10,7 +10,8 @@ Usage
   python contracts/validate.py --bundle PATH            # the B checks on one built bundle
 
 M0 implements checks 1, 2, 3, 6, 7, 11, 15, 16 and 17; M1 adds B1-B9 on bundles (plan.md 8), run on
-every bundle a build card points at. Check numbers are fixed and never reused.
+every bundle a build card points at; tasks/003 adds 18 on wiki pages (every folder named wiki/).
+Check numbers are fixed and never reused.
 Every number printed here is read off this run. The verdict line names the judged tree.
 UNDECIDED and PENDING are not passes: --strict counts PENDING as failure.
 
@@ -28,7 +29,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 SCHEMAS = os.path.join(HERE, "schemas")
 REJECTED = os.path.join(HERE, "examples", "rejected")
-IMPLEMENTED = [1, 2, 3, 6, 7, 11, 15, 16, 17]
+IMPLEMENTED = [1, 2, 3, 6, 7, 11, 15, 16, 17, 18]
 SKIP_DIRS = {".git", ".agent", ".venv", ".pixi", "node_modules", "__pycache__"}
 
 try:
@@ -1061,6 +1062,126 @@ def bundles_of(cards, tree):
     return out
 
 
+# ----------------------------------------------------------------------------
+# check 18: a wiki page renders one record and adds nothing to it (tasks/003)
+# ----------------------------------------------------------------------------
+WIKI_LINK_RE = re.compile(r"\[\[([^\]|#]+)(?:[|#][^\]]*)?\]\]")
+WIKI_RECORD_RE = re.compile(r"^- record: `([^`]+)`[ \t]*$", re.M)
+WIKI_H1_RE = re.compile(r"^#[ \t]+(.+?)[ \t]*$", re.M)
+CODE_SPAN_RE = re.compile(r"`[^`\n]*`")
+
+
+def json_strings(obj, out):
+    if isinstance(obj, str):
+        out.add(obj)
+    elif isinstance(obj, dict):
+        for v in obj.values():
+            json_strings(v, out)
+    elif isinstance(obj, list):
+        for v in obj:
+            json_strings(v, out)
+
+
+def wiki_record(page_path, tree):
+    """(text, record path relative to the tree, record, error) for one page; a directory record is an artifact."""
+    text = open(page_path, encoding="utf-8").read()
+    m = WIKI_RECORD_RE.search(text)
+    if not m:
+        return text, None, None, "names no record line (- record: `<path>`)"
+    relp = m.group(1).strip()
+    full = os.path.abspath(os.path.join(tree, relp))
+    if not full.startswith(os.path.abspath(tree)):
+        return text, relp, None, "record %s lies outside the judged tree" % relp
+    if os.path.isdir(full):
+        return text, relp, {"_artifact": relp}, None
+    if not os.path.isfile(full):
+        return text, relp, None, "record %s does not exist" % relp
+    try:
+        data = load_json(full)
+    except (ValueError, UnicodeDecodeError):
+        return text, relp, None, "record %s is not JSON" % relp
+    if not (isinstance(data, dict) and isinstance(data.get("card"), str) and data.get("id")):
+        return text, relp, None, "record %s is not a card" % relp
+    return text, relp, data, None
+
+
+def wiki_node(data):
+    return "%s@r%d" % (data["id"], data.get("revision", 1))
+
+
+def wiki_related(a_rel, a, b_rel, b):
+    """True when one record names the other (its id, path or file name), or both are revisions of one id."""
+    def names(rel_path, d):
+        out = {rel_path, os.path.basename(rel_path.rstrip("/"))}
+        if "_artifact" not in d:
+            out.add(d["id"])
+        return out
+
+    def values(d):
+        out = set()
+        if "_artifact" not in d:
+            json_strings(d, out)
+        return out
+    if "_artifact" not in a and "_artifact" not in b and a["id"] == b["id"]:
+        return True
+    return bool(names(b_rel, b) & values(a)) or bool(names(a_rel, a) & values(b))
+
+
+def check18(md_by_dir, report, tree):
+    for d in sorted(md_by_dir):
+        if os.path.basename(d) != "wiki":
+            continue
+        pages = {os.path.splitext(os.path.basename(p))[0]: p for p in md_by_dir[d]}
+        report.wiki_pages = getattr(report, "wiki_pages", 0) + len(pages)
+        info = {}
+        for stem, p in sorted(pages.items()):
+            label = rel(p, tree)
+            if stem == "index":
+                info[stem] = (open(p, encoding="utf-8").read(), None, None)
+                continue
+            text, relp, data, err = wiki_record(p, tree)
+            if err:
+                report.fail(18, label, err)
+                info[stem] = (text, None, None)
+                continue
+            if "_artifact" not in data:
+                want = wiki_node(data)
+                h1 = WIKI_H1_RE.search(text)
+                if not h1 or h1.group(1) != want:
+                    report.fail(18, label, "the title is not %s, the record's id and revision" % want)
+                if stem != want:
+                    report.fail(18, label, "the file is not named %s.md" % want)
+            info[stem] = (text, relp, data)
+        for stem, (text, relp, data) in sorted(info.items()):
+            label = rel(pages[stem], tree)
+            for m in WIKI_LINK_RE.finditer(text):
+                target = m.group(1).strip()
+                if target not in pages:
+                    report.fail(18, label, "[[%s]] names no page of this wiki" % target)
+                    continue
+                t_text, t_rel, t_data = info[target]
+                if data is None or t_data is None:
+                    continue
+                if not wiki_related(relp, data, t_rel, t_data):
+                    report.fail(18, label, "[[%s]] is a relation neither record holds" % target)
+            body = WIKI_H1_RE.sub(" ", text, count=1)
+            body = WIKI_RECORD_RE.sub(" ", body)
+            body = CODE_SPAN_RE.sub(" ", body)
+            body = WIKI_LINK_RE.sub(" ", body)
+            for s in STRIP_RES:
+                body = s.sub(" ", body)
+            available = set()
+            if data is not None and "_artifact" not in data:
+                json_numbers(data, available)
+            for n in NUM_RE.finditer(body):
+                try:
+                    val = float(n.group(0))
+                except ValueError:
+                    continue
+                if val not in available:
+                    report.fail(18, label, "number %s is in no field of the record this page renders" % n.group(0))
+
+
 def run_static(tree, c, report, checks, include_rejected=False):
     cards, md_by_dir = scan(tree, report, include_rejected=include_rejected)
     if 1 in checks:
@@ -1079,6 +1200,8 @@ def run_static(tree, c, report, checks, include_rejected=False):
         check16(cards, c, report, tree)
     if 17 in checks:
         check17(cards, c, report, tree)
+    if 18 in checks:
+        check18(md_by_dir, report, tree)
     report.ran.update(ch for ch in checks if isinstance(ch, int))
     card_dirs = {os.path.dirname(p) for p, _ in cards}
     return len(cards), sum(len(v) for d, v in md_by_dir.items() if d in card_dirs), cards
@@ -1199,8 +1322,8 @@ def main(argv=None):
         extra += " staged_changes=%d" % n_changes
     if n_commits is not None:
         extra += " commits=%d" % n_commits
-    print("%d cards, %d md files, %d bundle(s) judged; %d failed, %d pending; checks run %s" % (
-        n_cards, n_md, len(bundles), failed, pending, sorted(checks, key=check_key)))
+    print("%d cards, %d md files, %d wiki page(s), %d bundle(s) judged; %d failed, %d pending; checks run %s" % (
+        n_cards, n_md, getattr(report, "wiki_pages", 0), len(bundles), failed, pending, sorted(checks, key=check_key)))
     print("VERDICT %s tree=%s head=%s cards=%d md=%d bundles=%d failed=%d pending=%d failed_checks=%s%s" % (
         verdict, tree.replace(os.sep, "/"), head_sha(), n_cards, n_md, len(bundles), failed, pending, report.failed_checks(), extra))
     return 0 if verdict == "PASS" else 1

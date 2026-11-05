@@ -6,7 +6,7 @@ The one agent of this repository: onboarding, Agent Designer, knowledge engine, 
 
 | Path | What | When it fills |
 |---|---|---|
-| `tasks/` | the task queue; `001` onboarded the fixture labs and this lab, `002` built the echo agent on mock (M1, done); `003` proposes a derived wiki view and an ontology of the cards (waiting for the person) | M1 (done), 003 proposed |
+| `tasks/` | the task queue; `001` onboarded the fixture labs and this lab, `002` built the echo agent on mock (M1, done); `003` renders a wiki view and an ontology from the cards (decided; check 18 landed; the renderer waits for a meta seat) | M1 (done), 003 open |
 | `failures.jsonl` | one failure per line, append only | from the first run |
 | `envelope/observed.json` | read-only paths of built agents the harness may observe | M5 |
 | `inbox/materials/` | where the person drops links and files; `README.md` there explains | any time; intake code in M2 |
