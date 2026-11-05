@@ -10,7 +10,8 @@ Usage
   python contracts/validate.py --bundle PATH            # the B checks on one built bundle
 
 M0 implements checks 1, 2, 3, 6, 7, 11, 15, 16 and 17; M1 adds B1-B9 on bundles (plan.md 8), run on
-every bundle a build card points at; tasks/003 adds 18 on wiki pages (every folder named wiki/).
+every bundle a build card points at; tasks/003 adds 18 on wiki pages (every folder named wiki/),
+and tasks/004 its graph.html.
 Check numbers are fixed and never reused.
 Every number printed here is read off this run. The verdict line names the judged tree.
 UNDECIDED and PENDING are not passes: --strict counts PENDING as failure.
@@ -1127,6 +1128,53 @@ def wiki_related(a_rel, a, b_rel, b):
     return bool(names(b_rel, b) & values(a)) or bool(names(a_rel, a) & values(b))
 
 
+WIKI_GRAPH_RE = re.compile(r'<script id="wiki-graph" type="application/json">(.*?)</script>', re.S)
+EXTERNAL_RE = re.compile(r"""\b(?:src|href)\s*=\s*["']?\s*(?:[a-z][a-z0-9+.-]*:)?//""", re.I)
+
+
+def check18_graph(path, pages, info, report, tree):
+    """graph.html (tasks/004): nothing from another host; nodes are pages with their records' card and status;
+    every edge is a link one of its two pages holds."""
+    label = rel(path, tree)
+    text = open(path, encoding="utf-8").read()
+    if EXTERNAL_RE.search(text):
+        report.fail(18, label, "loads a resource from another host")
+    m = WIKI_GRAPH_RE.search(text)
+    if not m:
+        report.fail(18, label, "carries no wiki-graph data block")
+        return
+    try:
+        data = json.loads(m.group(1))
+        nodes, edges = list(data["nodes"]), list(data["edges"])
+    except (ValueError, KeyError, TypeError):
+        report.fail(18, label, "the wiki-graph data block is not {nodes, edges}")
+        return
+    for n in nodes:
+        nid = n.get("id") if isinstance(n, dict) else None
+        if nid not in pages or nid == "index":
+            report.fail(18, label, "node %s has no page in this wiki" % nid)
+            continue
+        rec = info[nid][2]
+        if rec is None:
+            continue
+        if "_artifact" in rec:
+            if n.get("status") != "artifact":
+                report.fail(18, label, "node %s is an artifact and says status %s" % (nid, n.get("status")))
+        elif (n.get("card"), n.get("status")) != (rec.get("card"), rec.get("status")):
+            report.fail(18, label, "node %s says %s/%s; its record says %s/%s" % (
+                nid, n.get("card"), n.get("status"), rec.get("card"), rec.get("status")))
+    for e in edges:
+        if not (isinstance(e, list) and len(e) == 3):
+            report.fail(18, label, "edge %s is not [source, relation, target]" % (e,))
+            continue
+        src, relation, tgt = e
+        if src not in pages or tgt not in pages:
+            report.fail(18, label, "edge %s %s %s names a node with no page" % (src, relation, tgt))
+            continue
+        if "[[%s]]" % tgt not in info[src][0] and "[[%s]]" % src not in info[tgt][0]:
+            report.fail(18, label, "edge %s %s %s is on neither page" % (src, relation, tgt))
+
+
 def check18(md_by_dir, report, tree):
     for d in sorted(md_by_dir):
         if os.path.basename(d) != "wiki":
@@ -1180,6 +1228,9 @@ def check18(md_by_dir, report, tree):
                     continue
                 if val not in available:
                     report.fail(18, label, "number %s is in no field of the record this page renders" % n.group(0))
+        graph = os.path.join(d, "graph.html")
+        if os.path.isfile(graph):
+            check18_graph(graph, pages, info, report, tree)
 
 
 def run_static(tree, c, report, checks, include_rejected=False):

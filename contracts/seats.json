@@ -58,7 +58,7 @@
         "meta_agent/.claude/"
       ],
       "note": "The one agent's working seat: onboarding, intake, requests, knowledge, cases, builds, and its own src/ and tests/. It writes nothing outside meta_agent/ and nothing into the two excluded paths, which are the design seat's.",
-      "seated": "2026-10-29, by the person: \"Do this task here: M1: onboarding skeleton and echo agent as the meta seat\"; 2026-11-04, the same session again for tasks/003, by the person: \"meta 시트로 진행\" (proceed as the meta seat)"
+      "seated": "2026-10-29, by the person: \"Do this task here: M1: onboarding skeleton and echo agent as the meta seat\"; 2026-11-04, the same session again for tasks/003, by the person: \"meta 시트로 진행\" (proceed as the meta seat); the same day for tasks/004: \"meta 시트로 004 진행\""
     }
   ]
 }

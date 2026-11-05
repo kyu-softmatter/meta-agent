@@ -1,0 +1,3 @@
+check 18
+
+wiki/graph.html loads three.js from a CDN. The map opens from disk and loads nothing from another host (MP8).

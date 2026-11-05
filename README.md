@@ -2,7 +2,7 @@
 
 One agent that builds scientific agents and keeps them improving: it reads a lab's environment first (onboarding), designs and validates an agent for a new instrument or simulation engine (Agent Designer), and improves built agents from the knowledge and experience they gather (meta-harness). Everything it hands over is a card on disk, and a deterministic validator judges every card.
 
-**Status: M1 — onboarding and the Agent Designer run on fixtures.** Schemas, vocabularies, the registry seeds, the seat registry, the validator with ten card checks (18 judges wiki pages, `meta_agent/tasks/003`) and nine bundle checks (B1–B9), an accepted example set with a wiki example, and fifty-four rejected fixtures are in `contracts/`. `meta_agent/src/onboarding/` reads a lab and asks only what is unknown; `meta_agent/src/designer.py` takes a request from intake to a validated bundle under `meta_agent/builds/` (the echo agent is the first, `meta_agent/tasks/002`). Hand-over, safety values and tolerances stay the person's (`plan.md` 12).
+**Status: M1 — onboarding and the Agent Designer run on fixtures.** Schemas, vocabularies, the registry seeds, the seat registry, the validator with ten card checks (18 judges wiki pages, `meta_agent/tasks/003`) and nine bundle checks (B1–B9), an accepted example set with a wiki example and its map, and fifty-seven rejected fixtures are in `contracts/`. `meta_agent/src/onboarding/` reads a lab and asks only what is unknown; `meta_agent/src/designer.py` takes a request from intake to a validated bundle under `meta_agent/builds/` (the echo agent is the first, `meta_agent/tasks/002`). Hand-over, safety values and tolerances stay the person's (`plan.md` 12).
 
 ## Read first
 
