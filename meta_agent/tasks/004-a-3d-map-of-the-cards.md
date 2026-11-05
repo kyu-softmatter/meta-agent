@@ -1,6 +1,6 @@
 # 004 — A 3D map of the cards
 
-**Status:** open, 2026-11-04, by the design seat on the person's words ("meta 시트로 004 진행", `../../docs/ideas/20261104.md`). The person saw a 3D map of the cards drawn in the conversation without a library and asked for it in the wiki view.
+**Status:** done, 2026-11-04. Opened by the design seat on the person's words ("meta 시트로 004 진행", `../../docs/ideas/20261104.md`) after the person saw a 3D map of the cards drawn in the conversation without a library. The design seat extended check 18 to `graph.html` with three rejected fixtures `../../contracts/examples/rejected/check18_graph_*/` and an accepted example map (commit `6d8d91f`; expect-fail 54 of 57 before, 57 of 57 and 60 of 60 expected checks after). The meta seat added `src/wiki/graph_template.html` and the map to the renderer with three tests (commit `e5528a2`). Read off the runs: `python -m meta_agent.src.wiki` wrote `graph.html` with 27 nodes and 62 edges; the validator printed `0 failed` with the map judged; the suite ran 31 tests, OK. Opened from disk in a browser session: the map rotated in 3D, a click on a node and a search both listed its references in the side panel, and the 2D switch redrew it flat. Not checked: the dark colour scheme, and how the force layout scales past a few hundred nodes (it is quadratic; a WebGL library is the person's later decision).
 
 **Seat:** `meta-office-20261029-1`, seated again in this session for this task. The extension of check 18 and its fixtures are the design seat's.
 
