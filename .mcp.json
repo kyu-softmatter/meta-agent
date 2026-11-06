@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "rea": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["bootstrap.py", "run", "rea", "mcp"]
+    }
+  }
+}

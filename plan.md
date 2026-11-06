@@ -141,13 +141,15 @@ The Meta-Agent writes into a built agent's directory. A model-authored safety va
 
 **Not taken**: REA's analysis engines in this repository; runtime capture on the instrument computer.
 
+**How REA reaches a computer** (the person, 2026-11-05, `docs/ideas/20261105.md`): `tools.lock.json` pins Node.js and `rea-agents`; `bootstrap.py` installs them for the user from their own sources, checked against the lock, and `.mcp.json` calls REA as an MCP server through it. Nothing of REA is vendored, and its install scripts are not run.
+
 ### 2.4 harness2
 
 **Taken as design**: harness = everything around the model. Eight editable components and their cost (always-on prose is the most expensive). The edit contract "omission is inheritance"; invalid proposals are discarded whole. Contrastive evidence from Propose–Probe–Compose. Two levels of recursion with a per-domain library. The experience format `cue / lesson / evidence / confidence` and the precedence of `confounded`. The budget ledger. Baseline first. Judge and report under one configuration. Restrict the runner's network so it cannot reach the evaluation material.
 
 **Changed**: adoption is not left to a model judge. Our probe is mock replay + deterministic validation; compose is a model-written **draft**; adoption is gate + owning seat + (for loosening) a person (SMA §8.3 rule 4, MP5).
 
-**Not taken (now)**: installing harness2 as an engine. If ever, only under SMA §8.3's trial design of 2026-10-19 (clone outside the working folder, mock only, a computer without instruments; §14-8).
+**Pinned, not carried** (2026-11-05): `tools.lock.json` names the harness2 commit and `bootstrap.py install harness2` sets it up on Linux or inside a WSL distribution, outside this repository. **Not taken (now)**: installing harness2 as an engine. If ever, only under SMA §8.3's trial design of 2026-10-19 (clone outside the working folder, mock only, a computer without instruments; §14-8).
 
 ### 2.5 Conversations 1 and 2
 

@@ -29,6 +29,10 @@ git config committer.name "seat:<role>-<machine>-<YYYYMMDD>-<n>"
 git config committer.email "<role>-<machine>-<YYYYMMDD>-<n>@seat.invalid"
 set PYTHONUTF8=1   (or export PYTHONUTF8=1)
 python contracts/validate.py
+python bootstrap.py check
+python bootstrap.py install node rea --yes
 ```
+
+External tools are pinned in `tools.lock.json` and never vendored. `bootstrap.py` fetches them from their own sources into the user's tools home and changes no PATH or agent configuration; `.mcp.json` starts REA through it, and Claude Code asks once before it starts a project server. REA's tools are for binaries and runtime behaviour, and only under an `analysis_permission` (plan.md 5.1 S2).
 
 Register the seat in `contracts/seats.json` before its first commit; an unregistered committer is reported, not refused, and gets no path check at all.

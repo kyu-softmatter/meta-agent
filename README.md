@@ -22,6 +22,16 @@ python contracts/validate.py --bundle PATH   # the B checks on one built bundle
 
 Install the hook once per clone with `git config core.hooksPath contracts/hooks`. Set `PYTHONUTF8=1` on Windows. The validator needs `jsonschema`; without it, it re-executes itself through `uv` when `uv` is present.
 
+## External tools
+
+```
+python bootstrap.py check                     # read-only: what this computer has and what it lacks
+python bootstrap.py install node rea --yes    # Node.js and REA at the versions tools.lock.json pins
+python bootstrap.py install harness2 --yes    # Linux or WSL only: harness2 at its pinned commit
+```
+
+REA, harness2 and Node.js are not in this repository. [`tools.lock.json`](tools.lock.json) pins them, with the SHA-256 of each Node.js archive; [`bootstrap.py`](bootstrap.py) fetches them from their own sources into the user's tools home (`%LOCALAPPDATA%\Programs` on Windows, `~/.local/opt` elsewhere) and touches no PATH, registry or agent configuration. Without `--yes` it only prints its plan. [`.mcp.json`](.mcp.json) starts REA as an MCP server through `python bootstrap.py run rea mcp`.
+
 ## Dropping materials
 
 A link on one line is enough. Add a row to [`meta_agent/inbox/materials/LINKS.md`](meta_agent/inbox/materials/LINKS.md) or put a file into `meta_agent/inbox/materials/drop/`. The Meta-Agent classifies it, records the source and asks you to confirm (intake runs from M2). See [`meta_agent/inbox/materials/README.md`](meta_agent/inbox/materials/README.md).
