@@ -22,6 +22,23 @@ python contracts/validate.py --bundle PATH   # the B checks on one built bundle
 
 Install the hook once per clone with `git config core.hooksPath contracts/hooks`. Set `PYTHONUTF8=1` on Windows. The validator needs `jsonschema`; without it, it re-executes itself through `uv` when `uv` is present.
 
+## Seats
+
+A session commits as a seat, never as itself: committer `seat:<name>` <`<name>@seat.invalid`>, author the person. Three roles exist (`plan.md` 9, [`contracts/seats.json`](contracts/seats.json)); the person assigns one per session, and check 6 fails a commit that crosses its paths.
+
+| Role | What it does | Paths it may write |
+|---|---|---|
+| `design` | The design record, the contracts and the gate, the person's decisions, the agent's instructions and settings, and the task queue. It opens and closes tasks; it writes no cards, builds or knowledge. | root files, `contracts/`, `docs/`, `.claude/`, `meta_agent/CLAUDE.md`, `meta_agent/.claude/`, and the `meta_agent/` skeleton (`tasks/`, `templates/`, `eval/`, the empty logs, the inbox's README, LINKS.md and drop/.gitkeep) |
+| `meta` | The agent at work: onboarding, intake, requests, knowledge, cases, builds, and its own `src/` and `tests/`. | `meta_agent/`, except `meta_agent/CLAUDE.md` and `meta_agent/.claude/` |
+| `harness` (from M5) | The meta-harness: incidents, proposals, proofs with fixtures and replay, the ledger and the library. | `meta_agent/harness/` |
+
+Names are `<role>-<machine>-<YYYYMMDD>-<n>`; `office` is the office computer and `macbook` the MacBook Air, and a new computer gets its tag from the person before its first seat. A seat is registered in `contracts/seats.json` before its first commit (an unregistered committer is reported, not refused, and gets no path check). Adopt one in a clone with
+
+```
+git config committer.name "seat:<role>-<machine>-<YYYYMMDD>-<n>"
+git config committer.email "<role>-<machine>-<YYYYMMDD>-<n>@seat.invalid"
+```
+
 ## External tools
 
 ```

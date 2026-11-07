@@ -2,7 +2,7 @@
   "schema_version": "0.1",
   "note": "Which committer identity owns which paths (plan.md 9). git records no session, so a seat declares itself: the committer is seat:<name> <name@seat.invalid> and the author stays the person. Read by check 6.",
   "adopt": "In this working copy: git config committer.name 'seat:<name>' and git config committer.email <name>@seat.invalid (git has read these keys since 2.22). One identity per session; two sessions sharing one identity is a hole the check cannot see.",
-  "names": "<role>-<machine>-<YYYYMMDD>-<n>. Roles: design, meta, harness (from M5). Machines: office is the Office computer; a new computer gets its tag from the person before its first seat. n counts within one role, machine and date. A name is never reissued.",
+  "names": "<role>-<machine>-<YYYYMMDD>-<n>. Roles: design, meta, harness (from M5). Machines: office is the Office computer, macbook is the person's MacBook Air (given 2026-11-06); a new computer gets its tag from the person before its first seat. n counts within one role, machine and date. A name is never reissued.",
   "addresses": "seat.invalid is reserved by RFC 2606 and never routes; a seat identity is a label, not a mailbox.",
   "path_syntax": "an entry ending in / is a directory prefix; '*' alone means files at the repository root; anything else is one file. excludes are applied after paths.",
   "unknown_committer": "report",
@@ -59,6 +59,37 @@
       ],
       "note": "The one agent's working seat: onboarding, intake, requests, knowledge, cases, builds, and its own src/ and tests/. It writes nothing outside meta_agent/ and nothing into the two excluded paths, which are the design seat's.",
       "seated": "2026-10-29, by the person: \"Do this task here: M1: onboarding skeleton and echo agent as the meta seat\"; 2026-11-04, the same session again for tasks/003, by the person: \"meta 시트로 진행\" (proceed as the meta seat); the same day for tasks/004: \"meta 시트로 004 진행\""
+    },
+    {
+      "seat": "design-macbook-20261106-1",
+      "committer_email": "design-macbook-20261106-1@seat.invalid",
+      "role": "design",
+      "machine": "macbook",
+      "seated_by": "the person, 2026-11-06",
+      "status": "active",
+      "owns": [
+        "design"
+      ],
+      "paths": [
+        "*",
+        "contracts/",
+        "docs/",
+        ".claude/",
+        "meta_agent/CLAUDE.md",
+        "meta_agent/README.md",
+        "meta_agent/.claude/",
+        "meta_agent/tasks/",
+        "meta_agent/templates/",
+        "meta_agent/eval/",
+        "meta_agent/failures.jsonl",
+        "meta_agent/envelope/observed.json",
+        "meta_agent/inbox/materials/README.md",
+        "meta_agent/inbox/materials/LINKS.md",
+        "meta_agent/inbox/materials/drop/.gitkeep"
+      ],
+      "excludes": [],
+      "note": "The design seat on the MacBook Air: the same paths as design-office-20261029-1. It does not write cards, requests, profiles, knowledge, cases, harness records or builds.",
+      "seated": "2026-11-06, by the person: role \"디자인\" (design) and machine tag \"macbook\""
     }
   ]
 }
