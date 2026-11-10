@@ -120,14 +120,14 @@ class SeatCommand(unittest.TestCase):
                               cwd=REPO, capture_output=True, text=True, encoding="utf-8")
 
     def test_prints_a_name_and_the_roles_row_and_writes_nothing(self):
-        before = open(seats.SEATS_PATH, encoding="utf-8").read()
+        before = seats.dump(seats.load())
         p = self.run_seat("meta", "--machine", "macbook")
         self.assertEqual(p.returncode, 0, p.stderr)
         name = p.stdout.split()[1]
         self.assertEqual(seats.parse_name(name)[:2], ("meta", "macbook"))
         entry = json.loads([l for l in p.stdout.splitlines() if l.startswith("entry")][0].split(None, 1)[1])
         self.assertEqual(entry["paths"], seats.load()["roles"]["meta"]["paths"])
-        self.assertEqual(open(seats.SEATS_PATH, encoding="utf-8").read(), before)
+        self.assertEqual(seats.dump(seats.load()), before)
 
     def test_refuses_an_unlisted_machine_and_role(self):
         self.assertNotEqual(self.run_seat("meta", "--machine", "lab").returncode, 0)

@@ -17,7 +17,7 @@ One agent, `meta_agent/`, that builds scientific agents and maintains them. The 
 
 ## Where things are
 
-- `contracts/tools/` — `seats.py` (names, role rows, the self-registration rule), read by the validator and `bootstrap.py seat`; `contracts/tests/` — their tests (`python -m unittest discover -s contracts/tests`).
+- `contracts/tools/` — `seats.py` (names, role rows, the self-registration rule), read by the validator and `bootstrap.py seat`; `seat_commit.py --seat <name> -m <message> <paths…>` commits as a seat, only the named paths, when other seats share the folder; `contracts/tests/` — their tests (`python -m unittest discover -s contracts/tests`).
 - `contracts/` — schemas, vocabularies (`claim_kinds.json`, `grades.json`, `units.json`, `case_classes.json`), `registry/`, `seats.json`, `records.json`, `validate.py`, `examples/` and `examples/rejected/`, `hooks/`.
 - `meta_agent/` — the agent. Its own `CLAUDE.md` says what it does and does not do.
 - `docs/ideas/` — the person's words and decisions, dated. `docs/reference/` — reference cases. `docs/origin/` — the frozen Korean plan.
