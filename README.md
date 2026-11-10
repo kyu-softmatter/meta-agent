@@ -1,8 +1,18 @@
 # meta-agent
 
-One agent that builds scientific agents and keeps them improving: it reads a lab's environment first (onboarding), designs and validates an agent for a new instrument or simulation engine (Agent Designer), and improves built agents from the knowledge and experience they gather (meta-harness). Everything it hands over is a card on disk, and a deterministic validator judges every card.
+An agent that builds scientific agents for a lab's instruments and simulation engines, and automates the work around building and running them: **working out how a lab's materials and data are laid out, searching the related literature, keeping the workflow, convening the meeting in which a plan is settled, and building the skills an agent works with.** Everything it hands over is a card on disk, and a deterministic validator judges every card. A person decides (safety values, thresholds, what is released, what is handed over); the agent builds and proposes, and it never operates an instrument.
 
-**Status: M1 — onboarding and the Agent Designer run on fixtures.** Schemas, vocabularies, the registry seeds, the seat registry, the validator with ten card checks (18 judges wiki pages, `meta_agent/tasks/003`) and nine bundle checks (B1–B9), an accepted example set with a wiki example and its map, and fifty-seven rejected fixtures are in `contracts/`. `meta_agent/src/onboarding/` reads a lab and asks only what is unknown; `meta_agent/src/designer.py` takes a request from intake to a validated bundle under `meta_agent/builds/` (the echo agent is the first, `meta_agent/tasks/002`). Hand-over, safety values and tolerances stay the person's (`plan.md` 12).
+## What it automates
+
+| | What is automated | How | Where it stands (read off the repository, 2026-11-09) |
+|---|---|---|---|
+| 1 | **Working out how a lab's materials and data are laid out** | Onboarding reads a lab's repositories, documents and tools and writes what it found, every item `inferred` with its evidence or `unknown`, and asks only what is unknown. A tool profile then states what an instrument or an engine takes and gives, each claim `observed`, `derived`, `inferred` or `unknown`. | Runs on fixtures: `meta_agent/src/onboarding/`, `meta_agent/src/tooling/`, three lab profiles and two requests under `meta_agent/`. Intake of dropped materials is open (`tasks/005`). |
+| 2 | **Searching the related literature** | Materials a person drops, or sources a session retrieves, are recorded with their address, time and hash; what is found becomes entries with a source and a grade, and what is not found is a gap that names what was searched. A number is taken from a source that was read, never recalled. | Partly: three correlations of water were written from two sources read in a session, and a paper that could not be read is recorded as a gap. The working index over a lab's materials is open (`tasks/005`); no crawler exists and none is planned. |
+| 3 | **Keeping the workflow** | Sessions seat themselves, claim a task, commit only their own paths, and ask each other through notes; the Designer takes a request from intake to a validated bundle in fixed steps; past cases are recalled before a card is written; the same gate runs on every commit and on GitHub. | Runs: seats, the task queue, notes and the gate (`tasks/009`); recall over 238 seed cases (`tasks/006`). The loop that improves built agents from their runs is open (`tasks/008`). |
+| 4 | **Convening the meeting in which a plan is settled** | Inside a built agent, subagents each hold a position (the purpose of the experiment, the budget, what the instrument or the engine can deliver) with a safety guard among them; a mediator proposes a range all accept, and the plan goes to an operating subagent and then to an analysing one. | Designed (`plan.md` 14-32 to 14-36), not built: `tasks/011` to `014` are open. A built bundle today carries two subagents, `operator` and `analyst`. |
+| 5 | **Building the skills an agent works with** | A capability is a skill written as source code, with the source it rests on and worked cases; a model takes the skills a request needs and code runs them. Kinds: parameter bounds and correlations, hardware connection, boot sequence, situation awareness, operable range, control, calibration, data analysis. | Runs on fixtures: 21 skills under `meta_agent/skills/`, each passing its worked cases; a parameter sheet whose every bound is recomputed by the gate; a fixture rheometer bundle that carries its skills and subagents (`tasks/010`, `007`). No skill has been run against a device. |
+
+**Status.** Onboarding and the Agent Designer run on fixtures (M1), and so do experience memory (M4, `tasks/006`) and parameter bounds from skills (M3, `tasks/007`). `contracts/` holds the schemas, the vocabularies, the seat table and the validator with seventeen card checks and ten bundle checks, an accepted example set, and 123 rejected fixtures, each of which the gate must refuse. Read off a run at `1d422b3`: 331 cards and two bundles judged, 0 failed; 123 of 123 fixtures rejected; 57 and 162 tests pass. Open: the working index for materials (`005`), the meta-harness (`008`), and what a built agent does with its skills: rough ranges and the model's choice (`011`), the subagents' negotiation (`012`), the run from plan to report (`013`), the instrument's operable range (`014`). Nothing here has touched an instrument; the first testbed is a rheometer and a rheology simulation engine, as a pair.
 
 ## Read first
 
@@ -28,7 +38,7 @@ Install the hook once per clone with `git config core.hooksPath contracts/hooks`
 
 ## Seats
 
-A session commits as a seat, never as itself: committer `seat:<name>` <`<name>@seat.invalid`>, author the person. Three roles exist (`plan.md` 9, [`contracts/seats.json`](contracts/seats.json)); the person assigns one per session, and check 6 fails a commit that crosses its paths.
+A session commits as a seat, never as itself: committer `seat:<name>` <`<name>@seat.invalid`>, author the person. Three roles exist (`plan.md` 9, [`contracts/seats.json`](contracts/seats.json)). A session seats itself under the person's standing rule, or the person assigns a seat; check 6 fails a seat that is wider than its role and a commit that crosses its paths. Several seats work in the one working copy at the same time.
 
 | Role | What it does | Paths it may write |
 |---|---|---|
@@ -36,12 +46,16 @@ A session commits as a seat, never as itself: committer `seat:<name>` <`<name>@s
 | `meta` | The agent at work: onboarding, intake, requests, knowledge, cases, builds, and its own `src/` and `tests/`. | `meta_agent/`, except `meta_agent/CLAUDE.md` and `meta_agent/.claude/` |
 | `harness` (from M5) | The meta-harness: incidents, proposals, proofs with fixtures and replay, the ledger and the library. | `meta_agent/harness/` |
 
-Names are `<role>-<machine>-<YYYYMMDD>-<n>`; `office` is the office computer and `macbook` the MacBook Air, and a new computer gets its tag from the person before its first seat. A seat is registered in `contracts/seats.json` before its first commit (an unregistered committer is reported, not refused, and gets no path check). Adopt one in a clone with
+Names are `<role>-<machine>-<YYYYMMDD>-<n>`; a new computer gets its tag from the person before its first seat. A session that sits down in a clone already set up runs
 
 ```
-git config committer.name "seat:<role>-<machine>-<YYYYMMDD>-<n>"
-git config committer.email "<role>-<machine>-<YYYYMMDD>-<n>@seat.invalid"
+python bootstrap.py seat <role> --write                 # its seat's name and entry
+python contracts/tools/seat_commit.py --seat <name> -m "contracts/seats: <name> seats itself" contracts/seats.json
+python contracts/tools/notes.py list --role <role>      # what other seats asked of its role
+python contracts/tools/tasks.py next --role <role>      # the task it may take; it claims it before it starts
 ```
+
+and commits with `seat_commit.py`, which takes only the paths it is given and sets the committer for that one commit. The pre-commit gate judges the tree the commit would make, so what another seat has unfinished in the folder does not stop it.
 
 ## External tools
 
@@ -60,10 +74,11 @@ A link on one line is enough. Add a row to [`meta_agent/inbox/materials/LINKS.md
 ## Layout
 
 ```
-plan.md  CLAUDE.md  README.md  LICENSE  pyproject.toml  .claude/settings.json
-contracts/   schemas/  registry/  units.json  grades.json  claim_kinds.json  case_classes.json
-             records.json  seats.json  validate.py  examples/  examples/rejected/  hooks/
-meta_agent/  CLAUDE.md  README.md  .claude/  tasks/  failures.jsonl  envelope/  inbox/materials/
+plan.md  CLAUDE.md  README.md  LICENSE  bootstrap.py  tools.lock.json  .github/workflows/gate.yml
+contracts/   schemas/  registry/  units.json  grades.json  claim_kinds.json  case_classes.json  skill_kinds.json
+             records.json  seats.json  validate.py  tools/  tests/  examples/  examples/rejected/  hooks/
+meta_agent/  CLAUDE.md  README.md  tasks/  src/  tests/  skills/  cases/  profiles/  requests/  builds/
+             templates/  inbox/materials/  inbox/seats/  failures.jsonl
 docs/        ideas/  origin/  reference/
 ```
 
