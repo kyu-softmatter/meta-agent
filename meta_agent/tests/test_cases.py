@@ -11,6 +11,7 @@ import sys
 import tempfile
 import unittest
 
+from meta_agent.src.cases import promote
 from meta_agent.src.cases import recall as recall_mod
 from meta_agent.src.cases import rules
 from meta_agent.src.cases import seed_sma
@@ -285,6 +286,104 @@ class SeedSma(unittest.TestCase):
         _, card = seed_sma.case_of("incident", "harness", "7bc5a0f9~1", "contracts/harness/incidents.jsonl", "none",
                                    8, line, draft, SEAT, NOW, classes)
         self.assertEqual(card["cause_class"], "unknown")
+
+
+class Promote(unittest.TestCase):
+    """Eligibility is computed, N is the person's, and nothing is landed (tasks/006)."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="ma-promote-")
+        self.store = os.path.join(self.tmp, "cases")
+        shutil.copytree(STORE, self.store)
+        for name, commit in (("case-fx-lammps-a.json", None), ("case-fx-shear-range.json", "0000000")):
+            path = os.path.join(self.store, name)
+            with open(path, "r", encoding="utf-8") as f:
+                case = json.load(f)
+            case["cause_status"] = "confirmed"
+            case["evidence"] = [{"kind": "commit", "ref": "fixture-repo@0000000 failures.jsonl:1"}]
+            if commit:
+                case["source_repo_commit"] = commit
+            with open(path, "w", encoding="utf-8", newline="\n") as f:
+                json.dump(case, f, indent=2, ensure_ascii=False)
+                f.write("\n")
+        self.assertEqual(rules.main(["index", self.store]), 0)
+        self.env = dict(os.environ, PYTHONUTF8="1")
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def run_cli(self, *args):
+        return subprocess.run([sys.executable, "-m", "meta_agent.src.cases.promote", "--store", self.store] + list(args),
+                              cwd=REPO, capture_output=True, text=True, env=self.env)
+
+    def files(self):
+        return sorted(os.path.relpath(os.path.join(d, f), self.tmp) for d, _, fs in os.walk(self.tmp) for f in fs)
+
+    def test_without_n_it_lists_the_confirmed_cases_and_writes_nothing(self):
+        before = self.files()
+        p = self.run_cli()
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertIn("confirmed  2 case(s)", p.stdout)
+        self.assertIn("case-fx-lammps-a  supports 5", p.stdout)
+        self.assertIn("UNDECIDED", p.stdout)
+        self.assertEqual(self.files(), before)
+
+    def test_emit_without_n_is_refused(self):
+        p = self.run_cli("--emit", "kb_candidate", "--seat", SEAT)
+        self.assertNotEqual(p.returncode, 0)
+        self.assertIn("N is the person's and has no default", p.stderr)
+
+    def test_eligibility_is_confirmed_and_supports_at_or_above_n(self):
+        self.assertEqual([c["id"] for _, c in promote.eligible(self.store, 2)], ["case-fx-lammps-a", "case-fx-shear-range"])
+        self.assertEqual([c["id"] for _, c in promote.eligible(self.store, 5)], ["case-fx-lammps-a"])
+        self.assertEqual(promote.eligible(self.store, 6), [])
+        for bad in (0, -1, None, True):
+            with self.assertRaises(ValueError):
+                promote.eligible(self.store, bad)
+
+    def test_n_alone_lists_and_writes_nothing(self):
+        before = self.files()
+        p = self.run_cli("--n", "5")
+        self.assertIn("eligible   1 of 2 confirmed case(s) with count.supports >= 5", p.stdout)
+        self.assertIn("nothing written", p.stdout)
+        self.assertEqual(self.files(), before)
+
+    def test_the_drafts_pass_the_validator_and_no_case_changes(self):
+        with open(os.path.join(self.store, "index.json"), "rb") as f:
+            index_before = f.read()
+        p = self.run_cli("--n", "2", "--emit", "kb_candidate", "--seat", SEAT, "--now", NOW,
+                         "--out", os.path.join(self.tmp, "knowledge", "candidates"))
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        p = self.run_cli("--n", "2", "--emit", "reshape", "--seat", SEAT, "--now", NOW,
+                         "--out", os.path.join(self.tmp, "harness", "proposals"))
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertIn("landed nothing", p.stdout)
+        with open(os.path.join(self.tmp, "knowledge", "candidates", "kbc-fx-shear-range.json"), encoding="utf-8") as f:
+            prior = json.load(f)
+        self.assertEqual((prior["source"], prior["value_kind"], prior["grade"], prior["status"]),
+                         ("prior_run:fixture-repo@0000000 failures.jsonl:1", "measured", "E3", "draft"))
+        self.assertEqual(prior["origin"]["case_ref"], "case-fx-shear-range")
+        self.assertEqual(prior["conditions"]["condition_tags"], ["shear_rate_1/s:1e-2..1e3"])
+        with open(os.path.join(self.tmp, "knowledge", "candidates", "kbc-fx-lammps-a.json"), encoding="utf-8") as f:
+            own = json.load(f)
+        self.assertEqual((own["source"], own["value_kind"], own["grade"]), ("assumed:case-fx-lammps-a", "estimated", "E5"))
+        with open(os.path.join(self.tmp, "harness", "proposals", "HP-fx-lammps-a.json"), encoding="utf-8") as f:
+            hp = json.load(f)
+        self.assertEqual((hp["kind"], hp["status"], hp["answers"], hp["persons_words"]), ("reshape", "draft", ["case-fx-lammps-a"], None))
+        with open(os.path.join(self.store, "index.json"), "rb") as f:
+            self.assertEqual(f.read(), index_before)
+        self.assertIsNone(rules.index_problem(self.store))
+        v = subprocess.run([sys.executable, VALIDATE, self.tmp, "--strict"], capture_output=True, text=True, env=self.env)
+        self.assertEqual(v.returncode, 0, v.stdout + v.stderr)
+        self.assertIn("9 cards", v.stdout)
+
+    def test_a_candidate_is_never_graded_better_than_its_case(self):
+        case = {"id": "case-x", "grade": "E5", "source_repo_commit": "abc", "evidence": [{"kind": "commit", "ref": "r@abc f:1"}]}
+        self.assertEqual(promote.source_of(case), ("assumed:case-x", "estimated", "E5"))
+        case = {"id": "case-y", "grade": "E1", "evidence": [{"kind": "run", "ref": "run-001"}]}
+        self.assertEqual(promote.source_of(case), ("measured:run-001", "measured", "E1"))
+        case = {"id": "case-z", "grade": "E3", "evidence": [{"kind": "run", "ref": "run-001"}]}
+        self.assertEqual(promote.source_of(case), ("assumed:case-z", "estimated", "E5"))
 
 
 if __name__ == "__main__":
