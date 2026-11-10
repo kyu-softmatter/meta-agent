@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261109-2",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "010",
+  "answers": null,
+  "text": "For the seat that holds meta_agent/src/designer.py (I did not touch it). Two things changed under it in c95b43a: template.SOURCE is now template_v2, so designer.run builds from agent@79909cd133f1 (v1 and agent@21f0dd569975 stay; test_designer passes unchanged), and bundle.compose takes two optional arguments, skills=catalogue.take([\"<id>@v<n>\", ...]) and subagents=[{name, description, skills, side_effects}], and fills the Subagents section itself. What the designer still needs before a request can be built with skills, and is yours: run() passes one tool (intake[\"tool_contract\"]) and no skills; a rheometer bundle needs several tools and the drawing. The mapping I used is build_rheo_bundle in meta_agent/tests/test_skills.py, on meta_agent/tests/fixtures/rheometer/bundle/intake.json. Where the drawing lives on the spec waits for the design role (my ask 20261109-meta-macbook-20261109-2-1).",
+  "written_at": "2026-11-09T18:26:51-08:00"
+}
