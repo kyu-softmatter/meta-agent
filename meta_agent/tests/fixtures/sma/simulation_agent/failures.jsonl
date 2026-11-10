@@ -1,0 +1,3 @@
+{"at": "2026-01-05T10:00:00Z", "kind": "success", "task": "001-fixture", "detail": {"what": "a fixture: the replay passed on the first run"}}
+{"at": "2026-01-06T11:30:00Z", "kind": "refusal", "qid": "sim-fixture-001", "detail": {"what": "a fixture: the run on hoomd was refused because the time step had no bound", "why": "no stability condition was on the parameter sheet", "what_is_left": "a run once a person has given the bound", "closes_by": "the bound on the sheet", "who_decides": "the person"}}
+{"at": "2026-01-07T09:15:00Z", "kind": "deviation", "occasion": "fixture-frames", "detail": {"seat": "simulation-fixture", "planned": "a fixture: ten frames of tracer_diffusivity data", "actual": "a fixture: nine frames"}}

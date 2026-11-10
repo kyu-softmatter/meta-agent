@@ -1,0 +1,1193 @@
+{
+ "note": "cue, lesson and falsification for the seeds of seed_sma.py, by case id: the model's drafts from each line (meta-macbook-20261109-1 and its drafting subagents, 2026-11-09), read by the script and never derived by it. They stay drafts until the person confirms.",
+ "case-sma-librarian-001": {
+  "cue": "a fact needs recording but the knowledge store has no source kind that honestly describes where it came from, so the nearest existing kind would carry the wrong grade",
+  "lesson": "Add the missing source kind to the knowledge store's source vocabulary through its owner and park the fact in staging until then, never filing it under the nearest existing prefix.",
+  "falsification": "Entries filed under the nearest existing prefix for such facts are later shown to carry the correct grade and to mislead no consumer."
+ },
+ "case-sma-librarian-002": {
+  "cue": "a rule forbids one verb on a shared store while consumers are pinned to its version, but the version hash depends on every entry, so other verbs move it equally",
+  "lesson": "Make the librarian's instructions state the rule as any change that moves the store version, and require a check of active pins before any entry edit.",
+  "falsification": "An entry edit that moves the store version is shown to leave a pinned fan-out working with no refusal and no blocked sibling."
+ },
+ "case-sma-librarian-003": {
+  "cue": "a session is about to report on a plan or contract section using a copy loaded into context at start, while other seats commit changes to that file",
+  "lesson": "Make the seat's instructions require re-reading any plan or contract section from disk immediately before reporting on it, treating loaded context as memory rather than evidence.",
+  "falsification": "Reports made from the context copy are found to match the on-disk section at report time just as often as reports made after a re-read."
+ },
+ "case-sma-librarian-004": {
+  "cue": "a vendor specification entered with the correct grade is served as uncontested while a person has already measured a conflicting value on the actual instrument",
+  "lesson": "Mark a contested entry on both sides, and make the knowledge store's query tool deliver conflict and supersession fields to every caller so a screening fan-out sees them.",
+  "falsification": "Callers using the query projection without conflict fields still never build on a contradicted entry, for example because they always call the full getter."
+ },
+ "case-sma-librarian-005": {
+  "cue": "two sessions of one agent share a working copy and both pick the same open task from a queue that allocates per agent rather than per session",
+  "lesson": "Make the task queue tool or the seat's instructions require claiming a path or task by message or claim file before the first write, not before the commit.",
+  "falsification": "Two sessions of one agent sharing a folder reach the queue's open tasks repeatedly without a duplicate write when no claim step exists."
+ },
+ "case-sma-librarian-006": {
+  "cue": "a session defers or abandons work and reports it only in a message to a manager, leaving no trace on disk for a later session to find",
+  "lesson": "Make the seat's instructions require writing every deferral or dead end into the failure log on disk before any message about it is sent.",
+  "falsification": "Later sessions routinely recover deferred items from manager messages or summaries alone, with no loss after a context clear."
+ },
+ "case-sma-librarian-007": {
+  "cue": "a session reports counts or open items about its own recent work from memory while the gate or git can print the exact figures",
+  "lesson": "Make the seat's instructions require reading every count and open-item status about one's own work off a fresh run, and reading the gate's printed tree line before committing.",
+  "falsification": "Counts and status reported from memory about own work match a fresh run every time, including across other seats' commits made minutes earlier."
+ },
+ "case-sma-librarian-008": {
+  "cue": "a session is about to state what a validator check will do after some change, inferring it from a true premise read elsewhere in the registry",
+  "lesson": "Make the seat's instructions require opening the check's code or docstring before stating its behaviour to anyone, and treat behaviour claims like counts that must be read off a source.",
+  "falsification": "Behaviour claims about checks made without opening the check prove accurate over many cases, so the extra reading finds nothing."
+ },
+ "case-sma-librarian-009": {
+  "cue": "an error is being corrected and its blast radius is assessed only by recalling who was told, although the false claim was also written into a committed file",
+  "lesson": "Make the correction procedure search the tree for the claim's text before writing the blast radius, and send any filed copy to the owner of that file.",
+  "falsification": "Wrong claims that were spoken but also filed are never found by a text search of the tree, so the search adds nothing."
+ },
+ "case-sma-librarian-010": {
+  "cue": "a query for a quantity returns entries, yet the missing piece is the subject itself, such as an unidentified material, so the gap is invisible at the quantity handle",
+  "lesson": "Record such a gap against the subject, and tag the store's entries with a class handle so the query tool returns the related items while showing the absent medium.",
+  "falsification": "Callers reliably notice a missing subject from a quantity query alone, without any class handle that returns related items and no medium."
+ },
+ "case-sma-librarian-011": {
+  "cue": "a script edits a shared hand-formatted JSON file by loading and dumping it, so one small change rewrites most lines while every check still passes",
+  "lesson": "Edit shared hand-formatted JSON by text splice, or round-trip the unchanged file first and diff it against itself, and read the diff stat before every commit.",
+  "falsification": "Load-and-dump rewrites of such files cause no merge conflicts or review difficulty across shared seats."
+ },
+ "case-sma-librarian-012": {
+  "cue": "a session starts work from a task's status line, which is prose that another seat may have rewritten or left stale, and repeats work already committed",
+  "lesson": "Make the task tool or the seat's instructions require checking the task's output artefact in git history before starting, rather than trusting the status line.",
+  "falsification": "Task status lines prove consistent with the tree whenever sessions start from them, with no duplicated work observed."
+ },
+ "case-sma-librarian-013": {
+  "cue": "a session repeats a formatter round trip on a shared file even after reading a record that names that exact hazard",
+  "lesson": "Put the diff-stat read as a required step in the commit procedure of the seat's instructions, since reading the warning does not prevent the mistake.",
+  "falsification": "Sessions that have read the failure record avoid whole-file rewrites without any diff-stat step in the procedure."
+ },
+ "case-sma-librarian-014": {
+  "cue": "two live seats of one agent edit the same source function in a shared working copy, and a clean status taken earlier is already stale at write time",
+  "lesson": "Require seats to claim a path by message before the first write, and never restore a shared file with checkout, which discards the other seat's uncommitted lines.",
+  "falsification": "Concurrent seats edit the same file without collision when they only check status immediately before writing."
+ },
+ "case-sma-librarian-015": {
+  "cue": "a report is owed to a manager session that may end before delivery, and a message would die with the session",
+  "lesson": "Write the report into a record on disk and commit it, treating messages as notifications only, and offer a dedicated record kind for reports.",
+  "falsification": "Reports sent only as messages reach their addressee reliably even when the addressee session has ended."
+ },
+ "case-sma-librarian-016": {
+  "cue": "a person's decision or policy is filed in a claim store whose schema requires a grade, so the decision gets a grade it must not have",
+  "lesson": "File decisions and policies as source records outside the knowledge entries, and make the librarian's instructions reject any entry that needs a paragraph to explain why it almost fits.",
+  "falsification": "Graded entries holding decisions are shown to be consumed correctly and never mistaken for claims about the world."
+ },
+ "case-sma-librarian-017": {
+  "cue": "a session runs pre-commit checks on a file that other processes append to, then commits the path, so extra lines land unchecked",
+  "lesson": "Re-run the strict-prefix check after the commit against the new head, and state the append claim in the message only after that run.",
+  "falsification": "Append-only logs written by running servers show no growth between the pre-commit check and the commit that would need a post-commit check."
+ },
+ "case-sma-librarian-018": {
+  "cue": "a session calls a gap a new pattern from the few log lines in front of it, while the same quantity was asked earlier under different names",
+  "lesson": "Make the librarian's instructions require counting the quantity over the whole query log, not the name, and checking enum values against the schema before filing.",
+  "falsification": "Patterns judged from a recent window agree with counts over the whole log, even when the quantity was renamed."
+ },
+ "case-sma-librarian-019": {
+  "cue": "a session infers what a knowledge entry contains from the fact that it answered a query or from a quoted clause",
+  "lesson": "Make the librarian's instructions require opening the entry before any claim about what the store holds, since query coverage shows matching subjects, never contents.",
+  "falsification": "Entries that answer a query reliably carry the operand the claim assumes, so coverage alone predicts contents."
+ },
+ "case-sma-librarian-020": {
+  "cue": "a control experiment for a line-ending problem hashes an archive export, which applies the same conversion as checkout and so is not independent",
+  "lesson": "Use the object store through cat-file or show for the unconverted committed bytes when testing checkout conversion, never archive or checkout output.",
+  "falsification": "Archive output differs from checkout output on a converting platform, so it would serve as an independent control."
+ },
+ "case-sma-librarian-021": {
+  "cue": "an agent edits store entries while its own self-test holds a pinned store version, so the pinned version no longer exists",
+  "lesson": "Make the librarian's instructions forbid edits to the entries folder while any self-test or pinned caller runs; finish edits, then test, then commit.",
+  "falsification": "Self-tests pinned to an uncommitted version complete successfully after the working tree has moved."
+ },
+ "case-sma-librarian-022": {
+  "cue": "a seat reads a source tree outside its permitted paths because the reason seems good, although the same fact was already in a permitted findings record",
+  "lesson": "Make the seat's instructions require citing the committed findings note first and treat the read boundary as unbending for good reasons.",
+  "falsification": "Permitted findings records often lack facts that only an out-of-boundary read provides, so the boundary blocks needed work."
+ },
+ "case-sma-librarian-023": {
+  "cue": "a script edits a shared device table by parsing and re-serializing it, rewriting hand-kept formatting and burying the real change in noise",
+  "lesson": "Edit shared hand-formatted tables with targeted text edits and read the diff stat before committing any table.",
+  "falsification": "Re-serialized tables stay within a few changed lines of the intended edit, so reviewers can still see the real change."
+ },
+ "case-sma-librarian-024": {
+  "cue": "numbers are expressed in a model's reduced units that each paper defines differently, and the unit registry holds none of them",
+  "lesson": "Do not register a reduced unit without its source paper attached; keep such values in the source record as stated and enter only dimensionless numbers, counts and thermal energy.",
+  "falsification": "A single registered reduced unit is shown to be comparable across the papers that use it, with no silent equating."
+ },
+ "case-sma-librarian-025": {
+  "cue": "a unit is registered in the vocabulary but has no conversion factor, so any query bound in that unit is refused before entries are read",
+  "lesson": "Check whether a unit converts before using it as a validity bound, and keep non-convertible quantities in numbers with conditions in prose.",
+  "falsification": "The query tool accepts bounds in units without conversion factors and compares them correctly."
+ },
+ "case-sma-librarian-026": {
+  "cue": "regime boundaries or thresholds in a paper exist only as rendered figures, which a model can read off only as ungraded estimates",
+  "lesson": "Enter only what the text states, such as a threshold, a direction or one example point, and list figure-only results as not entered in the source record.",
+  "falsification": "Values read off rendered figures by a model turn out to match the published numbers closely enough to be entered."
+ },
+ "case-sma-librarian-027": {
+  "cue": "a source states one quantity twice with different values for what appears to be the same condition",
+  "lesson": "Enter neither value; record the quantity under the source's not-entered list with a note that the source gives no single value.",
+  "falsification": "The two statements prove to describe different conditions, so each could have been entered separately with its own condition."
+ },
+ "case-sma-librarian-028": {
+  "cue": "a generator script fixes a session identity into a constant, and a later identity correction in conversation never reaches the constant",
+  "lesson": "When a seat's identity changes, grep the generator scripts for the old identity and regenerate affected artifacts, since no check reads the curator field.",
+  "falsification": "Identity constants in generators are re-read per run, so a conversational correction always reaches the artifacts."
+ },
+ "case-sma-librarian-029": {
+  "cue": "a store publish regenerates only some of the generated files that name the store version, leaving guides or exports stale",
+  "lesson": "List every generator in the librarian's instructions and run each generator's check before committing a publish.",
+  "falsification": "Stale generated files that name an older store version cause no consumer confusion and need no regeneration."
+ },
+ "case-sma-librarian-030": {
+  "cue": "numbers for entry come from a large vendor page read through a summarising fetch tool that truncates the page before the specification table",
+  "lesson": "Fetch the raw page with a direct download, read the specification rows from the markup, and record a hash of the page in the source record.",
+  "falsification": "Summarising fetch tools return complete and accurate specification tables for large vendor pages."
+ },
+ "case-sma-librarian-031": {
+  "cue": "a field added to a query answer is also written to the query log, whose record shape is fixed and refuses unknown fields",
+  "lesson": "Keep the log line unchanged when widening an answer, unless the log's schema and every reader of it are widened together.",
+  "falsification": "The query log's record check accepts new fields without change, so adding them to the log line is harmless."
+ },
+ "case-sma-librarian-032": {
+  "cue": "a manufacturer publishes no figure for a consumable, and a reseller page is blocked for command-line fetches or conflicts with another reseller",
+  "lesson": "Read blocked pages in the browser pane as a person would, name the reseller as source, and seek a second reseller before treating one as settled.",
+  "falsification": "Manufacturer documents reliably state the figure, so no reseller sourcing is needed."
+ },
+ "case-sma-librarian-033": {
+  "cue": "a figure quoted in configs as from a datasheet cannot be traced because the vendor link returns a web page instead of the document and no seat has read the document",
+  "lesson": "Record the inventory row as having no traceable origin and leave the figure out of the store until a person supplies the datasheet.",
+  "falsification": "The quoted figure is later found in the vendor document unchanged, so entering it from the configs would have been safe."
+ },
+ "case-sma-simulation-001": {
+  "cue": "a seat cannot reach a knowledge service its task requires, and a partial pass without it would misrepresent what the revision is",
+  "lesson": "Record the abandoned attempt as its own row naming the missing service and refuse a degraded partial pass, and state each falsifier as a state that must obtain rather than a document that would arrive.",
+  "falsification": "A degraded partial pass is later shown to cost nothing in comparability, or a falsifier naming a document fires as reliably as one naming a state."
+ },
+ "case-sma-simulation-002": {
+  "cue": "a seat reads other agents' directories through broad repository-wide sweeps when the answer sat inside its own boundary and its allowed paths",
+  "lesson": "Scope searches to the seat's own tree and the paths named by the task, and report any crossing read as a deviation instead of reading further.",
+  "falsification": "Boundary-crossing reads turn out to give conclusions that are reachable inside the boundary no less often than not, so scoped searches lose nothing."
+ },
+ "case-sma-simulation-003": {
+  "cue": "a service is silently absent in a seat's session and each seat records only the symptom, guessing a cause it cannot verify from inside",
+  "lesson": "Append a corrected row when a cause turns out wrong rather than editing the earlier one, and name who can repair the cause instead of trying to repair it from inside the seat.",
+  "falsification": "The first named cause proves right every time, so corrected rows are never needed."
+ },
+ "case-sma-simulation-004": {
+  "cue": "a configuration file that is untracked and globally ignored holds an override nobody can audit, and several seats diagnose from other files",
+  "lesson": "Require the validator or the bootstrap tool to report local settings files that disable a registered server, so a hidden refusal is visible to every seat.",
+  "falsification": "Seats find the hidden override quickly from tracked files alone, so an extra report adds nothing."
+ },
+ "case-sma-simulation-005": {
+  "cue": "a test set by an earlier row has now run, and registration was read while no actual call has been made",
+  "lesson": "Keep recording a connected-service reading as registration only, distinct from the service answering, until a real call returns.",
+  "falsification": "A registered and connected server has never failed to answer, so the distinction is unnecessary."
+ },
+ "case-sma-simulation-006": {
+  "cue": "a person edits an untracked settings file while a seat is mid-task, and its new content resembles a different file's format",
+  "lesson": "Append a correction row noting the changed content and that it does not establish a per-project enable, rather than editing the earlier row or inferring a mechanism.",
+  "falsification": "The file keeps its shape between reads, so no correcting row is needed."
+ },
+ "case-sma-simulation-007": {
+  "cue": "a card names one defect in input handling and the real behaviour varies across many shape and budget combinations",
+  "lesson": "Exercise every combination of malformed shape and mode on the operator's envelope reader and guard the type before the membership test, naming the type found.",
+  "falsification": "The single shape the card named proves to be the only combination that misbehaves."
+ },
+ "case-sma-simulation-008": {
+  "cue": "a seat declines a reachability probe out of caution about polluting a log without having read how the log records refusals",
+  "lesson": "Read the query log's recording of refused calls before declining a probe, then use a clearly marked probe call to establish that the service answers.",
+  "falsification": "Refused probes appear in the log under a question's own caller identity and corrupt its checks."
+ },
+ "case-sma-simulation-009": {
+  "cue": "a seat tests a guard by writing a protected person-only file in a loop through a shell tool the deny list does not match",
+  "lesson": "Point the module's path attribute at a scratch copy when testing guards, and never write the protected file, restoring any change from version control without touching the index.",
+  "falsification": "Redirecting to a scratch copy changes the guard's behaviour, so only the live file gives a faithful test."
+ },
+ "case-sma-simulation-010": {
+  "cue": "a deny list on write tools refuses a read through one tool while allowing a write through another",
+  "lesson": "Test the deny entries by attempting the intended operation in its exact form, and have the settings check judge the refusal effect rather than the entry's spelling.",
+  "falsification": "Deny entries refuse exactly the operations they spell out across all tools, so spelling-based checking suffices."
+ },
+ "case-sma-simulation-011": {
+  "cue": "two seats run what they call the same read and get opposite answers from the permission matcher",
+  "lesson": "Attempt each operation in the exact phrasing it will be used in and record the phrasing alongside any refusal claim, since a colleague's success proves nothing for another form.",
+  "falsification": "The matcher's outcome depends only on the target path and not on the phrasing of the command."
+ },
+ "case-sma-simulation-012": {
+  "cue": "a hypothesis about a second cause is open and the earlier probe still had a repository-scope enable in place",
+  "lesson": "Run the distinguishing test with every override removed, and record the result so that the reasoning from per-project arrays is retired.",
+  "falsification": "A test with an enable still present separates the causes just as well as one without it."
+ },
+ "case-sma-simulation-013": {
+  "cue": "a seat reports the shared head as failing after checking cleanliness of only the data side of a comparison",
+  "lesson": "Read the validator's tree line first and confirm every input including the checker itself is clean before attributing a failure or reporting a red head.",
+  "falsification": "The data side being clean is enough to attribute a failure on a shared working copy."
+ },
+ "case-sma-simulation-014": {
+  "cue": "a falsifier fires on a measurement taken on a stand-in backend that does not exercise the quantity being estimated",
+  "lesson": "Narrow the plan card's falsifier to name the backend the job will use, and do not substitute a stand-in measurement for an estimate of an engine job.",
+  "falsification": "Stand-in backend measurements track the real engine's cost closely enough to replace the estimate."
+ },
+ "case-sma-simulation-015": {
+  "cue": "two seats edit the same file in a shared worktree and a path-scoped commit carries the other seat's hunks under its identity",
+  "lesson": "Stage by hunk or confirm via a diff that a file holds only the seat's own edits before a path-scoped commit, and declare held files where other seats can see them.",
+  "falsification": "Path-scoped commits never carry another seat's uncommitted hunks."
+ },
+ "case-sma-simulation-016": {
+  "cue": "a required schema field has no honest value among its enumerated members and only untrue values make the gate pass",
+  "lesson": "Raise the missing enumeration member to the schema's owner and leave the field unwritten rather than choose a value that is untrue.",
+  "falsification": "One of the existing members is shown to describe the case truthfully."
+ },
+ "case-sma-simulation-017": {
+  "cue": "a seat measures an artifact that does not contain the thing being estimated and then charges the ratio to the plan's estimate",
+  "lesson": "Measure the quantity on an artifact that contains it, state the comparand, and issue a correction row instead of quoting a ratio whose direction depends on the comparand.",
+  "falsification": "The measured directory later proves to contain the estimated quantity."
+ },
+ "case-sma-simulation-018": {
+  "cue": "a result card passes the validator while most of what the contract says about it is shadowed or unchecked",
+  "lesson": "Mutate one card field at a time and rerun the validator to list what each check actually enforces, then raise the unenforced fields to the validator's owner.",
+  "falsification": "Every mutation of a card field is already refused by a check for its own reason."
+ },
+ "case-sma-simulation-019": {
+  "cue": "a milestone's completion condition rests on a property no declared check names",
+  "lesson": "Declare in the plan's check list a check that compares a result card's numbers with the run it cites, before counting the milestone's gate closed.",
+  "falsification": "Implementing the existing declared checks already yields the traceability the completion condition asks for."
+ },
+ "case-sma-simulation-020": {
+  "cue": "a store entry's support names a mechanism the engine configuration does not have",
+  "lesson": "Replace the support's mechanism with the true one and name the configuration and the backend that confirmed it, in the knowledge store's entry.",
+  "falsification": "The configuration later gains inertia so the named mechanism becomes real."
+ },
+ "case-sma-simulation-021": {
+  "cue": "a card writer is run only on successful runs while refusal branches stay unexercised and its schema cannot express non-evaluability",
+  "lesson": "Run the card writer against synthetic failed and short runs from a scratch directory and give criteria a way to report that they were not evaluable.",
+  "falsification": "Refusal branches behave correctly on real failed runs without any synthetic exercise."
+ },
+ "case-sma-simulation-022": {
+  "cue": "a verdict would be asserted on a fit that did not run as declared, or on a metric the record does not carry",
+  "lesson": "Emit a null verdict with a stated reason in the result card writer when the estimator did not follow its declaration or the metric is absent, while keeping the observed number.",
+  "falsification": "Verdicts on such runs prove as reliable as verdicts on well-formed runs."
+ },
+ "case-sma-simulation-023": {
+  "cue": "a hardcoded first-revision filename is opened by a module that handles later revisions",
+  "lesson": "Resolve the plan file from the revision the run itself recorded in the card writer, and keep the hash as the second independent gate.",
+  "falsification": "The latest revision always equals the revision a finished run carried."
+ },
+ "case-sma-simulation-024": {
+  "cue": "a revision declares a criterion against a quantity no record carries and the first run on a new revision is requested ahead of the engine",
+  "lesson": "Add the missing computation to the engine adapter before running, and let the card writer refuse until each declared criterion is backed by a recorded quantity.",
+  "falsification": "The declared criterion can be evaluated from quantities the record already carried."
+ },
+ "case-sma-simulation-025": {
+  "cue": "two engine adapters or both sides of a comparison each hold their own copy of an estimator or physical constants, so a claim of comparability cannot be demonstrated",
+  "lesson": "Extract the shared estimator and physics constants into one module that every engine adapter calls, and prove the extraction by rebuilding existing result cards byte-identical.",
+  "falsification": "Separate per-adapter copies stay in agreement through many later changes, or a rebuilt card differs after extraction although behavior did not change."
+ },
+ "case-sma-simulation-026": {
+  "cue": "a bulk migration of one field in an append-only ledger is specified by a task card that names which rows should move",
+  "lesson": "Read each row's detail before moving it to the new field, and record the migration itself as a new row saying what changed in place and why.",
+  "falsification": "Moving rows by the card's list alone never misclassifies a row, or later readers never need the trace row to understand the modified lines."
+ },
+ "case-sma-simulation-027": {
+  "cue": "a session identity must be registered, and the registry is read at the commit's parent, so late registration cannot attribute earlier commits",
+  "lesson": "Make the seat's instructions require a seat to ask for its own registration directly, before its first commit, rather than waiting to be told or routing the request through a report.",
+  "falsification": "The gate attributes earlier commits retroactively once a seat is registered, or unattributed early commits turn out to cost nothing."
+ },
+ "case-sma-simulation-028": {
+  "cue": "a task card prescribes a fix to unblock a validator refusal, but two rules in different files contradict each other so the fix cannot satisfy the check",
+  "lesson": "Before applying a prescribed fix, read the validator and its rejected fixture to see which field the check compares, and report the rule conflict to the owner instead of editing code.",
+  "falsification": "Applying prescribed fixes without that reading routinely unblocks the check, or the fixture shows the compared field is the one the card named."
+ },
+ "case-sma-simulation-029": {
+  "cue": "a hand-over made by message leaves no trace on disk until the receiver acts, and pinned hashes or supersession rules are easy to get subtly wrong",
+  "lesson": "Write a ledger row recording the exact pin as sent, after verifying the hash convention and supersession test on the real files rather than on other seats' reports.",
+  "falsification": "The receiver's thread always appears promptly and names the sender, making the sender-side row redundant, or reported conventions never differ from verified ones."
+ },
+ "case-sma-simulation-030": {
+  "cue": "an evidence field defaults to degraded and clears only when a reply arrives, so components that never issue a query stay degraded forever",
+  "lesson": "Make the evidence builder distinguish not asked from not answered, and state success conditions that components issuing no query can satisfy.",
+  "falsification": "Components that issue no query never show as degraded in cards, or the success condition is met by every component without the distinction."
+ },
+ "case-sma-simulation-031": {
+  "cue": "reverting a file with a checkout in a working copy that several seats share",
+  "lesson": "Save the path's diff outside the tree before any revert of a shared path, and confirm the uncommitted edits are only your own, since checkout discards every seat's work there.",
+  "falsification": "Reverts of shared paths never destroy another seat's work across many occasions, or a path-scoped undo of only one's own edits exists."
+ },
+ "case-sma-simulation-032": {
+  "cue": "a run record names its backend through an attribute lookup with a default, so a missing attribute silently produces a false claim",
+  "lesson": "Make the operator read the backend's name without a fallback so a backend lacking one fails loudly, and keep a mislabeled run unrepaired beside its corrected rerun as evidence.",
+  "falsification": "Every backend always carries a name by construction, or the default never yields a label that differs from the executed backend."
+ },
+ "case-sma-simulation-033": {
+  "cue": "a run tool writes into a run directory whose id was picked by hand from a listing, in a tree where several seats run sweeps",
+  "lesson": "Make the operator refuse a run id whose directory already exists, and read the commit's numstat for deletions before accepting a commit that should only add files.",
+  "falsification": "Hand-picked ids never collide in practice, or the refusal blocks legitimate reruns that a plan requires."
+ },
+ "case-sma-simulation-034": {
+  "cue": "prose or comments state a count or a status recalled from memory, and go stale or wrong as runs land",
+  "lesson": "Replace counts in headers and comments with a figure counted from the run logs, carrying its date and the command that produced it, or point to the logs instead of stating a number.",
+  "falsification": "Counts written in prose stay correct without maintenance, or a command-counted figure is later found wrong in the same way."
+ },
+ "case-sma-simulation-035": {
+  "cue": "a parked falsifier names a backend or a present-tense fact about the machine rather than an artefact the repository can show",
+  "lesson": "Write each falsifier on a state re-derivable from the tree, such as a run holding the declared trajectory, and fix the generator while leaving the committed card for the next revision.",
+  "falsification": "Falsifiers naming a backend fire only when the intended evidence exists, or the corrected conditions still misfire."
+ },
+ "case-sma-simulation-036": {
+  "cue": "a person requests a physical model that the capability declaration does not list, and the agent cannot write that declaration",
+  "lesson": "Have the screening step refuse with a card listing counterexamples and alternatives instead of building an undeclared backend, and register new observables before planning.",
+  "falsification": "Building the backend first and declaring it afterward is accepted without objection by the person, or the capability table already holds a fitting configuration."
+ },
+ "case-sma-simulation-037": {
+  "cue": "several seats choose question ids in a shared namespace with no allocator, and a broad directory commit sweeps in another seat's untracked file",
+  "lesson": "Commit the empty but named question folder first to claim the id, and stage only files you wrote rather than a whole directory.",
+  "falsification": "Chosen ids never collide in practice, or a committed folder is still written into by a peer under the same id."
+ },
+ "case-sma-simulation-038": {
+  "cue": "a server accepts several issued identifier forms but the launcher meant to compose them issues only one, so seats hand-compose the others",
+  "lesson": "Add an issuer function to the launcher for every identifier form the server accepts that a stage needs, and test it against the server's own pattern function rather than a docstring.",
+  "falsification": "Hand-composed identifiers never diverge from the server's accepted pattern, or the server can itself tell issued ids from hand-composed ones."
+ },
+ "case-sma-simulation-039": {
+  "cue": "a planning function documented as derived from the goal hardcodes symbols and ranges for one configuration, and fails or misleads for others",
+  "lesson": "Make the query planner stop with a sentence naming the missing input, and record per configuration which symbols it needs rather than narrowing the shared function while peers depend on it.",
+  "falsification": "All registered configurations share the same symbols and ranges, so the hardcoding never produces a wrong query."
+ },
+ "case-sma-simulation-040": {
+  "cue": "committing by path after a refused attempt in a shared working copy, while another seat edits a file in the same paths",
+  "lesson": "Rerun the hunk-level diff of the named paths immediately before every retry of a commit, since a name-level listing cannot show foreign hunks inside files you mean to commit.",
+  "falsification": "Foreign hunks never arrive between a refused attempt and the retry, or the name-level listing is shown to reveal them."
+ },
+ "case-sma-simulation-041": {
+  "cue": "several seats report contradictory states of one file, each true when measured, and the validator output carries no time to order them",
+  "lesson": "Have the validator's verdict line carry the time of the run beside the commit and dirty-set digest, and re-measure before acting on another seat's report of a broken tree.",
+  "falsification": "Contradictory reports are resolved without any timestamp, or seats always re-measure and never act on stale reports."
+ },
+ "case-sma-simulation-042": {
+  "cue": "a commit hash is cited as provenance after measuring from a position that a ref race has made unreachable",
+  "lesson": "Check that each cited commit is an ancestor of the current head at the moment of citing, and have the commit tool report a lost ref update.",
+  "falsification": "Ref races never leave a cited commit unreachable, or the commit tool already detects lost updates."
+ },
+ "case-sma-simulation-043": {
+  "cue": "a prose claim about how cost scales is written into a card without computing the quantity at both ends of the swept range",
+  "lesson": "Compute the quantity at both corners of the swept range before stating a scaling claim in a card, and when wrong, state the corrected relation and which half was wrong instead of silently replacing it.",
+  "falsification": "Scaling sentences written from reasoning alone prove right when checked, or the corners never differ from the claim."
+ },
+ "case-sma-simulation-044": {
+  "cue": "a shared estimator holds a model property such as dimensionality as a module constant, so newly declared configurations yield plausible but wrong numbers",
+  "lesson": "Declare dimensionality as a field of the capability declaration and have the estimator read it and fail when absent, before any run of a configuration with a different value executes.",
+  "falsification": "Every declared configuration shares the same dimensionality, or an existing check already catches a wrong-dimension run."
+ },
+ "case-sma-simulation-045": {
+  "cue": "a capability declaration names an engine for a model whose code path does not exist, and nobody has shown the engine can do it",
+  "lesson": "Probe the engine in scratch against a closed form before starting card work, and keep the probe outside the tree and ungraded.",
+  "falsification": "Declared engine capabilities always prove executable once implemented, making the early probe redundant."
+ },
+ "case-sma-simulation-046": {
+  "cue": "physics answers are produced by driving a backend directly because the plan synthesis table lacks an entry for the configuration",
+  "lesson": "Add the missing configuration entry to the plan synthesis table before running, or label direct-driven results as not card-backed in the first paragraph of their report.",
+  "falsification": "Unlabeled direct-driven results are used downstream without confusion, or the synthesis table always covers every declared configuration."
+ },
+ "case-sma-simulation-047": {
+  "cue": "a collapse or scaling test compares runs that differ only by an exact rescaling under one shared seed, so agreement is free",
+  "lesson": "Vary the seed independently across the arms of any test whose arms differ by an exact rescaling, and treat a perfect agreement as a signal to check rather than a result.",
+  "falsification": "Identical-seed arms show spread comparable to independent-seed arms, so seed sharing hides nothing."
+ },
+ "case-sma-simulation-048": {
+  "cue": "a validator criterion compares a named metric against a physical threshold, but the producing backend fills the field with a coarser quantity than the name says, and earlier runs passed for the wrong reason",
+  "lesson": "Make each engine adapter compute a guarded metric at the granularity its name and the criterion's threshold state, and keep any coarser quantity under its own distinct field name.",
+  "falsification": "Runs in the regime where the coarse and fine quantities differ most still pass or fail identically under both definitions, so the distinction changes no verdict."
+ },
+ "case-sma-simulation-049": {
+  "cue": "a budget or feasibility claim is formed in prose in a goal note or commit message from one bound, while several bounds apply and no check reads that prose",
+  "lesson": "Have the plan stage compute each per-point quantity as a card field from all applicable bounds, taking the tightest, instead of stating the product in notes.",
+  "falsification": "Counting every cell against all bounds in a card gives the same figures as the earlier prose claims across the whole sweep."
+ },
+ "case-sma-simulation-050": {
+  "cue": "a validator check reads only the top-level conditions of a plan, while a required condition legitimately varies per point of a sweep and so has no place the check will look",
+  "lesson": "Extend the validator check to read per-point conditions in sweep entries and require the varying condition at every kept point, so a correct sweep plan passes.",
+  "falsification": "A sweep plan with a per-point value of that condition passes the unchanged check, or no observable's condition ever varies across sweep points."
+ },
+ "case-sma-simulation-051": {
+  "cue": "a first smoke run of a new engine configuration meets its criteria, and a seed ensemble is needed to judge an error model while small ensembles show false alarms",
+  "lesson": "Keep judging an error model by an ensemble of independent seeds large enough to settle, and give every run its own seed rather than treating agreeing shared-seed runs as separate measurements.",
+  "falsification": "Small ensembles and shared-seed runs give the same verdict as large independent-seed ensembles across several cells, so the extra seeds add nothing."
+ },
+ "case-sma-simulation-052": {
+  "cue": "a constraint note in a goal card states that a vocabulary or table has no entry for something, copied from older prose without checking the table it describes",
+  "lesson": "Check any claim about what a vocabulary or source table contains against the table itself, and cite the entry and its gating condition in the note.",
+  "falsification": "Notes restating table contents prove consistent with the tables without such a check, or the tables change so rarely that no stale claim ever appears."
+ },
+ "case-sma-simulation-053": {
+  "cue": "a new engine backend is written by copying a mock backend's pattern, and the two report different quantities under one metric name",
+  "lesson": "Require each backend to report a shared metric as the same measured quantity, and compare mock and engine on that metric before trusting a mock-against-engine comparison.",
+  "falsification": "Mock and engine backends report matching values for the shared metric at the same cell without any naming or definition review."
+ },
+ "case-sma-simulation-054": {
+  "cue": "a missing-engine fallback routes every configuration to one generic mock whose physics differs, so a plan could finish green under the wrong physics, and fixed message text goes into run records",
+  "lesson": "Make the operator's engine-missing fallback choose a mock per configuration, fail when none exists, and build the recorded message from the backend that actually ran.",
+  "falsification": "A plan run through the generic fallback gives the same physical result as through its own configuration's backend, or the recorded text never differs from the real backend."
+ },
+ "case-sma-simulation-055": {
+  "cue": "a configuration the engine lacks a native potential for must be built from available primitives, and the same plan is run on both mock and engine",
+  "lesson": "Keep running the same unchanged plan on mock and engine, build missing forces from engine primitives, and compare outcomes and error model, recording which engine executed.",
+  "falsification": "The engine-built construction disagrees with the mock beyond the declared uncertainty, or a plan must be edited to run on the second engine."
+ },
+ "case-sma-simulation-056": {
+  "cue": "plan cards carry literals that matched an earlier assumed range, so a person's changed range leaves some of them right only by coincidence, and rounded derived values can drift past a bound",
+  "lesson": "Derive every plan literal from the goal card by formula and have the validator recompute it, rounding toward the safe side of each bound and checking at the unrounded value.",
+  "falsification": "Changing the goal's range leaves all cards correct with no recomputation, or rounding in either direction never crosses a bound."
+ },
+ "case-sma-simulation-057": {
+  "cue": "a sweep rounds a requested operating value to coarse figures when dispatching, so the realised condition differs from its label and a record sized for the label misses its statistical target",
+  "lesson": "Size the record from the condition the dispatched value actually realises, computed per cell, and have each result card report the realised value against the label.",
+  "falsification": "Realised and labelled conditions differ by less than the target's tolerance in every cell, so sizing by label meets the target."
+ },
+ "case-sma-simulation-058": {
+  "cue": "runs are made under identifiers that the shared schemas refuse and all share one seed, so uncommitted files turn every seat's validator red and cells that are the same experiment look like several",
+  "lesson": "Check run ids against the schema pattern and give each cell its own seed before launching, and move rejected runs out of the shared tree rather than deleting them.",
+  "falsification": "Runs with bad ids never reach the shared tree, or shared-seed cells differ in outcome, showing they were independent samples."
+ },
+ "case-sma-simulation-059": {
+  "cue": "a knowledge store's agreed query name differs from the one a plan card asked for, while earlier plans and runs already cite the old card by hash",
+  "lesson": "Change the query name only in the next revision, leave the earlier card untouched, and record the unmatched call in the store's log as orphaned.",
+  "falsification": "Rebuilding the earlier card under the new name leaves its hash and every run citing it intact, or the old name is found never to resolve."
+ },
+ "case-sma-simulation-060": {
+  "cue": "a grid on the engine answers the question asked, with results flat across the swept axis as the formula predicts, and one row skipped at a conservative cost",
+  "lesson": "Keep reporting the predicted-versus-measured error per cell against the formula, and list unrun rows explicitly with the reason, rerunning them once the measured cost is known.",
+  "falsification": "Predicted errors stop tracking measured ones across the swept axis, or skipped rows prove costlier than the measured rate says."
+ },
+ "case-sma-simulation-061": {
+  "cue": "a first attempt at a grid is abandoned after its results were read for reasons unrelated to the numbers, and the rerun reaches the same answer",
+  "lesson": "Keep the abandoned attempt's results out of the tree and say in the new record why it was dropped, and compare both attempts to show the rerun moved nothing.",
+  "falsification": "Abandoned attempts are never needed to audit a rerun, or the rerun differs materially from the first so the reason was not independent of the numbers."
+ },
+ "case-sma-simulation-062": {
+  "cue": "a cost model counts only per-step work while the run is dominated by per-frame readout and memory growth, and a smoke run is the same run under tighter limits so it cannot calibrate",
+  "lesson": "Add a per-frame cost and memory term to the cost model, stream frames to disk in the backend, and make the smoke run a genuinely smaller run that measures the rate.",
+  "falsification": "Measured wall time and memory track the per-step estimate alone at large frame counts, or a smoke run already yields a usable smaller measurement."
+ },
+ "case-sma-simulation-063": {
+  "cue": "a sweep varies parameters independently that a real system ties together through one underlying property, and advice carries that freedom to an experiment where it does not exist",
+  "lesson": "Anchor the plan on the physical property that sets the coupled parameters and compute the dependent ones from it, stating which sweep points no real object can realise.",
+  "falsification": "Real systems are found that realise the independently varied points, or the dependent parameters turn out not to follow from the anchor."
+ },
+ "case-sma-simulation-064": {
+  "cue": "a session deletes a failed run's directory before rerunning, without looking, and reuses the same run id, destroying the only record that the attempt happened",
+  "lesson": "Have the seat's instructions require listing a run directory before touching it, never deleting failed runs, and giving every new attempt a fresh run id.",
+  "falsification": "Deleted failed-run directories prove recoverable from version control or logs, or reused ids never collide with kept records."
+ },
+ "case-sma-simulation-065": {
+  "cue": "a plan passes the validator but the operator refuses it at run time because timing numbers do not fall on the step grid, so a plan can be validated and unrunnable",
+  "lesson": "Add a validator check that the save interval is a whole multiple of the timestep, and derive such timing values as whole numbers of steps in the plan stage.",
+  "falsification": "Operator refusals for off-grid timing never occur after plans are derived as whole step counts, so the validator check never fires."
+ },
+ "case-sma-simulation-066": {
+  "cue": "a session feeds a card generator a hand-assembled service result with rewritten caller ids to save repeat calls, and the card builder's guard treats it as an unanswered service",
+  "lesson": "Make a real service call under each revision's own caller id instead of reusing or reshaping earlier answers, and keep the card builder's rule that a result must name its server.",
+  "falsification": "A carried-forward answer under a new caller id passes the guard and matches a fresh call's answer, or the guard rejects genuine served results."
+ },
+ "case-sma-simulation-067": {
+  "cue": "a background launch prints nothing and is read as not having started, so it is launched again and two copies write the same run directories, which the existing-run guard checks only at start",
+  "lesson": "Check running processes before relaunching, and add a lock in the operator at run start so concurrent runs under one id are refused.",
+  "falsification": "Concurrent launches under the same id are refused by the existing guard, or silent launches always prove not to have started."
+ },
+ "case-sma-simulation-068": {
+  "cue": "a session compares an estimate of one phase against elapsed time of the whole process and reports a large overrun without reading the run's own phase-resolved log",
+  "lesson": "Read the run log's own clock per phase before reporting any overrun, and have the cost model, ceiling and deadline cover post-loop writing and estimation as well.",
+  "falsification": "Whole-process elapsed time and the log's phase times agree, or post-loop phases stay a negligible share of every run."
+ },
+ "case-sma-simulation-069": {
+  "cue": "an estimator is written from a task card's wording and checked only against the agent's own validation, while the registered definition and allowed units sit in a vocabulary file the validator does not compare",
+  "lesson": "Have the validator compare each reported estimator and unit against the observable's registered entry, and require the author to read that entry before writing the estimator.",
+  "falsification": "Estimators written from task wording match their registered definitions and units without any such comparison."
+ },
+ "case-sma-microscope-001": {
+  "cue": "an instrument component accepts a numeric payload whose unit is undocumented, and a prior unit mix-up on another bench produced a large unintended motion",
+  "lesson": "Make the device adapter refuse the whole feature with no override until the input unit is measured in a bounded experiment on a safe axis with the person present.",
+  "falsification": "The adapter reads the unit from the controller itself, or a bounded measurement shows the unit is fixed and documented, so the blanket refusal blocks safe use for nothing."
+ },
+ "case-sma-microscope-002": {
+  "cue": "an agent reads a person's direct instruction to operate an instrument as covering both the hand-over and the separate planning requirement, and a harmless-looking state makes it weigh the hazard instead of the rule",
+  "lesson": "Make the seat's instructions require a plan check, restated in plain words to the person, before the first command that moves anything, with no exception for apparently safe states.",
+  "falsification": "Seats that skip the plan check under a stated safe condition never cause an unplanned motion or a dispute over what was approved, showing the rule adds nothing."
+ },
+ "case-sma-microscope-003": {
+  "cue": "a record states a bench condition such as a sample or emission state that the agent inferred or phrased itself, and later the person says otherwise",
+  "lesson": "Make the live checklist ask each safety condition as a separate gate in the person's own terms, log the answer before the first command, and let the validator read it.",
+  "falsification": "Gates answered before the first command still produce records that later prove wrong, or the person's free-text statements are shown to be as reliable as logged gates."
+ },
+ "case-sma-microscope-004": {
+  "cue": "an earlier deviation record left a condition unconfirmed, and the person later answers the open question after the commands have already run",
+  "lesson": "Append the person's verbatim answer as a follow-up record that corrects the question while stating that it cannot serve as the gate and the deviation stays open.",
+  "falsification": "Readers treat the appended answer as closing the deviation anyway, or the original record is never misread, showing the explicit statement of limits is unnecessary."
+ },
+ "case-sma-microscope-005": {
+  "cue": "an agent drafts a command or file for the person to run that embeds a typed timestamp instead of taking the time from the clock when written",
+  "lesson": "Make drafted approval or record commands take timestamps from the system clock at the moment of writing and never as hardcoded literals, and have the validator compare approval time to run start.",
+  "falsification": "Hardcoded times never appear in drafted commands across several runs, or the validator's ordering check is shown to fire only on genuine out-of-order approvals."
+ },
+ "case-sma-microscope-006": {
+  "cue": "an append-only record names a file path containing backslashes, and an escape sequence silently corrupts the path when the text is written through a shell or encoder",
+  "lesson": "Write paths in records with forward slashes or verified escaping, and read the written path back from disk before committing the record.",
+  "falsification": "Paths with backslashes round trip unchanged through the writing tool, so read-back verification never finds a corrupted path."
+ },
+ "case-sma-microscope-007": {
+  "cue": "a plan's text describes what happens on a person's negative answer, while the executing code treats that answer as a failure and runs its abort path with side effects",
+  "lesson": "Make the operator distinguish a declined hold as a planned stop from an abort, and add a check that compares each plan's stated stop behavior against the code's actual events.",
+  "falsification": "Plan text and operator behavior are shown to agree on every decline path without any comparison, so the added comparison never catches a difference."
+ },
+ "case-sma-microscope-008": {
+  "cue": "tests assert that nothing further runs after a planned stop, but never assert what the follow-on abort path sends, so a mutation harness cannot catch a wrong abort",
+  "lesson": "Add tests that assert the absence of each abort side effect after a planned stop, and confirm with a mutation that restoring the old behavior turns them red.",
+  "falsification": "The mutation harness catches wrong abort behavior without such explicit absence assertions, so the extra tests add no detection."
+ },
+ "case-sma-microscope-009": {
+  "cue": "a bench experiment diverges from the simulation it was meant to confirm, and the person hints at a physical effect the simulation omits",
+  "lesson": "Rank candidate explanations in a diagnosis file, hold the result in the agent's own tree without handing it onward, and draft a separating measurement with its analysis declared before data.",
+  "falsification": "The top-ranked candidate is shown by the separating measurement to be irrelevant, or the discrepancy turns out to be a plain setup error that ranking would not have found."
+ },
+ "case-sma-microscope-010": {
+  "cue": "a seat wants the form of an identifier and greps another agent's directory before checking the contract that declares it, crossing a read boundary no check can see",
+  "lesson": "Make the seat read the declaring contract first, and record every out-of-boundary read in the deviation log because no check can detect reads.",
+  "falsification": "A check that detects out-of-boundary reads is added, or seats never read beyond the contract anyway, making the confessional record unnecessary."
+ },
+ "case-sma-microscope-011": {
+  "cue": "a build task is paused mid-way by a design decision that moves the layer it was changing, with no code written yet",
+  "lesson": "Record the stop with what was read, what is not done, the design so far and the open question, commit only that record, and start nothing new until the revised card lands.",
+  "falsification": "Paused work that leaves no such record is resumed just as fast and correctly by the next seat, so the written state adds nothing."
+ },
+ "case-sma-bridge-001": {
+  "cue": "a long-running tool server loaded a contract pattern at start, a later commit updated the contract, and the running session refuses a call the committed contract allows",
+  "lesson": "Restart the server process after any contract change that it reads at import, and record the refused attempt, since connected does not mean current.",
+  "falsification": "The server reloads contract files on each call or on change, so a running session never refuses what the committed contract accepts."
+ },
+ "case-sma-bridge-002": {
+  "cue": "a query log holds an answered line under a caller id that the seat did not make, and the server cannot verify who the caller is",
+  "lesson": "Treat the caller id in the query log as a claim rather than proof, add a server-session field to group lines, and report corroborated rather than verified results.",
+  "falsification": "The server gains real caller identity and attributes each line, so the id is verified and the weaker wording is no longer needed."
+ },
+ "case-sma-bridge-003": {
+  "cue": "a needed check cannot be performed because the session has no connection to the required tool server, and the failure state could be mistaken for a refusal or stale code",
+  "lesson": "Name the failure state precisely as absent, with evidence from the connector status and the service's own log, and hand the fix to the person instead of spawning the server by hand.",
+  "falsification": "Windows reliably have the tools, or absent is indistinguishable in practice from the other states so naming it changes no action."
+ },
+ "case-sma-bridge-004": {
+  "cue": "two separate sessions lack the same tool connection, which suggests a pattern in how the windows are launched rather than a one-off",
+  "lesson": "Record the repeat with the added evidence, label the root-cause guess as an untested hypothesis for the person to check, and list the tempting fixes that would break other rules.",
+  "falsification": "A window launched in the same way later has the tools, which refutes the guessed cause and shows the repeat was unrelated."
+ },
+ "case-sma-bridge-005": {
+  "cue": "a failure list of states omits the working case, and an earlier prediction about the answer's shape is checked against a real run",
+  "lesson": "Add the success state to the task's list of states, read the actual answer instead of the prediction, and derive server freshness from version control and process start times.",
+  "falsification": "Seats reading the failure list alone still reach correct verdicts when the service works, so the extra state is unneeded."
+ },
+ "case-sma-bridge-006": {
+  "cue": "a harness permission deny meant to be inert for tool paths resolves against a relative path extracted from a shell command and blocks part of a required delivery",
+  "lesson": "Exempt the inbox paths from the outward deny entries in the seat's settings, and do not route around the deny with another tool or path.",
+  "falsification": "Deny entries are shown never to match relative paths in shell commands, so the block came from another cause and the exemption changes nothing."
+ },
+ "case-sma-incident-001": {
+  "cue": "a session-start hook or machine-level store feeds content from earlier closed projects into every session on the machine",
+  "lesson": "Add a check that fails when any session hook or machine-level directory supplies content from outside the repository, and audit those locations whenever a project is closed.",
+  "falsification": "Sessions started with such a hook present show no foreign terminology in their cards, so the leak never reached the design."
+ },
+ "case-sma-incident-002": {
+  "cue": "a seat reviewing its own day finds errors at places it had marked as confirmed",
+  "lesson": "Require the seat's instructions to mark a setting confirmed only with a cited observation from a run, and to write each known limit of a fix beside the fix.",
+  "falsification": "Items marked confirmed without a cited observation prove as correct on re-check as items that cite one."
+ },
+ "case-sma-incident-003": {
+  "cue": "a configuration fix is verified with an environment variable set by hand while real sessions leave it unset",
+  "lesson": "Verify every configuration fix in a freshly started session with no hand-set variables, and record that run in the fix's verification step.",
+  "falsification": "Fixes verified with hand-set variables behave identically in fresh sessions across many cases."
+ },
+ "case-sma-incident-004": {
+  "cue": "a defect is fixed in one check while a sibling check or field of the same shape keeps it",
+  "lesson": "When fixing a defect in a validator check, search all checks and schema fields for the same pattern and fix or list each one in the same commit.",
+  "falsification": "Sweeps after such fixes repeatedly find no sibling carrying the same defect."
+ },
+ "case-sma-incident-005": {
+  "cue": "a seat asserts from memory how many places a change must touch",
+  "lesson": "Derive the list of sites to change from a search over the tree and put the search result in the commit message instead of an asserted count.",
+  "falsification": "Counts asserted from memory match the search results across many changes."
+ },
+ "case-sma-incident-006": {
+  "cue": "the handling of a schema field is fixed in one place while other places reading that field stay as they were",
+  "lesson": "After changing how a field is handled, search every validator check and card schema that reads it and update them together in one commit.",
+  "falsification": "The other places are shown not to depend on the changed behaviour, so fixing one place was enough."
+ },
+ "case-sma-incident-007": {
+  "cue": "instructions state how many items are complete, a count read from prose rather than from a validator run",
+  "lesson": "Produce counts in instructions from a validator run, and build a validator warning that flags a number in prose which disagrees with the cards on disk.",
+  "falsification": "Counts written in prose stay equal to validator output over a long period even without any warning."
+ },
+ "case-sma-incident-008": {
+  "cue": "instruction text claims a card or file is uncommitted or missing when the repository already holds it",
+  "lesson": "Before writing a claim about repository state into instructions, read the commit history for it and cite the result beside the claim.",
+  "falsification": "Claims about repository state written from prose prove as accurate as those checked against history."
+ },
+ "case-sma-incident-009": {
+  "cue": "seats quote validator verdicts to each other without saying which tree the verdict judged",
+  "lesson": "Keep the validator's last line naming the tree it judged, and require seats to quote that line together with any verdict they pass on.",
+  "falsification": "Verdicts quoted without a tree name never mislead because committed and working states always agree."
+ },
+ "case-sma-incident-010": {
+  "cue": "the same pinned query gets different answers from a server because its code changed between two session starts",
+  "lesson": "Keep the check that compares logged answers to the same pinned query, and have the server write its build identity into every log entry.",
+  "falsification": "Repeated pinned queries answered by different builds always give identical answers, so the comparison never fires."
+ },
+ "case-sma-incident-011": {
+  "cue": "a seat reads a file across its session boundary, an act that leaves nothing for any check to find",
+  "lesson": "Add to the seat's instructions a duty to declare any cross-boundary read in its notice, and restrict file access by permission where the tool allows it.",
+  "falsification": "Audits of session transcripts find cross-boundary reads that no seat declared, showing declaration alone is not enough."
+ },
+ "case-sma-incident-012": {
+  "cue": "a knowledge store returns nothing because it fails to recognise its own entries in the caller's wording",
+  "lesson": "Add a validator check that replays every empty store result against the published table and flags those the store could have answered.",
+  "falsification": "Replays of empty results never find an entry the store actually held."
+ },
+ "case-sma-incident-013": {
+  "cue": "a role applies a grade ceiling to a number by inference without reading the plan row that already covers it",
+  "lesson": "Require the architecture seat to cite the plan row or source naming a number's origin before ruling it a gap, and to ask the person when the origin is unknown.",
+  "falsification": "Rulings made by inference without citing the plan match the person's answers when asked."
+ },
+ "case-sma-incident-014": {
+  "cue": "seats debate options for a design question that the design record already answers",
+  "lesson": "Require a design question to quote the searched plan section that bears on it before options are opened.",
+  "falsification": "Debates opened without searching the record rarely turn out to be already settled by it."
+ },
+ "case-sma-incident-015": {
+  "cue": "a commit-range validator run judges with the working copy's validator code, so one range gives different verdicts at different times",
+  "lesson": "Make the validator's commit-range mode load its own code and contracts from the committed tree of that range, or state in the verdict line which code judged.",
+  "falsification": "Commit-range verdicts stay identical when the working copy's validator differs from the committed one."
+ },
+ "case-sma-incident-016": {
+  "cue": "a seat reverts a shared path with a checkout and discards another seat's uncommitted lines",
+  "lesson": "Forbid checkout on shared paths in the seat's instructions, route reverts through a tool that refuses to drop lines the seat did not write, and save the worktree diff outside the tree first.",
+  "falsification": "Reverts of shared paths never remove another seat's uncommitted lines even without such a tool."
+ },
+ "case-sma-incident-017": {
+  "cue": "instructions name a fixture file that no commit holds and that cannot be found again",
+  "lesson": "Add a validator check that every file named in instructions or in a check's description exists in the committed tree, and commit a fixture together with its check.",
+  "falsification": "Every file named in instructions is found in the commit history, so the check would never fire."
+ },
+ "case-sma-incident-018": {
+  "cue": "instructions assert how the tooling platform behaves, though nobody tested it",
+  "lesson": "Test each platform-behaviour claim in a fresh session and cite the observed result before the claim enters the seat's instructions.",
+  "falsification": "Platform-behaviour claims written from documentation alone prove right when tested."
+ },
+ "case-sma-incident-019": {
+  "cue": "an untracked local settings file silently disables tools for several seats and no gate can see it",
+  "lesson": "Add a commit-time or session hook that reports untracked local settings files holding deny entries, and have seats name such files in their notice.",
+  "falsification": "Untracked local settings never differ in effect from tracked ones, and the hook's reports stay empty over a long time."
+ },
+ "case-sma-incident-020": {
+  "cue": "an untracked settings file changes repeatedly while seats quote its contents to each other and nothing records the change",
+  "lesson": "Have a hook write a hash of each untracked settings file to a log on disk at session start and at commit time so that changes become visible.",
+  "falsification": "Untracked settings files never change during a working period, or nobody relies on their contents."
+ },
+ "case-sma-incident-021": {
+  "cue": "a settings fix lands while sessions are running that read settings only at start",
+  "lesson": "Require the hand-over notice for a settings fix to tell running seats to restart, and make a hook warn when a session began before the fix.",
+  "falsification": "Running sessions pick up settings changes without a restart."
+ },
+ "case-sma-incident-022": {
+  "cue": "a role is refused by a store access rule built to refuse it, and reads the refusal as a gap in the store",
+  "lesson": "Make the store's refusal text state that the caller has no issued identity by design, and record the same line in the role's instructions.",
+  "falsification": "Seats that receive the clarified refusal still file gaps for it."
+ },
+ "case-sma-incident-023": {
+  "cue": "a seat testing server code behaviour is refused by an access rule meant for fact queries, and the line between the two is not written down",
+  "lesson": "Write the line between measuring server behaviour and querying the store into the seat's instructions, and provide a test route that calls store functions directly.",
+  "falsification": "Seats given the written line are still refused at the same rate."
+ },
+ "case-sma-incident-024": {
+  "cue": "a seat verifying a colleague's measurement invents an identity that looks issued so it can pass an access gate",
+  "lesson": "Have the server log every refused or unissued identity, and point verification work in the seat's instructions at direct store calls instead of the gated route.",
+  "falsification": "Direct store calls and the gated route give different numbers, so direct calls are not a valid substitute for verification."
+ },
+ "case-sma-incident-025": {
+  "cue": "instructions name a card field that does not exist in any schema while the enforcing mechanism works under another name",
+  "lesson": "Add a validator check that every field name appearing in instructions exists in a schema file, and cite the schema beside it.",
+  "falsification": "Misnamed fields in instructions never mislead anyone because the mechanism is enforced regardless of names."
+ },
+ "case-sma-incident-026": {
+  "cue": "after an injecting hook and its mirrored content are removed, executable scripts that can rebuild the mirror remain",
+  "lesson": "When removing an injection path, delete or disable the leftover scripts too, and add a check that machine-level directories hold nothing able to repopulate removed content.",
+  "falsification": "Leftover scripts without a hook entry are never run by any session."
+ },
+ "case-sma-incident-027": {
+  "cue": "a record is described as generated from another file, bound by a hash, while no generator exists",
+  "lesson": "Add a validator check that any record declared generated has a generator in the tree and that its hash header matches the generator's output.",
+  "falsification": "Records declared generated but edited by hand stay consistent with their source without any generator."
+ },
+ "case-sma-incident-028": {
+  "cue": "a settled question is corrected in some table rows of the plan while other rows still cite it as open",
+  "lesson": "When correcting one plan row for a settled question, search all sections for rows citing that question and correct them in the same commit.",
+  "falsification": "Sibling rows citing a settled question are never found stale after a correction."
+ },
+ "case-sma-incident-029": {
+  "cue": "a section of the plan is corrected while other sections still describe the old arrangement",
+  "lesson": "When correcting how the plan describes a record or language rule, search every section for the old description and fix all hits in one commit.",
+  "falsification": "Other sections never repeat the old description after a single-section correction."
+ },
+ "case-sma-incident-030": {
+  "cue": "a seat fixes a counting error in a check and later makes the same kind of counting error again",
+  "lesson": "When fixing a counting error in a check, add a fixture for each distinct way of miscounting, such as a grade string counted as an entry, in the same commit.",
+  "falsification": "Counting errors recur in checks that already hold a fixture for every miscount."
+ },
+ "case-sma-incident-031": {
+  "cue": "a refusal is keyed to lift when schema fields are declared while the code that would write the refused content is gone",
+  "lesson": "Require the replacement code to land beside any refusal that lifts on a schema change, reading the same schema, with a fixture that stays refused until the content exists.",
+  "falsification": "Lifting such a refusal on declaration alone never lets an incomplete card out."
+ },
+ "case-sma-incident-032": {
+  "cue": "a naming rule is enforced by a check while the hazard behind it, a lookup returning the wrong substance, passes silently",
+  "lesson": "Keep the naming check and add a check or fixture comparing a retrieved quantity's material or medium to the card's subject before an axis computes from it.",
+  "falsification": "Queries that obey the naming rule never return entries for the wrong substance."
+ },
+ "case-sma-incident-033": {
+  "cue": "a hand-over practice such as naming the intended seat on each task card lapses with nothing recording it",
+  "lesson": "Make the task-card schema require the seat field and have the validator reject cards that lack it.",
+  "falsification": "Cards that lack the seat field cause no mis-delivery."
+ },
+ "case-sma-incident-034": {
+  "cue": "two seats write the same path and a pathspec commit takes the worktree state, so one seat commits the other's overwrite as its own",
+  "lesson": "Build the commit tool to refuse any named path whose content was last written by another seat, and keep pathspec commits out of the seats' practice.",
+  "falsification": "Two seats writing one path never produce a commit that carries the other's content."
+ },
+ "case-sma-incident-035": {
+  "cue": "a seat reads a file at a path shared with another seat and reports its content as the recipient's",
+  "lesson": "Give each task card a distinct output path per seat and have the validator reject cards that share a goal path.",
+  "falsification": "Seats sharing a goal path never report each other's file content as their own."
+ },
+ "case-sma-incident-036": {
+  "cue": "a projection of a store entry omits fields that carry conflicts or refutations, losing information about an answer",
+  "lesson": "Add a check that every field of a store entry appears in the projection returned to callers or is listed as intentionally dropped.",
+  "falsification": "Dropped fields never change an answer's meaning for any caller."
+ },
+ "case-sma-incident-037": {
+  "cue": "a projection of a store entry omits descriptive fields such as kind, symbol, unit or validity, losing information about an answer",
+  "lesson": "Extend the projection check so that each descriptive field of a store entry is carried or explicitly listed as dropped, with a fixture holding all of them.",
+  "falsification": "Callers never need the omitted descriptive fields to read an answer correctly."
+ },
+ "case-sma-incident-038": {
+  "cue": "a check derives a grade from a source field at one layer of an entry while the same field also exists in a nested layer nothing looks into",
+  "lesson": "Make the grade check read the source at every layer that carries it, with a fixture where the layers differ.",
+  "falsification": "Entry-level and nested sources always agree, so reading one layer gives the same grade."
+ },
+ "case-sma-incident-039": {
+  "cue": "a card schema written with one kind of producer in mind has no slot for another kind to state what it read",
+  "lesson": "Before freezing a card schema, draft a first card for every producer kind and add fields or alternatives wherever a card cannot be written.",
+  "falsification": "First cards for new producer kinds fit the schema without change."
+ },
+ "case-sma-incident-040": {
+  "cue": "one field name serves two meanings in a contract because only one producer side existed when it was named",
+  "lesson": "Give each distinct meaning its own field name in the schema, and add a check that rejects a name used with two meanings.",
+  "falsification": "A single name used for two meanings never leads to a wrong card."
+ },
+ "case-sma-incident-041": {
+  "cue": "a contract field offers alignment options that all assume hardware, leaving a producer without a clock no valid choice",
+  "lesson": "Add to the contract field an explicit option for producers without a clock, with a required reason, and draft a card from such a producer to test it.",
+  "falsification": "Producers without a clock always find a valid option among the existing ones."
+ },
+ "case-sma-incident-042": {
+  "cue": "a count read off a validator run mixes example fixtures with real cards from agent trees",
+  "lesson": "Make the validator report fixtures separately from cards in agent trees, and require any reported count to name the tree it covers.",
+  "falsification": "Fixture and real card totals never differ in practice, so a mixed count misleads nobody."
+ },
+ "case-sma-incident-043": {
+  "cue": "a rule's effect can be seen only by trying the denied operation, while the check audits only how the rule is spelled",
+  "lesson": "Add a probe that attempts the denied operation in a scratch context and expects refusal, next to the spelling audit.",
+  "falsification": "The spelling audit agrees with probe outcomes for every rule."
+ },
+ "case-sma-incident-044": {
+  "cue": "a seat reads across a session boundary and quotes the rule's own self-test while failing it, visible only because the seat said so",
+  "lesson": "Require the seat to run the rule's self-test on its own work before quoting it, and to declare cross-boundary reads in its notice.",
+  "falsification": "Seats quoting a rule's self-test without running it never fail that test."
+ },
+ "case-sma-incident-045": {
+  "cue": "a registry or contract file states a tool behaviour that is wrong, with no failure to reveal it",
+  "lesson": "Test each tool-behaviour claim in a scratch repository before it enters a registry file and record the test beside the claim.",
+  "falsification": "Tool-behaviour claims written without testing are right as often as tested ones."
+ },
+ "case-sma-incident-046": {
+  "cue": "a check demands exact reproduction of a planned value while the instrument quantises it, and wrongly fails a valid fixture",
+  "lesson": "Give the plan card a declared tolerance or quantisation field that the check reads, and add fixtures for quantised values in both directions.",
+  "falsification": "Exact reproduction of planned values holds for every instrument, so no tolerance is needed."
+ },
+ "case-sma-incident-047": {
+  "cue": "a seat finds several statements a contract makes that have no field to hold them",
+  "lesson": "Give each unplaced statement a schema field, or record it as a declared unknown with a task, instead of leaving it in prose.",
+  "falsification": "Statements left without a slot never block a card or change a result."
+ },
+ "case-sma-incident-048": {
+  "cue": "a rule inside a check is switched off and the expected-failure totals do not change because the rule has no fixture",
+  "lesson": "Require every rule in a check to carry a rejected fixture that fails when that rule is off, and keep the expect-fail totals strict.",
+  "falsification": "Rules without a fixture are switched off and the totals still change, so fixtures add nothing."
+ },
+ "case-sma-incident-049": {
+  "cue": "a local git configuration outside any tree overrides the identity a seat commits with, so a path check refuses it repeatedly",
+  "lesson": "Keep the commit-time identity warning, and have the commit tool set the committer identity through environment variables so that configuration cannot override it.",
+  "falsification": "Seats using configuration flags are never overridden by local configuration files."
+ },
+ "case-sma-incident-050": {
+  "cue": "a commit hook refuses with a generic line that does not name its cause",
+  "lesson": "Make the pre-commit hook print a FAIL line naming the cause on every nonzero exit path.",
+  "falsification": "Hook refusals without a named cause are diagnosed as quickly as those that name one."
+ },
+ "case-sma-incident-051": {
+  "cue": "a seat amends a commit with no paths and the rebuild takes another seat's staged files from the shared index",
+  "lesson": "Make the commit tool refuse a pathless amend and refuse any amend while the shared index holds paths from another seat.",
+  "falsification": "Pathless amends never pick up another seat's staged files."
+ },
+ "case-sma-incident-052": {
+  "cue": "head moves between a seat's check of the index and its amend, so the amend rewrites another session's commit",
+  "lesson": "Have the commit tool verify that head is unchanged between its check and the amend, or forbid amend and make every correction a new commit.",
+  "falsification": "Head never moves between a check and an amend in the shared folder."
+ },
+ "case-sma-incident-053": {
+  "cue": "a commit whose message is built from inline shell substitution silently produces no commit",
+  "lesson": "Have the commit tool take its message from a file path and confirm after the run that head moved to a new commit.",
+  "falsification": "Inline substitution messages never leave a commit unmade."
+ },
+ "case-sma-incident-054": {
+  "cue": "the same silent no-commit failure recurs after it was noted once, again triggering an amend as recovery",
+  "lesson": "Make the commit tool exit nonzero whenever head did not move, and say in the seat's instructions that no commit exists until the tool confirms it.",
+  "falsification": "The failure never recurs once it is documented, even without a tool check."
+ },
+ "case-sma-incident-055": {
+  "cue": "a commit fails on a lock held by another seat while the seat's filtered output hides the error",
+  "lesson": "Have the commit tool report any git fatal output and forbid filtering its output to failure lines only, confirming that head moved.",
+  "falsification": "Filtered output never hides a failed commit because git always reports through the filtered lines."
+ },
+ "case-sma-incident-056": {
+  "cue": "prescribed pre-commit diff compares against the shared index while the commit is built from head, so it hides a colleague's staged lines",
+  "lesson": "Have the commit tool show the diff of the named paths against head, and keep the instructions prescribing the head form.",
+  "falsification": "A diff against the shared index shows exactly the lines the commit carries."
+ },
+ "case-sma-incident-057": {
+  "cue": "a stale shared index makes a diff show lines that would not land and a colleague is stopped needlessly",
+  "lesson": "Have the commit tool diff against head and list other seats' staged paths before reporting what would land.",
+  "falsification": "A stale shared index never changes what a diff shows."
+ },
+ "case-sma-incident-058": {
+  "cue": "an identity copied out of a delivered message carries a substituted character and matches no registry entry",
+  "lesson": "Have the commit tool take identity only from the seat registry and reject non-ASCII characters in identity strings.",
+  "falsification": "Delivered messages arrive with identical characters, so copied identities always match."
+ },
+ "case-sma-incident-059": {
+  "cue": "a hook added to warn seats about a setting reaches only sessions started afterwards, not the seats it was written for",
+  "lesson": "Place the warning in the commit hook, which runs when the identity is spent, rather than in a session-start hook.",
+  "falsification": "Session-start warnings reach already running seats."
+ },
+ "case-sma-incident-060": {
+  "cue": "a server's refusal recorder keeps keyword arguments while its tools are called positionally, so refusals lose what was asked",
+  "lesson": "Keep the server self-test assertion that calls each tool in the positional form and checks the recorded fields, and see it fail on old code first.",
+  "falsification": "Recorders written for keyword arguments log positional calls completely."
+ },
+ "case-sma-incident-061": {
+  "cue": "a script or launcher picks an interpreter by name on a machine whose platform supplies a same-named stub that is not the real tool",
+  "lesson": "Make the launcher and every repository script choose an interpreter by running a probe of it, never by looking up its name.",
+  "falsification": "A name-only lookup picks a working interpreter on every machine in use, with no probe ever rejecting a candidate."
+ },
+ "case-sma-incident-062": {
+  "cue": "the validator and hooks, written on one operating system, print paths or totals in a form that breaks them on another machine",
+  "lesson": "Make the validator and hooks print paths with forward slashes and print complete totals, and run them on every operating system in use.",
+  "falsification": "Runs on every operating system in use give identical output and verdicts without any path or total formatting change."
+ },
+ "case-sma-incident-063": {
+  "cue": "a checker depends on the caller's default text encoding, so checks crash on a machine whose shell default differs",
+  "lesson": "Make the validator re-run itself in its text-encoding mode when that mode is not already set, so no check depends on the caller's environment.",
+  "falsification": "A run without the environment setting finishes every check on the other platform with no decode error and without the self re-run."
+ },
+ "case-sma-incident-064": {
+  "cue": "a claim that no environment setting is needed rests on a test whose shell silently inherited that setting from a settings file",
+  "lesson": "Run any test of an environment-dependent claim in a shell where the variable is explicitly unset, and let the instructions state only claims so tested.",
+  "falsification": "The harness settings block never changes a test result compared with a clean shell across the claims tested this way."
+ },
+ "case-sma-incident-065": {
+  "cue": "a server is launched through a shell or helper that is not on the application's own search path on some machine",
+  "lesson": "Make the bootstrap check confirm that every program a launch entry calls resolves under the application's own search path, and report the missing one by name.",
+  "falsification": "Every launch entry starts on every machine with no search path change, so the bootstrap check never reports a missing program."
+ },
+ "case-sma-incident-066": {
+  "cue": "a validator walks the whole tree and one unreadable entry from another platform's tooling crashes it for every seat",
+  "lesson": "Make the validator prune skipped directories before touching any path, and report an unreadable entry elsewhere as a named failing check.",
+  "falsification": "A tree holding an unreadable entry inside a skipped directory validates cleanly under the older touch-first order, so the order never mattered."
+ },
+ "case-sma-incident-067": {
+  "cue": "a launcher accepts a bare interpreter that exists but lacks the packages the server imports",
+  "lesson": "Make the launcher's interpreter probe import the modules the server needs, so an interpreter is chosen only if it can actually run the server.",
+  "falsification": "A bare interpreter lacking the required modules is never the first match on any machine in use, so an existence-only probe would do."
+ },
+ "case-sma-incident-068": {
+  "cue": "a second independent cause of the same tool outage stays hidden behind the first fix, here a search path differing between machine and user scope",
+  "lesson": "Make the bootstrap check test each launch dependency under the application's own search path, separating machine and user entries, and record the remedy per machine.",
+  "falsification": "The application's search path always equals the shell's, so a shell-side check predicts the application's behaviour on every machine."
+ },
+ "case-sma-incident-069": {
+  "cue": "instructions describe a failure as current after a configuration fix has already made it stale, and another seat acts on that reading",
+  "lesson": "Make the instructions state any outage claim together with the log line or commit it rests on and its time, so a reader can compare it with later evidence.",
+  "falsification": "Outage claims in instructions are always rewritten before any session reads them, so no reader acts on a stale one."
+ },
+ "case-sma-incident-070": {
+  "cue": "a commit tool builds its tree from the head it read, then waits on a lock while another seat's commit lands on the branch",
+  "lesson": "Make the commit tool rebuild its tree from the current head after any lock wait and run the gate again before writing the commit.",
+  "falsification": "The branch head never moves during lock waits in practice, or a frozen-tree commit never reverts another seat's work."
+ },
+ "case-sma-incident-071": {
+  "cue": "a private-index commit moves the branch head but leaves the shared index entry for the committed path unchanged",
+  "lesson": "Make the commit tool move the shared index entry of every committed path to the new commit once it lands.",
+  "falsification": "A plain commit made right after the tool's commit never carries a reversal of the tool's committed change, even without that index step."
+ },
+ "case-sma-incident-072": {
+  "cue": "instructions give a count of files or lines with no method, matching no run, and readers take it as measured",
+  "lesson": "Add a validator warning for counts in prose that name no command, run or card, so each count must cite how it was read.",
+  "falsification": "Method-less counts in prose match a fresh run whenever checked, so the warning would only add noise."
+ },
+ "case-sma-incident-073": {
+  "cue": "seats re-perform a fragile multi-step commit procedure from prose and one of them loses the commit to a lock race",
+  "lesson": "Make the commit tool own lock waiting and retrying so no seat repeats the procedure by hand from prose.",
+  "falsification": "Seats following the prose procedure never lose a commit to a lock race over a long window."
+ },
+ "case-sma-incident-074": {
+  "cue": "a commit made by plumbing commands skips the pre-commit gate, so only a later hook or manual run can judge it",
+  "lesson": "Keep the pre-push hook judging every pushed range and make the commit message name what judged a plumbing commit instead of the gate.",
+  "falsification": "A plumbing commit reaches the shared branch with no later gate judging it, or plumbing commits stop occurring."
+ },
+ "case-sma-incident-075": {
+  "cue": "a launcher fix is verified in a developer shell that has a tool the application's own environment lacks",
+  "lesson": "Run launcher tests under the application's own search path and environment, and record which environment each test used.",
+  "falsification": "Results from the developer shell and from the application's own environment never differ for any launcher test."
+ },
+ "case-sma-incident-076": {
+  "cue": "two validator runs with different verdicts are compared as if only the interpreter changed, while another seat's edit moved the judged tree",
+  "lesson": "Keep the validator's last line naming the judged tree, including uncommitted paths, and compare verdicts only between runs with the same line.",
+  "falsification": "Two runs with the same judged-tree line give different verdicts, showing the line does not capture what moves the result."
+ },
+ "case-sma-incident-077": {
+  "cue": "bare commands fail in every session because of a file the harness itself writes outside any repository tree, and a seat reads it as a broken machine",
+  "lesson": "Add to the seat's instructions that a bare command failing where its absolute binary works points first to harness-written shell files, not the machine.",
+  "falsification": "Bare commands never fail where the absolute binary works because of harness-written shell files."
+ },
+ "case-sma-incident-078": {
+  "cue": "instructions claim that nothing records some fact, though the logs already carry it",
+  "lesson": "Require a search of the logs for the fact, cited in the commit message, before instructions may state that nothing records it.",
+  "falsification": "Absence claims written into instructions without a search turn out right every time."
+ },
+ "case-sma-incident-079": {
+  "cue": "a measured count is presented as settling more than its question can see",
+  "lesson": "State beside each such count in the instructions the exact question it answers and what it cannot see.",
+  "falsification": "Readers never draw a broader conclusion from such counts than the stated question supports."
+ },
+ "case-sma-incident-080": {
+  "cue": "a seat checks whether a method is sound but not whether running it is within its role",
+  "lesson": "Add to the seat's instructions a first step of checking the operation against the seat's registered role before judging the method.",
+  "falsification": "Seats that check only soundness never run an operation outside their role."
+ },
+ "case-sma-incident-081": {
+  "cue": "a plan paragraph states that something cannot be done, true when written, and stays after it becomes false",
+  "lesson": "Add a check that fails plan prose making a negative capability claim without a pointer to the card or run it rests on.",
+  "falsification": "Negative capability claims in the plan are corrected quickly enough that no reader ever relies on a stale one."
+ },
+ "case-sma-incident-082": {
+  "cue": "a new class of case enters a plan section and nobody names it, so no vocabulary entry or schema slot exists for it",
+  "lesson": "Require that a commit adding the first case of a new class also adds its entry to the class vocabulary, checked by the validator.",
+  "falsification": "First cases of new classes are always named later with no loss, so same-commit naming adds nothing."
+ },
+ "case-sma-incident-083": {
+  "cue": "a knowledge entry states its validity conditions as a free sentence that no check or reader can act on",
+  "lesson": "Make the knowledge-entry schema hold validity conditions as structured fields and reject an entry whose conditions exist only as prose.",
+  "falsification": "Free-sentence validity conditions are read and acted on correctly by sessions or checks without structure."
+ },
+ "case-sma-incident-084": {
+  "cue": "a field is filled but its content is inconsistent with a sibling field, and the check looks only at presence",
+  "lesson": "Make the validator check a filled expiry or horizon against the event field it depends on, rejecting a horizon with no triggering event.",
+  "falsification": "A horizon filled beside an empty event never leads to a wrong decision or stale entry."
+ },
+ "case-sma-incident-085": {
+  "cue": "a reference field is present but resolves to nothing, and the presence check passes it",
+  "lesson": "Make the validator resolve every task reference to an existing task file instead of only checking that the field is filled.",
+  "falsification": "References that fail to resolve never occur over a long window, so presence checks suffice."
+ },
+ "case-sma-incident-086": {
+  "cue": "a registry row keeps a path after the file was removed, and nothing checks the path still exists",
+  "lesson": "Make the validator check that every path in a seat's registry row exists or matches a declared pattern, and fail on a stale one.",
+  "falsification": "Stale paths in registry rows never affect any check or any seat's boundary."
+ },
+ "case-sma-incident-087": {
+  "cue": "a flag is carried beside a number that contradicts it, and no check compares them",
+  "lesson": "Make the validator compare a met flag with the number and threshold it sits beside, failing on contradiction.",
+  "falsification": "Flag and number contradictions never lead to a wrong conclusion or accepted card."
+ },
+ "case-sma-incident-088": {
+  "cue": "a tool reports the outcome of its own attempt, which is true of that attempt but false of the state a seat will act on",
+  "lesson": "Make the commit tool read the remote state after a refused push and report whether the commit is published, not only what its own push did.",
+  "falsification": "A refused push report always matches the remote state read afterwards, even without the read-back."
+ },
+ "case-sma-incident-089": {
+  "cue": "prose cites another file by bare line number although that file is edited often by several seats",
+  "lesson": "Keep the schema pattern that requires each prose reference to name the commit it was read at, enforced by a check.",
+  "falsification": "Referenced files never change between citation and reading, so bare line numbers stay valid."
+ },
+ "case-sma-incident-090": {
+  "cue": "a seat commits around the commit tool right after the instructions began requiring it, and nothing tells it at that moment",
+  "lesson": "Make the pre-commit hook warn a seat identity at commit time when the commit was not made through the commit tool.",
+  "falsification": "Seats use the tool every time without any reminder, so commits around it do not occur."
+ },
+ "case-sma-incident-091": {
+  "cue": "a seat tells another seat what a tool does, inferred from similar commands and never run",
+  "lesson": "Add to the seat's instructions that a claim about a tool's behaviour must cite a run in a scratch clone before it is sent.",
+  "falsification": "Inferred claims about tool behaviour are as accurate as measured ones, so the extra run adds nothing."
+ },
+ "case-sma-incident-092": {
+  "cue": "a commit lands without the commit tool and leaves no line in the tool's own log",
+  "lesson": "Keep the pre-commit warning and have the periodic harness pass count first-parent commits missing from the tool's log.",
+  "falsification": "Commits missing from the tool's log stop occurring after the warning, so the periodic count shows none."
+ },
+ "case-sma-incident-093": {
+  "cue": "a rejected fixture's verdict depends on live state that a person may change, so the gate refuses every commit with the fixture untouched",
+  "lesson": "Make every rejected fixture group read only its own configuration, never the live person-written values, in every check that reads them.",
+  "falsification": "A fixture's verdict stays the same when the live person-written values change, so isolation is unneeded."
+ },
+ "case-sma-incident-094": {
+  "cue": "an example or fixture holds a time bound that the wall clock will pass, so the gate begins refusing every commit without warning",
+  "lesson": "Write fixtures with time bounds already past or far away, and have the harness pass list example expiry dates nearest first.",
+  "falsification": "An example's time bound passes the clock with no gate refusal, so expiry never matters."
+ },
+ "case-sma-incident-095": {
+  "cue": "a session drafts a horizon or limit number into a plan that the rules reserve for the person to choose",
+  "lesson": "Add a check or review step that fails plan text holding a numeric limit not traced to the person's recorded word.",
+  "falsification": "Seat-drafted numeric limits without a person source never appear in plan drafts."
+ },
+ "case-sma-incident-096": {
+  "cue": "a gate compares the tree with the branch head as it stands during the run, and another seat's commit lands meanwhile",
+  "lesson": "Make the commit tool treat a gate refusal as a verdict only when the head is unchanged since the tree was built, and otherwise rebuild and judge again.",
+  "falsification": "Gate refusals under a moved head always remain true for the rebuilt tree."
+ },
+ "case-sma-incident-097": {
+  "cue": "a path is meant to be written by one seat, but only that seat's own boundary narrows and other seats' boundaries still include it",
+  "lesson": "Make the validator check that a path reserved to one seat is excluded from every other seat's registered paths.",
+  "falsification": "No other seat ever commits to the reserved path, so exclusion adds no protection."
+ },
+ "case-sma-incident-098": {
+  "cue": "two sessions draft the same design question because work is divided by window and nothing in the tree marks a question as taken",
+  "lesson": "Add a tree-visible claim record for open design questions that a session must write before drafting, read through the task queue.",
+  "falsification": "Parallel sessions never draft the same question even with no claim record."
+ },
+ "case-sma-incident-099": {
+  "cue": "a tool asks for confirmation of a list that the caller already approved through a flag passed on the invocation itself",
+  "lesson": "Make the commit tool refuse to publish other seats' commits unless a confirmation is given after the list is shown, never through an invocation flag.",
+  "falsification": "Pushes with a pre-passed flag never publish another seat's work against the person's wishes."
+ },
+ "case-sma-incident-100": {
+  "cue": "a retry limit nobody chose refuses correct work when the shared branch moves more often than expected",
+  "lesson": "Make the commit tool log the number of head moves per attempt so the person can choose the limit from the distribution.",
+  "falsification": "Refusals at the limit never recur over a long window, so the distribution is not needed."
+ },
+ "case-sma-incident-101": {
+  "cue": "the same seat is refused again at a retry limit after a long lock wait, with the gate passing each time",
+  "lesson": "Make the commit tool log lock wait time beside rebuild count so the person can see whether waits drive refusals at the limit.",
+  "falsification": "Refusals at the limit do not correlate with lock wait time."
+ },
+ "case-sma-incident-102": {
+  "cue": "a seat hits a person-owned limit and must choose between raising it and rerunning with the default",
+  "lesson": "Keep the commit tool's limit a person-owned setting, and have seats rerun at the default while the tool logs each refusal for counting.",
+  "falsification": "Seats raising the limit themselves cause no harm and no disagreement with the person."
+ },
+ "case-sma-incident-103": {
+  "cue": "a schema refuses to record a proposal until the person's word exists, but the proposal must exist to ask the person",
+  "lesson": "Make the proposal schema accept a loosening proposal in a pending-person-word state, while the landing check still refuses landing without the word.",
+  "falsification": "Loosening questions are always asked and answered without a proposal record, so the pending state is unused."
+ },
+ "case-sma-incident-104": {
+  "cue": "output from a discarded attempt prints failure lines in the same form as a real refusal, ahead of a successful rebuild",
+  "lesson": "Make the commit tool label every line from a discarded run as discarded, or drop those lines from the output.",
+  "falsification": "Readers never mistake discarded-run lines for a verdict, even when they are printed unlabelled."
+ },
+ "case-sma-incident-105": {
+  "cue": "a reader filters tool output for a failure word and sees a discarded attempt's line without its framing",
+  "lesson": "Make the commit tool end its output with one verdict line stating committed or refused, so that filtering for the failure word is not needed.",
+  "falsification": "Filtering output for failure lines never gives a wrong reading of a commit's outcome."
+ },
+ "case-sma-incident-106": {
+  "cue": "a command denial guards one shell tool while a second shell tool on the same machine runs the same text",
+  "lesson": "Make the validator check that every command denial in a settings file has a twin for each shell tool available on the machine.",
+  "falsification": "A denial written for one shell tool also refuses the same text through the other shell tool."
+ },
+ "case-sma-incident-107": {
+  "cue": "instructions state a settings timing rule as general, but one observation shows a running session picked up an edit",
+  "lesson": "Qualify the instruction sentence about when settings are read with the observation and what remains unmeasured, until a second measurement.",
+  "falsification": "A running session never picks up edited settings without a restart, in repeated trials."
+ },
+ "case-sma-incident-108": {
+  "cue": "an intent-to-add entry in the shared index survives a tool commit and reads as a staged deletion after the head moves",
+  "lesson": "Keep the commit tool moving intent-to-add entries of committed paths to the new commit, with its fixture.",
+  "falsification": "A plain commit after a tool commit with intent-to-add entries never deletes the committed files."
+ },
+ "case-sma-incident-109": {
+  "cue": "a command pattern meant to block running also blocks reads that merely name the guarded word",
+  "lesson": "Keep the dedicated read, search and glob tools guaranteed open, and have seats use them when a command pattern over-blocks instead of rewording the command.",
+  "falsification": "A seat needs a read that only a blocked command could perform."
+ },
+ "case-sma-incident-110": {
+  "cue": "two seats with identical paths on different computers write date-keyed records into the same append-only files",
+  "lesson": "Make record ids and file names carry the machine tag so two seats on the same paths cannot collide, and keep the duplicate refusal at the gate.",
+  "falsification": "Two seats on the same paths work on the same day with date-only keys and never collide."
+ },
+ "case-sma-incident-111": {
+  "cue": "a periodic duty belongs to a seat that acts only when a message reaches it, so days pass without the duty running",
+  "lesson": "Have the person decide on a standing scheduler for the periodic pass, since nothing in the harness wakes the seat.",
+  "falsification": "The pass runs on every due day with no scheduler, driven only by other seats' messages."
+ },
+ "case-sma-incident-112": {
+  "cue": "a commit under the person's default identity sweeps in several seats' unfinished work outside the commit tool",
+  "lesson": "Make the pre-commit hook warn when the committer is not a registered seat and the staged paths belong to a seat's declared work.",
+  "falsification": "Commits under a non-seat identity never carry a seat's unfinished work."
+ },
+ "case-sma-incident-113": {
+  "cue": "a pattern is widened in one schema although copies of it sit in other schemas that cite the same identifiers",
+  "lesson": "Change every schema copy of a shared pattern in the same commit, and add a check that fails when copies of one pattern differ.",
+  "falsification": "Copies of a pattern in different schemas never diverge in a way a check would catch."
+ },
+ "case-sma-incident-114": {
+  "cue": "a check returns not-applicable when the tree holds no cards, so a run over other artifact kinds alone judges nothing",
+  "lesson": "Make the validator schema-check harness artifacts even when no cards exist, reporting not-applicable only when nothing of that kind is present.",
+  "falsification": "A run over harness artifacts alone gives the same verdict as a full run in every case."
+ },
+ "case-sma-incident-115": {
+  "cue": "the person grants permission through a new channel, but the record schema holds the person's word in one form only",
+  "lesson": "Extend the person-word schema in the harness records with a console-signed form before that channel is used, so the landing check can accept it.",
+  "falsification": "Permissions given through the new channel are never used, so the schema never needs the form."
+ },
+ "case-sma-incident-116": {
+  "cue": "a check judges every old record against a working-copy file read at run time, so a missing or changed file fails old correct lines",
+  "lesson": "Make the check judge each ledger line against the file as committed at that line's landing commit, not the working copy file.",
+  "falsification": "The working copy file stays present and unchanged on every computer, so old lines always pass."
+ },
+ "case-sma-incident-117": {
+  "cue": "a daily duty goes unrun for several days because its seat acts only when woken, and the question of scheduling stays open",
+  "lesson": "Make each retro name the gap between its date and the last pass record, so missed days are visible when the pass finally runs.",
+  "falsification": "Gaps between pass records never occur, so the retro's gap line would always be empty."
+ },
+ "case-sma-incident-118": {
+  "cue": "a person-owned retry limit refuses a large correct commit that passes on a later attempt",
+  "lesson": "Make the commit tool report to the person each pass the rate of attempts reaching the limit, with the head-move distribution.",
+  "falsification": "Attempts reaching the limit stay absent as the number of seats and commits grows."
+ },
+ "case-sma-incident-119": {
+  "cue": "a boundary check attributes to a merging seat paths that git merged cleanly from both sides, so clean merges are refused",
+  "lesson": "Keep the validator reading a merge's own paths from its combined-diff patch, with fixtures for a clean merge and a merge adding its own change.",
+  "falsification": "A clean merge of another computer's work is refused for paths the merging seat never wrote."
+ }
+}

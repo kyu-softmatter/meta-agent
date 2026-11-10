@@ -1,0 +1,17 @@
+{
+ "case-sma-simulation-001": {
+  "cue": "a fixture cue for line one",
+  "lesson": "A fixture lesson for line one.",
+  "falsification": "A fixture falsification for line one."
+ },
+ "case-sma-simulation-002": {
+  "cue": "a fixture cue for line two",
+  "lesson": "A fixture lesson for line two.",
+  "falsification": "A fixture falsification for line two."
+ },
+ "case-sma-simulation-003": {
+  "cue": "a fixture cue for line three",
+  "lesson": "A fixture lesson for line three.",
+  "falsification": "A fixture falsification for line three."
+ }
+}
