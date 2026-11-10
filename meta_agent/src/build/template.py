@@ -1,9 +1,15 @@
 """The versioned bundle template (plan.md 5.1 S5).
 
-The source tree lives in template_v1/ next to this file. `materialize`
-copies it to templates/agent@<hash>/, where the hash is over every file's
-path and content, so a changed template gets a new name and an old one is
-never edited in place.
+The source trees live in template_v<N>/ next to this file, one folder per
+version; a changed template is a new folder and the old one stays.
+`materialize` copies a version to templates/agent@<hash>/, where the hash
+is over every file's path and content, so a changed template gets a new
+name and an old one is never edited in place. A build uses the latest
+version unless it names another.
+
+v1  the first bundle (tasks/002).
+v2  adds src/run_skill.py, the Skills section's runner and the Subagents
+    section of CLAUDE.md (tasks/010).
 """
 import os
 import shutil
@@ -11,7 +17,9 @@ import shutil
 from .. import cards
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SOURCE = os.path.join(HERE, "template_v1")
+SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "template_v2")}
+LATEST = "v2"
+SOURCE = SOURCES[LATEST]
 
 
 def template_hash(root=SOURCE):

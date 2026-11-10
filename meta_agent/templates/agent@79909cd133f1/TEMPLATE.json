@@ -1,0 +1,28 @@
+{
+  "schema_version": "0.1",
+  "template": "agent",
+  "version": "v2",
+  "harness_surface": {
+    "system_prompt": "CLAUDE.md (Role, Procedure)",
+    "guardrails": "CLAUDE.md (What this agent does not do) + .claude/settings.json deny",
+    "memory": "envelope/snapshot.json",
+    "tool_guidance": "tools/*/tool.json descriptions + CLAUDE.md (Tools)",
+    "skills": "skills/<id>@v<n>/ (SKILL.md, skill.json, scripts/, cases.json), run through src/run_skill.py",
+    "subagents": ".claude/agents/<name>.md",
+    "scripts": "src/",
+    "hooks": ".claude/settings.json hooks"
+  },
+  "placeholders": [
+    "agent_name",
+    "template",
+    "rid",
+    "purpose",
+    "science_task",
+    "tools_section",
+    "must_not",
+    "skills_section",
+    "subagents_section",
+    "seat_form"
+  ],
+  "note": "A build copies this tree, fills CLAUDE.md's placeholders, adds tools/<name>/ with adapter.py, tool.json and errors/, fills CAPABILITIES.json and envelope/, writes validation/ and replay/ tasks, copies the skills the specification names into skills/ unchanged and writes .claude/agents/<name>.md for the subagents it names. The diff from this tree is recorded next to the bundle. v2 adds src/run_skill.py and the Subagents section to v1 (meta_agent/tasks/010); v1 stays under templates/."
+}

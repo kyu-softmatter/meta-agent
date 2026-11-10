@@ -69,6 +69,16 @@ def entry(skill_dir, library=LIBRARY, kinds=None):
     return row
 
 
+def take(refs, library=LIBRARY):
+    """The rows of the skills a specification names, in its order, each with the `folder` S5 copies from.
+    Raises ValueError for a ref the library lacks."""
+    dirs, kinds = skill_dirs(library), rules.load_kinds()
+    missing = [r for r in refs if r not in dirs]
+    if missing:
+        raise ValueError("the library has no skill %s" % ", ".join(missing))
+    return [dict(entry(dirs[r], library, kinds), folder=dirs[r]) for r in refs]
+
+
 def build_index(library=LIBRARY):
     kinds = rules.load_kinds()
     rows = [entry(d, library, kinds) for _, d in sorted(skill_dirs(library).items())]
