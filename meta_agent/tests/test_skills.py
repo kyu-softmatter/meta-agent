@@ -79,9 +79,11 @@ def run_skill_in(bundle, ref, payload):
 
 
 class Catalogue(unittest.TestCase):
-    def test_eight_skills_over_eight_kinds(self):
+    def test_one_skill_of_each_kind_and_ten_bounds(self):
         rows = catalogue.build_index()["skills"]
-        self.assertEqual(len(rows), 8)
+        self.assertEqual(len(rows), 17)
+        self.assertEqual(len([r for r in rows if r["kind"] == "bound"]), 10)
+        self.assertTrue(all(len([r for r in rows if r["kind"] == k]) == 1 for k in KINDS if k != "bound"))
         self.assertEqual(sorted({r["kind"] for r in rows}), KINDS)
         self.assertEqual(sorted(r["ref"] for r in rows if r["status"] == "held"), HELD)
         self.assertTrue(all(r["side_effect"] == "write_device" for r in rows if r["status"] == "held"))
@@ -103,8 +105,11 @@ class Catalogue(unittest.TestCase):
         rows = catalogue.build_index()["skills"]
         self.assertEqual([r["ref"] for r in catalogue.select(rows, kind="hardware_state")], ["read_status@v1"])
         self.assertEqual(sorted(r["ref"] for r in catalogue.select(rows, parameter="shear_rate")),
-                         ["flow_curve_fit@v1", "run_steady_shear@v1", "shear_rate_max_from_max_speed@v1"])
-        self.assertEqual(len(catalogue.select(rows, instrument="lab_rheometer")), 8)
+                         ["flow_curve_fit@v1", "run_steady_shear@v1", "shear_rate_max_from_inertia@v1",
+                          "shear_rate_max_from_max_speed@v1", "shear_rate_min_from_min_speed@v1"])
+        self.assertEqual(sorted(r["ref"] for r in catalogue.select(rows, kind="bound", parameter="time_step")),
+                         ["timestep_max_from_courant@v1", "timestep_max_from_diffusion@v1", "timestep_max_from_relaxation_time@v1"])
+        self.assertEqual(len(catalogue.select(rows, instrument="lab_rheometer")), 14)
         self.assertEqual(catalogue.select(rows, instrument="microscope"), [])
         text = catalogue.listing(catalogue.select(rows, kind="bound"))
         self.assertIn("shear_rate_max_from_max_speed@v1", text)
@@ -114,7 +119,7 @@ class Catalogue(unittest.TestCase):
         p = subprocess.run([sys.executable, "-m", "meta_agent.src.skills", "list"], cwd=REPO, capture_output=True, text=True,
                            encoding="utf-8", env=ENV)
         self.assertEqual(p.returncode, 0, p.stderr)
-        self.assertIn("8 skill(s) over 8 kind(s)", p.stdout)
+        self.assertIn("17 skill(s) over 8 kind(s)", p.stdout)
 
     def test_a_skill_check_22_would_fault_is_not_indexed(self):
         tmp = tempfile.mkdtemp(prefix="ma-skills-")
