@@ -2,7 +2,7 @@
 
 **Status:** open, 2026-11-08. Opened by the design seat on the person's words ("Take all six", `../../docs/ideas/20261108.md`), which settled plan.md 14-27 and gave the permission of 14-6. Nothing exists yet: `meta_agent/cases/` and `src/cases/` are absent; S3 recall is the word match of `src/knowledge/brief.py` over entries that do not exist. First of the three tasks of the design pass (006 → 007 → 008); it may run beside `005`, since cases are their own store.
 
-**Seat:** a `meta-…` seat the person seats, for `src/`, `tests/` and `cases/`. The `case` schema change (range tags), checks 5 and 8 with their rejected fixtures, and the accepted example case are the design seat's and land first, in their own commit.
+**Seat:** a `meta-…` seat (self-registered under the standing rule of 2026-11-09, or seated by the person), for `src/`, `tests/` and `cases/`. The `case` schema change (range tags), checks 5 and 8 with their rejected fixtures, and the accepted example case are the design seat's and land first, in their own commit.
 
 **Goal:** a case is found before a card is written. `src/cases/recall.py` matches an input card's `signature` against every case deterministically and S3 calls it; the result enters `v2_agent_goal` as `case_refs` or `case_gaps`, and A4 and A5 call it again. SMA's failure lines become the first cases so that recall is tested against a full store, not an empty one. This is M4 of plan.md 12 and 5.4.
 

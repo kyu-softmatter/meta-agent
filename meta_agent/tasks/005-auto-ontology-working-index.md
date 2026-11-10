@@ -2,7 +2,7 @@
 
 **Status:** open, 2026-11-07. Opened by the design seat on the person's words ("고고" to the coexistence recommendation, `../../docs/ideas/20261107.md`). Nothing is installed or written yet; `meta_agent/knowledge/` does not exist.
 
-**Seat:** a `meta-…` seat the person seats for this task, for `src/` and `tests/`. The pin in `../../tools.lock.json`, the installer in `../../bootstrap.py`, the entry in `../../.mcp.json` and the check on `tools.lock.json` (plan.md 14-23(c)) are the design seat's and land first, in their own commit, so that the meta seat's run starts from a computer `bootstrap.py check` calls complete.
+**Seat:** a `meta-…` seat (self-registered under the standing rule of 2026-11-09, or seated by the person) for this task, for `src/` and `tests/`. The pin in `../../tools.lock.json`, the installer in `../../bootstrap.py`, the entry in `../../.mcp.json` and the check on `tools.lock.json` (plan.md 14-23(c)) are the design seat's and land first, in their own commit, so that the meta seat's run starts from a computer `bootstrap.py check` calls complete.
 
 **Goal:** give the Meta-Agent a working index for the materials the person drops, and make S3 recall read it. The model reads a material at intake and saves its passages, concepts and source into auto-ontology-mcp's knowledge store through MCP; S3 recall searches the store with FTS5 and hands candidates to the `knowledge_brief`. The cards stay the record; the store is a candidate layer, out of git, like `wiki/`. This replaces the word-match recall of `src/knowledge/brief.py` and is the first piece of M2 (plan.md 5.2, 12).
 
