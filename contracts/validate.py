@@ -31,12 +31,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 SCHEMAS = os.path.join(HERE, "schemas")
 REJECTED = os.path.join(HERE, "examples", "rejected")
-IMPLEMENTED = [1, 2, 3, 6, 7, 11, 15, 16, 17, 18, 20]
+IMPLEMENTED = [1, 2, 3, 6, 7, 11, 15, 16, 17, 18, 20, 21]
 SKIP_DIRS = {".git", ".agent", ".venv", ".pixi", "node_modules", "__pycache__"}
 
 sys.path.insert(0, os.path.join(HERE, "tools"))
 import seats as seat_rules  # noqa: E402  (contracts/tools/seats.py: names, role rows, the self-registration rule)
 import tasks as task_rules  # noqa: E402  (contracts/tools/tasks.py: the task index and claims)
+import notes as note_rules  # noqa: E402  (contracts/tools/notes.py: notes between seats)
 
 try:
     import jsonschema
@@ -453,6 +454,8 @@ def run_staged(c, report, checks=None):
     check7_changes(c, report, changes, label, old_new)
     if checks is None or 20 in checks:
         check20_changes(c, report, email, changes, label)
+    if checks is None or 21 in checks:
+        check21_changes(c, report, email, changes, label)
     return len(changes)
 
 
@@ -483,6 +486,8 @@ def run_commit_range(c, report, spec, checks=None):
         check7_changes(c, report, changes, label, old_new)
         if checks is None or 20 in checks:
             check20_changes(c, report, email, changes, label)
+        if checks is None or 21 in checks:
+            check21_changes(c, report, email, changes, label)
         n += 1
     return n
 
@@ -504,6 +509,24 @@ def check20_changes(c, report, email, changes, label):
         msg = task_rules.claim_committer_problem(path, status, email)
         if msg:
             report.fail(20, label, msg)
+
+
+# ----------------------------------------------------------------------------
+# check 21: notes between seats (meta_agent/inbox/seats/)
+# ----------------------------------------------------------------------------
+def check21(tree, c, report):
+    fails, pending = note_rules.judge(tree, c.seats)
+    for path, msg in fails:
+        report.fail(21, path, msg)
+    for path, msg in pending:
+        report.pending(21, path, "an ask with no reply, " + msg)
+
+
+def check21_changes(c, report, email, changes, label):
+    for status, path in changes:
+        msg = note_rules.note_committer_problem(path, status, email)
+        if msg:
+            report.fail(21, label, msg)
 
 
 # ----------------------------------------------------------------------------
@@ -1311,6 +1334,8 @@ def run_static(tree, c, report, checks, include_rejected=False):
         check18(md_by_dir, report, tree)
     if 20 in checks:
         check20(tree, c, report)
+    if 21 in checks:
+        check21(tree, c, report)
     report.ran.update(ch for ch in checks if isinstance(ch, int))
     card_dirs = {os.path.dirname(p) for p, _ in cards}
     return len(cards), sum(len(v) for d, v in md_by_dir.items() if d in card_dirs), cards
@@ -1331,6 +1356,8 @@ def run_scenario(path, c, report, checks):
                        old_new=texts, day=sc.get("day"))
     if sc.get("check") == 20 and 20 in checks:
         check20_changes(c, report, sc.get("committer_email"), changes, label)
+    if sc.get("check") == 21 and 21 in checks:
+        check21_changes(c, report, sc.get("committer_email"), changes, label)
     if sc.get("check") == 7 and 7 in checks:
         old = sc.get("old", {})
         new = sc.get("new", {})
@@ -1429,9 +1456,9 @@ def main(argv=None):
     for label, path in bundles:
         run_bundle_checks(path, c, report, checks, knowledge_root_for(tree), label=label)
     n_changes = n_commits = None
-    if args.staged and (6 in checks or 7 in checks or 20 in checks):
+    if args.staged and (6 in checks or 7 in checks or 20 in checks or 21 in checks):
         n_changes = run_staged(c, report, checks)
-    if args.commit_range and (6 in checks or 7 in checks or 20 in checks):
+    if args.commit_range and (6 in checks or 7 in checks or 20 in checks or 21 in checks):
         n_commits = run_commit_range(c, report, args.commit_range, checks)
 
     failed = len(report.fails)

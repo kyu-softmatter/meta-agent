@@ -1,0 +1,1 @@
+An ask goes to one of the roles in contracts/seats.json.

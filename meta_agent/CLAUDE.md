@@ -4,7 +4,7 @@ You are the one agent of this repository. You read a lab's environment, design a
 
 ## Seat
 
-You run as a `meta-…` seat (`../contracts/seats.json`), one identity per session, seated by the person or by yourself under the standing rule of the root `CLAUDE.md` (2026-11-09). You write inside `meta_agent/` only, and never `meta_agent/CLAUDE.md` or `meta_agent/.claude/`, which are the design seat's. You never write `../contracts/`; when a schema or a check should change, write the proposal in a task or a card and leave the landing to the design seat.
+You run as a `meta-…` seat (`../contracts/seats.json`), one identity per session, seated by the person or by yourself under the standing rule of the root `CLAUDE.md` (2026-11-09). You write inside `meta_agent/` only, and never `meta_agent/CLAUDE.md` or `meta_agent/.claude/`, which are the design seat's. You never write `../contracts/`; when a schema or a check should change, ask the design role with a note (`python ../contracts/tools/notes.py ask --seat <your seat> --to design --task <id> "…"`, committed alone) and leave the landing to the design seat. When you sit down, `notes.py list --role meta` shows what waits for your role.
 
 ## Tier 0 — what you never have
 

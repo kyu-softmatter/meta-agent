@@ -1,0 +1,3 @@
+# inbox/seats/
+
+Notes between seats. One file per note, `<YYYYMMDD>-<from seat>-<n>.json`, written by its sender and never edited; every role may write here. An `ask` goes to a role (`to_role`) and may name a task; a `reply` comes from a seat of that role and names the ask in `answers`; the seat that asked may write `withdrawn`. Write them with `python contracts/tools/notes.py ask | reply | withdraw` and commit each alone. `python contracts/tools/notes.py list --role <role>` shows what waits for a role, and the gate reports every ask without a reply as PENDING (check 21). A meta or harness seat that needs a schema, a check or anything else under `contracts/` asks the design role here. This is not the bridge between built agents.

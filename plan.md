@@ -662,7 +662,7 @@ meta-agent/
 
 ## 8. Validation layer (`contracts/validate.py`)
 
-Numbers are fixed and never reused after retirement. M0 implements 1, 2, 3, 6, 7, 11, 15, 16, 17; M1 added B1–B9 (`--bundle PATH`, and every bundle a `build` card outside `contracts/examples/` points at; a template is not a bundle and is not judged by them). Task 003 added 18 (2026-11-04). Task 009 added 20 and the seat table and self-registration parts of 6 (2026-11-09); 19, 21 and 22 are reserved by tasks 007, 009 and 010.
+Numbers are fixed and never reused after retirement. M0 implements 1, 2, 3, 6, 7, 11, 15, 16, 17; M1 added B1–B9 (`--bundle PATH`, and every bundle a `build` card outside `contracts/examples/` points at; a template is not a bundle and is not judged by them). Task 003 added 18 (2026-11-04). Task 009 added 20, 21 and the seat table and self-registration parts of 6 (2026-11-09); 19 and 22 are reserved by tasks 007 and 010.
 
 | # | Check | Kind |
 |---|---|---|

@@ -1,0 +1,9 @@
+{
+  "from": "design-office-20261029-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "010",
+  "answers": null,
+  "text": "The skill manifest needs a field for the tools a skill calls.",
+  "written_at": "2026-11-09T10:00:00+09:00"
+}
