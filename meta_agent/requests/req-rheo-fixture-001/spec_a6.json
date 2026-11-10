@@ -1,0 +1,38 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-rheo-fixture-001-a6",
+  "rid": "req-rheo-fixture-001",
+  "revision": 1,
+  "author": "meta-macbook-20261109-2",
+  "created_at": "2026-11-10T02:37:39Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A6",
+  "title": "Validation",
+  "content": {
+    "interface": [
+      "the status tool answers with a state",
+      "an address that does not answer returns the documented error, not a crash",
+      "identify without a session is an invalid input"
+    ],
+    "scientific": [
+      "the torque range the device reports agrees with its specification"
+    ],
+    "completion": "every interface task passes and every scientific task passes against a person's tolerance",
+    "refusal": "an error contract or a gate refusal is reported as such; not_run and undecided are not passes"
+  },
+  "reads": [
+    "goal-rheo-fixture-001",
+    "tp-rheo-fixture-001",
+    "kb-brief-rheo-fixture-001",
+    "lab-fixture-rich"
+  ],
+  "held": []
+}

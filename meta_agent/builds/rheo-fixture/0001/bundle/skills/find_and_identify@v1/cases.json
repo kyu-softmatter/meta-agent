@@ -1,0 +1,243 @@
+[
+  {
+    "name": "one instrument answers: it is opened, identified and closed",
+    "inputs": {
+      "address": null
+    },
+    "transcript": [
+      {
+        "tool": "list_devices",
+        "input": {},
+        "output": {
+          "devices": [
+            {
+              "address": "mock:rheo-1",
+              "answers": true
+            }
+          ]
+        }
+      },
+      {
+        "tool": "open_session",
+        "input": {
+          "address": "mock:rheo-1"
+        },
+        "output": {
+          "session": "s-1"
+        }
+      },
+      {
+        "tool": "identify",
+        "input": {
+          "session": "s-1"
+        },
+        "output": {
+          "manufacturer": "Fixture Instruments",
+          "model": "FR-1",
+          "serial": "FX-0001",
+          "firmware": "1.0.0"
+        }
+      },
+      {
+        "tool": "close_session",
+        "input": {
+          "session": "s-1"
+        },
+        "output": {
+          "closed": true
+        }
+      }
+    ],
+    "expect": {
+      "identified": true,
+      "found": [
+        "mock:rheo-1"
+      ],
+      "address": "mock:rheo-1",
+      "session_closed": true,
+      "identity": [
+        {
+          "field": "manufacturer",
+          "value": "Fixture Instruments",
+          "kind": "observed",
+          "tool": "identify"
+        },
+        {
+          "field": "model",
+          "value": "FR-1",
+          "kind": "observed",
+          "tool": "identify"
+        },
+        {
+          "field": "serial",
+          "value": "FX-0001",
+          "kind": "observed",
+          "tool": "identify"
+        },
+        {
+          "field": "firmware",
+          "value": "1.0.0",
+          "kind": "observed",
+          "tool": "identify"
+        }
+      ]
+    },
+    "expect_calls": [
+      "list_devices",
+      "open_session",
+      "identify",
+      "close_session"
+    ]
+  },
+  {
+    "name": "two answer and none is named: it opens nothing",
+    "inputs": {
+      "address": null
+    },
+    "transcript": [
+      {
+        "tool": "list_devices",
+        "output": {
+          "devices": [
+            {
+              "address": "mock:rheo-1",
+              "answers": true
+            },
+            {
+              "address": "mock:rheo-2",
+              "answers": true
+            }
+          ]
+        }
+      }
+    ],
+    "expect": {
+      "identified": false,
+      "found": [
+        "mock:rheo-1",
+        "mock:rheo-2"
+      ]
+    },
+    "expect_calls": [
+      "list_devices"
+    ]
+  },
+  {
+    "name": "nothing answers",
+    "inputs": {
+      "address": null
+    },
+    "transcript": [
+      {
+        "tool": "list_devices",
+        "output": {
+          "devices": [
+            {
+              "address": "mock:rheo-1",
+              "answers": false
+            }
+          ]
+        }
+      }
+    ],
+    "expect": {
+      "identified": false,
+      "found": [],
+      "why": "nothing answered"
+    },
+    "expect_calls": [
+      "list_devices"
+    ]
+  },
+  {
+    "name": "the named address does not answer: no session is opened",
+    "inputs": {
+      "address": "mock:rheo-9"
+    },
+    "transcript": [
+      {
+        "tool": "list_devices",
+        "output": {
+          "devices": [
+            {
+              "address": "mock:rheo-1",
+              "answers": true
+            }
+          ]
+        }
+      }
+    ],
+    "expect": {
+      "identified": false,
+      "address": "mock:rheo-9"
+    },
+    "expect_calls": [
+      "list_devices"
+    ]
+  },
+  {
+    "name": "the identity cannot be read: the session is still closed",
+    "inputs": {
+      "address": "mock:rheo-1"
+    },
+    "transcript": [
+      {
+        "tool": "list_devices",
+        "output": {
+          "devices": [
+            {
+              "address": "mock:rheo-1",
+              "answers": true
+            }
+          ]
+        }
+      },
+      {
+        "tool": "open_session",
+        "output": {
+          "session": "s-1"
+        }
+      },
+      {
+        "tool": "identify",
+        "error": {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-UNAVAILABLE-001",
+          "category": "unavailable",
+          "message": "no reply from the instrument",
+          "retryable": true,
+          "remediation": {
+            "action": "check the connection"
+          }
+        }
+      },
+      {
+        "tool": "close_session",
+        "input": {
+          "session": "s-1"
+        },
+        "output": {
+          "closed": true
+        }
+      }
+    ],
+    "expect": {
+      "identified": false,
+      "session_closed": true,
+      "error": {
+        "category": "unavailable"
+      }
+    },
+    "expect_calls": [
+      "list_devices",
+      "open_session",
+      "identify",
+      "close_session"
+    ]
+  },
+  {
+    "name": "on the bench",
+    "not_run": "requires bench"
+  }
+]

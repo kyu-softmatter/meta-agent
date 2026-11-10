@@ -1,0 +1,16 @@
+{
+  "id": "if-1",
+  "name": "the status tool answers with a state",
+  "call": {
+    "tool": "status",
+    "input": {}
+  },
+  "expected": {
+    "output": {
+      "state": "idle",
+      "initialised": true,
+      "homed": true
+    }
+  },
+  "expected_verdict": "pass"
+}

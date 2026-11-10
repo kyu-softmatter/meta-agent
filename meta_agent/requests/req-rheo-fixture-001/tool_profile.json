@@ -1,0 +1,137 @@
+{
+  "card": "tool_profile",
+  "schema_version": "0.1",
+  "id": "tp-rheo-fixture-001",
+  "rid": "req-rheo-fixture-001",
+  "revision": 1,
+  "author": "meta-macbook-20261109-2",
+  "created_at": "2026-11-10T02:37:39Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "tool": {
+    "name": "fixture_rheometer",
+    "kind": "instrument",
+    "registry_id": null,
+    "source": "meta_agent/tests/fixtures/rheometer/README.md",
+    "language": "any; the bundle carries mock adapters in Python",
+    "license": "not stated in the documentation"
+  },
+  "analysis_permission": null,
+  "claims": [
+    {
+      "claim": "each tool takes one JSON object and returns one, or an error contract",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_fixture_rheometer",
+          "locus": "## Tools"
+        }
+      ],
+      "capability": "io_format"
+    },
+    {
+      "claim": "list_devices, open_session, identify and close_session find the instrument and read its identity; none writes a setting",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_fixture_rheometer",
+          "locus": "## Tools"
+        }
+      ],
+      "capability": "observable"
+    },
+    {
+      "claim": "status returns the state, whether the device is initialised and homed, a fault if there is one, the temperature, the gap, the time and the run id, and changes nothing",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_fixture_rheometer",
+          "locus": "## Tools"
+        }
+      ],
+      "capability": "observable"
+    },
+    {
+      "claim": "ranges returns the modes and, per quantity, the lowest and highest value and the unit, as the device reports them about itself, and changes nothing",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_fixture_rheometer",
+          "locus": "## Tools"
+        }
+      ],
+      "capability": "observable"
+    },
+    {
+      "claim": "initialise, home, set_shear_rate, start, stop and self_calibrate change the device, and every one of them is behind the bundle's gate",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_fixture_rheometer",
+          "locus": "## Tools"
+        }
+      ],
+      "capability": "constraint"
+    },
+    {
+      "claim": "the start-up order is the air supply and the transport lock by a person, then initialise, then home, and the device is ready when status says idle, initialised and homed with no fault",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_fixture_rheometer",
+          "locus": "## Start-up"
+        }
+      ],
+      "capability": "constraint"
+    },
+    {
+      "claim": "the motor adjustment is calibrated by the device's own routine and torque against a standard a person loads",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_fixture_rheometer",
+          "locus": "## Calibration"
+        }
+      ],
+      "capability": "constraint"
+    },
+    {
+      "claim": "how the normal force is calibrated",
+      "kind": "unknown",
+      "basis": "documentation",
+      "evidence": [],
+      "requires": "the section of a manual on the normal force transducer",
+      "capability": "constraint"
+    }
+  ],
+  "parameter_candidates": [
+    "address",
+    "session"
+  ],
+  "gaps": [
+    {
+      "what": "how the normal force is calibrated",
+      "reason": "no_material",
+      "requires": "the section of a manual on the normal force transducer"
+    },
+    {
+      "what": "a real instrument behaves as the mock adapters do",
+      "reason": "permission_required",
+      "requires": "analysis_permission confirmed by a person (granted_by, scope, basis, date)"
+    }
+  ],
+  "material_refs": []
+}

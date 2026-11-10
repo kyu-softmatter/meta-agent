@@ -1,0 +1,278 @@
+# diff from template
+# template: agent@79909cd133f1
+
+added     .claude/agents/analyst.md
+added     .claude/agents/operator.md
+added     replay/rp-001.json
+added     replay/rp-002.json
+added     skills/find_and_identify@v1/SKILL.md
+added     skills/find_and_identify@v1/cases.json
+added     skills/find_and_identify@v1/scripts/find_and_identify.py
+added     skills/find_and_identify@v1/skill.json
+added     skills/flow_curve_fit@v1/SKILL.md
+added     skills/flow_curve_fit@v1/cases.json
+added     skills/flow_curve_fit@v1/scripts/flow_curve_fit.py
+added     skills/flow_curve_fit@v1/skill.json
+added     skills/read_ranges@v1/SKILL.md
+added     skills/read_ranges@v1/cases.json
+added     skills/read_ranges@v1/scripts/read_ranges.py
+added     skills/read_ranges@v1/skill.json
+added     skills/read_status@v1/SKILL.md
+added     skills/read_status@v1/cases.json
+added     skills/read_status@v1/scripts/read_status.py
+added     skills/read_status@v1/skill.json
+added     skills/shear_rate_max_from_max_speed@v1/SKILL.md
+added     skills/shear_rate_max_from_max_speed@v1/cases.json
+added     skills/shear_rate_max_from_max_speed@v1/scripts/bound.py
+added     skills/shear_rate_max_from_max_speed@v1/skill.json
+added     tools/close_session/adapter.py
+added     tools/close_session/tool.json
+added     tools/identify/adapter.py
+added     tools/identify/errors/unavailable.json
+added     tools/identify/tool.json
+added     tools/list_devices/adapter.py
+added     tools/list_devices/tool.json
+added     tools/open_session/adapter.py
+added     tools/open_session/errors/unavailable.json
+added     tools/open_session/tool.json
+added     tools/ranges/adapter.py
+added     tools/ranges/tool.json
+added     tools/status/adapter.py
+added     tools/status/tool.json
+added     validation/interface/if-1.json
+added     validation/interface/if-2.json
+added     validation/interface/if-3.json
+added     validation/scientific/sci-1.json
+removed   replay/.gitkeep
+removed   skills/.gitkeep
+removed   tools/.gitkeep
+removed   validation/interface/.gitkeep
+removed   validation/scientific/.gitkeep
+modified  CAPABILITIES.json
+modified  CLAUDE.md
+modified  envelope/parameters.json
+modified  envelope/snapshot.json
+
+--- template/CAPABILITIES.json
++++ bundle/CAPABILITIES.json
+@@ -1,10 +1,77 @@
+ {
+   "schema_version": "0.1",
+-  "agent": null,
+-  "tool": null,
+-  "source": null,
+-  "observed": [],
++  "agent": "rheo-fixture",
++  "tool": "fixture_rheometer",
++  "source": "meta_agent/tests/fixtures/rheometer/README.md",
++  "observed": [
++    {
++      "claim": "each tool takes one JSON object and returns one, or an error contract",
++      "capability": "io_format",
++      "evidence": [
++        "## Tools"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "list_devices, open_session, identify and close_session find the instrument and read its identity; none writes a setting",
++      "capability": "observable",
++      "evidence": [
++        "## Tools"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "status returns the state, whether the device is initialised and homed, a fault if there is one, the temperature, the gap, the time and the run id, and changes nothing",
++      "capability": "observable",
++      "evidence": [
++        "## Tools"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "ranges returns the modes and, per quantity, the lowest and highest value and the unit, as the device reports them about itself, and changes nothing",
++      "capability": "observable",
++      "evidence": [
++        "## Tools"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "initialise, home, set_shear_rate, start, stop and self_calibrate change the device, and every one of them is behind the bundle's gate",
++      "capability": "constraint",
++      "evidence": [
++        "## Tools"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "the start-up order is the air supply and the transport lock by a person, then initialise, then home, and the device is ready when status says idle, initialised and homed with no fault",
++      "capability": "constraint",
++      "evidence": [
++        "## Start-up"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "the motor adjustment is calibrated by the device's own routine and torque against a standard a person loads",
++      "capability": "constraint",
++      "evidence": [
++        "## Calibration"
++      ],
++      "kind": "observed"
++    }
++  ],
+   "derived": [],
+   "unverified": [],
+-  "gaps": []
++  "gaps": [
++    {
++      "what": "how the normal force is calibrated",
++      "requires": "the section of a manual on the normal force transducer"
++    },
++    {
++      "what": "a real instrument behaves as the mock adapters do",
++      "requires": "analysis_permission confirmed by a person (granted_by, scope, basis, date)",
++      "reason": "permission_required"
++    }
++  ]
+ }
+
+--- template/CLAUDE.md
++++ bundle/CLAUDE.md
+@@ -1,16 +1,74 @@
+-# {{agent_name}} — a scientific agent
++# rheo-fixture — a scientific agent
+ 
+-Built by the Meta-Agent from template `{{template}}` for request `{{rid}}`. You are this agent; the Meta-Agent is not here. Everything you need to run, validate and report is in this directory.
++Built by the Meta-Agent from template `agent@79909cd133f1` for request `req-rheo-fixture-001`. You are this agent; the Meta-Agent is not here. Everything you need to run, validate and report is in this directory.
+ 
+ ## Role
+ 
+-{{purpose}}
++Build an agent for the fixture rheometer, an instrument that does not exist, so that a bundle with several tools, skills taken from the library and subagents that use them is exercised from intake to a recorded build. Its operator finds and identifies the instrument and reads its state and the ranges it reports, through mock tools. Its analyst computes a bound on the shear rate and fits a power law to a flow curve it is handed. The skills that would change the device stay held in the library and out of the bundle.
+ 
+-Science task: {{science_task}}
++Science task: fit a power law to a flow curve and say what the instrument reports about itself
+ 
+ ## Tools
+ 
+-{{tools_section}}
++### `list_devices`
++
++list the addresses an instrument answers at; the mock adapter in this bundle stands in for the instrument
++
++- input: none
++- output: `devices` (array)
++- errors it may return: `invalid_input`
++- side effects: reads_instrument; idempotent: yes
++- gate: not required (the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required)
++
++### `open_session`
++
++open a session to the instrument at an address; the mock adapter in this bundle stands in for the instrument
++
++- input: `address` (string, required)
++- output: `session` (string)
++- errors it may return: `invalid_input`, `unavailable`
++- side effects: reads_instrument; idempotent: yes
++- gate: not required (the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required)
++
++### `identify`
++
++read the identity of the instrument a session is open to; the mock adapter in this bundle stands in for the instrument
++
++- input: `session` (string, required)
++- output: `firmware` (string), `manufacturer` (string), `model` (string), `serial` (string)
++- errors it may return: `invalid_input`, `unavailable`
++- side effects: reads_instrument; idempotent: yes
++- gate: not required (the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required)
++
++### `close_session`
++
++close a session; the mock adapter in this bundle stands in for the instrument
++
++- input: `session` (string, required)
++- output: `closed` (boolean)
++- errors it may return: `invalid_input`
++- side effects: reads_instrument; idempotent: yes
++- gate: not required (the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required)
++
++### `status`
++
++read the state of the instrument: state, initialised, homed, fault, temperature, gap, time and run id; the mock adapter in this bundle stands in for the instrument
++
++- input: none
++- output: `homed` (boolean), `initialised` (boolean), `state` (string)
++- errors it may return: `invalid_input`
++- side effects: reads_instrument; idempotent: yes
++- gate: not required (the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required)
++
++### `ranges`
++
++read the modes and the ranges the instrument reports about itself; the mock adapter in this bundle stands in for the instrument
++
++- input: none
++- output: `modes` (array), `ranges` (array)
++- errors it may return: `invalid_input`
++- side effects: reads_instrument; idempotent: yes
++- gate: not required (the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required)
+ 
+ Call a tool only through the runner, which applies the gate, checks the input against the tool's contract and returns either the output or an error contract:
+ 
+@@ -33,7 +91,10 @@
+ 
+ ## What this agent does not do
+ 
+-{{must_not}}
++- Touch an instrument.
++- Reach a network host.
++- Invent a number or choose a tolerance.
++- Run a skill that changes a device.
+ 
+ - Write outside this directory, or into `envelope/safety.json`, `CLAUDE.md` or `.claude/`.
+ - Run with `--no-verify`, reach a network host, or use a credential.
+@@ -49,12 +110,19 @@
+ 
+ The runner compares the inputs and the outputs with the manifest and sends every device call the skill makes through `src/run_tool.py`, so the gate is asked each time. It prints what it ran: the skill, its version, the inputs, the outputs, the tool calls and their verdicts. You never type a skill's result and never run a skill's script yourself. A skill that is `held` is refused until a person releases it.
+ 
+-{{skills_section}}
++- `find_and_identify@v1`: Lists what answers, opens a session to one instrument, reads its identity and closes the session. Take it first, before any other hardware skill, and whenever it is not certain which instrument is on the other end. Used by `operator`.
++- `read_status@v1`: Reads what state the instrument is in through its status tool and returns ready, busy, fault or unknown with the readings. Take it before any step that changes the device and to verify a step that did. Used by `operator`.
++- `read_ranges@v1`: Reads what the instrument itself reports about its modes and the range of each quantity. Take it when a plan needs to know what the device says it can do, before choosing any interval. Used by `operator`.
++- `shear_rate_max_from_max_speed@v1`: Upper bound on the shear rate of a cone-and-plate rheometer from its top angular velocity. Take it when shear_rate is a parameter and the tool is a rotational rheometer with a cone. Used by `analyst`.
++- `flow_curve_fit@v1`: Fits a power law to a flow curve, shear stress against shear rate. Take it when a steady shear sweep has been measured and the question is how the stress scales with the rate. Used by `analyst`.
+ 
+ ## Subagents
+ 
+-{{subagents_section}}
++Each subagent is a file under `.claude/agents/` and works in its own context. It is not a seat: it writes no record and commits nothing; this agent reports and commits what a subagent returns. Only `operator` may be given a skill that changes a device.
++
++- `operator`: Uses the hardware skills: finds and identifies the instrument, reads its state and the ranges it reports. It is the only subagent that may be given a skill that changes a device, and in this bundle it is given none. Skills: `find_and_identify@v1`, `read_status@v1`, `read_ranges@v1`. Side effects: read_device.
++- `analyst`: Uses the skills that touch no device: computes bounds from the rows it is handed and fits the data it is handed. Skills: `shear_rate_max_from_max_speed@v1`, `flow_curve_fit@v1`. Side effects: none.
+ 
+ ## Seat
+ 
+-Commits from this directory are made as the seat the person assigns, in the form `{{seat_form}}`.
++Commits from this directory are made as the seat the person assigns, in the form `rheo-fixture-<machine>-<YYYYMMDD>-<n>`.
+
+--- template/envelope/parameters.json
++++ bundle/envelope/parameters.json
+@@ -1,4 +1,3 @@
+ {
+-  "schema_version": "0.1",
+   "rows": []
+ }
+
+--- template/envelope/snapshot.json
++++ bundle/envelope/snapshot.json
+@@ -1,6 +1,5 @@
+ {
+-  "schema_version": "0.1",
+-  "kb_version": null,
++  "kb_version": "kb@e3b0c44298fc",
+   "entries": [],
+   "numbers": []
+ }
+

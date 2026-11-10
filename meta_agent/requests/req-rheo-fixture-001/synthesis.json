@@ -1,0 +1,40 @@
+{
+  "card": "synthesis",
+  "schema_version": "0.1",
+  "id": "syn-rheo-fixture-001",
+  "rid": "req-rheo-fixture-001",
+  "revision": 1,
+  "author": "meta-macbook-20261109-2",
+  "created_at": "2026-11-10T02:37:39Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis_refs": [
+    "spec_a1.json",
+    "spec_a2.json",
+    "spec_a3.json",
+    "spec_a4.json",
+    "spec_a5.json",
+    "spec_a6.json"
+  ],
+  "conflicts": [],
+  "held": [
+    {
+      "item": "skill bring_to_ready@v1",
+      "reason": "it changes a device (write_device): held in the library until a person releases it, and left out of the bundle"
+    },
+    {
+      "item": "skill run_steady_shear@v1",
+      "reason": "it changes a device (write_device): held in the library until a person releases it, and left out of the bundle"
+    },
+    {
+      "item": "skill calibrate@v1",
+      "reason": "it changes a device (write_device): held in the library until a person releases it, and left out of the bundle"
+    }
+  ]
+}

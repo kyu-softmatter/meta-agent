@@ -1,0 +1,31 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-rheo-fixture-001-a3",
+  "rid": "req-rheo-fixture-001",
+  "revision": 1,
+  "author": "meta-macbook-20261109-2",
+  "created_at": "2026-11-10T02:37:39Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A3",
+  "title": "Knowledge",
+  "content": {
+    "snapshot": [],
+    "kb_version": "kb@e3b0c44298fc",
+    "gaps": []
+  },
+  "reads": [
+    "goal-rheo-fixture-001",
+    "tp-rheo-fixture-001",
+    "kb-brief-rheo-fixture-001",
+    "lab-fixture-rich"
+  ],
+  "held": []
+}

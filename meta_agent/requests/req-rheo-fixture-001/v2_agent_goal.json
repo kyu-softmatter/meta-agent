@@ -1,0 +1,62 @@
+{
+  "card": "agent_goal",
+  "schema_version": "0.1",
+  "id": "goal-rheo-fixture-001",
+  "rid": "req-rheo-fixture-001",
+  "revision": 2,
+  "author": "meta-macbook-20261109-2",
+  "created_at": "2026-11-10T02:37:39Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [
+    {
+      "what": "a prior case for this goal's signature",
+      "searched": [
+        "meta_agent/cases/index.json (222 case(s) read)",
+        "level 1, the signature: science_task=fit a power law to a flow curve and say what the instrument reports about itself; executes=instrument; instrument=fixture_rheometer; methods=rheometry; parameter_names=shear_rate",
+        "level 2 not searched: the signature states no cause_class"
+      ],
+      "reason": "no case shares an identifying field with the signature",
+      "requires": "a case written from this agent's first incidents, validation failures or the person's interventions"
+    }
+  ],
+  "degraded": [],
+  "status": "validated",
+  "purpose": "Build an agent for the fixture rheometer, an instrument that does not exist, so that a bundle with several tools, skills taken from the library and subagents that use them is exercised from intake to a recorded build. Its operator finds and identifies the instrument and reads its state and the ranges it reports, through mock tools. Its analyst computes a bound on the shear rate and fits a power law to a flow curve it is handed. The skills that would change the device stay held in the library and out of the bundle.",
+  "science_task": "fit a power law to a flow curve and say what the instrument reports about itself",
+  "tool": {
+    "name": "fixture_rheometer",
+    "kind": "instrument",
+    "registry_id": null,
+    "material_refs": []
+  },
+  "methods": [
+    "rheometry"
+  ],
+  "executes": "instrument",
+  "must_not": [
+    "touch an instrument",
+    "reach a network host",
+    "invent a number or choose a tolerance",
+    "run a skill that changes a device"
+  ],
+  "knowledge_needs": [],
+  "parameter_scope": [
+    "shear_rate"
+  ],
+  "destination": "none: a fixture build that stays under meta_agent/builds/",
+  "priorities": [
+    "the whole path runs end to end with skills and subagents",
+    "nothing outside the bundle is touched",
+    "no skill that changes a device enters the bundle"
+  ],
+  "lab_profile_ref": "lab-fixture-rich",
+  "gui_choice": "none",
+  "analysis_permission": null,
+  "requested_by": "human",
+  "note": "lab_profile_ref names the material-rich fixture lab, as the echo request does. The instrument is described by one page written by hand, meta_agent/tests/fixtures/rheometer/README.md; no device, no vendor document and no binary was read.",
+  "supersedes": "goal-rheo-fixture-001"
+}

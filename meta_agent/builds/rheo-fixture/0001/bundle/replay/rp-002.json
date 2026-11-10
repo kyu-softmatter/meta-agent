@@ -1,0 +1,17 @@
+{
+  "id": "rp-002",
+  "name": "a session to an address that does not answer is refused with the documented error",
+  "call": {
+    "tool": "open_session",
+    "input": {
+      "address": "mock:rheo-9"
+    }
+  },
+  "expected": {
+    "error": {
+      "category": "unavailable",
+      "code": "RHEO-UNAVAILABLE-001"
+    }
+  },
+  "expected_verdict": "pass"
+}

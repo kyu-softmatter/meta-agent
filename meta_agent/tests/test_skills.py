@@ -549,5 +549,29 @@ class Template(unittest.TestCase):
             shutil.rmtree(tmp, ignore_errors=True)
 
 
+class RecordedBuild(unittest.TestCase):
+    """The build recorded under meta_agent/builds/rheo-fixture/0001: what its cards say is what is on disk."""
+
+    def test_the_record_agrees_with_its_cards_and_the_library(self):
+        build_dir = os.path.join(META, "builds", "rheo-fixture", "0001")
+        build = cards.load_json(os.path.join(build_dir, "build.json"))
+        spec = cards.load_json(os.path.join(REQ, "agent_spec.json"))
+        bundle = os.path.join(REPO, *build["bundle_path"].split("/"))
+        self.assertEqual(build["spec_ref"], spec["id"])
+        self.assertEqual(build["bundle_sha256"], cards.sha256_tree(bundle))
+        self.assertEqual(build["held"], spec["held"])
+        self.assertIsNone(build["landed_at"])
+        held = {h["item"].split()[-1] for h in spec["held"]}
+        self.assertEqual(sorted(held), HELD)
+        carried = sorted(os.listdir(os.path.join(bundle, "skills")))
+        self.assertEqual(carried, sorted(r for r in spec["skills"] if r not in held))
+        for ref in carried:
+            self.assertEqual(cards.sha256_tree(os.path.join(bundle, "skills", ref)), cards.sha256_tree(catalogue.find(ref)), ref)
+        for a in spec["subagents"]:
+            text = cards.read_text(os.path.join(bundle, ".claude", "agents", a["name"] + ".md"))
+            self.assertEqual(rules.front_list(text, "skills"), a["skills"])
+            self.assertEqual(rules.front_list(text, "side_effects"), a["side_effects"])
+
+
 if __name__ == "__main__":
     unittest.main()

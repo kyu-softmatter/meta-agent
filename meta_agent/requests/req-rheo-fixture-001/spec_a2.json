@@ -1,0 +1,198 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-rheo-fixture-001-a2",
+  "rid": "req-rheo-fixture-001",
+  "revision": 1,
+  "author": "meta-macbook-20261109-2",
+  "created_at": "2026-11-10T02:37:39Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A2",
+  "title": "Interface",
+  "content": {
+    "cards_in": [
+      "tasks/*.md"
+    ],
+    "cards_out": [
+      "the printed reports of src/replay.py and src/validate_tasks.py",
+      "failures.jsonl lines"
+    ],
+    "callable_tools": [
+      {
+        "name": "list_devices",
+        "inputs": [],
+        "outputs": [
+          "devices"
+        ],
+        "errors": [
+          "invalid_input"
+        ],
+        "side_effects": "reads_instrument"
+      },
+      {
+        "name": "open_session",
+        "inputs": [
+          "address"
+        ],
+        "outputs": [
+          "session"
+        ],
+        "errors": [
+          "invalid_input",
+          "unavailable"
+        ],
+        "side_effects": "reads_instrument"
+      },
+      {
+        "name": "identify",
+        "inputs": [
+          "session"
+        ],
+        "outputs": [
+          "firmware",
+          "manufacturer",
+          "model",
+          "serial"
+        ],
+        "errors": [
+          "invalid_input",
+          "unavailable"
+        ],
+        "side_effects": "reads_instrument"
+      },
+      {
+        "name": "close_session",
+        "inputs": [
+          "session"
+        ],
+        "outputs": [
+          "closed"
+        ],
+        "errors": [
+          "invalid_input"
+        ],
+        "side_effects": "reads_instrument"
+      },
+      {
+        "name": "status",
+        "inputs": [],
+        "outputs": [
+          "homed",
+          "initialised",
+          "state"
+        ],
+        "errors": [
+          "invalid_input"
+        ],
+        "side_effects": "reads_instrument"
+      },
+      {
+        "name": "ranges",
+        "inputs": [],
+        "outputs": [
+          "modes",
+          "ranges"
+        ],
+        "errors": [
+          "invalid_input"
+        ],
+        "side_effects": "reads_instrument"
+      }
+    ],
+    "gui_fields": [],
+    "skills": [
+      {
+        "ref": "find_and_identify@v1",
+        "kind": "hardware_connection",
+        "side_effect": "read_device",
+        "status": "usable",
+        "calls_tools": [
+          "list_devices",
+          "open_session",
+          "identify",
+          "close_session"
+        ]
+      },
+      {
+        "ref": "read_status@v1",
+        "kind": "hardware_state",
+        "side_effect": "read_device",
+        "status": "usable",
+        "calls_tools": [
+          "status"
+        ]
+      },
+      {
+        "ref": "read_ranges@v1",
+        "kind": "hardware_range",
+        "side_effect": "read_device",
+        "status": "usable",
+        "calls_tools": [
+          "ranges"
+        ]
+      },
+      {
+        "ref": "shear_rate_max_from_max_speed@v1",
+        "kind": "bound",
+        "side_effect": "none",
+        "status": "usable",
+        "calls_tools": []
+      },
+      {
+        "ref": "flow_curve_fit@v1",
+        "kind": "data_analysis",
+        "side_effect": "none",
+        "status": "usable",
+        "calls_tools": []
+      },
+      {
+        "ref": "bring_to_ready@v1",
+        "kind": "hardware_boot",
+        "side_effect": "write_device",
+        "status": "held",
+        "calls_tools": [
+          "initialise",
+          "home"
+        ]
+      },
+      {
+        "ref": "run_steady_shear@v1",
+        "kind": "hardware_control",
+        "side_effect": "write_device",
+        "status": "held",
+        "calls_tools": [
+          "set_shear_rate",
+          "start",
+          "stop"
+        ]
+      },
+      {
+        "ref": "calibrate@v1",
+        "kind": "hardware_calibration",
+        "side_effect": "write_device",
+        "status": "held",
+        "calls_tools": [
+          "self_calibrate"
+        ]
+      }
+    ],
+    "subagents": [
+      "operator",
+      "analyst"
+    ]
+  },
+  "reads": [
+    "goal-rheo-fixture-001",
+    "tp-rheo-fixture-001",
+    "kb-brief-rheo-fixture-001",
+    "lab-fixture-rich"
+  ],
+  "held": []
+}

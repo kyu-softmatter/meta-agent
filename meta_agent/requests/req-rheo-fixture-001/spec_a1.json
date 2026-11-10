@@ -1,0 +1,50 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-rheo-fixture-001-a1",
+  "rid": "req-rheo-fixture-001",
+  "revision": 1,
+  "author": "meta-macbook-20261109-2",
+  "created_at": "2026-11-10T02:37:39Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A1",
+  "title": "Boundary",
+  "content": {
+    "directory": "meta_agent/builds/rheo-fixture/0001/bundle",
+    "writes": [
+      "failures.jsonl",
+      "runs/"
+    ],
+    "reads": [
+      "envelope/",
+      "tools/",
+      "validation/",
+      "replay/",
+      "tasks/"
+    ],
+    "forbidden": [
+      "envelope/safety.json",
+      "CLAUDE.md",
+      ".claude/",
+      "any path outside the bundle",
+      "network hosts",
+      "credentials"
+    ],
+    "seat": "fixture_rheometer-<machine>-<YYYYMMDD>-<n>",
+    "tier": 0
+  },
+  "reads": [
+    "goal-rheo-fixture-001",
+    "tp-rheo-fixture-001",
+    "kb-brief-rheo-fixture-001",
+    "lab-fixture-rich"
+  ],
+  "held": []
+}

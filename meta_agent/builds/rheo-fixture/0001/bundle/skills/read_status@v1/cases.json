@@ -1,0 +1,141 @@
+[
+  {
+    "name": "idle, initialised and homed is ready",
+    "inputs": {},
+    "transcript": [
+      {
+        "tool": "status",
+        "input": {},
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      }
+    ],
+    "expect": {
+      "verdict": "ready",
+      "value_kind": "measured",
+      "measured_at": "2026-11-09T09:00:00Z",
+      "run_id": null,
+      "readings": {
+        "state": "idle",
+        "initialised": true,
+        "homed": true,
+        "fault": null,
+        "temperature": 298.15,
+        "gap": 5e-05,
+        "time": "2026-11-09T09:00:00Z",
+        "run_id": null
+      }
+    },
+    "expect_calls": [
+      "status"
+    ]
+  },
+  {
+    "name": "running is busy, and the run id comes with the reading",
+    "inputs": {},
+    "transcript": [
+      {
+        "tool": "status",
+        "output": {
+          "state": "running",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": "run-fx-1"
+        }
+      }
+    ],
+    "expect": {
+      "verdict": "busy",
+      "run_id": "run-fx-1"
+    }
+  },
+  {
+    "name": "a reported fault is a fault",
+    "inputs": {},
+    "transcript": [
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": "air pressure low",
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      }
+    ],
+    "expect": {
+      "verdict": "fault"
+    }
+  },
+  {
+    "name": "idle but not homed is unknown, not ready",
+    "inputs": {},
+    "transcript": [
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": false,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      }
+    ],
+    "expect": {
+      "verdict": "unknown"
+    }
+  },
+  {
+    "name": "an error from the tool is unknown",
+    "inputs": {},
+    "transcript": [
+      {
+        "tool": "status",
+        "error": {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-UNAVAILABLE-001",
+          "category": "unavailable",
+          "message": "no reply from the instrument",
+          "retryable": true,
+          "remediation": {
+            "action": "check the connection"
+          }
+        }
+      }
+    ],
+    "expect": {
+      "verdict": "unknown",
+      "error": {
+        "category": "unavailable"
+      }
+    },
+    "expect_calls": [
+      "status"
+    ]
+  },
+  {
+    "name": "on the bench",
+    "not_run": "requires bench"
+  }
+]

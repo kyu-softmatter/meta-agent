@@ -1,0 +1,46 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-rheo-fixture-001-a5",
+  "rid": "req-rheo-fixture-001",
+  "revision": 1,
+  "author": "meta-macbook-20261109-2",
+  "created_at": "2026-11-10T02:37:39Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [
+    {
+      "what": "a prior case for this agent's safety rows",
+      "searched": [
+        "meta_agent/cases/index.json (222 case(s) read)",
+        "level 1, the signature: science_task=fit a power law to a flow curve and say what the instrument reports about itself; executes=instrument; instrument=fixture_rheometer; methods=rheometry",
+        "level 2 not searched: the signature states no cause_class"
+      ],
+      "reason": "no case shares an identifying field with the signature",
+      "requires": "a case written from this agent's first incidents, validation failures or the person's interventions"
+    }
+  ],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A5",
+  "title": "Safety",
+  "content": {
+    "rows": [],
+    "gate": "src/gate.py reads envelope/safety.json before any tool whose contract requires a gate; list_devices, open_session, identify, close_session, status, ranges read the device or nothing, change nothing, and require none",
+    "human_only": [
+      "safety values",
+      "hand-over (landed_at)",
+      "the scientific tolerance"
+    ]
+  },
+  "reads": [
+    "goal-rheo-fixture-001",
+    "tp-rheo-fixture-001",
+    "kb-brief-rheo-fixture-001",
+    "lab-fixture-rich"
+  ],
+  "held": []
+}

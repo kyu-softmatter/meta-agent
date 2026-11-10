@@ -1,0 +1,22 @@
+{
+  "card": "knowledge_brief",
+  "schema_version": "0.1",
+  "id": "kb-brief-rheo-fixture-001",
+  "rid": "req-rheo-fixture-001",
+  "revision": 1,
+  "author": "meta-macbook-20261109-2",
+  "created_at": "2026-11-10T02:37:39Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "validated",
+  "need": [],
+  "kb_version": "kb@e3b0c44298fc",
+  "entries": [],
+  "gaps": [],
+  "note": "the goal names no knowledge need; the snapshot pins the knowledge version and copies no entry"
+}
