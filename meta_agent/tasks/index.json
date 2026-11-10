@@ -125,7 +125,7 @@
     {
       "id": "010",
       "file": "010-skill-library-and-subagents.md",
-      "status": "open",
+      "status": "done",
       "roles": [
         "design",
         "meta"
@@ -134,7 +134,8 @@
         "009"
       ],
       "opened": "2026-11-09",
-      "design_part": "landed"
+      "design_part": "landed",
+      "done_commit": "629ff5a"
     },
     {
       "id": "011",
