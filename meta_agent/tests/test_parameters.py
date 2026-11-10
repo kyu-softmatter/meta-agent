@@ -13,13 +13,12 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import types
 import unittest
 
 from meta_agent.src import cards, designer
 from meta_agent.src.parameters import bounds, rules
 from meta_agent.src.skills import LIBRARY, catalogue, runner
-from meta_agent.src.sources import chemicals_adapter, nist_webbook
+from meta_agent.src.sources import nist_webbook
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 META = os.path.dirname(HERE)
@@ -29,18 +28,20 @@ EXAMPLES = os.path.join(REPO, "contracts", "examples")
 SEAT = "meta-macbook-20261109-2"
 NOW = "2026-11-10T04:00:00Z"
 ENV = dict({k: v for k, v in os.environ.items() if k != "PYTHONPATH"}, PYTHONUTF8="1", PYTHONDONTWRITEBYTECODE="1")
-USED = ["shear_rate_min_from_min_speed@v1", "shear_rate_max_from_max_speed@v1", "shear_rate_max_from_inertia@v1",
+VALUES = ["water_viscosity_iapws_sr6@v1", "water_viscosity_kestin_1978@v1", "water_viscosity_relative_difference@v1",
+          "water_density_iapws_sr6@v1"]
+USED = VALUES + ["shear_rate_min_from_min_speed@v1", "shear_rate_max_from_max_speed@v1", "shear_rate_max_from_inertia@v1",
         "shear_stress_min_from_min_torque@v1", "shear_stress_max_from_max_torque@v1", "viscosity_min_measurable_at_rate@v1",
         "gap_min_from_particle_size@v1"]
 
 
 def draft():
-    d, _ = designer.looked_up(cards.load_json(os.path.join(REQ, "sheet_draft.json")))
-    return d
+    """The latest revision of the request's sheet draft."""
+    return cards.load_json(designer.latest_file(REQ, "sheet_draft.json")[1])
 
 
 def binding():
-    return cards.load_json(os.path.join(REQ, "bounds_binding.json"))
+    return cards.load_json(designer.latest_file(REQ, "bounds_binding.json")[1])
 
 
 def skills(library=LIBRARY):
@@ -75,16 +76,17 @@ def scratch_root():
     os.makedirs(os.path.join(root, "requests"))
     dest = os.path.join(root, "requests", "req-rheo-fixture-001")
     os.makedirs(dest)
-    for name in ("sheet_draft.json", "bounds_binding.json"):
-        shutil.copy(os.path.join(REQ, name), os.path.join(dest, name))
+    for name in ("sheet_draft.json", "bounds_binding.json"):        # the latest revision of each, as a first one
+        shutil.copy(designer.latest_file(REQ, name)[1], os.path.join(dest, name))
     shutil.copytree(LIBRARY, os.path.join(root, "skills"), ignore=shutil.ignore_patterns("__pycache__"))
     return tmp, root, dest
 
 
 class BoundSkills(unittest.TestCase):
-    def test_ten_bound_skills_each_with_passing_cases(self):
+    def test_ten_bound_skills_and_four_value_skills_each_with_passing_cases(self):
         rows = skills()
-        self.assertEqual(len(rows), 10)
+        self.assertEqual(len([r for r in rows if r["side"] in ("min", "max")]), 10)
+        self.assertEqual(sorted(r["ref"] for r in rows if r["side"] == "value"), sorted(VALUES))
         kinds = rules.skill_rules.load_kinds()
         for r in rows:
             d = catalogue.find(r["ref"])
@@ -98,7 +100,7 @@ class BoundSkills(unittest.TestCase):
                       "timestep_max_from_courant@v1": "courant_limit", "timestep_max_from_diffusion@v1": "diffusion_number_limit",
                       "timestep_max_from_relaxation_time@v1": "resolved_fraction"}
         for r in skills():
-            self.assertIn(r["side"], ("min", "max"))
+            self.assertIn(r["side"], ("min", "max", "value"))
             self.assertEqual(r["applies_to"]["parameters"], [r["parameter"]])
             self.assertEqual(len(r["outputs"]), 1)
             if r["ref"] in judgements:
@@ -152,6 +154,10 @@ class Sheet(unittest.TestCase):
                 self.assertEqual((b["value_kind"], b["unit"]), ("computed", r["unit"]))
                 self.assertTrue(b["basis"]["inputs"])
         self.assertEqual(n, 7)
+        for name in ("water_viscosity_iapws_sr6", "water_viscosity_kestin_1978", "water_density_iapws_sr6", "water_viscosity_relative_difference"):
+            r = row(self.sheet, name)
+            self.assertEqual(r["source"].split(":", 1)[1], r["basis"]["skill"])
+            self.assertTrue(r["basis"]["inputs"])
 
     def test_a_bound_recomputed_by_its_skill_agrees_within_its_uncertainty(self):
         b = bound(self.sheet, "shear_rate", "shear_rate_max_from_max_speed@v1")
@@ -169,8 +175,8 @@ class Sheet(unittest.TestCase):
         self.assertEqual(b["value"], 10.0 * 1e-06)
 
     def test_the_grade_is_the_worst_of_e4_and_the_input_rows(self):
-        self.assertEqual({r["name"]: r["grade"] for r in self.sheet["rows"] if r["name"] in ("cone_angle", "sample_viscosity")},
-                         {"cone_angle": "E3", "sample_viscosity": "E5"})
+        self.assertEqual({r["name"]: r["grade"] for r in self.sheet["rows"] if r["name"] in ("cone_angle", "sample_temperature")},
+                         {"cone_angle": "E3", "sample_temperature": "E5"})
         self.assertEqual(bound(self.sheet, "shear_rate", "shear_rate_max_from_max_speed@v1")["grade"], "E4")     # spec rows are E3
         self.assertEqual(bound(self.sheet, "shear_rate", "shear_rate_max_from_inertia@v1")["grade"], "E5")       # an assumed: row
         self.assertEqual(bound(self.sheet, "gap", "gap_min_from_particle_size@v1")["grade"], "E5")
@@ -287,7 +293,7 @@ class Binding(unittest.TestCase):
 
     def test_a_grade_is_derived_and_a_stated_one_must_be_it(self):
         def change(d):
-            next(r for r in d["rows"] if r["name"] == "sample_viscosity")["grade"] = "E2"
+            next(r for r in d["rows"] if r["name"] == "largest_particle_diameter")["grade"] = "E2"
         e = self.refused(bounds.NoGrade, None, change)
         self.assertEqual(e.code, "no_grade")
         self.assertIn("E5", str(e))
@@ -318,10 +324,12 @@ class Uncertainty(unittest.TestCase):
     def test_two_uncertain_inputs_add_in_quadrature(self):
         sheet = apply()
         b = bound(sheet, "shear_rate", "shear_rate_max_from_inertia@v1")
-        exact = 4.0 * 0.001 / (1000.0 * 0.035 ** 3 * 0.02 ** 2)
+        eta, rho = row(sheet, "water_viscosity_iapws_sr6")["value"], row(sheet, "water_density_iapws_sr6")["value"]
+        exact = 4.0 * eta / (rho * 0.035 ** 3 * 0.02 ** 2)
         first_order = exact * math.sqrt((3 * 0.0005 / 0.035) ** 2 + (2 * 0.0001 / 0.02) ** 2)
-        self.assertAlmostEqual(first_order, 10.3, places=1)
-        self.assertEqual((b["value"], b["uncertainty"]), (233.0, 11.0))
+        self.assertEqual(b["value"], round(exact))                       # an uncertainty of ten or so leaves no decimals
+        self.assertGreaterEqual(b["uncertainty"], first_order)
+        self.assertLess(b["uncertainty"], first_order + 1.0)             # rounded up to its second figure, no further
         self.assertLessEqual(abs(exact - b["value"]), b["uncertainty"])
 
 
@@ -352,7 +360,7 @@ class ExampleSheet(unittest.TestCase):
             b["skills"].append(dict(e, inputs=bases.get(e["skill"], {})) if e["verdict"] == "used" else dict(e))
         rows = [r for r in catalogue.build_index(library)["skills"] if r["kind"] == "bound"]
         sheet = bounds.apply(d, b, rows, run_in(library), example["author"], example["created_at"], sheet_path=path, tree=REPO)
-        for name in ("time_step", "weissenberg_number"):
+        for name in ("time_step", "weissenberg_number", "solvent_viscosity_at_run_temperature"):
             want = row(example, name)
             got = row(sheet, name)
             for k in ("value", "source", "grade", "value_kind", "basis", "bounds", "interval"):
@@ -382,7 +390,8 @@ class Command(unittest.TestCase):
     def test_bounds_lists_what_a_model_reads_to_bind(self):
         p = self.designer("--bounds", REQ)
         self.assertEqual(p.returncode, 0, p.stderr)
-        self.assertIn("7 bound skill(s) apply to lab_rheometer", p.stdout)
+        self.assertIn("11 skill(s) apply to lab_rheometer", p.stdout)
+        self.assertIn("water_viscosity_kestin_1978@v1  [value of water_viscosity_kestin_1978]", p.stdout)
         self.assertIn("shear_rate_max_from_inertia@v1  [max of shear_rate]", p.stdout)
         self.assertNotIn("timestep", p.stdout)
 
@@ -425,7 +434,7 @@ class Command(unittest.TestCase):
         tmp, root, dest = scratch_root()
         try:
             b = cards.load_json(os.path.join(dest, "bounds_binding.json"))
-            b["skills"][0]["inputs"]["cone_angle"] = "cone_radius"
+            next(e for e in b["skills"] if e["skill"] == "shear_rate_min_from_min_speed@v1")["inputs"]["cone_angle"] = "cone_radius"
             cards.write_json(os.path.join(dest, "bounds_binding.json"), b)
             p = self.designer("--sheet", dest, "--seat", SEAT, "--now", NOW, "--root", root)
             self.assertEqual(p.returncode, 1)
@@ -435,124 +444,117 @@ class Command(unittest.TestCase):
             shutil.rmtree(tmp, ignore_errors=True)
 
 
-class RecordedSheet(unittest.TestCase):
-    """The sheet recorded for the fixture rheometer request is what its draft and its binding give."""
+class Correlations(unittest.TestCase):
+    """A value a correlation skill gives is the source's, is marked a correlation, and two stand side by side."""
 
-    def test_the_record_is_what_the_pass_gives_and_checks_have_nothing_to_say(self):
-        _, path = designer.latest_file(REQ, "parameter_sheet.json")
-        recorded = cards.load_json(path)
-        self.assertEqual(said(recorded), [])
-        again = apply()
-        for k in ("rows", "skills_considered", "tool_ref", "id", "rid"):
-            self.assertEqual(recorded[k], again[k], k)
-        iv = row(recorded, "shear_rate")["interval"]
-        self.assertEqual((iv["min"], iv["max"]), (2.857e-05, 233.0))
-        self.assertTrue(recorded["degraded"] or any(str(r.get("source")).startswith("database:chemicals@") for r in recorded["rows"]))
+    @classmethod
+    def setUpClass(cls):
+        cls.sheet = apply()
 
+    def test_each_reproduces_values_its_source_states(self):
+        stated = {   # (skill, temperature in K): the value the source prints, in the skill's unit, and one unit of its last digit
+            ("water_viscosity_iapws_sr6@v1", 298.15): (889.996774e-06, 1e-12),      # IAPWS SR6-08(2011), Table 8
+            ("water_viscosity_iapws_sr6@v1", 375.0): (276.207245e-06, 1e-12),
+            ("water_density_iapws_sr6@v1", 298.15): (997.047013, 1e-06),
+            ("water_density_iapws_sr6@v1", 260.0): (997.068360, 1e-06),
+            ("water_viscosity_kestin_1978@v1", 298.15): (890.2e-06, 0.1e-06),       # Kestin, Sokolov, Wakeham (1978), Table 7
+            ("water_viscosity_kestin_1978@v1", 373.15): (282.1e-06, 0.1e-06),
+        }
+        for (ref, temperature), (want, unit) in stated.items():
+            rec = runner.run(ref, {"temperature": temperature}, now=NOW)
+            self.assertEqual(rec["verdict"], "ran", rec["why"])
+            got = rec["outputs"][ref.split("@")[0]]
+            self.assertLessEqual(abs(got - want), unit, "%s at %s K" % (ref, temperature))
 
-def fake_chemicals(version="9.9.9"):
-    """A stand-in with the two functions the adapter calls; it computes nothing real."""
-    pkg = types.ModuleType("chemicals")
-    pkg.__version__ = version
-    iapws = types.ModuleType("chemicals.iapws")
-    iapws.iapws95_rho = lambda T, P: 998.0 + 0.0 * T * P
-    viscosity = types.ModuleType("chemicals.viscosity")
-    viscosity.mu_IAPWS = lambda T, rho: 0.001 + 0.0 * T * rho
-    pkg.iapws, pkg.viscosity = iapws, viscosity
-    return {"chemicals": pkg, "chemicals.iapws": iapws, "chemicals.viscosity": viscosity}
+    def test_the_manifests_name_the_source_the_locus_and_the_kind(self):
+        for ref, words in (("water_viscosity_iapws_sr6@v1", ("IAPWS SR6-08(2011)", "Eq. (7)", "Table 5", "Table 8")),
+                           ("water_density_iapws_sr6@v1", ("IAPWS SR6-08(2011)", "Eq. (2)", "Table 1", "Table 8")),
+                           ("water_viscosity_kestin_1978@v1", ("Kestin", "7 (1978) 941", "Eq. (15)", "Eq. (16)", "Table 7"))):
+            m = rules.skill_rules.read_manifest(catalogue.find(ref))
+            self.assertEqual((m["side"], m["value_kind"]), ("value", "correlation"))
+            text = m["source"]["citation"] + " " + m["source"]["locus"]
+            for w in words:
+                self.assertIn(w, text, ref)
+            self.assertIn("sha256:", m["note"])
+            self.assertIn("https://", m["note"])
+        m = rules.skill_rules.read_manifest(catalogue.find("water_viscosity_relative_difference@v1"))
+        self.assertEqual((m["side"], m["value_kind"]), ("value", "computed"))
+
+    def test_outside_its_range_a_correlation_stops_and_is_not_extrapolated(self):
+        for ref in ("water_viscosity_iapws_sr6@v1", "water_density_iapws_sr6@v1", "water_viscosity_kestin_1978@v1"):
+            rec = runner.run(ref, {"temperature": 450.0}, now=NOW)
+            self.assertEqual((rec["verdict"], rec["outputs"]), ("failed", None), ref)
+            self.assertIn("ValueError", rec["why"])
+        d = draft()
+        next(r for r in d["rows"] if r["name"] == "sample_temperature")["value"] = 450.0
+        with self.assertRaises(bounds.SkillFailed):
+            apply(d)
+
+    def test_two_correlations_of_one_quantity_stand_side_by_side_and_say_what_they_are(self):
+        a, b = row(self.sheet, "water_viscosity_iapws_sr6"), row(self.sheet, "water_viscosity_kestin_1978")
+        for r, ref in ((a, "water_viscosity_iapws_sr6@v1"), (b, "water_viscosity_kestin_1978@v1")):
+            self.assertEqual((r["value_kind"], r["source"], r["unit"]), ("correlation", "correlation:%s" % ref, "Pa.s"))
+            self.assertEqual(r["basis"], {"skill": ref, "inputs": {"temperature": "sample_temperature"}})
+            self.assertEqual(r["grade"], "E5")          # the temperature is an assumed row
+        self.assertEqual(b["value"], 1002.0e-06)        # the datum Kestin et al. adopt at 20 degrees Celsius
+        self.assertNotEqual(a["value"], b["value"])
+        d = row(self.sheet, "water_viscosity_relative_difference")
+        self.assertEqual((d["value_kind"], d["source"]), ("computed", "computed:water_viscosity_relative_difference@v1"))
+        self.assertEqual(d["basis"]["inputs"], {"viscosity": "water_viscosity_kestin_1978", "reference_viscosity": "water_viscosity_iapws_sr6"})
+        self.assertAlmostEqual(d["value"], (b["value"] - a["value"]) / a["value"], places=15)
+        # the two sources state 1 % and 0.15 % for their own values here; the two differ by less than the two together
+        self.assertLess(abs(d["value"]), 0.01 + 0.0015)
+
+    def test_a_bound_rests_on_the_row_a_correlation_gave(self):
+        b = bound(self.sheet, "shear_rate", "shear_rate_max_from_inertia@v1")
+        self.assertEqual(b["basis"]["inputs"]["viscosity"], "water_viscosity_iapws_sr6")
+        self.assertEqual(b["basis"]["inputs"]["density"], "water_density_iapws_sr6")
+        self.assertEqual(b["grade"], "E5")
+
+    def test_a_correlation_called_computed_fails_check_19(self):
+        bad = copy.deepcopy(self.sheet)
+        row(bad, "water_viscosity_iapws_sr6").update(source="computed:water_viscosity_iapws_sr6@v1", value_kind="computed")
+        self.assertTrue(any("a sheet keeps which value is a correlation" in m for m in said(bad)))
+
+    def test_a_typed_correlation_value_fails_check_19_and_a_draft_cannot_carry_one(self):
+        bad = copy.deepcopy(self.sheet)
+        row(bad, "water_viscosity_kestin_1978")["value"] = 0.00089
+        self.assertTrue(any("stated 0.00089" in m for m in said(bad)))
+        d = draft()
+        next(r for r in d["rows"] if r["name"] == "water_density_iapws_sr6").update(value=998.0, source="correlation:typed", value_kind="correlation")
+        with self.assertRaises(bounds.BindingError):
+            apply(d)
+
+    def test_a_value_skill_named_after_the_bound_that_needs_its_row_is_refused(self):
+        b = binding()
+        b["skills"] = b["skills"][4:] + b["skills"][:4]         # the bounds first, the value skills after
+        with self.assertRaises(bounds.NoValue) as e:
+            apply(None, b)
+        self.assertIn("water_viscosity_iapws_sr6", str(e.exception))
 
 
 class Sources(unittest.TestCase):
-    def with_fake(self, version="9.9.9"):
-        saved = {k: sys.modules.get(k) for k in ("chemicals", "chemicals.iapws", "chemicals.viscosity")}
-        sys.modules.update(fake_chemicals(version))
-
-        def restore():
-            for k, v in saved.items():
-                if v is None:
-                    sys.modules.pop(k, None)
-                else:
-                    sys.modules[k] = v
-        self.addCleanup(restore)
-
-    def lock(self, content):
-        tmp = tempfile.mkdtemp(prefix="ma-lock-")
-        self.addCleanup(shutil.rmtree, tmp, True)
-        path = os.path.join(tmp, "tools.lock.json")
-        cards.write_json(path, content)
-        return path
-
-    @unittest.skipIf(chemicals_adapter.load()[0] is not None, "chemicals is installed here; the absent path is tested where it is not")
-    def test_absent_the_adapter_is_degraded_and_returns_a_gap_not_a_row(self):
-        got = chemicals_adapter.water(293.15)
-        self.assertEqual(got["rows"], [])
-        self.assertEqual(len(got["degraded"]), 1)
-        self.assertIn("chemicals is not installed", got["degraded"][0])
-        self.assertEqual(got["gaps"][0]["searched"], ["database:chemicals"])
-        self.assertIn("pins chemicals in tools.lock.json", got["gaps"][0]["requires"])
-        st = chemicals_adapter.status()
-        self.assertEqual((st["present"], st["ok"], st["version"]), (False, False, None))
-
-    def test_the_repository_does_not_pin_or_carry_the_package(self):
-        self.assertIsNone(chemicals_adapter.pinned_version())
-        self.assertFalse(os.path.exists(os.path.join(REPO, "chemicals")))
-        self.assertFalse(os.path.exists(os.path.join(META, "chemicals")))
-
-    def test_present_and_pinned_it_returns_two_correlation_rows_with_their_conditions(self):
-        self.with_fake()
-        got = chemicals_adapter.water(293.15, lock_path=self.lock({"chemicals": {"version": "9.9.9"}}))
-        self.assertEqual((got["degraded"], got["gaps"]), ([], []))
-        self.assertEqual([r["name"] for r in got["rows"]], ["water_density", "water_viscosity"])
-        table = bounds.grade_table()
-        for r in got["rows"]:
-            self.assertEqual((r["source"], r["value_kind"], r["uncertainty"]), ("database:chemicals@9.9.9", "correlation", None))
-            self.assertEqual(table[("database", r["value_kind"])], "E4")
-            self.assertEqual(r["conditions"]["temperature"], {"value": 293.15, "unit": "K"})
-            self.assertEqual(r["conditions"]["pressure"], {"value": 101325.0, "unit": "Pa"})
-        self.assertEqual([r["unit"] for r in got["rows"]], ["kg/m^3", "Pa.s"])
-
-    def test_present_and_not_pinned_the_rows_come_with_a_degraded_line(self):
-        self.with_fake()
-        got = chemicals_adapter.water(293.15, lock_path=self.lock({}))
-        self.assertEqual(len(got["rows"]), 2)
-        self.assertIn("does not pin it", got["degraded"][0])
-        got = chemicals_adapter.water(293.15, lock_path=self.lock({"chemicals": {"version": "1.0.0"}}))
-        self.assertIn("pins 1.0.0", got["degraded"][0])
-
-    def test_glycerol_water_is_a_gap_whether_or_not_the_package_is_there(self):
-        for present in (False, True):
-            if present:
-                self.with_fake()
-            got = chemicals_adapter.glycerol_water(293.15, 0.5)
-            self.assertEqual(got["rows"], [])
-            self.assertIn("no function for the mixture", got["gaps"][0]["reason"])
-
-    def test_the_designer_takes_the_database_row_when_the_source_answers_and_keeps_the_drafts_when_it_does_not(self):
-        raw = cards.load_json(os.path.join(REQ, "sheet_draft.json"))
-        if chemicals_adapter.load()[0] is None:
-            d, degraded = designer.looked_up(raw)
-            r = next(x for x in d["rows"] if x["name"] == "sample_viscosity")
-            self.assertEqual((r["value"], r["source"]), (0.001, "assumed:water_like_sample_at_room_temperature"))
-            self.assertTrue(any("sample_viscosity keeps the draft's value" in line for line in degraded))
-            self.assertTrue(all("lookup" not in x for x in d["rows"]))
-        self.with_fake()
-        d, degraded = designer.looked_up(raw)
-        r = next(x for x in d["rows"] if x["name"] == "sample_viscosity")
-        self.assertEqual((r["value"], r["source"], r["value_kind"]), (0.001, "database:chemicals@9.9.9", "correlation"))
-        self.assertEqual(next(x for x in d["rows"] if x["name"] == "sample_density")["value"], 998.0)
-        sheet = bounds.apply(d, binding(), skills(), run_in(), SEAT, NOW, sheet_path=os.path.join(REQ, "parameter_sheet.json"), tree=REPO)
-        self.assertEqual(row(sheet, "sample_viscosity")["grade"], "E4")
-        self.assertEqual(bound(sheet, "shear_rate", "shear_rate_max_from_inertia@v1")["grade"], "E5")   # the critical number is still assumed
-
-    def test_only_the_adapter_names_the_package(self):
+    def test_no_package_is_imported_for_a_property_and_the_adapter_is_gone(self):
         src = os.path.join(META, "src")
-        named = []
+        self.assertFalse(os.path.exists(os.path.join(src, "sources", "chemicals_adapter.py")))
         for dirpath, dirnames, filenames in os.walk(src):
             dirnames[:] = [d for d in dirnames if d != "__pycache__" and not d.startswith("template_v")]
             for fn in filenames:
-                if fn.endswith(".py") and 'import_module("chemicals' in cards.read_text(os.path.join(dirpath, fn)):
-                    named.append(os.path.relpath(os.path.join(dirpath, fn), src).replace(os.sep, "/"))
-        self.assertEqual(named, ["sources/chemicals_adapter.py"])
+                if fn.endswith(".py"):
+                    text = cards.read_text(os.path.join(dirpath, fn))
+                    self.assertNotIn("import chemicals", text, fn)
+                    self.assertNotIn('import_module("chemicals', text, fn)
+
+    def test_a_draft_that_asks_for_a_lookup_is_refused(self):
+        tmp, root, dest = scratch_root()
+        try:
+            shutil.copy(os.path.join(REQ, "sheet_draft.json"), os.path.join(dest, "sheet_draft.json"))      # the first revision asked for two
+            with self.assertRaises(bounds.BindingError) as e:
+                designer.write_sheet(dest, SEAT, NOW, root)
+            self.assertIn("asks for a lookup", str(e.exception))
+            self.assertFalse(os.path.exists(os.path.join(dest, "parameter_sheet.json")))
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
 
     def test_the_nist_webbook_stub_reads_nothing_and_names_the_page(self):
         got = nist_webbook.lookup("water", "viscosity")
@@ -561,13 +563,6 @@ class Sources(unittest.TestCase):
         text = cards.read_text(os.path.join(META, "src", "sources", "nist_webbook.py"))
         for word in ("urllib", "socket", "requests", "http.client", "subprocess"):
             self.assertNotIn("import " + word, text)
-
-    @unittest.skipUnless(chemicals_adapter.load()[0] is not None, "chemicals is not installed: pinning and fetching it is the person's step")
-    def test_water_at_twenty_celsius_is_within_one_percent_of_the_handbook_value(self):
-        handbook = cards.load_json(os.path.join(HERE, "fixtures", "sources", "water_handbook.json"))
-        got = chemicals_adapter.water(handbook["temperature"]["value"])
-        mu = next(r for r in got["rows"] if r["name"] == "water_viscosity")["value"]
-        self.assertLessEqual(abs(mu - handbook["viscosity"]["value"]) / handbook["viscosity"]["value"], handbook["relative_tolerance"])
 
 
 if __name__ == "__main__":

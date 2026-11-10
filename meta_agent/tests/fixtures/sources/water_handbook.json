@@ -1,7 +1,0 @@
-{
-  "note": "What the adapter's water viscosity is compared with when the chemicals package is present (the test is skipped when it is not). Not a card. Both figures were written from the IAPWS 2008 release as a seat recalls it and have not been checked against the release; the person or a seat with the document replaces them.",
-  "temperature": {"value": 293.15, "unit": "K"},
-  "viscosity": {"value": 0.0010016, "unit": "Pa.s", "source": "IAPWS, Release on the IAPWS Formulation 2008 for the Viscosity of Ordinary Water Substance: liquid water at 20 degrees Celsius and atmospheric pressure"},
-  "relative_tolerance": 0.01,
-  "relative_tolerance_is": "the uncertainty the release states for the liquid near ambient conditions, not a tolerance chosen here"
-}

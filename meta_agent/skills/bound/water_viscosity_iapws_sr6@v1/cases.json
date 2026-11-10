@@ -1,0 +1,41 @@
+[
+  {
+    "name": "Table 8 at 260 K: 3058.360 75 micro Pa.s",
+    "inputs": {
+      "temperature": 260.0
+    },
+    "expect": {
+      "water_viscosity_iapws_sr6": 0.00305836075
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "the source's sample point for program verification"
+  },
+  {
+    "name": "Table 8 at 298.15 K: 889.996 774 micro Pa.s",
+    "inputs": {
+      "temperature": 298.15
+    },
+    "expect": {
+      "water_viscosity_iapws_sr6": 0.000889996774
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "the source's sample point for program verification"
+  },
+  {
+    "name": "Table 8 at 375 K: 276.207 245 micro Pa.s",
+    "inputs": {
+      "temperature": 375.0
+    },
+    "expect": {
+      "water_viscosity_iapws_sr6": 0.000276207245
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "the source's sample point for program verification"
+  }
+]

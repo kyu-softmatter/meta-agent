@@ -28,10 +28,10 @@ neither of which holds a bound: sheet_draft.json (the rows and the tool) and bou
 bound skill that applies, as used with the row each input is bound to, or as not applied with the
 reason). Code runs the skills (src/parameters/bounds.py through src/skills/runner.py) and writes
 bounds[], interval and skills_considered[]; the same two files give the same sheet, and a second run
-that changes nothing writes nothing. A draft row may ask for a lookup (src/sources/chemicals_adapter.py):
-when the package answers, the row is the database's; when it is absent the row keeps the draft's value
-and the sheet says so in degraded[]. --bounds lists the bound skills that apply to a draft, which is what
-a model reads to write the binding.
+that changes nothing writes nothing. A property value comes from a `value` skill of the library that
+says it gives a correlation, bound in the same file and run in the binding's order, so that a bound may
+rest on the row it gave; no package is imported for one (the person, 2026-11-09). --bounds lists the
+bound and value skills that apply to a draft, which is what a model reads to write the binding.
 
 --recall runs S3's case search again on a request that already exists, against the store as it is
 now: when the result differs from the latest goal revision's, it writes the next one
@@ -51,7 +51,6 @@ from .knowledge import brief as brief_mod
 from .parameters import bounds as bounds_mod
 from .skills import catalogue as catalogue_mod
 from .skills import runner as runner_mod
-from .sources import chemicals_adapter as chemicals_mod
 from .spec import axes as axes_mod
 from .tooling import profile as profile_mod
 from .validate import gate as gate_mod
@@ -142,41 +141,20 @@ def sheet_inputs(req_dir):
     return out
 
 
-def looked_up(draft):
-    """The draft with every row that asks for a lookup answered by the source or left as the draft has it.
-    Returns (draft, degraded lines)."""
-    draft = dict(draft, rows=[dict(r) for r in draft.get("rows") or []])
-    degraded = []
-    for row in draft["rows"]:
-        request = row.pop("lookup", None)
-        if not request:
-            continue
-        if request.get("source") != "chemicals":
-            raise ValueError("row %s asks for a lookup in %r; the Designer has the chemicals adapter only" % (row.get("name"), request.get("source")))
-        got, lines, gaps = chemicals_mod.lookup(request)
-        if got is not None and got.get("unit") == row.get("unit"):
-            for k in ("value", "source", "value_kind", "uncertainty", "conditions"):
-                row[k] = got[k]
-            row["note"] = got["note"]
-            row.pop("grade", None)
-        else:
-            why = "; ".join(g["reason"] for g in gaps) or "no row came back"
-            degraded.append("row %s keeps the draft's value (%s): %s" % (row.get("name"), row.get("source"), why))
-        degraded.extend(l for l in lines if l not in degraded)
-    return draft, degraded
-
-
 def write_sheet(req_dir, seat, now=None, root=ROOT):
     """The request's parameter_sheet from its draft and its binding. Returns (path written or None, the sheet)."""
     draft_path, binding_path = sheet_inputs(req_dir)
-    draft, degraded = looked_up(cards.load_json(draft_path))
+    draft = cards.load_json(draft_path)
+    asking = [r.get("name") for r in draft.get("rows") or [] if "lookup" in r]
+    if asking:
+        raise bounds_mod.BindingError("row %s asks for a lookup: no source adapter is called any more; a property value is a "
+                                      "value skill's, named in the binding" % ", ".join(asking))
     binding = cards.load_json(binding_path)
     library = os.path.join(root, "skills")
     rev, old_path = latest_file(req_dir, "parameter_sheet.json")
     path = os.path.join(req_dir, "parameter_sheet.json" if rev == 0 else "v%d_parameter_sheet.json" % (rev + 1))
     sheet = bounds_mod.apply(draft, binding, bound_skills(root), lambda ref, inputs: runner_mod.run(ref, inputs, library=library, now=now),
                              seat, now, sheet_path=path, tree=os.path.dirname(root))
-    sheet["degraded"] = degraded
     sheet["note"] = ((sheet.get("note") or "").rstrip() + " Bounds, intervals and grades were written by src/parameters/bounds.py from %s "
                      "(sha256:%s) and %s (sha256:%s) of this folder." % (
                          os.path.basename(draft_path), cards.sha256_file(draft_path)[:16],
@@ -362,8 +340,9 @@ def main(argv=None):
             if iv:
                 print("%-14s [%r, %r] %s  floor %s, ceiling %s%s" % (row["name"], iv["min"], iv["max"], iv["unit"], iv["min_from"], iv["max_from"],
                                                                "  EMPTY: no point" if iv["min"] is not None and iv["max"] is not None and iv["min"] > iv["max"] else ""))
-        for line in sheet.get("degraded") or []:
-            print("degraded  %s" % line)
+        for row in sheet["rows"]:
+            if row.get("basis") and row.get("value") is not None:
+                print("%-38s %r %s  %s" % (row["name"], row["value"], row["unit"], row["source"]))
         return 0
     if args.recall:
         root = os.path.abspath(args.root)

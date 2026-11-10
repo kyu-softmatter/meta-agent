@@ -1,0 +1,26 @@
+[
+  {
+    "name": "one per cent above",
+    "inputs": {
+      "viscosity": 0.00101,
+      "reference_viscosity": 0.001
+    },
+    "expect": {
+      "water_viscosity_relative_difference": 0.01
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "(0.00101 - 0.001) / 0.001"
+  },
+  {
+    "name": "the same value twice differs by nothing",
+    "inputs": {
+      "viscosity": 0.001,
+      "reference_viscosity": 0.001
+    },
+    "expect": {
+      "water_viscosity_relative_difference": 0.0
+    }
+  }
+]

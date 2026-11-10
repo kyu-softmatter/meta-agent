@@ -1,0 +1,67 @@
+[
+  {
+    "name": "Table 7 at 0 C: 1791.5 micro Pa.s",
+    "inputs": {
+      "temperature": 273.15
+    },
+    "expect": {
+      "water_viscosity_kestin_1978": 0.0017915
+    },
+    "tolerance": {
+      "rel": 5.6e-05
+    },
+    "worked": "Eq. (15); one unit of the table's last digit"
+  },
+  {
+    "name": "Table 7 at 20 C: 1002.0 micro Pa.s, the adopted datum",
+    "inputs": {
+      "temperature": 293.15
+    },
+    "expect": {
+      "water_viscosity_kestin_1978": 0.001002
+    },
+    "tolerance": {
+      "rel": 0.0001
+    },
+    "worked": "Eq. (15); the ratio is one at 20 C"
+  },
+  {
+    "name": "Table 7 at 25 C: 890.2 micro Pa.s",
+    "inputs": {
+      "temperature": 298.15
+    },
+    "expect": {
+      "water_viscosity_kestin_1978": 0.0008902
+    },
+    "tolerance": {
+      "rel": 0.00011
+    },
+    "worked": "Eq. (15); one unit of the table's last digit"
+  },
+  {
+    "name": "Table 7 at 50 C: 547.1 micro Pa.s",
+    "inputs": {
+      "temperature": 323.15
+    },
+    "expect": {
+      "water_viscosity_kestin_1978": 0.0005471
+    },
+    "tolerance": {
+      "rel": 0.00018
+    },
+    "worked": "Eq. (16); one unit of the table's last digit"
+  },
+  {
+    "name": "Table 7 at 100 C: 282.1 micro Pa.s",
+    "inputs": {
+      "temperature": 373.15
+    },
+    "expect": {
+      "water_viscosity_kestin_1978": 0.0002821
+    },
+    "tolerance": {
+      "rel": 0.00035
+    },
+    "worked": "Eq. (16); one unit of the table's last digit"
+  }
+]

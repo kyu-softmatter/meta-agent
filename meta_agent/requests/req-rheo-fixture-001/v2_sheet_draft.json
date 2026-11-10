@@ -1,0 +1,256 @@
+{
+  "note": "Revision 2 of the sheet draft of the fixture rheometer request (the person, 2026-11-09: correlations are value skills with a cited source, not a pinned package). The sample is water at the sample temperature; its viscosity and density are rows that value skills give, each marked a correlation, and the viscosity stands twice, from two sources, with the difference as a row of its own. The instrument does not exist; its figures are the specification section of meta_agent/tests/fixtures/rheometer/README.md, and tool_ref names the registry's lab_rheometer because the fixture stands in for it until its model is known (plan.md 14-21). No point is chosen: an interval is what the skills give, and the point inside it is tasks/011's.",
+  "id": "ps-rheo-fixture-001",
+  "rid": "req-rheo-fixture-001",
+  "tool": "fixture_rheometer",
+  "tool_ref": {
+    "kind": "instrument",
+    "registry_id": "lab_rheometer"
+  },
+  "search_tiers_used": [
+    1
+  ],
+  "rows": [
+    {
+      "name": "max_angular_velocity",
+      "value": 300.0,
+      "unit": "rad/s",
+      "source": "spec:fixture_rheometer_readme",
+      "value_kind": "literature",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery"
+    },
+    {
+      "name": "min_angular_velocity",
+      "value": 1e-06,
+      "unit": "rad/s",
+      "source": "spec:fixture_rheometer_readme",
+      "value_kind": "literature",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery"
+    },
+    {
+      "name": "min_torque",
+      "value": 1e-08,
+      "unit": "N.m",
+      "source": "spec:fixture_rheometer_readme",
+      "value_kind": "literature",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery"
+    },
+    {
+      "name": "max_torque",
+      "value": 0.2,
+      "unit": "N.m",
+      "source": "spec:fixture_rheometer_readme",
+      "value_kind": "literature",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery",
+      "note": "the specification's figure, not a limit for use: the limit is the safety row below"
+    },
+    {
+      "name": "cone_angle",
+      "value": 0.035,
+      "unit": "rad",
+      "source": "spec:fixture_rheometer_readme",
+      "value_kind": "literature",
+      "uncertainty": 0.0005,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery",
+      "note": "the tolerance of the geometry as the specification states it"
+    },
+    {
+      "name": "cone_radius",
+      "value": 0.02,
+      "unit": "m",
+      "source": "spec:fixture_rheometer_readme",
+      "value_kind": "literature",
+      "uncertainty": 0.0001,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery",
+      "note": "the tolerance of the geometry as the specification states it"
+    },
+    {
+      "name": "sample_temperature",
+      "value": 293.15,
+      "unit": "K",
+      "source": "assumed:the_temperature_the_fixture_measurement_is_planned_at",
+      "value_kind": "estimated",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "reasoning",
+      "note": "a planning figure; a real request states the temperature or reads it off the instrument"
+    },
+    {
+      "name": "water_viscosity_iapws_sr6",
+      "value": null,
+      "unit": "Pa.s",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "the sample is water: its viscosity by the IAPWS supplementary release, a correlation"
+    },
+    {
+      "name": "water_viscosity_kestin_1978",
+      "value": null,
+      "unit": "Pa.s",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "the same quantity by an older and independent analysis, a correlation, beside the row above"
+    },
+    {
+      "name": "water_viscosity_relative_difference",
+      "value": null,
+      "unit": "1",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "how far the two correlations are apart; which is used is said in the binding, and which is right is not decided here"
+    },
+    {
+      "name": "water_density_iapws_sr6",
+      "value": null,
+      "unit": "kg/m^3",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "the sample is water: its density at 0.1 MPa by the IAPWS supplementary release, a correlation"
+    },
+    {
+      "name": "critical_reynolds_number",
+      "value": 4.0,
+      "unit": "1",
+      "source": "assumed:secondary_flow_tolerated_to_about_one_percent_of_torque",
+      "value_kind": "estimated",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "reasoning",
+      "note": "a judgement: the Reynolds number of the gap below which the secondary-flow correction is taken as negligible; the person may replace it"
+    },
+    {
+      "name": "largest_particle_diameter",
+      "value": 1e-06,
+      "unit": "m",
+      "source": "assumed:micrometre_scale_particles_in_the_fixture_sample",
+      "value_kind": "estimated",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "reasoning",
+      "note": "a fixture sample; a real request states it or measures it"
+    },
+    {
+      "name": "gap_to_particle_ratio",
+      "value": 10.0,
+      "unit": "1",
+      "source": "assumed:ten_particle_diameters_across_the_gap",
+      "value_kind": "estimated",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "reasoning",
+      "note": "a judgement, a rule of thumb; the person may replace it"
+    },
+    {
+      "name": "lowest_shear_rate_of_sweep",
+      "value": 0.1,
+      "unit": "1/s",
+      "source": "assumed:the_lowest_rate_a_flow_curve_is_planned_to_reach",
+      "value_kind": "estimated",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "reasoning",
+      "note": "a planning figure, not a choice of the shear rate: it is the rate at which the torque floor asks most of the viscosity"
+    },
+    {
+      "name": "shear_rate",
+      "value": null,
+      "unit": "1/s",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "no point is chosen here: the interval is what the skills give"
+    },
+    {
+      "name": "shear_stress",
+      "value": null,
+      "unit": "Pa",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "no point is chosen here: the interval is what the skills give"
+    },
+    {
+      "name": "viscosity",
+      "value": null,
+      "unit": "Pa.s",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "the lowest viscosity measurable at the lowest planned rate; no ceiling skill exists yet"
+    },
+    {
+      "name": "gap",
+      "value": null,
+      "unit": "m",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "the truncation gap of the cone; no ceiling skill exists yet"
+    },
+    {
+      "name": "max_torque_allowed",
+      "value": null,
+      "unit": "N.m",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": true,
+      "bench_confirmed": false,
+      "stage": "recommendation",
+      "note": "a safety row: the person writes it at the destination; no bound and no value is written here"
+    },
+    {
+      "name": "max_angular_velocity_allowed",
+      "value": null,
+      "unit": "rad/s",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": true,
+      "bench_confirmed": false,
+      "stage": "recommendation",
+      "note": "a safety row: the person writes it at the destination; no bound and no value is written here"
+    }
+  ]
+}

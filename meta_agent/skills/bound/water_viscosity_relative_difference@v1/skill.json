@@ -1,0 +1,47 @@
+{
+  "schema_version": "0.1",
+  "id": "water_viscosity_relative_difference",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the relative difference between two values of the viscosity of water on one sheet",
+  "parameter": "water_viscosity_relative_difference",
+  "side": "value",
+  "value_kind": "computed",
+  "applies_to": {
+    "parameters": [
+      "water_viscosity_relative_difference"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "viscosity",
+      "unit": "Pa.s",
+      "meaning": "the value compared"
+    },
+    {
+      "name": "reference_viscosity",
+      "unit": "Pa.s",
+      "meaning": "the value it is compared with"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "water_viscosity_relative_difference",
+      "unit": "1",
+      "meaning": "(viscosity - reference_viscosity) / reference_viscosity"
+    }
+  ],
+  "entry": {
+    "script": "scripts/value.py",
+    "function": "value"
+  },
+  "validity": "two values of the same quantity in the same unit; it says how far apart they are and nothing about which is right",
+  "source": {
+    "citation": "by definition: the difference of two values over the one taken as the reference",
+    "locus": "which row is the reference is the binding's choice, not a property of this skill"
+  },
+  "cases": "cases.json",
+  "note": "It holds no coefficient. Its grade is the worst of E4 and the two rows it compares."
+}

@@ -81,8 +81,9 @@ def run_skill_in(bundle, ref, payload):
 class Catalogue(unittest.TestCase):
     def test_one_skill_of_each_kind_and_ten_bounds(self):
         rows = catalogue.build_index()["skills"]
-        self.assertEqual(len(rows), 17)
-        self.assertEqual(len([r for r in rows if r["kind"] == "bound"]), 10)
+        self.assertEqual(len(rows), 21)
+        self.assertEqual(len([r for r in rows if r["kind"] == "bound" and r["side"] in ("min", "max")]), 10)
+        self.assertEqual(len([r for r in rows if r["kind"] == "bound" and r["side"] == "value"]), 4)
         self.assertTrue(all(len([r for r in rows if r["kind"] == k]) == 1 for k in KINDS if k != "bound"))
         self.assertEqual(sorted({r["kind"] for r in rows}), KINDS)
         self.assertEqual(sorted(r["ref"] for r in rows if r["status"] == "held"), HELD)
@@ -119,7 +120,7 @@ class Catalogue(unittest.TestCase):
         p = subprocess.run([sys.executable, "-m", "meta_agent.src.skills", "list"], cwd=REPO, capture_output=True, text=True,
                            encoding="utf-8", env=ENV)
         self.assertEqual(p.returncode, 0, p.stderr)
-        self.assertIn("17 skill(s) over 8 kind(s)", p.stdout)
+        self.assertIn("21 skill(s) over 8 kind(s)", p.stdout)
 
     def test_a_skill_check_22_would_fault_is_not_indexed(self):
         tmp = tempfile.mkdtemp(prefix="ma-skills-")

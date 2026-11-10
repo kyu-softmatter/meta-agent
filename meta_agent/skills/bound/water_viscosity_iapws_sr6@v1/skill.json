@@ -1,0 +1,42 @@
+{
+  "schema_version": "0.1",
+  "id": "water_viscosity_iapws_sr6",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the viscosity of liquid water at 0.1 MPa against temperature, by the IAPWS supplementary release",
+  "parameter": "water_viscosity_iapws_sr6",
+  "side": "value",
+  "value_kind": "correlation",
+  "applies_to": {
+    "parameters": [
+      "water_viscosity_iapws_sr6"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "temperature",
+      "unit": "K",
+      "meaning": "the temperature of the water"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "water_viscosity_iapws_sr6",
+      "unit": "Pa.s",
+      "meaning": "the viscosity of liquid water at 0.1 MPa and the temperature given"
+    }
+  ],
+  "entry": {
+    "script": "scripts/value.py",
+    "function": "value"
+  },
+  "validity": "liquid water at 0.1 MPa from 253.15 K to 383.15 K; the release states an uncertainty of 1 % in the stable liquid region and gives none for the metastable regions (below about 273.15 K, above about 372.76 K); Section 6 allows its use between the saturation pressure and 0.3 MPa",
+  "source": {
+    "citation": "IAPWS SR6-08(2011), Revised Supplementary Release on Properties of Liquid Water at 0.1 MPa, The International Association for the Properties of Water and Steam, Plzeň, September 2011",
+    "locus": "Section 3.2, Eq. (7): viscosity / (10^-6 Pa.s) = sum over i = 1..4 of a_i * (T / 300 K)^b_i, with a_i and b_i of Table 5; range and uncertainty in Section 3.3; check values in Table 8"
+  },
+  "cases": "cases.json",
+  "note": "Read from https://iapws.org/technical-guidance/release/LiquidWater.download on 2026-11-10T03:51:09Z (sha256:fda79dde9f441a90da755477c6533e23065e4f90c7f59a505f64c394d775bd45, 12 pages); its cover page allows publication in whole or in part with attribution to IAPWS. No copy of the document is in the repository. The three cases are the three viscosity entries of Table 8, reproduced to the digits it prints."
+}

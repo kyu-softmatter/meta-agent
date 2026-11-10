@@ -1,0 +1,41 @@
+[
+  {
+    "name": "Table 8 at 260 K: 997.068 360 kg/m^3",
+    "inputs": {
+      "temperature": 260.0
+    },
+    "expect": {
+      "water_density_iapws_sr6": 997.06836
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "the source's sample point for program verification"
+  },
+  {
+    "name": "Table 8 at 298.15 K: 997.047 013 kg/m^3",
+    "inputs": {
+      "temperature": 298.15
+    },
+    "expect": {
+      "water_density_iapws_sr6": 997.047013
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "the source's sample point for program verification"
+  },
+  {
+    "name": "Table 8 at 375 K: 957.009 710 kg/m^3",
+    "inputs": {
+      "temperature": 375.0
+    },
+    "expect": {
+      "water_density_iapws_sr6": 957.00971
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "the source's sample point for program verification"
+  }
+]

@@ -487,6 +487,155 @@
       "side": "min"
     },
     {
+      "ref": "water_density_iapws_sr6@v1",
+      "id": "water_density_iapws_sr6",
+      "version": 1,
+      "kind": "bound",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the density of liquid water at 0.1 MPa against temperature, by the IAPWS supplementary release",
+      "description": "Density of liquid water at 0.1 MPa as a function of temperature, by the specific-volume correlation of the IAPWS supplementary release SR6-08(2011). Take it when a row needs the density of water between 253.15 K and 383.15 K at or near atmospheric pressure.",
+      "applies_to": {
+        "parameters": [
+          "water_density_iapws_sr6"
+        ]
+      },
+      "inputs": [
+        {
+          "name": "temperature",
+          "unit": "K",
+          "meaning": "the temperature of the water"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "water_density_iapws_sr6",
+          "unit": "kg/m^3",
+          "meaning": "the density of liquid water at 0.1 MPa and the temperature given, the reciprocal of the specific volume"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "bound/water_density_iapws_sr6@v1",
+      "sha256": "sha256:4effcd458ecf1d18891fe120d11c5214f9b0fe19b7de81700fd0c1324046c6b6",
+      "parameter": "water_density_iapws_sr6",
+      "side": "value",
+      "value_kind": "correlation"
+    },
+    {
+      "ref": "water_viscosity_iapws_sr6@v1",
+      "id": "water_viscosity_iapws_sr6",
+      "version": 1,
+      "kind": "bound",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the viscosity of liquid water at 0.1 MPa against temperature, by the IAPWS supplementary release",
+      "description": "Viscosity of liquid water at 0.1 MPa as a function of temperature, by the correlation of the IAPWS supplementary release SR6-08(2011). Take it when a row needs the viscosity of water between 253.15 K and 383.15 K at or near atmospheric pressure.",
+      "applies_to": {
+        "parameters": [
+          "water_viscosity_iapws_sr6"
+        ]
+      },
+      "inputs": [
+        {
+          "name": "temperature",
+          "unit": "K",
+          "meaning": "the temperature of the water"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "water_viscosity_iapws_sr6",
+          "unit": "Pa.s",
+          "meaning": "the viscosity of liquid water at 0.1 MPa and the temperature given"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "bound/water_viscosity_iapws_sr6@v1",
+      "sha256": "sha256:0910345c134e0697c183507641aa0cff43fd5d6aefc69efd38e06d42eb6cecd6",
+      "parameter": "water_viscosity_iapws_sr6",
+      "side": "value",
+      "value_kind": "correlation"
+    },
+    {
+      "ref": "water_viscosity_kestin_1978@v1",
+      "id": "water_viscosity_kestin_1978",
+      "version": 1,
+      "kind": "bound",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the viscosity of liquid water at atmospheric pressure against temperature, by the correlation of Kestin, Sokolov and Wakeham",
+      "description": "Viscosity of liquid water at atmospheric pressure as a function of temperature, by the two correlating equations of Kestin, Sokolov and Wakeham. Take it when a row needs the viscosity of water between 265.15 K and 423.15 K, or beside another correlation of the same quantity to compare the two.",
+      "applies_to": {
+        "parameters": [
+          "water_viscosity_kestin_1978"
+        ]
+      },
+      "inputs": [
+        {
+          "name": "temperature",
+          "unit": "K",
+          "meaning": "the temperature of the water"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "water_viscosity_kestin_1978",
+          "unit": "Pa.s",
+          "meaning": "the viscosity of liquid water at essentially atmospheric pressure and the temperature given"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "bound/water_viscosity_kestin_1978@v1",
+      "sha256": "sha256:8a97ef9ae4455b74fdcda1a51192ed6e9a7e9add18a9853e648b79fc354f12c3",
+      "parameter": "water_viscosity_kestin_1978",
+      "side": "value",
+      "value_kind": "correlation"
+    },
+    {
+      "ref": "water_viscosity_relative_difference@v1",
+      "id": "water_viscosity_relative_difference",
+      "version": 1,
+      "kind": "bound",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the relative difference between two values of the viscosity of water on one sheet",
+      "description": "Relative difference between two rows that give the viscosity of water, as a number of its own. Take it when two correlations or a correlation and a measurement of the viscosity of water stand side by side on a sheet.",
+      "applies_to": {
+        "parameters": [
+          "water_viscosity_relative_difference"
+        ]
+      },
+      "inputs": [
+        {
+          "name": "viscosity",
+          "unit": "Pa.s",
+          "meaning": "the value compared"
+        },
+        {
+          "name": "reference_viscosity",
+          "unit": "Pa.s",
+          "meaning": "the value it is compared with"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "water_viscosity_relative_difference",
+          "unit": "1",
+          "meaning": "(viscosity - reference_viscosity) / reference_viscosity"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "bound/water_viscosity_relative_difference@v1",
+      "sha256": "sha256:d9d50435d3551b8a0a0be6887da8eea1c0e16249fccffd6ccaf1c6730ec10c2a",
+      "parameter": "water_viscosity_relative_difference",
+      "side": "value",
+      "value_kind": "computed"
+    },
+    {
       "ref": "flow_curve_fit@v1",
       "id": "flow_curve_fit",
       "version": 1,

@@ -1,0 +1,42 @@
+{
+  "schema_version": "0.1",
+  "id": "water_viscosity_kestin_1978",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the viscosity of liquid water at atmospheric pressure against temperature, by the correlation of Kestin, Sokolov and Wakeham",
+  "parameter": "water_viscosity_kestin_1978",
+  "side": "value",
+  "value_kind": "correlation",
+  "applies_to": {
+    "parameters": [
+      "water_viscosity_kestin_1978"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "temperature",
+      "unit": "K",
+      "meaning": "the temperature of the water"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "water_viscosity_kestin_1978",
+      "unit": "Pa.s",
+      "meaning": "the viscosity of liquid water at essentially atmospheric pressure and the temperature given"
+    }
+  ],
+  "entry": {
+    "script": "scripts/value.py",
+    "function": "value"
+  },
+  "validity": "liquid water at essentially atmospheric pressure from -8 to 150 degrees Celsius; the paper gives the tabulated values 0.15 % from 0 to 40 degrees Celsius and 0.4 % outside, on a 20-degree value taken as good to 0.1 %",
+  "source": {
+    "citation": "J. Kestin, M. Sokolov, W. A. Wakeham, Viscosity of Liquid Water in the Range -8 °C to 150 °C, Journal of Physical and Chemical Reference Data 7 (1978) 941-948",
+    "locus": "Section 4, Eq. (15): log10(mu(t) / mu(20 C)) = (20 - t) / (t + 96) * (1.2364 - 1.37e-3 (20 - t) + 5.7e-6 (20 - t)^2), 0 to 40 C; Eq. (16): the same form with (1.2378 - 1.303e-3 (20 - t) + 3.06e-6 (20 - t)^2 + 2.55e-8 (20 - t)^3), -8 to 150 C; mu(20 C) = 1002.0 micro Pa.s; Section 5 and Table 7 (standard viscosities from the two equations)"
+  },
+  "cases": "cases.json",
+  "note": "Read from the scan at https://srd.nist.gov/JPCRD/jpcrd121.pdf on 2026-11-10T03:52:37Z (sha256:bb91bf3174a0ffd1ffd74f576595a2d384bf106f6d2958252382d4fb82ae5d4f, 8 pages); the copyright is the American Institute of Physics' and the American Chemical Society's, so nothing of its text is copied here beyond the equation's coefficients and the table entries the cases name. The cases are entries of Table 7 between 0 and 100 degrees Celsius, reproduced to one unit of the last digit it prints. Fifteen further entries of the table in that span agree within the same unit. The two entries below 0 degrees Celsius were not used: at -8 the equation gives 2421.3 where the table prints 2421.0, and the -5 entry could not be read with certainty from the scan."
+}
