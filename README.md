@@ -22,6 +22,10 @@ python contracts/validate.py --bundle PATH   # the B checks on one built bundle
 
 Install the hook once per clone with `git config core.hooksPath contracts/hooks`. Set `PYTHONUTF8=1` on Windows. The validator needs `jsonschema`; without it, it re-executes itself through `uv` when `uv` is present.
 
+## The gate on GitHub
+
+`.github/workflows/gate.yml` runs, on every push and pull request, what a seat runs on its computer: `python contracts/validate.py --commit-range <enforced_from>..HEAD` (the tree and the history), `--expect-fail`, and the two test suites. It holds no secret and can write nothing.
+
 ## Seats
 
 A session commits as a seat, never as itself: committer `seat:<name>` <`<name>@seat.invalid`>, author the person. Three roles exist (`plan.md` 9, [`contracts/seats.json`](contracts/seats.json)); the person assigns one per session, and check 6 fails a commit that crosses its paths.

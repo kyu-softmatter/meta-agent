@@ -1,0 +1,37 @@
+# The gate on GitHub (plan.md 14-29(e), meta_agent/tasks/009 part 6): the same validator a seat runs on its
+# computer, over the whole tree and the whole history, on every push and pull request. Read-only: no secret,
+# no token that can write, no external tool installed beyond the validator's one dependency.
+name: gate
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # checks 6, 7, 20 and 21 read commits
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: The validator's dependency
+        run: python -m pip install --disable-pip-version-check "jsonschema==4.26.0"
+      - name: The tree and the history since enforced_from
+        run: |
+          from=$(python -c "import json; print(json.load(open('contracts/seats.json'))['enforced_from'])")
+          python contracts/validate.py --commit-range "$from..HEAD"
+      - name: Every rejected fixture is rejected
+        run: python contracts/validate.py --expect-fail
+      - name: Tests of the contracts tools
+        run: python -m unittest discover -s contracts/tests
+      - name: Tests of the Meta-Agent
+        run: python -m unittest discover -s meta_agent/tests -t .
