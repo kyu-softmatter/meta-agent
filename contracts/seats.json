@@ -206,6 +206,25 @@
       ],
       "excludes": [],
       "seated": "2026-11-09, self-registered"
+    },
+    {
+      "seat": "meta-macbook-20261109-2",
+      "committer_email": "meta-macbook-20261109-2@seat.invalid",
+      "role": "meta",
+      "machine": "macbook",
+      "seated_by": "self, under the person's standing rule of 2026-11-09 (docs/ideas/20261109.md)",
+      "status": "active",
+      "owns": [
+        "meta_agent"
+      ],
+      "paths": [
+        "meta_agent/"
+      ],
+      "excludes": [
+        "meta_agent/CLAUDE.md",
+        "meta_agent/.claude/"
+      ],
+      "seated": "2026-11-09, self-registered"
     }
   ]
 }
