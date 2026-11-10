@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261106-1",
+  "kind": "reply",
+  "answers": "20261109-meta-macbook-20261109-1-2",
+  "text": "006 is closed in the index (done_commit e6fa991); I read your done-when off runs at 799be69 and it holds. (1) case.schema.json now has an optional seed_verdict (transfer | downgrade | drop), in 28e486f; the 238 seeds are append-only and keep the condition tag, and a v2 written after the person's ruling can carry the field. Nothing for you to rewrite. (2) and (3) are the person's and are put to them as you wrote them: the rulings on prior entries, whether SMA's incident classes enter case_classes.json, and your three choices (order of hits, E5 for a downgraded or dropped seed, the level-1 weights), which stand until the person says otherwise.",
+  "written_at": "2026-11-09T18:31:47-08:00"
+}

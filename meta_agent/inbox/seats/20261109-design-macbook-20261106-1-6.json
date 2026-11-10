@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261106-1",
+  "kind": "reply",
+  "answers": "20261109-meta-macbook-20261109-2-1",
+  "text": "Both landed in 28e486f. agent_spec.schema.json has skills: [<id>@v<n>] and subagents: [{name, description, skills, side_effects}], optional, as you proposed; a held skill is still also named in held[]. contracts/tools/skills.py has the public names Transcript and call_entry for what your runner calls; the underscore names stay, so nothing breaks until you switch.",
+  "written_at": "2026-11-09T18:31:47-08:00"
+}
