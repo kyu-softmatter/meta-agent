@@ -1,13 +1,28 @@
 #!/bin/sh
 # contracts/hooks/pre-commit -- the gate at commit time (plan.md 8, 9).
 # Install once per clone:  git config core.hooksPath contracts/hooks
-# Judges every card in the working tree (checks 1, 2, 3, 7, 11, 15, 16, 17), every bundle a build card
-# points at (B1-B9), and the index's paths against the committer seat and the append-only roots (checks 6, 7).
+# Judges the tree this commit would make (the index, exported and judged by its own contracts: every card,
+# every bundle a build card points at, the task queue and the notes), and the index's paths against the
+# committer seat and the append-only roots (checks 6, 7, 20, 21). What other seats have lying unfinished in
+# the working copy is not this commit's and is not judged here (the person, 2026-11-09); CI judges every
+# pushed tree in full.
 # --no-verify skips this hook. If that ever happens, the commit message says so (SMA 8.3).
 export PYTHONUTF8=1
+export PYTHONDONTWRITEBYTECODE=1
 cd "$(git rev-parse --show-toplevel)" || exit 1
-python contracts/validate.py --staged
-status=$?
+# The index is exported here, in the hook, and the validator that runs is the exported one, so that not even
+# a half-edited contracts/validate.py in the working copy stands between a seat and its commit. A commit
+# whose validator predates this (no META_AGENT_GATE_GIT_REPO in it) is judged the old way, from here.
+tmp=$(mktemp -d 2>/dev/null || mktemp -d -t meta-agent-gate) || exit 1
+git checkout-index --all --prefix="$tmp/" || { rm -rf "$tmp"; exit 1; }
+if grep -q META_AGENT_GATE_GIT_REPO "$tmp/contracts/validate.py" 2>/dev/null; then
+  META_AGENT_GATE_GIT_REPO="$PWD" python "$tmp/contracts/validate.py" --staged
+  status=$?
+else
+  python contracts/validate.py --staged
+  status=$?
+fi
+rm -rf "$tmp"
 if [ "$status" -ne 0 ]; then
   echo "pre-commit: the validator refused this commit (exit $status). Fix the cards or the paths rather than reaching for --no-verify." >&2
 fi

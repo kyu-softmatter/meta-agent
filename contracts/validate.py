@@ -4,7 +4,9 @@
 
 Usage
   python contracts/validate.py [TREE] [--checks 1,2,...] [--strict] [--quiet]
-  python contracts/validate.py --staged                 # pre-commit: adds checks 6 and 7 on the index
+  python contracts/validate.py --staged                 # pre-commit: judges the tree the commit would make (the
+                                                        # index, exported and judged by its own contracts) and
+                                                        # adds checks 6, 7, 20 and 21 on the index's paths
   python contracts/validate.py --commit-range A..B      # checks 6 and 7 over commits
   python contracts/validate.py --expect-fail            # every fixture under contracts/examples/rejected/ must be refused
   python contracts/validate.py --bundle PATH            # the B checks on one built bundle
@@ -29,10 +31,51 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
+GATE_ENV = "META_AGENT_GATE_GIT_REPO"      # set by --staged for its own re-run from the exported index
+GIT_REPO = os.environ.get(GATE_ENV) or REPO  # where git is asked; differs from REPO only in that re-run
+EXPORTED = bool(os.environ.get(GATE_ENV))
 SCHEMAS = os.path.join(HERE, "schemas")
 REJECTED = os.path.join(HERE, "examples", "rejected")
 IMPLEMENTED = [1, 2, 3, 6, 7, 11, 15, 16, 17, 18, 20, 21]
 SKIP_DIRS = {".git", ".agent", ".venv", ".pixi", "node_modules", "__pycache__"}
+
+def judge_the_commits_tree(argv):
+    """--staged: export the index git has built for the commit and run the validator from that copy.
+
+    The person's decision of 2026-11-09 (docs/ideas/20261109.md): at commit time the gate judges the tree the
+    commit would make. The cards, the schemas, the seat table and this file itself are then the commit's own,
+    so what another seat has lying unfinished in the working copy neither stops nor bends the judgement; git
+    is still asked in the real repository. Every check runs; CI judges each pushed tree in full.
+    """
+    import shutil
+    import tempfile
+    tmp = tempfile.mkdtemp(prefix="meta-agent-gate-")
+    try:
+        p = subprocess.run(["git", "checkout-index", "--all", "--prefix=" + tmp.replace(os.sep, "/") + "/"],
+                           cwd=REPO, capture_output=True, text=True, encoding="utf-8", errors="replace")
+        script = os.path.join(tmp, "contracts", "validate.py")
+        if p.returncode != 0 or not os.path.exists(script):
+            sys.stderr.write("validate.py: the index could not be exported or holds no contracts/validate.py; "
+                             "refusing to judge. %s\n" % p.stderr.strip())
+            return 2
+        with open(script, "r", encoding="utf-8") as f:
+            knows = GATE_ENV in f.read()
+        if not knows:   # the commit's validator predates this rule: judge as it did, from here
+            return None
+        env = dict(os.environ, PYTHONUTF8="1", PYTHONDONTWRITEBYTECODE="1")
+        env[GATE_ENV] = REPO
+        return subprocess.call([sys.executable, script] + list(argv), env=env)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+# Before anything else of this copy is loaded: at commit time the judging is handed to the commit's own copy,
+# so that a tool or a schema another seat is in the middle of editing here cannot break or bend it.
+if __name__ == "__main__" and "--staged" in sys.argv[1:] and not EXPORTED \
+        and "--expect-fail" not in sys.argv[1:] and "--bundle" not in sys.argv[1:]:
+    _rc = judge_the_commits_tree(sys.argv[1:])
+    if _rc is not None:
+        sys.exit(_rc)
 
 sys.path.insert(0, os.path.join(HERE, "tools"))
 import seats as seat_rules  # noqa: E402  (contracts/tools/seats.py: names, role rows, the self-registration rule)
@@ -417,7 +460,7 @@ def check7_changes(c, report, changes, label, old_new):
 # git plumbing for --staged and --commit-range
 # ----------------------------------------------------------------------------
 def git(*args, check=True):
-    p = subprocess.run(["git"] + list(args), cwd=REPO, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    p = subprocess.run(["git"] + list(args), cwd=GIT_REPO, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if check and p.returncode != 0:
         raise RuntimeError("git %s failed: %s" % (" ".join(args), p.stderr.strip()))
     return p.stdout
@@ -471,7 +514,7 @@ def run_commit_range(c, report, spec, checks=None):
         changes = parse_name_status(git("show", "--name-status", "--format=", "-M", sha))
         report_only = False
         if epoch:
-            p = subprocess.run(["git", "merge-base", "--is-ancestor", sha, epoch], cwd=REPO, capture_output=True)
+            p = subprocess.run(["git", "merge-base", "--is-ancestor", sha, epoch], cwd=GIT_REPO, capture_output=True)
             report_only = (p.returncode == 0)
         label = "commit %s (committer %s)" % (sha[:7], email)
 
@@ -479,7 +522,7 @@ def run_commit_range(c, report, spec, checks=None):
             return git("show", "%s^:%s" % (sha, path), check=False), git("show", "%s:%s" % (sha, path), check=False)
         before_rule = False
         if rule_epoch:
-            p = subprocess.run(["git", "merge-base", "--is-ancestor", sha, rule_epoch], cwd=REPO, capture_output=True)
+            p = subprocess.run(["git", "merge-base", "--is-ancestor", sha, rule_epoch], cwd=GIT_REPO, capture_output=True)
             before_rule = (p.returncode == 0)
         check6_changes(c, report, email, changes, label, report_only=report_only,
                        old_new=None if before_rule else old_new, day=day.replace("-", ""))
@@ -499,7 +542,7 @@ def check20(tree, c, report):
     exists = None
     if tree == REPO:
         def exists(sha):
-            return subprocess.run(["git", "cat-file", "-e", sha + "^{commit}"], cwd=REPO, capture_output=True).returncode == 0
+            return subprocess.run(["git", "cat-file", "-e", sha + "^{commit}"], cwd=GIT_REPO, capture_output=True).returncode == 0
     for path, msg in task_rules.problems(tree, c.seats, commit_exists=exists):
         report.fail(20, path, msg)
 
@@ -1415,6 +1458,7 @@ def expect_fail(c, checks, strict, quiet):
 
 
 def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("tree", nargs="?", default=REPO, help="the tree to judge (default: the repository)")
     ap.add_argument("--checks", default=None, help="comma-separated subset of the implemented checks")
@@ -1471,8 +1515,9 @@ def main(argv=None):
         extra += " commits=%d" % n_commits
     print("%d cards, %d md files, %d wiki page(s), %d bundle(s) judged; %d failed, %d pending; checks run %s" % (
         n_cards, n_md, getattr(report, "wiki_pages", 0), len(bundles), failed, pending, sorted(checks, key=check_key)))
+    shown = GIT_REPO.replace(os.sep, "/") + "@index" if EXPORTED and tree == REPO else tree.replace(os.sep, "/")
     print("VERDICT %s tree=%s head=%s cards=%d md=%d bundles=%d failed=%d pending=%d failed_checks=%s%s" % (
-        verdict, tree.replace(os.sep, "/"), head_sha(), n_cards, n_md, len(bundles), failed, pending, report.failed_checks(), extra))
+        verdict, shown, head_sha(), n_cards, n_md, len(bundles), failed, pending, report.failed_checks(), extra))
     return 0 if verdict == "PASS" else 1
 
 
