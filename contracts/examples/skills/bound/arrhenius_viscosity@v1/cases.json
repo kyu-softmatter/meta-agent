@@ -1,0 +1,27 @@
+[
+  {
+    "name": "at the reference temperature the viscosity is the reference viscosity",
+    "inputs": {
+      "reference_viscosity": 0.00089,
+      "reference_temperature": 298.15,
+      "activation_temperature": 1800.0,
+      "temperature": 298.15
+    },
+    "expect": {
+      "solvent_viscosity_at_run_temperature": 0.00089
+    }
+  },
+  {
+    "name": "ten kelvin warmer with an activation temperature of 1800 K",
+    "inputs": {
+      "reference_viscosity": 0.00089,
+      "reference_temperature": 298.15,
+      "activation_temperature": 1800.0,
+      "temperature": 308.15
+    },
+    "expect": {
+      "solvent_viscosity_at_run_temperature": 0.0007316504920905412
+    },
+    "worked": "0.00089 * exp(1800 * (1/308.15 - 1/298.15))"
+  }
+]

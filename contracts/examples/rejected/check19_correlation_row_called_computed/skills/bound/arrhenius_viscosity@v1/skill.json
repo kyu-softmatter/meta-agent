@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1",
+  "id": "arrhenius_viscosity",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "a liquid's viscosity at another temperature, by the Arrhenius form, from a reference point and an activation temperature",
+  "parameter": "solvent_viscosity_at_run_temperature",
+  "side": "value",
+  "value_kind": "correlation",
+  "applies_to": {
+    "parameters": [
+      "solvent_viscosity_at_run_temperature"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "reference_viscosity",
+      "unit": "Pa.s",
+      "meaning": "the viscosity at the reference temperature"
+    },
+    {
+      "name": "reference_temperature",
+      "unit": "K",
+      "meaning": "the temperature the reference viscosity holds at"
+    },
+    {
+      "name": "activation_temperature",
+      "unit": "K",
+      "meaning": "the activation energy of viscous flow over the gas constant; a property of the liquid, bound to a row with its own source"
+    },
+    {
+      "name": "temperature",
+      "unit": "K",
+      "meaning": "the temperature the viscosity is wanted at"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "solvent_viscosity_at_run_temperature",
+      "unit": "Pa.s",
+      "meaning": "the viscosity at the wanted temperature"
+    }
+  ],
+  "entry": {
+    "script": "scripts/value.py",
+    "function": "value"
+  },
+  "validity": "a simple liquid over a temperature span where one activation temperature holds; every coefficient is an input, so the skill holds none",
+  "source": {
+    "citation": "the Arrhenius (Andrade) form of the temperature dependence of a liquid's viscosity",
+    "locus": "viscosity = A * exp(B / T), written relative to a reference point; the coefficients are inputs with their own sources"
+  },
+  "cases": "cases.json",
+  "note": "An example of a value skill that gives a correlation. It holds no coefficient: a correlation with fitted coefficients carries them as read from its source, with the locus, and a worked case the source states."
+}

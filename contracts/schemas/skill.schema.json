@@ -272,6 +272,13 @@
     },
     "note": {
       "type": "string"
+    },
+    "value_kind": {
+      "enum": [
+        "computed",
+        "correlation"
+      ],
+      "description": "a skill of side value: what kind of value it gives. correlation: a fitted or empirical relation, whose row says value_kind correlation and source correlation:<id>@v<n>, so that a sheet keeps which value is a correlation (plan.md 5.3); computed (the default): a definition or an exact relation"
     }
   },
   "required": [

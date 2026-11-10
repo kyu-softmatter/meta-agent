@@ -27,6 +27,7 @@ REASONS = {
     "check19_not_applied_without_a_reason": (19, "is not applied and no reason is given"),
     "check19_computed_row_without_basis": (19, "a computed row names the skill and the rows it was computed from"),
     "check19_value_outside_its_interval": (19, "lies outside the interval the bounds give"),
+    "check19_correlation_row_called_computed": (19, "a sheet keeps which value is a correlation"),
     "check04_safety_row_filled_by_a_seat": (4, "a safety value is null or written by a person"),
     "check04_safety_row_with_a_recommended_point": (4, "gets no recommended point"),
 }
@@ -51,6 +52,13 @@ class Example(unittest.TestCase):
         self.assertEqual((row["interval"]["min"], row["interval"]["max"]), (5e-05, 0.001))
         self.assertEqual(row["interval"]["max_from"], "timestep_max_from_courant@v1")
         self.assertIsNone(row["value"])
+
+    def test_a_correlation_row_says_so_and_is_graded_by_its_worst_input(self):
+        row = sheets.rows_by_name(self.sheet)["solvent_viscosity_at_run_temperature"]
+        self.assertEqual((row["value_kind"], row["source"], row["grade"]), ("correlation", "correlation:arrhenius_viscosity@v1", "E5"))
+        sheet = copy.deepcopy(self.sheet)
+        sheets.rows_by_name(sheet)["activation_temperature"].update(grade="E2")
+        self.assertTrue(any("grade E5, and the worst of E4 and its inputs is E4" in m for m in sheets.check19(sheet, self.path, REPO)))
 
     def test_a_person_may_write_a_safety_value(self):
         sheet = copy.deepcopy(self.sheet)

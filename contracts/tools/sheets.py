@@ -9,7 +9,7 @@ The maximum and the minimum of a parameter come from skills written as source co
 taken by the model, run by code. A sheet therefore says, per bound and per computed row, which skill gave
 the number and which rows its inputs were bound to (`basis`), and this file runs the skill again on those
 rows. It also holds what follows without a model: the grade of a computed number is the worst of E4 and
-its inputs; the interval is the highest floor and the lowest ceiling; an empty interval carries no point;
+its inputs; a row a correlation skill gives says correlation; the interval is the highest floor and the lowest ceiling; an empty interval carries no point;
 every bound skill that applies to a row is on the sheet as used or as not applied with a reason; a
 safety-relevant row has no value but a person's.
 
@@ -131,7 +131,7 @@ def check19(sheet, path, tree):
     considered = sheet.get("skills_considered") or []
     uses = bool(considered) or any(isinstance(r, dict) and (r.get("bounds") or r.get("basis") or r.get("interval")) for r in rows)
     computed = [(i, r) for i, r in enumerate(rows) if isinstance(r, dict) and r.get("value") is not None
-                and (r.get("value_kind") == "computed" or str(r.get("source") or "").startswith("computed:"))]
+                and (r.get("value_kind") == "computed" or str(r.get("source") or "").startswith(("computed:", "correlation:")))]
     for i, r in computed:
         if not r.get("basis"):
             out.append("rows[%d] (%s): a computed row names the skill and the rows it was computed from (basis)" % (i, r.get("name")))
@@ -150,9 +150,11 @@ def check19(sheet, path, tree):
             probs, m = _recompute(lib, sheet, r["basis"], ("value",), label, r.get("unit"), r["value"], r.get("uncertainty"), r.get("name"))
             out.extend(probs)
             used.add(r["basis"].get("skill"))
-            want = "computed:%s" % r["basis"].get("skill")
-            if r.get("source") != want:
-                out.append("%s: source %s, and the basis says %s" % (label, r.get("source"), want))
+            kind = (m or {}).get("value_kind") or "computed"   # what the skill says it gives
+            want = "%s:%s" % (kind, r["basis"].get("skill"))
+            if r.get("source") != want or r.get("value_kind") != kind:
+                out.append("%s: source %s and value_kind %s, and %s gives a %s value (source %s): a sheet keeps which value is a correlation"
+                           % (label, r.get("source"), r.get("value_kind"), r["basis"].get("skill"), kind, want))
             grade = computed_grade(sheet, r["basis"])
             if grade and r.get("grade") != grade:
                 out.append("%s: grade %s, and the worst of E4 and its inputs is %s" % (label, r.get("grade"), grade))

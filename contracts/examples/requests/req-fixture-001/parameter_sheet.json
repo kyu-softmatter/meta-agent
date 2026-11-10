@@ -105,6 +105,58 @@
       "note": "ten relaxation times"
     },
     {
+      "name": "reference_temperature",
+      "value": 298.15,
+      "unit": "K",
+      "source": "database:nist_webbook_water_298K",
+      "grade": "E2",
+      "value_kind": "measured",
+      "safety_relevant": false,
+      "stage": "discovery",
+      "note": "the temperature solvent_viscosity holds at"
+    },
+    {
+      "name": "run_temperature",
+      "value": 308.15,
+      "unit": "K",
+      "source": "literature:src_rheotool_tutorial_0000000",
+      "grade": "E2",
+      "value_kind": "literature",
+      "safety_relevant": false,
+      "stage": "discovery"
+    },
+    {
+      "name": "activation_temperature",
+      "value": 1800.0,
+      "unit": "K",
+      "source": "assumed:fixture_value_not_a_property_of_any_liquid",
+      "grade": "E5",
+      "value_kind": "estimated",
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "a fixture's number, here only so that the example has something to compute; a real sheet takes it from a source"
+    },
+    {
+      "name": "solvent_viscosity_at_run_temperature",
+      "value": 0.0007316504920905412,
+      "unit": "Pa.s",
+      "source": "correlation:arrhenius_viscosity@v1",
+      "grade": "E5",
+      "value_kind": "correlation",
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "basis": {
+        "skill": "arrhenius_viscosity@v1",
+        "inputs": {
+          "reference_viscosity": "solvent_viscosity",
+          "reference_temperature": "reference_temperature",
+          "activation_temperature": "activation_temperature",
+          "temperature": "run_temperature"
+        }
+      },
+      "note": "A correlation, and marked as one; E5 because the activation temperature is assumed."
+    },
+    {
       "name": "weissenberg_number",
       "value": 0.25,
       "unit": "1",
@@ -219,6 +271,11 @@
       "skill": "weissenberg_number@v1",
       "verdict": "used",
       "why": "relaxation_time and shear_rate are both on the sheet"
+    },
+    {
+      "skill": "arrhenius_viscosity@v1",
+      "verdict": "used",
+      "why": "the viscosity is known at 298.15 K and the run is at 308.15 K"
     },
     {
       "skill": "timestep_max_from_courant@v1",

@@ -282,7 +282,7 @@ def check2(cards, c, report, tree):
                 continue
             derived, why = c.derive_grade(n["source"], n["value_kind"])
             if derived is not None and data.get("card") == "parameter_sheet" and isinstance(n.get("basis"), dict) \
-                    and str(n["source"]).startswith("computed:"):
+                    and str(n["source"]).startswith(("computed:", "correlation:")):
                 # a computed number is never better than its worst input (plan.md 14-12, grades.json with_basis)
                 derived = sheet_rules.computed_grade(data, n["basis"]) or derived
             if derived is None:
