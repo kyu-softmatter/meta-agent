@@ -66,6 +66,8 @@ def entry(skill_dir, library=LIBRARY, kinds=None):
     if "parameter" in manifest:
         row["parameter"] = manifest["parameter"]
         row["side"] = manifest.get("side")
+    if "value_kind" in manifest:
+        row["value_kind"] = manifest["value_kind"]
     return row
 
 

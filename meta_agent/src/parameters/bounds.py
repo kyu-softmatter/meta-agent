@@ -11,6 +11,7 @@ bound's value, a grade or a point.
              an input row: name, value, unit, source, value_kind, uncertainty?, ...   (its grade is derived here)
              a row to be bounded: name, unit, value null, and whatever else the row carries
     binding  {skills: [{skill: "<id>@v<n>", verdict: used | not_applied, why, inputs: {<input>: <row name>}}]}
+             run in this order, so a value skill is named before a bound that rests on the row it gives
 
 What apply() does, in order: derives every input row's grade from contracts/grades.json; refuses a binding
 that leaves an applicable bound skill out, gives no reason for a `not_applied`, or binds an input to a row
@@ -21,7 +22,9 @@ uncertainty's second significant figure and states the uncertainty, which is the
 recomputation; grades the bound the worst of E4 and its input rows; takes the highest floor and the
 lowest ceiling as the interval and names the two skills; on an empty interval writes no point and a
 `tradeoff` naming the two bounds that collide. A row's value stays null unless a `value` skill gives it:
-the choice inside an interval is tasks/011's. Before it returns the sheet it asks contracts/tools/sheets.py
+the choice inside an interval is tasks/011's. A row a `value` skill gives says what kind of value it is,
+as the skill's manifest does (`value_kind`, `computed` when it says nothing): a correlation's row is
+`correlation:<id>@v<n>` with value_kind `correlation`, so that a sheet keeps which value is a correlation. Before it returns the sheet it asks contracts/tools/sheets.py
 what checks 4 and 19 would say, and a sheet with anything said about it is not returned.
 
 This stage imports no sibling stage (plan.md 7): the caller hands in the library's rows for the bound
@@ -120,7 +123,7 @@ def listing(skills, draft):
         lines.append("%s  [%s of %s]" % (r["ref"], r.get("side"), r.get("parameter")))
         lines.append("    %s" % r["summary"])
         lines.append("    inputs: %s" % ", ".join("%s (%s)" % (i["name"], i["unit"]) for i in r["inputs"]))
-    lines.append("%d bound skill(s) apply to %s" % (len(lines) // 3, (draft.get("tool_ref") or {}).get("registry_id") or "this sheet"))
+    lines.append("%d skill(s) apply to %s" % (len(lines) // 3, (draft.get("tool_ref") or {}).get("registry_id") or "this sheet"))
     return "\n".join(lines)
 
 
@@ -176,8 +179,8 @@ def apply(draft, binding, skills, run, seat, now=None, sheet_path=None, tree=Non
         if r.get("value") is None:
             continue
         kind = str(r.get("source") or "").split(":", 1)[0]
-        if kind == "computed":
-            raise BindingError("row %s: a computed value is written by a value skill, not by the draft" % r["name"])
+        if kind in ("computed", "correlation"):
+            raise BindingError("row %s: a %s value is written by a value skill, not by the draft" % (r["name"], kind))
         derived = grades.get((kind, r.get("value_kind")))
         if derived is None:
             raise NoGrade("row %s: no grade follows from source %r and value_kind %r (contracts/grades.json)"
@@ -244,7 +247,8 @@ def apply(draft, binding, skills, run, seat, now=None, sheet_path=None, tree=Non
                 raise SafetyRow("%s would write a value on %s, a safety-relevant row: its value is a person's" % (skill["ref"], target["name"]))
             if target.get("value") is not None:
                 raise BindingError("%s would write over the value the draft gives %s" % (skill["ref"], target["name"]))
-            target.update(value=value, source="computed:%s" % skill["ref"], grade=grade, value_kind="computed",
+            kind = skill.get("value_kind") or "computed"
+            target.update(value=value, source="%s:%s" % (kind, skill["ref"]), grade=grade, value_kind=kind,
                           uncertainty=uncertainty, basis=basis)
         else:
             target.setdefault("bounds", []).append({
