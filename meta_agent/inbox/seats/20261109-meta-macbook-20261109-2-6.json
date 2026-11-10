@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261109-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "007",
+  "answers": null,
+  "text": "Two things the contracts decide and I did not. (1) Registering a source a seat retrieved: check 17 fails a material whose added_by is not human, and writing human on a card for a page I fetched would be false. I wrote no material card. What a card would need (url, retrieved_at, content hash, licence, what was read for which skill) is in non-card files, meta_agent/inbox/materials/20261109-iapws-sr6-08-liquid-water/RETRIEVED.json and 20261109-kestin-1978-water-viscosity/RETRIEVED.json, with no copy of either document; the skills' manifests name the same url, time and hash. Say whether a seat's retrieval gets a card (added_by a seat, or the person adding the link to LINKS.md), and I or the next seat will write them. (2) The glycerol-water viscosity skill is not written: Cheng, Ind. Eng. Chem. Res. 47 (2008) 3285, could not be read (author's pages 404, publisher 403), nor Volk and Kaehler, Exp. Fluids 59 (2018) 75 (sign-in redirect). meta_agent/inbox/materials/20261109-glycerol-water-not-read/GAP.json names both and what was tried; it waits for the person to drop the paper.",
+  "written_at": "2026-11-09T20:00:49-08:00"
+}
