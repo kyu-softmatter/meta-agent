@@ -435,6 +435,21 @@ class Command(unittest.TestCase):
             shutil.rmtree(tmp, ignore_errors=True)
 
 
+class RecordedSheet(unittest.TestCase):
+    """The sheet recorded for the fixture rheometer request is what its draft and its binding give."""
+
+    def test_the_record_is_what_the_pass_gives_and_checks_have_nothing_to_say(self):
+        _, path = designer.latest_file(REQ, "parameter_sheet.json")
+        recorded = cards.load_json(path)
+        self.assertEqual(said(recorded), [])
+        again = apply()
+        for k in ("rows", "skills_considered", "tool_ref", "id", "rid"):
+            self.assertEqual(recorded[k], again[k], k)
+        iv = row(recorded, "shear_rate")["interval"]
+        self.assertEqual((iv["min"], iv["max"]), (2.857e-05, 233.0))
+        self.assertTrue(recorded["degraded"] or any(str(r.get("source")).startswith("database:chemicals@") for r in recorded["rows"]))
+
+
 def fake_chemicals(version="9.9.9"):
     """A stand-in with the two functions the adapter calls; it computes nothing real."""
     pkg = types.ModuleType("chemicals")
