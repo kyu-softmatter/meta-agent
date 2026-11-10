@@ -1,0 +1,554 @@
+{
+  "rid": "req-rheo-fixture-001",
+  "agent_name": "rheo-fixture",
+  "requested_by": "human",
+  "request_source": "meta_agent/tasks/010-skill-library-and-subagents.md, opened by the design seat on the person's words of 2026-11-09 (docs/ideas/20261109.md): skills as source code, in kinds, used by a built agent's subagents. A fixture request, on an instrument that does not exist.",
+  "paragraph": "Build an agent for the fixture rheometer, an instrument that does not exist, so that a bundle with several tools, skills taken from the library and subagents that use them is exercised from intake to a recorded build. Its operator finds and identifies the instrument and reads its state and the ranges it reports, through mock tools. Its analyst computes a bound on the shear rate and fits a power law to a flow curve it is handed. The skills that would change the device stay held in the library and out of the bundle.",
+  "science_task": "fit a power law to a flow curve and say what the instrument reports about itself",
+  "tool": {
+    "name": "fixture_rheometer",
+    "kind": "instrument",
+    "registry_id": null,
+    "material_refs": [],
+    "documentation": "meta_agent/tests/fixtures/rheometer/README.md",
+    "language": "any; the bundle carries mock adapters in Python",
+    "license": "not stated in the documentation"
+  },
+  "methods": [
+    "rheometry"
+  ],
+  "executes": "instrument",
+  "must_not": [
+    "touch an instrument",
+    "reach a network host",
+    "invent a number or choose a tolerance",
+    "run a skill that changes a device"
+  ],
+  "knowledge_needs": [],
+  "parameter_scope": [
+    "shear_rate"
+  ],
+  "destination": "none: a fixture build that stays under meta_agent/builds/",
+  "priorities": [
+    "the whole path runs end to end with skills and subagents",
+    "nothing outside the bundle is touched",
+    "no skill that changes a device enters the bundle"
+  ],
+  "lab_profile_ref": "lab-fixture-rich",
+  "gui_choice": "none",
+  "analysis_permission": null,
+  "note": "lab_profile_ref names the material-rich fixture lab, as the echo request does. The instrument is described by one page written by hand, meta_agent/tests/fixtures/rheometer/README.md; no device, no vendor document and no binary was read.",
+  "tool_reading": [
+    {
+      "claim": "each tool takes one JSON object and returns one, or an error contract",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "## Tools"
+      ],
+      "capability": "io_format"
+    },
+    {
+      "claim": "list_devices, open_session, identify and close_session find the instrument and read its identity; none writes a setting",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "## Tools"
+      ],
+      "capability": "observable"
+    },
+    {
+      "claim": "status returns the state, whether the device is initialised and homed, a fault if there is one, the temperature, the gap, the time and the run id, and changes nothing",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "## Tools"
+      ],
+      "capability": "observable"
+    },
+    {
+      "claim": "ranges returns the modes and, per quantity, the lowest and highest value and the unit, as the device reports them about itself, and changes nothing",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "## Tools"
+      ],
+      "capability": "observable"
+    },
+    {
+      "claim": "initialise, home, set_shear_rate, start, stop and self_calibrate change the device, and every one of them is behind the bundle's gate",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "## Tools"
+      ],
+      "capability": "constraint"
+    },
+    {
+      "claim": "the start-up order is the air supply and the transport lock by a person, then initialise, then home, and the device is ready when status says idle, initialised and homed with no fault",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "## Start-up"
+      ],
+      "capability": "constraint"
+    },
+    {
+      "claim": "the motor adjustment is calibrated by the device's own routine and torque against a standard a person loads",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "## Calibration"
+      ],
+      "capability": "constraint"
+    },
+    {
+      "claim": "how the normal force is calibrated",
+      "kind": "unknown",
+      "basis": "documentation",
+      "loci": [],
+      "capability": "constraint",
+      "requires": "the section of a manual on the normal force transducer",
+      "gap_reason": "no_material"
+    },
+    {
+      "claim": "a real instrument behaves as the mock adapters do",
+      "kind": "unknown",
+      "basis": "runtime",
+      "loci": [],
+      "capability": "constraint",
+      "requires": "an instrument, analysis_permission from a person and a bench"
+    }
+  ],
+  "tools": [
+    {
+      "contract": {
+        "artifact": "tool_contract",
+        "schema_version": "0.1",
+        "name": "list_devices",
+        "description": "list the addresses an instrument answers at; the mock adapter in this bundle stands in for the instrument",
+        "inputs": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "devices": {
+              "type": "array"
+            }
+          },
+          "required": [
+            "devices"
+          ]
+        },
+        "errors": [
+          "invalid_input"
+        ],
+        "side_effects": "reads_instrument",
+        "safety_gate": {
+          "required": false,
+          "place": "the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required"
+        },
+        "idempotent": true,
+        "timeout_s": null
+      },
+      "adapter_source": "tests/fixtures/rheometer/adapters/list_devices.py",
+      "error_contracts": []
+    },
+    {
+      "contract": {
+        "artifact": "tool_contract",
+        "schema_version": "0.1",
+        "name": "open_session",
+        "description": "open a session to the instrument at an address; the mock adapter in this bundle stands in for the instrument",
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "address": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "address"
+          ]
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "session": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "session"
+          ]
+        },
+        "errors": [
+          "invalid_input",
+          "unavailable"
+        ],
+        "side_effects": "reads_instrument",
+        "safety_gate": {
+          "required": false,
+          "place": "the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required"
+        },
+        "idempotent": true,
+        "timeout_s": null
+      },
+      "adapter_source": "tests/fixtures/rheometer/adapters/open_session.py",
+      "error_contracts": [
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-UNAVAILABLE-001",
+          "category": "unavailable",
+          "message": "no reply from the instrument",
+          "retryable": true,
+          "remediation": {
+            "action": "check the connection"
+          }
+        }
+      ]
+    },
+    {
+      "contract": {
+        "artifact": "tool_contract",
+        "schema_version": "0.1",
+        "name": "identify",
+        "description": "read the identity of the instrument a session is open to; the mock adapter in this bundle stands in for the instrument",
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "session": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "session"
+          ]
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "manufacturer": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            },
+            "serial": {
+              "type": "string"
+            },
+            "firmware": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "manufacturer",
+            "model",
+            "serial",
+            "firmware"
+          ]
+        },
+        "errors": [
+          "invalid_input",
+          "unavailable"
+        ],
+        "side_effects": "reads_instrument",
+        "safety_gate": {
+          "required": false,
+          "place": "the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required"
+        },
+        "idempotent": true,
+        "timeout_s": null
+      },
+      "adapter_source": "tests/fixtures/rheometer/adapters/identify.py",
+      "error_contracts": [
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-UNAVAILABLE-001",
+          "category": "unavailable",
+          "message": "no reply from the instrument",
+          "retryable": true,
+          "remediation": {
+            "action": "check the connection"
+          }
+        }
+      ]
+    },
+    {
+      "contract": {
+        "artifact": "tool_contract",
+        "schema_version": "0.1",
+        "name": "close_session",
+        "description": "close a session; the mock adapter in this bundle stands in for the instrument",
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "session": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "session"
+          ]
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "closed": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "closed"
+          ]
+        },
+        "errors": [
+          "invalid_input"
+        ],
+        "side_effects": "reads_instrument",
+        "safety_gate": {
+          "required": false,
+          "place": "the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required"
+        },
+        "idempotent": true,
+        "timeout_s": null
+      },
+      "adapter_source": "tests/fixtures/rheometer/adapters/close_session.py",
+      "error_contracts": []
+    },
+    {
+      "contract": {
+        "artifact": "tool_contract",
+        "schema_version": "0.1",
+        "name": "status",
+        "description": "read the state of the instrument: state, initialised, homed, fault, temperature, gap, time and run id; the mock adapter in this bundle stands in for the instrument",
+        "inputs": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string"
+            },
+            "initialised": {
+              "type": "boolean"
+            },
+            "homed": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "state",
+            "initialised",
+            "homed",
+            "fault"
+          ]
+        },
+        "errors": [
+          "invalid_input"
+        ],
+        "side_effects": "reads_instrument",
+        "safety_gate": {
+          "required": false,
+          "place": "the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required"
+        },
+        "idempotent": true,
+        "timeout_s": null
+      },
+      "adapter_source": "tests/fixtures/rheometer/adapters/status.py",
+      "error_contracts": []
+    },
+    {
+      "contract": {
+        "artifact": "tool_contract",
+        "schema_version": "0.1",
+        "name": "ranges",
+        "description": "read the modes and the ranges the instrument reports about itself; the mock adapter in this bundle stands in for the instrument",
+        "inputs": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "modes": {
+              "type": "array"
+            },
+            "ranges": {
+              "type": "array"
+            }
+          },
+          "required": [
+            "modes",
+            "ranges"
+          ]
+        },
+        "errors": [
+          "invalid_input"
+        ],
+        "side_effects": "reads_instrument",
+        "safety_gate": {
+          "required": false,
+          "place": "the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required"
+        },
+        "idempotent": true,
+        "timeout_s": null
+      },
+      "adapter_source": "tests/fixtures/rheometer/adapters/ranges.py",
+      "error_contracts": []
+    }
+  ],
+  "skills": [
+    "find_and_identify@v1",
+    "read_status@v1",
+    "read_ranges@v1",
+    "shear_rate_max_from_max_speed@v1",
+    "flow_curve_fit@v1",
+    "bring_to_ready@v1",
+    "run_steady_shear@v1",
+    "calibrate@v1"
+  ],
+  "subagents": [
+    {
+      "name": "operator",
+      "description": "Uses the hardware skills: finds and identifies the instrument, reads its state and the ranges it reports. It is the only subagent that may be given a skill that changes a device, and in this bundle it is given none.",
+      "skills": [
+        "find_and_identify@v1",
+        "read_status@v1",
+        "read_ranges@v1"
+      ],
+      "side_effects": [
+        "read_device"
+      ]
+    },
+    {
+      "name": "analyst",
+      "description": "Uses the skills that touch no device: computes bounds from the rows it is handed and fits the data it is handed.",
+      "skills": [
+        "shear_rate_max_from_max_speed@v1",
+        "flow_curve_fit@v1"
+      ],
+      "side_effects": [
+        "none"
+      ]
+    }
+  ],
+  "interface_tasks": [
+    {
+      "id": "if-1",
+      "name": "the status tool answers with a state",
+      "call": {
+        "tool": "status",
+        "input": {}
+      },
+      "expected": {
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true
+        }
+      },
+      "expected_verdict": "pass"
+    },
+    {
+      "id": "if-2",
+      "name": "an address that does not answer returns the documented error, not a crash",
+      "call": {
+        "tool": "open_session",
+        "input": {
+          "address": "mock:rheo-9"
+        }
+      },
+      "expected": {
+        "error": {
+          "category": "unavailable",
+          "code": "RHEO-UNAVAILABLE-001"
+        }
+      },
+      "expected_verdict": "pass"
+    },
+    {
+      "id": "if-3",
+      "name": "identify without a session is an invalid input",
+      "call": {
+        "tool": "identify",
+        "input": {}
+      },
+      "expected": {
+        "error": {
+          "category": "invalid_input"
+        }
+      },
+      "expected_verdict": "pass"
+    }
+  ],
+  "scientific_tasks": [
+    {
+      "id": "sci-1",
+      "name": "the torque range the device reports agrees with its specification",
+      "call": {
+        "tool": "ranges",
+        "input": {}
+      },
+      "measure": {
+        "output_field": "ranges",
+        "reference_function": "specification_torque_range"
+      },
+      "reference": {
+        "kind": "source",
+        "ref": "the instrument's specification sheet; none exists for an instrument that does not exist"
+      },
+      "tolerance": null,
+      "expected_verdict": "not_run",
+      "note": "requires a specification and a bench; not_run is not a pass"
+    }
+  ],
+  "replay_items": [
+    {
+      "id": "rp-001",
+      "name": "the device lists its modes",
+      "call": {
+        "tool": "ranges",
+        "input": {}
+      },
+      "expected": {
+        "output": {
+          "modes": [
+            "steady_shear",
+            "oscillation"
+          ]
+        }
+      },
+      "expected_verdict": "pass"
+    },
+    {
+      "id": "rp-002",
+      "name": "a session to an address that does not answer is refused with the documented error",
+      "call": {
+        "tool": "open_session",
+        "input": {
+          "address": "mock:rheo-9"
+        }
+      },
+      "expected": {
+        "error": {
+          "category": "unavailable",
+          "code": "RHEO-UNAVAILABLE-001"
+        }
+      },
+      "expected_verdict": "pass"
+    }
+  ]
+}

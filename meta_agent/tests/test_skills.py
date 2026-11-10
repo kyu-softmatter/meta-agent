@@ -15,7 +15,7 @@ import sys
 import tempfile
 import unittest
 
-from meta_agent.src import cards
+from meta_agent.src import cards, designer
 from meta_agent.src.build import bundle as bundle_mod
 from meta_agent.src.build import template as template_mod
 from meta_agent.src.skills import LIBRARY, catalogue, rules, runner
@@ -25,6 +25,8 @@ META = os.path.dirname(HERE)
 REPO = os.path.dirname(META)
 VALIDATE = os.path.join(REPO, "contracts", "validate.py")
 FIX = os.path.join(HERE, "fixtures", "rheometer")
+REQ = os.path.join(META, "requests", "req-rheo-fixture-001")
+SEAT = "meta-macbook-20261109-2"
 NOW = "2026-11-09T12:00:00Z"
 KINDS = ["bound", "data_analysis", "hardware_boot", "hardware_calibration", "hardware_connection", "hardware_control",
          "hardware_range", "hardware_state"]
@@ -49,33 +51,24 @@ def calls(record):
     return [(c["tool"], c["verdict"]) for c in record["tool_calls"]]
 
 
-def build_rheo_bundle(tmp, intake=None, template_root=None, tools_override=None, safety=None):
-    """S5 for the fixture rheometer agent in a scratch folder: the template, the mock tools, and the skills
-    and subagents the fixture's intake names. Returns (bundle path, template path, the bundle's hash)."""
-    intake = intake or cards.load_json(os.path.join(FIX, "bundle", "intake.json"))
-    name, tpath = template_mod.materialize(os.path.join(tmp, "templates"), template_root or template_mod.SOURCE)
-    tools = []
-    for t in intake["tools"]:
-        tdir = os.path.join(FIX, "bundle", "tools", t)
-        edir = os.path.join(tdir, "errors")
-        contract = cards.load_json(os.path.join(tdir, "tool.json"))
-        contract.update((tools_override or {}).get(t, {}))
-        tools.append({"name": t, "contract": contract, "adapter_source": cards.read_text(os.path.join(tdir, "adapter.py")),
-                      "errors": [cards.load_json(os.path.join(edir, f)) for f in sorted(os.listdir(edir))] if os.path.isdir(edir) else []})
-    fill = {
-        "agent_name": intake["agent_name"], "template": name, "rid": intake["rid"], "purpose": intake["purpose"],
-        "science_task": intake["science_task"], "tools_section": bundle_mod.tools_section([t["contract"] for t in tools]),
-        "must_not": bundle_mod.must_not_section(intake["must_not"]), "skills_section": bundle_mod.skills_section([]),
-        "seat_form": "%s-<machine>-<YYYYMMDD>-<n>" % intake["agent_name"],
-    }
-    capabilities = {"schema_version": "0.1", "agent": intake["agent_name"], "tool": "fixture rheometer",
-                    "source": "meta_agent/tests/fixtures/rheometer/README.md", "observed": [], "derived": [], "unverified": [], "gaps": []}
-    envelope = {"safety": safety or {}, "snapshot": {"kb_version": "kb@none", "entries": [], "numbers": []}, "parameters": {"rows": []}}
-    path = os.path.join(tmp, "builds", intake["agent_name"], "0001", "bundle")
-    sha = bundle_mod.compose(tpath, path, fill, tools, capabilities, envelope, intake["interface_tasks"],
-                             intake["scientific_tasks"], intake["replay_items"],
-                             skills=catalogue.take(intake["skills"]), subagents=intake["subagents"])
-    return path, tpath, sha
+def load_intake():
+    return cards.load_json(os.path.join(REQ, "intake.json"))
+
+
+def scratch_root():
+    """A meta_agent-like tree: the fixture lab's profile, the fixture rheometer and the skill library."""
+    tmp = tempfile.mkdtemp(prefix="ma-skills-build-")
+    root = os.path.join(tmp, "meta_agent")
+    shutil.copytree(os.path.join(META, "profiles", "lab-fixture-rich"), os.path.join(root, "profiles", "lab-fixture-rich"))
+    shutil.copytree(FIX, os.path.join(root, "tests", "fixtures", "rheometer"))
+    shutil.copytree(LIBRARY, os.path.join(root, "skills"), ignore=shutil.ignore_patterns("__pycache__"))
+    return tmp, root
+
+
+def design(root, intake=None):
+    """S1 to S6 on the fixture rheometer request, in a scratch tree. Returns (the bundle's path, what run() returned)."""
+    out = designer.run(intake or load_intake(), SEAT, "0001", NOW, root)
+    return os.path.join(root, "builds", "rheo-fixture", "0001", "bundle"), out
 
 
 def run_skill_in(bundle, ref, payload):
@@ -337,23 +330,41 @@ class HeldSkillsOnATranscript(unittest.TestCase):
 
 
 class Bundle(unittest.TestCase):
+    """The Designer on the fixture rheometer request: a specification that names skills and subagents, and its build."""
+
     @classmethod
     def setUpClass(cls):
-        cls.tmp = tempfile.mkdtemp(prefix="ma-skills-bundle-")
-        cls.intake = cards.load_json(os.path.join(FIX, "bundle", "intake.json"))
-        cls.bundle, cls.template, cls.sha = build_rheo_bundle(cls.tmp)
+        cls.tmp, cls.root = scratch_root()
+        cls.intake = load_intake()
+        cls.bundle, cls.out = design(cls.root)
+        cls.req = os.path.join(cls.root, "requests", "req-rheo-fixture-001")
+        cls.build_dir = os.path.dirname(cls.bundle)
+        cls.built = [r for r in cls.intake["skills"] if r not in HELD]
 
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(cls.tmp, ignore_errors=True)
 
-    def test_the_named_skills_are_in_the_bundle_unchanged(self):
-        have = sorted(n for n in os.listdir(os.path.join(self.bundle, "skills")))
-        self.assertEqual(have, sorted(self.intake["skills"]))
-        for ref in self.intake["skills"]:
+    def test_the_specification_names_the_skills_the_held_ones_and_the_drawing(self):
+        spec = cards.load_json(os.path.join(self.req, "agent_spec.json"))
+        self.assertEqual(spec["skills"], self.intake["skills"])
+        self.assertEqual(spec["subagents"], self.intake["subagents"])
+        self.assertEqual(sorted(h["item"] for h in spec["held"]), sorted("skill %s" % r for r in HELD))
+        self.assertEqual(spec["status"], "held")
+        a2 = cards.load_json(os.path.join(self.req, "spec_a2.json"))["content"]
+        self.assertEqual([t["name"] for t in a2["callable_tools"]], [t["contract"]["name"] for t in self.intake["tools"]])
+        self.assertEqual({t["side_effects"] for t in a2["callable_tools"]}, {"reads_instrument"})
+        self.assertEqual(a2["subagents"], ["operator", "analyst"])
+        build = cards.load_json(os.path.join(self.build_dir, "build.json"))
+        self.assertEqual(build["held"], spec["held"])
+        self.assertEqual(build["bundle_sha256"], cards.sha256_tree(self.bundle))
+        self.assertEqual((self.out["skills"], self.out["subagents"]), (self.built, ["operator", "analyst"]))
+
+    def test_the_named_skills_are_in_the_bundle_unchanged_and_the_held_ones_are_not(self):
+        have = sorted(os.listdir(os.path.join(self.bundle, "skills")))
+        self.assertEqual(have, sorted(self.built))
+        for ref in self.built:
             self.assertEqual(cards.sha256_tree(os.path.join(self.bundle, "skills", ref)), cards.sha256_tree(catalogue.find(ref)), ref)
-        for ref in HELD:
-            self.assertNotIn(ref, have)
 
     def test_subagents_are_written_with_their_skills_and_side_effects(self):
         adir = os.path.join(self.bundle, ".claude", "agents")
@@ -374,8 +385,10 @@ class Bundle(unittest.TestCase):
     def test_claude_md_names_every_skill_and_subagent(self):
         text = cards.read_text(os.path.join(self.bundle, "CLAUDE.md"))
         self.assertNotIn("{{", text)
-        for ref in self.intake["skills"]:
+        for ref in self.built:
             self.assertIn("`%s`" % ref, text)
+        for ref in HELD:
+            self.assertNotIn(ref, text)
         for name in ("operator", "analyst"):
             self.assertIn("`%s`" % name, text)
         self.assertIn("src/run_skill.py", text)
@@ -389,12 +402,22 @@ class Bundle(unittest.TestCase):
         self.assertIn("failed=0", last)
         self.assertIn("checks run %s" % B_CHECKS, p.stdout)
 
+    def test_the_whole_tree_passes_the_validator(self):
+        p = subprocess.run([sys.executable, VALIDATE, self.tmp, "--strict"], capture_output=True, text=True, encoding="utf-8",
+                           env=ENV, cwd=REPO)
+        self.assertEqual(p.returncode, 0, p.stdout[-2000:] + p.stderr)
+        self.assertIn("bundles=1 failed=0 pending=0", p.stdout.strip().splitlines()[-1])
+
     def test_check_22_has_nothing_to_say_about_the_bundles_skills(self):
         kinds = rules.load_kinds()
         dirs = rules.find_skill_dirs(os.path.join(self.bundle, "skills"))
         self.assertEqual(len(dirs), 5)
         for d in dirs:
             self.assertEqual(rules.problems(d, kinds), [], d)
+
+    def test_the_gates_are_read_off_the_bundle(self):
+        self.assertEqual(self.out["gates"], {"interface": "pass", "scientific": "not_run", "overall": "not_run"})
+        self.assertTrue(self.out["replay_ok"])
 
     def test_the_bundle_runs_a_device_skill_through_its_own_tool_runner(self):
         code, rec = run_skill_in(self.bundle, "read_status@v1", {})
@@ -416,22 +439,27 @@ class Bundle(unittest.TestCase):
         self.assertEqual(code, 2)                 # a held skill is not in the bundle at all
 
     def test_the_diff_from_the_template_names_what_the_build_added(self):
-        diff = bundle_mod.diff_from_template(self.template, self.bundle)
+        diff = cards.read_text(os.path.join(self.build_dir, "diff_from_template.txt"))
         for line in ("added     .claude/agents/operator.md", "added     .claude/agents/analyst.md",
-                     "added     skills/read_status@v1/skill.json", "removed   skills/.gitkeep", "modified  CLAUDE.md"):
+                     "added     skills/read_status@v1/skill.json", "added     tools/status/tool.json",
+                     "removed   skills/.gitkeep", "modified  CLAUDE.md"):
             self.assertIn(line, diff)
-        self.assertEqual(self.sha, cards.sha256_tree(self.bundle))
 
 
 class Gate(unittest.TestCase):
     """Inside a bundle the gate is asked on every call a skill makes, and a refusal is what the skill is told."""
 
     def test_a_gated_tool_refuses_and_the_skill_reports_it(self):
-        tmp = tempfile.mkdtemp(prefix="ma-skills-gate-")
+        tmp, root = scratch_root()
         try:
-            gated = {"status": {"side_effects": "controls_instrument", "errors": ["invalid_input", "refused_by_safety"],
-                                "safety_gate": {"required": True, "place": "src/gate.py before the adapter is called"}}}
-            bundle, _, _ = build_rheo_bundle(tmp, tools_override=gated, safety={"torque_max": None})
+            bundle, _ = design(root)
+            # in the scratch bundle only: the status tool now asks for the gate, and a safety row is not set
+            path = os.path.join(bundle, "tools", "status", "tool.json")
+            contract = cards.load_json(path)
+            contract.update(side_effects="controls_instrument", errors=["invalid_input", "refused_by_safety"],
+                            safety_gate={"required": True, "place": "src/gate.py before the adapter is called"})
+            cards.write_json(path, contract)
+            cards.write_json(os.path.join(bundle, "envelope", "safety.json"), {"torque_max": None})
             code, rec = run_skill_in(bundle, "read_status@v1", {})
             self.assertEqual((code, rec["verdict"]), (0, "ran"))
             self.assertEqual(calls(rec), [("status", "refused")])
@@ -442,22 +470,23 @@ class Gate(unittest.TestCase):
 
 
 class Drawing(unittest.TestCase):
-    """What B11 would fail is refused at S5, before a bundle exists."""
+    """What B11 would fail is refused by the Designer before anything is written."""
 
-    def refused(self, change, expect, **kw):
-        tmp = tempfile.mkdtemp(prefix="ma-skills-drawing-")
+    def refused(self, change, expect):
+        tmp, root = scratch_root()
         try:
-            intake = cards.load_json(os.path.join(FIX, "bundle", "intake.json"))
+            intake = load_intake()
             change(intake)
             with self.assertRaises(ValueError) as e:
-                build_rheo_bundle(tmp, intake, **kw)
+                design(root, intake)
             self.assertIn(expect, str(e.exception))
-            self.assertFalse(os.path.exists(os.path.join(tmp, "builds")))
+            self.assertFalse(os.path.exists(os.path.join(root, "requests")))
+            self.assertFalse(os.path.exists(os.path.join(root, "builds")))
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
 
-    def test_a_held_skill_does_not_enter_a_bundle(self):
-        self.refused(lambda i: i["skills"].append("run_steady_shear@v1"), "run_steady_shear@v1 is held")
+    def test_a_held_skill_is_not_given_to_a_subagent(self):
+        self.refused(lambda i: i["subagents"][0]["skills"].append("run_steady_shear@v1"), "operator names run_steady_shear@v1")
 
     def test_only_the_operator_may_list_write_device(self):
         self.refused(lambda i: i["subagents"][1]["side_effects"].append("write_device"), "only operator may")
@@ -466,8 +495,13 @@ class Drawing(unittest.TestCase):
         self.refused(lambda i: i["subagents"][1]["skills"].append("read_status@v1"), "analyst names read_status@v1, which is read_device")
 
     def test_a_skill_needs_its_tools_in_the_bundle(self):
-        self.refused(lambda i: i["tools"].remove("ranges") or i.update(scientific_tasks=[], replay_items=i["replay_items"][1:]),
+        self.refused(lambda i: i.update(tools=[t for t in i["tools"] if t["contract"]["name"] != "ranges"]),
                      "read_ranges@v1 calls the tool ranges")
+
+    def test_a_reading_skill_calls_no_tool_that_changes_something(self):
+        def change(i):
+            next(t for t in i["tools"] if t["contract"]["name"] == "status")["contract"]["side_effects"] = "controls_instrument"
+        self.refused(change, "read_status@v1 says it only reads the device and calls status")
 
     def test_a_subagent_names_only_skills_the_specification_names(self):
         self.refused(lambda i: i["skills"].remove("flow_curve_fit@v1"), "analyst names flow_curve_fit@v1")
@@ -475,8 +509,15 @@ class Drawing(unittest.TestCase):
     def test_a_skill_the_library_lacks(self):
         self.refused(lambda i: i["skills"].append("no_such_skill@v1"), "the library has no skill no_such_skill@v1")
 
-    def test_skills_need_a_template_with_the_skill_runner(self):
-        self.refused(lambda i: None, "has no src/run_skill.py", template_root=template_mod.SOURCES["v1"])
+    def test_compose_refuses_a_held_skill_and_a_template_without_the_skill_runner(self):
+        rows = catalogue.take(["read_status@v1", "bring_to_ready@v1"])
+        effects = {"status": "reads_instrument", "initialise": "controls_instrument", "home": "controls_instrument"}
+        with self.assertRaises(ValueError) as e:
+            bundle_mod.check_drawing(rows, [], effects, template_mod.SOURCE)
+        self.assertIn("bring_to_ready@v1 is held", str(e.exception))
+        with self.assertRaises(ValueError) as e:
+            bundle_mod.check_drawing(rows[:1], [], effects, template_mod.SOURCES["v1"])
+        self.assertIn("has no src/run_skill.py", str(e.exception))
 
 
 class Template(unittest.TestCase):
@@ -489,15 +530,18 @@ class Template(unittest.TestCase):
         self.assertEqual(cards.load_json(os.path.join(template_mod.SOURCE, "TEMPLATE.json"))["version"], "v2")
 
     def test_a_build_with_no_skills_fills_both_sections(self):
-        tmp = tempfile.mkdtemp(prefix="ma-skills-plain-")
+        tmp, root = scratch_root()
         try:
-            intake = cards.load_json(os.path.join(FIX, "bundle", "intake.json"))
+            intake = load_intake()
             intake.update(skills=[], subagents=[])
-            bundle, _, _ = build_rheo_bundle(tmp, intake)
+            bundle, _ = design(root, intake)
             text = cards.read_text(os.path.join(bundle, "CLAUDE.md"))
             self.assertIn("This agent has no skills.", text)
             self.assertIn("This agent has no subagents.", text)
             self.assertFalse(os.path.exists(os.path.join(bundle, ".claude", "agents")))
+            spec = cards.load_json(os.path.join(root, "requests", "req-rheo-fixture-001", "agent_spec.json"))
+            self.assertNotIn("skills", spec)
+            self.assertEqual(spec["held"], [])
             p = subprocess.run([sys.executable, VALIDATE, "--bundle", bundle], capture_output=True, text=True, encoding="utf-8",
                                env=ENV, cwd=REPO)
             self.assertEqual(p.returncode, 0, p.stdout + p.stderr)

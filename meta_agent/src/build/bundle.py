@@ -5,9 +5,10 @@ the library into the bundle's skills/<id>@v<n>/ unchanged, and each subagent it 
 .claude/agents/<name>.md with the skills and the side effects it may use. The caller reads the library
 (src/skills/catalogue.take) and hands the rows in; this stage imports no sibling stage (plan.md 7). What
 check B11 would fail in the finished bundle is refused here, before anything is written: a held skill (it
-belongs in the specification's held[], not in a bundle), a skill whose tool the bundle does not have or
-that uses a skill the specification does not name, a subagent whose side effects do not cover its skills,
-and a second subagent that may change a device.
+is named in the specification's skills and held[], and stays out of the bundle), a skill whose tool the
+bundle does not have or that uses a skill the specification does not name, a skill that says it only reads
+and calls a tool that changes something, a subagent whose side effects do not cover its skills, and a
+second subagent that may change a device.
 """
 import difflib
 import json
@@ -102,8 +103,12 @@ def subagent_markdown(agent, rows):
     return "\n".join(lines)
 
 
-def check_drawing(skills, subagents, tool_names, template_path):
-    """Refuse what B11 would fail. `skills` are the library's rows for the refs the specification names."""
+READ_ONLY_TOOLS = (None, "none", "reads_instrument")
+
+
+def check_drawing(skills, subagents, tool_effects, template_path):
+    """Refuse what B11 would fail. `skills` are the library's rows for the skills the bundle is to carry and
+    `tool_effects` is {tool name: its contract's side_effects} for the tools the bundle has."""
     rows, faults = {r["ref"]: r for r in skills}, []
     if skills and not os.path.isfile(os.path.join(template_path, "src", "run_skill.py")):
         faults.append("the template %s has no src/run_skill.py; skills need template v2 or later" % os.path.basename(template_path))
@@ -111,8 +116,10 @@ def check_drawing(skills, subagents, tool_names, template_path):
         if r["status"] == "held":
             faults.append("%s is held: it stays in the library and is named in the specification's held[], not in a bundle" % ref)
         for t in r["calls_tools"]:
-            if t not in tool_names:
+            if t not in tool_effects:
                 faults.append("%s calls the tool %s, which this bundle does not have" % (ref, t))
+            elif r["side_effect"] == "read_device" and tool_effects[t] not in READ_ONLY_TOOLS:
+                faults.append("%s says it only reads the device and calls %s, a tool with side effects %s" % (ref, t, tool_effects[t]))
         for other in r["uses_skills"]:
             if other not in rows:
                 faults.append("%s uses %s, which the specification does not name" % (ref, other))
@@ -162,7 +169,7 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     if os.path.exists(bundle_path):
         raise FileExistsError("bundle exists: %s (a rebuild is a new build id)" % bundle_path)
     skills, subagents = list(skills or []), list(subagents or [])
-    rows = check_drawing(skills, subagents, [t["name"] for t in tools], template_path)
+    rows = check_drawing(skills, subagents, {t["name"]: t["contract"].get("side_effects") for t in tools}, template_path)
     fill = dict(fill)
     if skills:
         users = {r["ref"]: [a["name"] for a in subagents if r["ref"] in a["skills"]] for r in skills}

@@ -28,7 +28,7 @@ class Transcript(object):
     kind = "transcript"
 
     def __init__(self, entries):
-        self._inner = rules._Tools(entries)
+        self._inner = rules.Transcript(entries)
 
     def call(self, name, payload=None):
         return self._inner.call(name, payload)
@@ -128,7 +128,7 @@ def run(ref, inputs, tools=None, library=LIBRARY, now=None):
         if device:
             recording = _Recording(tools, tools_closure(skill_dir))
         record["verdict"] = "failed"
-        outputs = rules._call(skill_dir, inputs, recording)
+        outputs = rules.call_entry(skill_dir, inputs, recording)
         record["outputs"] = outputs
         faults = output_problems(manifest, outputs)
         if faults:

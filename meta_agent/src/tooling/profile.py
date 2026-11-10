@@ -53,8 +53,8 @@ def make_profile(intake, seat, now=None):
             claim["capability"] = r["capability"]
         claims.append(claim)
     card["claims"] = claims
-    contract = intake.get("tool_contract") or {}
-    card["parameter_candidates"] = sorted(((contract.get("inputs") or {}).get("properties") or {}).keys())
+    contracts = [t["contract"] for t in intake.get("tools") or []] or [intake.get("tool_contract") or {}]
+    card["parameter_candidates"] = sorted({k for c in contracts for k in ((c.get("inputs") or {}).get("properties") or {})})
     card["gaps"] = gaps
     card["material_refs"] = list(tool.get("material_refs", []))
     return card
