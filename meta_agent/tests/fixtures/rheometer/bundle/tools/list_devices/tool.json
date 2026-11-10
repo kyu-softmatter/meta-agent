@@ -1,0 +1,32 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "list_devices",
+  "description": "list the addresses an instrument answers at; the mock adapter in this bundle stands in for the instrument",
+  "inputs": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "devices": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "devices"
+    ]
+  },
+  "errors": [
+    "invalid_input"
+  ],
+  "side_effects": "none",
+  "safety_gate": {
+    "required": false,
+    "place": "the mock adapter reads nothing and changes nothing; src/gate.py is consulted by the runner and finds no gate required"
+  },
+  "idempotent": true,
+  "timeout_s": null
+}

@@ -1,0 +1,173 @@
+{
+  "note": "What a build of the fixture rheometer agent is made from (tasks/010). Not a card. The skills and the subagents are the drawing a specification would name; agent_spec has no field for them yet (the ask of 2026-11-09 to the design role), so the fixture keeps them here and names the held skills as the specification's held[] would.",
+  "rid": "req-rheo-fixture-001",
+  "agent_name": "rheo-fixture",
+  "purpose": "Read the fixture rheometer's identity, state and reported ranges through mock tools, and analyse flow curves it is handed, so that a bundle with skills and subagents is exercised end to end on an instrument that does not exist.",
+  "science_task": "fit a power law to a flow curve and say what the instrument reports about itself",
+  "must_not": [
+    "touch an instrument",
+    "reach a network host",
+    "invent a number or choose a tolerance",
+    "run a skill that changes a device"
+  ],
+  "tools": [
+    "list_devices",
+    "open_session",
+    "identify",
+    "close_session",
+    "status",
+    "ranges"
+  ],
+  "skills": [
+    "find_and_identify@v1",
+    "read_status@v1",
+    "read_ranges@v1",
+    "shear_rate_max_from_max_speed@v1",
+    "flow_curve_fit@v1"
+  ],
+  "subagents": [
+    {
+      "name": "operator",
+      "description": "Uses the hardware skills: finds and identifies the instrument, reads its state and the ranges it reports. It is the only subagent that may be given a skill that changes a device, and in this bundle it is given none.",
+      "skills": [
+        "find_and_identify@v1",
+        "read_status@v1",
+        "read_ranges@v1"
+      ],
+      "side_effects": [
+        "read_device"
+      ]
+    },
+    {
+      "name": "analyst",
+      "description": "Uses the skills that touch no device: computes bounds from the rows it is handed and fits the data it is handed.",
+      "skills": [
+        "shear_rate_max_from_max_speed@v1",
+        "flow_curve_fit@v1"
+      ],
+      "side_effects": [
+        "none"
+      ]
+    }
+  ],
+  "held": [
+    {
+      "item": "skill bring_to_ready@v1",
+      "reason": "write_device; held until a person releases it"
+    },
+    {
+      "item": "skill run_steady_shear@v1",
+      "reason": "write_device; held until a person releases it"
+    },
+    {
+      "item": "skill calibrate@v1",
+      "reason": "write_device; held until a person releases it"
+    }
+  ],
+  "interface_tasks": [
+    {
+      "id": "if-1",
+      "name": "the status tool answers with a state",
+      "call": {
+        "tool": "status",
+        "input": {}
+      },
+      "expected": {
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true
+        }
+      },
+      "expected_verdict": "pass"
+    },
+    {
+      "id": "if-2",
+      "name": "an address that does not answer returns the documented error, not a crash",
+      "call": {
+        "tool": "open_session",
+        "input": {
+          "address": "mock:rheo-9"
+        }
+      },
+      "expected": {
+        "error": {
+          "category": "unavailable",
+          "code": "RHEO-UNAVAILABLE-001"
+        }
+      },
+      "expected_verdict": "pass"
+    },
+    {
+      "id": "if-3",
+      "name": "identify without a session is an invalid input",
+      "call": {
+        "tool": "identify",
+        "input": {}
+      },
+      "expected": {
+        "error": {
+          "category": "invalid_input"
+        }
+      },
+      "expected_verdict": "pass"
+    }
+  ],
+  "scientific_tasks": [
+    {
+      "id": "sci-1",
+      "name": "the torque range the device reports agrees with a reference",
+      "call": {
+        "tool": "ranges",
+        "input": {}
+      },
+      "measure": {
+        "output_field": "ranges",
+        "reference_function": "reference_torque_range"
+      },
+      "reference": {
+        "kind": "bench",
+        "ref": "a reference for the torque range; none exists for an instrument that does not exist"
+      },
+      "tolerance": null,
+      "expected_verdict": "not_run",
+      "note": "requires bench; not_run is not a pass"
+    }
+  ],
+  "replay_items": [
+    {
+      "id": "rp-001",
+      "name": "the device lists its modes",
+      "call": {
+        "tool": "ranges",
+        "input": {}
+      },
+      "expected": {
+        "output": {
+          "modes": [
+            "steady_shear",
+            "oscillation"
+          ]
+        }
+      },
+      "expected_verdict": "pass"
+    },
+    {
+      "id": "rp-002",
+      "name": "a session to an address that does not answer is refused with the documented error",
+      "call": {
+        "tool": "open_session",
+        "input": {
+          "address": "mock:rheo-9"
+        }
+      },
+      "expected": {
+        "error": {
+          "category": "unavailable",
+          "code": "RHEO-UNAVAILABLE-001"
+        }
+      },
+      "expected_verdict": "pass"
+    }
+  ]
+}

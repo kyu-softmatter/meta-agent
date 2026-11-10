@@ -1,0 +1,52 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "identify",
+  "description": "read the identity of the instrument a session is open to; the mock adapter in this bundle stands in for the instrument",
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "session": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required": [
+      "session"
+    ]
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "manufacturer": {
+        "type": "string"
+      },
+      "model": {
+        "type": "string"
+      },
+      "serial": {
+        "type": "string"
+      },
+      "firmware": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "manufacturer",
+      "model",
+      "serial",
+      "firmware"
+    ]
+  },
+  "errors": [
+    "invalid_input",
+    "unavailable"
+  ],
+  "side_effects": "none",
+  "safety_gate": {
+    "required": false,
+    "place": "the mock adapter reads nothing and changes nothing; src/gate.py is consulted by the runner and finds no gate required"
+  },
+  "idempotent": true,
+  "timeout_s": null
+}

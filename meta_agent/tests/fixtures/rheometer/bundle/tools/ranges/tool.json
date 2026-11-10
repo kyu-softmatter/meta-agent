@@ -1,0 +1,36 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "ranges",
+  "description": "read the modes and the ranges the instrument reports about itself; the mock adapter in this bundle stands in for the instrument",
+  "inputs": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "modes": {
+        "type": "array"
+      },
+      "ranges": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "modes",
+      "ranges"
+    ]
+  },
+  "errors": [
+    "invalid_input"
+  ],
+  "side_effects": "none",
+  "safety_gate": {
+    "required": false,
+    "place": "the mock adapter reads nothing and changes nothing; src/gate.py is consulted by the runner and finds no gate required"
+  },
+  "idempotent": true,
+  "timeout_s": null
+}
