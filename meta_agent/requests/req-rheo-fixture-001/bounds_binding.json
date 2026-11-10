@@ -1,0 +1,72 @@
+{
+  "note": "Which bound skills this sheet uses and which row each input is bound to. Written by the seat in the session; it holds no value.",
+  "skills": [
+    {
+      "skill": "shear_rate_min_from_min_speed@v1",
+      "verdict": "used",
+      "why": "a cone-and-plate geometry; the lowest controllable speed is on the sheet",
+      "inputs": {
+        "min_angular_velocity": "min_angular_velocity",
+        "cone_angle": "cone_angle"
+      }
+    },
+    {
+      "skill": "shear_rate_max_from_max_speed@v1",
+      "verdict": "used",
+      "why": "a cone-and-plate geometry; the top speed is on the sheet",
+      "inputs": {
+        "max_angular_velocity": "max_angular_velocity",
+        "cone_angle": "cone_angle"
+      }
+    },
+    {
+      "skill": "shear_rate_max_from_inertia@v1",
+      "verdict": "used",
+      "why": "a low-viscosity sample, where secondary flow sets in long before the top speed",
+      "inputs": {
+        "critical_reynolds_number": "critical_reynolds_number",
+        "viscosity": "sample_viscosity",
+        "density": "sample_density",
+        "cone_angle": "cone_angle",
+        "cone_radius": "cone_radius"
+      }
+    },
+    {
+      "skill": "shear_stress_min_from_min_torque@v1",
+      "verdict": "used",
+      "why": "the torque floor is on the sheet",
+      "inputs": {
+        "min_torque": "min_torque",
+        "cone_radius": "cone_radius"
+      }
+    },
+    {
+      "skill": "shear_stress_max_from_max_torque@v1",
+      "verdict": "used",
+      "why": "the torque ceiling of the specification is on the sheet",
+      "inputs": {
+        "max_torque": "max_torque",
+        "cone_radius": "cone_radius"
+      }
+    },
+    {
+      "skill": "viscosity_min_measurable_at_rate@v1",
+      "verdict": "used",
+      "why": "a flow curve is planned down to a lowest rate, where the torque floor asks most of the viscosity",
+      "inputs": {
+        "min_torque": "min_torque",
+        "cone_radius": "cone_radius",
+        "shear_rate": "lowest_shear_rate_of_sweep"
+      }
+    },
+    {
+      "skill": "gap_min_from_particle_size@v1",
+      "verdict": "used",
+      "why": "the sample carries particles",
+      "inputs": {
+        "particle_diameter": "largest_particle_diameter",
+        "gap_to_particle_ratio": "gap_to_particle_ratio"
+      }
+    }
+  ]
+}

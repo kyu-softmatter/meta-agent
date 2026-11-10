@@ -26,6 +26,19 @@ Each tool takes one JSON object and returns one, or an error contract.
 Every tool that changes the device is behind the bundle's gate. A gate that refuses returns the error
 contract `GATE-SAFETY-001`, category `refused_by_safety`, and the call reaches no device.
 
+## Specification
+
+What the maker of this instrument would print on its sheet, and what `ranges` reports. These are figures
+about the instrument, not limits anyone has set for its use: a limit is a safety value and a person's.
+
+- Torque: from 1e-8 N.m to 0.2 N.m.
+- Angular velocity: from 1e-6 rad/s to 300 rad/s.
+- Temperature: from 253.15 K to 473.15 K.
+- The geometry it ships with: a cone and plate, cone angle 0.035 rad with a tolerance of 0.0005 rad,
+  radius 0.02 m with a tolerance of 0.0001 m.
+
+A sheet cites this section as `spec:fixture_rheometer_readme`.
+
 ## Start-up
 
 In this order: a person opens the air supply to the bearing; a person removes the transport lock; the

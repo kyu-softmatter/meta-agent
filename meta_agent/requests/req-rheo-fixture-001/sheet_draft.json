@@ -1,0 +1,236 @@
+{
+  "note": "The sheet of the fixture rheometer request. The instrument does not exist; its figures are the specification section of meta_agent/tests/fixtures/rheometer/README.md, and tool_ref names the registry's lab_rheometer because the fixture stands in for it until its model is known (plan.md 14-21), which is also what the bound skills name. No row's value is chosen here: an interval is what the skills give, and the point inside it is tasks/011's.",
+  "id": "ps-rheo-fixture-001",
+  "rid": "req-rheo-fixture-001",
+  "tool": "fixture_rheometer",
+  "tool_ref": {
+    "kind": "instrument",
+    "registry_id": "lab_rheometer"
+  },
+  "search_tiers_used": [
+    1
+  ],
+  "rows": [
+    {
+      "name": "max_angular_velocity",
+      "value": 300.0,
+      "unit": "rad/s",
+      "source": "spec:fixture_rheometer_readme",
+      "value_kind": "literature",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery"
+    },
+    {
+      "name": "min_angular_velocity",
+      "value": 1e-06,
+      "unit": "rad/s",
+      "source": "spec:fixture_rheometer_readme",
+      "value_kind": "literature",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery"
+    },
+    {
+      "name": "min_torque",
+      "value": 1e-08,
+      "unit": "N.m",
+      "source": "spec:fixture_rheometer_readme",
+      "value_kind": "literature",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery"
+    },
+    {
+      "name": "max_torque",
+      "value": 0.2,
+      "unit": "N.m",
+      "source": "spec:fixture_rheometer_readme",
+      "value_kind": "literature",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery",
+      "note": "the specification's figure, not a limit for use: the limit is the safety row below"
+    },
+    {
+      "name": "cone_angle",
+      "value": 0.035,
+      "unit": "rad",
+      "source": "spec:fixture_rheometer_readme",
+      "value_kind": "literature",
+      "uncertainty": 0.0005,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery",
+      "note": "the tolerance of the geometry as the specification states it"
+    },
+    {
+      "name": "cone_radius",
+      "value": 0.02,
+      "unit": "m",
+      "source": "spec:fixture_rheometer_readme",
+      "value_kind": "literature",
+      "uncertainty": 0.0001,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery",
+      "note": "the tolerance of the geometry as the specification states it"
+    },
+    {
+      "name": "sample_viscosity",
+      "value": 0.001,
+      "unit": "Pa.s",
+      "source": "assumed:water_like_sample_at_room_temperature",
+      "value_kind": "estimated",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "reasoning",
+      "note": "a water-like sample; the database value replaces it when the chemicals package is pinned and installed",
+      "lookup": {
+        "source": "chemicals",
+        "substance": "water",
+        "quantity": "viscosity",
+        "temperature": 293.15
+      }
+    },
+    {
+      "name": "sample_density",
+      "value": 1000.0,
+      "unit": "kg/m^3",
+      "source": "assumed:water_like_sample_at_room_temperature",
+      "value_kind": "estimated",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "reasoning",
+      "note": "a water-like sample; the database value replaces it when the chemicals package is pinned and installed",
+      "lookup": {
+        "source": "chemicals",
+        "substance": "water",
+        "quantity": "density",
+        "temperature": 293.15
+      }
+    },
+    {
+      "name": "critical_reynolds_number",
+      "value": 4.0,
+      "unit": "1",
+      "source": "assumed:secondary_flow_tolerated_to_about_one_percent_of_torque",
+      "value_kind": "estimated",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "reasoning",
+      "note": "a judgement: the Reynolds number of the gap below which the secondary-flow correction is taken as negligible; the person may replace it"
+    },
+    {
+      "name": "largest_particle_diameter",
+      "value": 1e-06,
+      "unit": "m",
+      "source": "assumed:micrometre_scale_particles_in_the_fixture_sample",
+      "value_kind": "estimated",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "reasoning",
+      "note": "a fixture sample; a real request states it or measures it"
+    },
+    {
+      "name": "gap_to_particle_ratio",
+      "value": 10.0,
+      "unit": "1",
+      "source": "assumed:ten_particle_diameters_across_the_gap",
+      "value_kind": "estimated",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "reasoning",
+      "note": "a judgement, a rule of thumb; the person may replace it"
+    },
+    {
+      "name": "lowest_shear_rate_of_sweep",
+      "value": 0.1,
+      "unit": "1/s",
+      "source": "assumed:the_lowest_rate_a_flow_curve_is_planned_to_reach",
+      "value_kind": "estimated",
+      "uncertainty": null,
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "reasoning",
+      "note": "a planning figure, not a choice of the shear rate: it is the rate at which the torque floor asks most of the viscosity"
+    },
+    {
+      "name": "shear_rate",
+      "value": null,
+      "unit": "1/s",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "no point is chosen here: the interval is what the skills give"
+    },
+    {
+      "name": "shear_stress",
+      "value": null,
+      "unit": "Pa",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "no point is chosen here: the interval is what the skills give"
+    },
+    {
+      "name": "viscosity",
+      "value": null,
+      "unit": "Pa.s",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "the lowest viscosity measurable at the lowest planned rate; no ceiling skill exists yet"
+    },
+    {
+      "name": "gap",
+      "value": null,
+      "unit": "m",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "the truncation gap of the cone; no ceiling skill exists yet"
+    },
+    {
+      "name": "max_torque_allowed",
+      "value": null,
+      "unit": "N.m",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": true,
+      "bench_confirmed": false,
+      "stage": "recommendation",
+      "note": "a safety row: the person writes it at the destination; no bound and no value is written here"
+    },
+    {
+      "name": "max_angular_velocity_allowed",
+      "value": null,
+      "unit": "rad/s",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": true,
+      "bench_confirmed": false,
+      "stage": "recommendation",
+      "note": "a safety row: the person writes it at the destination; no bound and no value is written here"
+    }
+  ]
+}

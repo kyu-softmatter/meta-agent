@@ -2,6 +2,8 @@
 
     python -m meta_agent.src.designer --intake meta_agent/requests/<rid>/intake.json --seat <seat> [--build-id 0001] [--now ISO] [--root DIR]
     python -m meta_agent.src.designer --recall meta_agent/requests/<rid> --seat <seat> [--now ISO] [--root DIR]
+    python -m meta_agent.src.designer --bounds meta_agent/requests/<rid> [--root DIR]
+    python -m meta_agent.src.designer --sheet meta_agent/requests/<rid> --seat <seat> [--now ISO] [--root DIR]
 
 Reads the intake (the person's paragraph, the tool's documentation reading,
 the contracts and tasks the seat wrote from it) and writes, in order:
@@ -21,6 +23,16 @@ a list of {contract, adapter_source, error_contracts}). It may name `skills` of 
 into held[], and S5 copies the skills that are not held into the bundle and writes the subagents
 (plan.md 14-31, 14-34). A drawing check B11 would fail is refused before anything is written.
 
+--sheet writes a request's parameter_sheet (plan.md 5.3, 14-30; tasks/007) from two files of its folder,
+neither of which holds a bound: sheet_draft.json (the rows and the tool) and bounds_binding.json (every
+bound skill that applies, as used with the row each input is bound to, or as not applied with the
+reason). Code runs the skills (src/parameters/bounds.py through src/skills/runner.py) and writes
+bounds[], interval and skills_considered[]; the same two files give the same sheet, and a second run
+that changes nothing writes nothing. A draft row may ask for a lookup (src/sources/chemicals_adapter.py):
+when the package answers, the row is the database's; when it is absent the row keeps the draft's value
+and the sheet says so in degraded[]. --bounds lists the bound skills that apply to a draft, which is what
+a model reads to write the binding.
+
 --recall runs S3's case search again on a request that already exists, against the store as it is
 now: when the result differs from the latest goal revision's, it writes the next one
 (v<N>_agent_goal.json; records are append-only), and when it is the same it writes nothing.
@@ -36,7 +48,10 @@ from .build import template as template_mod
 from .cases import recall as recall_mod
 from .intake import goal as goal_mod
 from .knowledge import brief as brief_mod
+from .parameters import bounds as bounds_mod
 from .skills import catalogue as catalogue_mod
+from .skills import runner as runner_mod
+from .sources import chemicals_adapter as chemicals_mod
 from .spec import axes as axes_mod
 from .tooling import profile as profile_mod
 from .validate import gate as gate_mod
@@ -100,6 +115,80 @@ def recall_again(req_dir, seat, now=None, root=ROOT):
         raise FileExistsError(path)
     cards.write_json(path, nxt)
     return path
+
+
+def latest_file(req_dir, name):
+    """(revision, path) of the highest revision of a file in a request folder: v<N>_<name>, or <name> for 1; (0, None) when absent."""
+    found = []
+    for fn in sorted(os.listdir(req_dir)) if os.path.isdir(req_dir) else []:
+        m = re.match(r"^(?:v([0-9]+)_)?%s$" % re.escape(name), fn)
+        if m:
+            found.append((int(m.group(1) or 1), os.path.join(req_dir, fn)))
+    return max(found) if found else (0, None)
+
+
+def bound_skills(root):
+    """The library's rows for its bound skills (what src/parameters/bounds.py is handed)."""
+    return [r for r in catalogue_mod.build_index(os.path.join(root, "skills"))["skills"] if r["kind"] == "bound"]
+
+
+def sheet_inputs(req_dir):
+    out = []
+    for name in ("sheet_draft.json", "bounds_binding.json"):
+        _, path = latest_file(req_dir, name)
+        if path is None:
+            raise FileNotFoundError("no %s in %s" % (name, req_dir))
+        out.append(path)
+    return out
+
+
+def looked_up(draft):
+    """The draft with every row that asks for a lookup answered by the source or left as the draft has it.
+    Returns (draft, degraded lines)."""
+    draft = dict(draft, rows=[dict(r) for r in draft.get("rows") or []])
+    degraded = []
+    for row in draft["rows"]:
+        request = row.pop("lookup", None)
+        if not request:
+            continue
+        if request.get("source") != "chemicals":
+            raise ValueError("row %s asks for a lookup in %r; the Designer has the chemicals adapter only" % (row.get("name"), request.get("source")))
+        got, lines, gaps = chemicals_mod.lookup(request)
+        if got is not None and got.get("unit") == row.get("unit"):
+            for k in ("value", "source", "value_kind", "uncertainty", "conditions"):
+                row[k] = got[k]
+            row["note"] = got["note"]
+            row.pop("grade", None)
+        else:
+            why = "; ".join(g["reason"] for g in gaps) or "no row came back"
+            degraded.append("row %s keeps the draft's value (%s): %s" % (row.get("name"), row.get("source"), why))
+        degraded.extend(l for l in lines if l not in degraded)
+    return draft, degraded
+
+
+def write_sheet(req_dir, seat, now=None, root=ROOT):
+    """The request's parameter_sheet from its draft and its binding. Returns (path written or None, the sheet)."""
+    draft_path, binding_path = sheet_inputs(req_dir)
+    draft, degraded = looked_up(cards.load_json(draft_path))
+    binding = cards.load_json(binding_path)
+    library = os.path.join(root, "skills")
+    rev, old_path = latest_file(req_dir, "parameter_sheet.json")
+    path = os.path.join(req_dir, "parameter_sheet.json" if rev == 0 else "v%d_parameter_sheet.json" % (rev + 1))
+    sheet = bounds_mod.apply(draft, binding, bound_skills(root), lambda ref, inputs: runner_mod.run(ref, inputs, library=library, now=now),
+                             seat, now, sheet_path=path, tree=os.path.dirname(root))
+    sheet["degraded"] = degraded
+    sheet["note"] = ((sheet.get("note") or "").rstrip() + " Bounds, intervals and grades were written by src/parameters/bounds.py from %s "
+                     "(sha256:%s) and %s (sha256:%s) of this folder." % (
+                         os.path.basename(draft_path), cards.sha256_file(draft_path)[:16],
+                         os.path.basename(binding_path), cards.sha256_file(binding_path)[:16])).strip()
+    if rev:
+        old = cards.load_json(old_path)
+        if bounds_mod.same_sheet(old, sheet):
+            return None, old
+        sheet["revision"] = rev + 1
+        sheet["supersedes"] = old["id"]
+    cards.write_json(path, sheet)
+    return path, sheet
 
 
 def profile_markdown(profile):
@@ -242,13 +331,40 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--intake")
     ap.add_argument("--recall", metavar="REQUEST_DIR", help="search cases/ again for an existing request's goal")
-    ap.add_argument("--seat", required=True)
+    ap.add_argument("--bounds", metavar="REQUEST_DIR", help="list the bound skills that apply to the request's sheet draft")
+    ap.add_argument("--sheet", metavar="REQUEST_DIR", help="write the request's parameter_sheet from its draft and its binding")
+    ap.add_argument("--seat")
     ap.add_argument("--build-id", default="0001")
     ap.add_argument("--now", default=None)
     ap.add_argument("--root", default=ROOT, help="the meta_agent/ tree to write under (tests use a copy)")
     args = ap.parse_args(argv)
-    if bool(args.intake) == bool(args.recall):
-        ap.error("give --intake or --recall, one of the two")
+    if [bool(args.intake), bool(args.recall), bool(args.bounds), bool(args.sheet)].count(True) != 1:
+        ap.error("give --intake, --recall, --bounds or --sheet, one of them")
+    if not args.seat and not args.bounds:
+        ap.error("--seat is required")
+    if args.bounds:
+        root = os.path.abspath(args.root)
+        _, draft_path = latest_file(os.path.abspath(args.bounds), "sheet_draft.json")
+        if draft_path is None:
+            ap.error("no sheet_draft.json in %s" % args.bounds)
+        print(bounds_mod.listing(bound_skills(root), cards.load_json(draft_path)))
+        return 0
+    if args.sheet:
+        root = os.path.abspath(args.root)
+        try:
+            path, sheet = write_sheet(os.path.abspath(args.sheet), args.seat, args.now, root)
+        except bounds_mod.BindingError as e:
+            print("refused  %s: %s" % (e.code, e))
+            return 1
+        print("wrote  %s" % rel_repo(path, root) if path else "nothing written: the draft and the binding give the sheet revision %d already is" % sheet["revision"])
+        for row in sheet["rows"]:
+            iv = row.get("interval")
+            if iv:
+                print("%-14s [%r, %r] %s  floor %s, ceiling %s%s" % (row["name"], iv["min"], iv["max"], iv["unit"], iv["min_from"], iv["max_from"],
+                                                               "  EMPTY: no point" if iv["min"] is not None and iv["max"] is not None and iv["min"] > iv["max"] else ""))
+        for line in sheet.get("degraded") or []:
+            print("degraded  %s" % line)
+        return 0
     if args.recall:
         root = os.path.abspath(args.root)
         path = recall_again(os.path.abspath(args.recall), args.seat, args.now, root)
