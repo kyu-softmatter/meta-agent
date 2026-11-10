@@ -32,7 +32,7 @@ class Tree(unittest.TestCase):
         os.makedirs(os.path.join(self.tdir, "claims"))
         self.rows = []
         self.task("001", "done", ["meta"], done_commit="abc1234")
-        self.task("002", "open", ["design", "meta"], ["001"])
+        self.task("002", "open", ["design", "meta"], ["001"], design_part="landed")
         self.task("003", "open", ["meta"], ["002"])
 
     def task(self, tid, status, roles, deps=(), **extra):
@@ -105,6 +105,19 @@ class Tree(unittest.TestCase):
         self.rows[1].pop("done_commit")
         self.index()
         self.assertTrue(any("done without done_commit" in m for m in self.problems()))
+
+    def test_the_other_roles_wait_for_the_design_part(self):
+        self.task("002", "open", ["design", "meta"], ["001"], design_part="open")
+        self.assertEqual(self.problems(), [])
+        self.assertIsNone(tasks.next_task(self.dir, SEATS, "meta"))
+        self.assertEqual(tasks.next_task(self.dir, SEATS, "design"), "002")
+        self.claim("002", D1)
+        self.assertEqual(self.problems(), [])
+        self.claim("002", M1)
+        self.assertTrue(any("before its design part has landed" in m for m in self.problems()))
+        [r for r in self.rows if r["id"] == "002"][0].pop("design_part")
+        self.index()
+        self.assertTrue(any("says design_part" in m for m in self.problems()))
 
     def test_a_claim_is_committed_by_its_own_seat(self):
         path = "meta_agent/tasks/claims/002-%s.json" % M1

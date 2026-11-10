@@ -8,7 +8,8 @@
   python contracts/tools/tasks.py claim ID --seat NAME      write the claim file and print the commit line
   python contracts/tools/tasks.py release ID --seat NAME --why TEXT
 
-meta_agent/tasks/index.json is the design seat's: one row per task file. A claim is one file per task and
+meta_agent/tasks/index.json is the design seat's: one row per task file. Where a task has a design part and
+another, the other roles wait until the row says design_part: landed. A claim is one file per task and
 seat under meta_agent/tasks/claims/, written by the seat that takes the task and never edited, so two
 sessions never write the same file; a second claim of a task's role by another seat fails check 20. A
 release is a second file beside the claim. The same functions are read by contracts/validate.py (check 20).
@@ -32,6 +33,12 @@ CLAIM_RE = re.compile(r"^([0-9]{3})-([a-z]+-[a-z]+-[0-9]{8}-[1-9][0-9]*)(-releas
 CLAIM_PATH_RE = re.compile(r"^" + re.escape(CLAIMS_REL) + r"/([0-9]{3})-([a-z]+-[a-z]+-[0-9]{8}-[1-9][0-9]*)(-released)?\.json$")
 STATUS_RE = re.compile(r"^\*\*Status:\*\*\s+([a-z]+)", re.M)
 STATUSES = ("open", "done")
+DESIGN_PARTS = ("open", "landed")
+
+
+def waits_for_design(row, role):
+    """A task with a design part and another: the other roles wait until the design part has landed."""
+    return role != "design" and "design" in row.get("roles", []) and row.get("design_part") != "landed"
 NOT_CLAIMS = (".gitkeep", "README.md")
 
 
@@ -117,6 +124,8 @@ def problems(tree, seats, commit_exists=None):
                 out.append((ipath, "%s: role %r is not in contracts/seats.json" % (rid, role)))
         if not r["roles"]:
             out.append((ipath, "%s: no role" % rid))
+        if "design" in r["roles"] and len(r["roles"]) > 1 and r.get("design_part") not in DESIGN_PARTS:
+            out.append((ipath, "%s: a task with a design part and another says design_part: %s" % (rid, " | ".join(DESIGN_PARTS))))
         f = state["files"].get(rid)
         if f is None or f[0] != r["file"]:
             out.append((ipath, "%s: file %r is not a task file here" % (rid, r["file"])))
@@ -160,6 +169,8 @@ def problems(tree, seats, commit_exists=None):
             continue
         if seat.get("role") not in row.get("roles", []):
             out.append((path, "task %s is for %s; %s is a %s seat" % (c["task"], " and ".join(row.get("roles", [])), c["seat"], seat.get("role"))))
+        elif row.get("status") == "open" and waits_for_design(row, seat.get("role")):
+            out.append((path, "task %s is claimed for the %s role before its design part has landed" % (c["task"], seat.get("role"))))
     for tid, seats_holding in sorted(holders(state).items()):
         row = by_id.get(tid)
         if row is None:
@@ -201,6 +212,8 @@ def next_task(tree, seats, role):
             continue
         if any(by_id.get(d, {}).get("status") != "done" for d in r.get("depends_on", [])):
             continue
+        if waits_for_design(r, role):
+            continue
         if any((seat_rules.seat_by_name(seats, s) or {}).get("role") == role for s in held.get(tid, {})):
             continue
         return tid
@@ -228,13 +241,18 @@ def main(argv=None):
         for tid in sorted(by_id):
             r = by_id[tid]
             who = ", ".join(sorted(held.get(tid, {}))) or "-"
-            print("%s  %-4s  %-12s  after %-12s  held by %s  %s" % (tid, r.get("status"), "+".join(r.get("roles", [])),
+            part = "design part %-6s" % r["design_part"] if r.get("design_part") else " " * 18
+            print("%s  %-4s  %-12s  %s  after %-8s  held by %s  %s" % (tid, r.get("status"), "+".join(r.get("roles", [])), part,
                   ",".join(r.get("depends_on", [])) or "-", who, r.get("file")))
         return 0
     if args.cmd == "next":
         tid = next_task(REPO, seats, args.role)
         if tid is None:
             print("no open, unclaimed task for the %s role whose dependencies are done" % args.role)
+            waiting = [t for t in sorted(by_id) if by_id[t].get("status") == "open" and args.role in by_id[t].get("roles", [])
+                       and waits_for_design(by_id[t], args.role)]
+            if waiting:
+                print("waiting for their design part to land: %s" % ", ".join(waiting))
             return 1
         print("%s  %s" % (tid, by_id[tid]["file"]))
         print("claim it in its own commit before you start: python contracts/tools/tasks.py claim %s --seat <your seat>" % tid)

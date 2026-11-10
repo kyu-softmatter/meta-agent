@@ -1,6 +1,6 @@
 # meta-agent
 
-One agent, `meta_agent/`, that builds scientific agents and maintains them. The design record is `plan.md`; the Korean plan it came from is frozen at `docs/origin/PLAN.ko.md` and is not edited. Before writing anything, read `plan.md` sections 3 (MP1–MP13), 6 (cards), 8 (checks) and 9 (seats).
+One agent, `meta_agent/`, that builds scientific agents and maintains them. The design record is `plan.md`; the Korean plan it came from is frozen at `docs/origin/PLAN.ko.md` and is not edited. Seat yourself first (below); then, before writing anything else, read `plan.md` sections 3 (MP1–MP13), 6 (cards), 8 (checks) and 9 (seats). Every command in this file and in `meta_agent/CLAUDE.md` is run from the repository root.
 
 ## Rules that bind every session here
 
@@ -24,17 +24,28 @@ One agent, `meta_agent/`, that builds scientific agents and maintains them. The 
 
 ## Setup on a new clone
 
+Once per clone:
+
 ```
 git config core.hooksPath contracts/hooks
-git config committer.name "seat:<role>-<machine>-<YYYYMMDD>-<n>"
-git config committer.email "<role>-<machine>-<YYYYMMDD>-<n>@seat.invalid"
 set PYTHONUTF8=1   (or export PYTHONUTF8=1)
 python contracts/validate.py
 python bootstrap.py check
 python bootstrap.py install node rea --yes
 git config meta-agent.machine <tag>     (the tag the person gave this computer)
-python bootstrap.py seat <role>         (the next free seat name here and its entry; --write adds it)
 ```
+
+## A new session in a clone already set up
+
+```
+python contracts/validate.py
+python bootstrap.py seat <role> --write      (your seat's name and its entry in contracts/seats.json: your first write)
+python contracts/tools/seat_commit.py --seat <name> -m "contracts/seats: <name> seats itself" contracts/seats.json
+python contracts/tools/notes.py list --role <role>     (what other seats asked of your role)
+python contracts/tools/tasks.py next --role <role>     (the task you may take; claim it before you start)
+```
+
+Commit with `seat_commit.py` always. `git config committer.name "seat:<name>"` and `committer.email` belong only to a clone one seat uses alone; never set them where another seat is working, since the repository holds one value.
 
 External tools are pinned in `tools.lock.json` and never vendored. `bootstrap.py` fetches them from their own sources into the user's tools home and changes no PATH or agent configuration; `.mcp.json` starts REA through it, and Claude Code asks once before it starts a project server. REA's tools are for binaries and runtime behaviour, and only under an `analysis_permission` (plan.md 5.1 S2).
 

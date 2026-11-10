@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "note": "The task queue as data (plan.md 14-29, tasks/009), kept by the design seat. One row per task file; status is the first word of the file's Status line (open | done); roles are the seats that have a part in it, the design part landing first where a task has both; depends_on are tasks that must be done before a claim; done_commit is the last commit of the work, read off the history. Who holds a task is not here: a claim is one file per task and seat under claims/, written by that seat (python contracts/tools/tasks.py claim ID --seat NAME). Check 20 compares all of it.",
+  "note": "The task queue as data (plan.md 14-29, tasks/009), kept by the design seat. One row per task file; status is the first word of the file's Status line (open | done); roles are the seats that have a part in it, the design part landing first where a task has both, which design_part says (open | landed): until it is landed no other role is offered or may claim the task; depends_on are tasks that must be done before a claim; done_commit is the last commit of the work, read off the history. Who holds a task is not here: a claim is one file per task and seat under claims/, written by that seat (python contracts/tools/tasks.py claim ID --seat NAME). Check 20 compares all of it.",
   "tasks": [
     {
       "id": "001",
@@ -36,7 +36,8 @@
       ],
       "depends_on": [],
       "opened": "2026-11-04",
-      "done_commit": "0f7204a"
+      "done_commit": "0f7204a",
+      "design_part": "landed"
     },
     {
       "id": "004",
@@ -50,7 +51,8 @@
         "003"
       ],
       "opened": "2026-11-04",
-      "done_commit": "2569453"
+      "done_commit": "2569453",
+      "design_part": "landed"
     },
     {
       "id": "005",
@@ -61,7 +63,8 @@
         "meta"
       ],
       "depends_on": [],
-      "opened": "2026-11-07"
+      "opened": "2026-11-07",
+      "design_part": "open"
     },
     {
       "id": "006",
@@ -74,7 +77,8 @@
       "depends_on": [
         "009"
       ],
-      "opened": "2026-11-08"
+      "opened": "2026-11-08",
+      "design_part": "open"
     },
     {
       "id": "007",
@@ -88,7 +92,8 @@
         "006",
         "010"
       ],
-      "opened": "2026-11-08"
+      "opened": "2026-11-08",
+      "design_part": "open"
     },
     {
       "id": "008",
@@ -102,7 +107,8 @@
         "006",
         "007"
       ],
-      "opened": "2026-11-08"
+      "opened": "2026-11-08",
+      "design_part": "open"
     },
     {
       "id": "009",
@@ -125,7 +131,8 @@
       "depends_on": [
         "009"
       ],
-      "opened": "2026-11-09"
+      "opened": "2026-11-09",
+      "design_part": "open"
     }
   ]
 }

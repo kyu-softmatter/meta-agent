@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "note": "A task with a design part and a meta part: the design part has not landed and a meta seat claims the task.",
+  "tasks": [
+    {
+      "id": "001",
+      "file": "001-first.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "design_part": "open",
+      "depends_on": [],
+      "opened": "2026-11-09"
+    }
+  ]
+}

@@ -4,7 +4,7 @@ You are the one agent of this repository. You read a lab's environment, design a
 
 ## Seat
 
-You run as a `meta-…` seat (`../contracts/seats.json`), one identity per session, seated by the person or by yourself under the standing rule of the root `CLAUDE.md` (2026-11-09). You write inside `meta_agent/` only, and never `meta_agent/CLAUDE.md` or `meta_agent/.claude/`, which are the design seat's. You never write `../contracts/`; when a schema or a check should change, ask the design role with a note (`python ../contracts/tools/notes.py ask --seat <your seat> --to design --task <id> "…"`, committed alone) and leave the landing to the design seat. When you sit down, `notes.py list --role meta` shows what waits for your role.
+You run as a `meta-…` seat (`../contracts/seats.json`), one identity per session, seated by the person or by yourself under the standing rule of the root `CLAUDE.md` (2026-11-09). You write inside `meta_agent/` only, and never `meta_agent/CLAUDE.md` or `meta_agent/.claude/`, which are the design seat's. You never write `../contracts/`; when a schema or a check should change, ask the design role with a note (`python contracts/tools/notes.py ask --seat <your seat> --to design [--task <id>] "…"`, committed alone) and leave the landing to the design seat. When you sit down, `notes.py list --role meta` shows what waits for your role.
 
 ## Tier 0 — what you never have
 
@@ -32,8 +32,8 @@ Infer a policy. Write a safety value. Treat an inference as an observation or co
 
 ## Working habits
 
-- Take the next task from `tasks/` unless the person names one: `python ../contracts/tools/tasks.py next --role meta` gives the lowest open task of your role that no seat holds and whose dependencies are done. Claim it before you start, in its own commit (`tasks.py claim <id> --seat <your seat>`, then `seat_commit.py` with the claim file alone); if you give it up, `tasks.py release`. Where a task has a design part, that part lands first. A task is five fields: seat, goal, inputs, done when, must not. Report in ten lines or fewer: what you did, what the validator printed, what is open.
-- Before you start and before you report: `python ../contracts/validate.py` from the repository root. Every number in a report is read off a run.
+- Take the next task from `tasks/` unless the person names one: `python contracts/tools/tasks.py next --role meta` (every command is run from the repository root) gives the lowest open task of your role that no seat holds and whose dependencies are done. Claim it before you start, in its own commit (`tasks.py claim <id> --seat <your seat>`, then `seat_commit.py` with the claim file alone); if you give it up, `tasks.py release`. Where a task has a design part, that part lands first: until the index says `design_part: landed`, `next` does not offer the task to you and a claim is refused. A task is five fields: seat, goal, inputs, done when, must not. Report in ten lines or fewer: what you did, what the validator printed, what is open.
+- Before you start and before you report: `python contracts/validate.py`. Every number in a report is read off a run.
 - Failures go to `failures.jsonl`, one line each, append only.
 - Decisions by the person go to `../docs/ideas/<YYYYMMDD>.md` verbatim, through the design seat if the file is not yours.
 - `wiki/` is rendered from the cards (`tasks/003`); never edit a page. A page that adds a number or a relation fails check 18.
