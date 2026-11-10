@@ -662,7 +662,7 @@ meta-agent/
 
 ## 8. Validation layer (`contracts/validate.py`)
 
-Numbers are fixed and never reused after retirement. M0 implements 1, 2, 3, 6, 7, 11, 15, 16, 17; M1 added B1–B9 (`--bundle PATH`, and every bundle a `build` card outside `contracts/examples/` points at; a template is not a bundle and is not judged by them). Task 003 added 18 (2026-11-04).
+Numbers are fixed and never reused after retirement. M0 implements 1, 2, 3, 6, 7, 11, 15, 16, 17; M1 added B1–B9 (`--bundle PATH`, and every bundle a `build` card outside `contracts/examples/` points at; a template is not a bundle and is not judged by them). Task 003 added 18 (2026-11-04). Task 009 added 20 and the seat table and self-registration parts of 6 (2026-11-09); 19, 21 and 22 are reserved by tasks 007, 009 and 010.
 
 | # | Check | Kind |
 |---|---|---|
@@ -684,6 +684,10 @@ Numbers are fixed and never reused after retirement. M0 implements 1, 2, 3, 6, 7
 | 16 | each `onboarding_record.questions[]` item targets a field that is `unknown` in the referenced `discovery_report` or a policy field; a question on a `confirmed` field FAILS; a question on an `inferred` field is reported as unnecessary; each `skipped[]` item has a reason | onboarding |
 | 17 | `material`: `location` has exactly one of `url` / `path`; `about.*` and `license_note` follow the three states and `inferred` has evidence; `added_by: human` and the metadata author is a seat; a `url` material that is `distilled` FAILS without `source_snapshot.retrieved_at` and `content_hash`; `archived` set while `may_quote` is not `true` FAILS; `held` and `declined` need `state_reason` | material intake |
 | 18 | in every folder named `wiki/`: each page but `index.md` names one record (`- record: <path>`, a card or an artifact directory) and is titled and named `<id>@r<revision>`; every `[[link]]` names a page of that wiki and, between two records, a relation one of them holds (an id, a path or a file name, or two revisions of one id); every number left outside code spans and links is a number of the rendered card; a `graph.html` there loads nothing from another host, and its `wiki-graph` data names only pages of that wiki, with their records' `card` and `status`, and only edges one of the two pages links | view |
+| 19 | every `computed` row and bound is recomputed by running the skill its `basis` names, graded `max(E4, worst input)`; the interval is the highest floor and the lowest ceiling; every applicable bound skill is on the sheet as used or as not applied with a reason (§14-30; `tasks/007`) | parameters |
+| 20 | the task queue: every task file has a row in `meta_agent/tasks/index.json` and their status agrees; a done row names its commit; a claim (`claims/<task>-<seat>.json`) names an open task whose dependencies are done and an active seat of one of the task's roles, one seat per role, and is committed by that seat (§14-29; `tasks/009`) | queue |
+| 21 | notes between seats: one file per note, added by its `from` seat; a reply names the note it answers; a note with no reply is PENDING for its `to_role` (§14-29; `tasks/009`) | queue |
+| 22 | skills: the folder and manifest are complete, a landed version is unchanged, the source reaches no device but through the tools it names and holds no limit, every worked case passes, a `write_device` skill is `held` (§14-31; `tasks/010`) | skills |
 | B1 | required bundle files (§5.1 S5) | build |
 | B2 | every `Bash(...)` deny / ask has a `PowerShell(...)` twin and vice versa | build |
 | B3 | all values of `envelope/safety.json` are `null` | build |

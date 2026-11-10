@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.1",
+  "note": "The claiming seat is not in contracts/seats.json.",
+  "tasks": [
+    {
+      "id": "001",
+      "file": "001-first.md",
+      "status": "open",
+      "roles": [
+        "meta"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-09"
+    }
+  ]
+}

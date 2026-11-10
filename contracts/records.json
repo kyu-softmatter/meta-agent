@@ -12,7 +12,8 @@
     "meta_agent/harness/retro/",
     "meta_agent/harness/library/",
     "meta_agent/builds/",
-    "meta_agent/inbox/"
+    "meta_agent/inbox/",
+    "meta_agent/tasks/claims/"
   ],
   "append_only_jsonl": [
     "meta_agent/failures.jsonl",

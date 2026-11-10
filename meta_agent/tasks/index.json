@@ -1,0 +1,131 @@
+{
+  "schema_version": "0.1",
+  "note": "The task queue as data (plan.md 14-29, tasks/009), kept by the design seat. One row per task file; status is the first word of the file's Status line (open | done); roles are the seats that have a part in it, the design part landing first where a task has both; depends_on are tasks that must be done before a claim; done_commit is the last commit of the work, read off the history. Who holds a task is not here: a claim is one file per task and seat under claims/, written by that seat (python contracts/tools/tasks.py claim ID --seat NAME). Check 20 compares all of it.",
+  "tasks": [
+    {
+      "id": "001",
+      "file": "001-onboard-this-lab-on-fixtures.md",
+      "status": "done",
+      "roles": [
+        "meta"
+      ],
+      "depends_on": [],
+      "opened": "2026-10-29",
+      "done_commit": "182bd5b"
+    },
+    {
+      "id": "002",
+      "file": "002-echo-agent-on-mock.md",
+      "status": "done",
+      "roles": [
+        "meta"
+      ],
+      "depends_on": [
+        "001"
+      ],
+      "opened": "2026-10-29",
+      "done_commit": "182bd5b"
+    },
+    {
+      "id": "003",
+      "file": "003-derived-wiki-and-card-ontology.md",
+      "status": "done",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-04",
+      "done_commit": "0f7204a"
+    },
+    {
+      "id": "004",
+      "file": "004-a-3d-map-of-the-cards.md",
+      "status": "done",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [
+        "003"
+      ],
+      "opened": "2026-11-04",
+      "done_commit": "2569453"
+    },
+    {
+      "id": "005",
+      "file": "005-auto-ontology-working-index.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-07"
+    },
+    {
+      "id": "006",
+      "file": "006-experience-memory-recall.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [
+        "009"
+      ],
+      "opened": "2026-11-08"
+    },
+    {
+      "id": "007",
+      "file": "007-parameter-bound-skills.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [
+        "006",
+        "010"
+      ],
+      "opened": "2026-11-08"
+    },
+    {
+      "id": "008",
+      "file": "008-meta-harness-code-filled.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [
+        "006",
+        "007"
+      ],
+      "opened": "2026-11-08"
+    },
+    {
+      "id": "009",
+      "file": "009-agent-native-environment.md",
+      "status": "open",
+      "roles": [
+        "design"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-09"
+    },
+    {
+      "id": "010",
+      "file": "010-skill-library-and-subagents.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [
+        "009"
+      ],
+      "opened": "2026-11-09"
+    }
+  ]
+}

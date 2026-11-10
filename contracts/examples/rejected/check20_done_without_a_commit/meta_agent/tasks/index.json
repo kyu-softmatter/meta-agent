@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.1",
+  "note": "A done row names the commit that finished it.",
+  "tasks": [
+    {
+      "id": "001",
+      "file": "001-first.md",
+      "status": "done",
+      "roles": [
+        "design"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-09"
+    }
+  ]
+}

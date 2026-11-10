@@ -31,11 +31,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 SCHEMAS = os.path.join(HERE, "schemas")
 REJECTED = os.path.join(HERE, "examples", "rejected")
-IMPLEMENTED = [1, 2, 3, 6, 7, 11, 15, 16, 17, 18]
+IMPLEMENTED = [1, 2, 3, 6, 7, 11, 15, 16, 17, 18, 20]
 SKIP_DIRS = {".git", ".agent", ".venv", ".pixi", "node_modules", "__pycache__"}
 
 sys.path.insert(0, os.path.join(HERE, "tools"))
 import seats as seat_rules  # noqa: E402  (contracts/tools/seats.py: names, role rows, the self-registration rule)
+import tasks as task_rules  # noqa: E402  (contracts/tools/tasks.py: the task index and claims)
 
 try:
     import jsonschema
@@ -439,7 +440,7 @@ def committer_email():
     return m.group(1) if m else ident
 
 
-def run_staged(c, report):
+def run_staged(c, report, checks=None):
     email = committer_email()
     changes = parse_name_status(git("diff", "--cached", "--name-status", "-M"))
     label = "index (committer %s)" % email
@@ -450,10 +451,12 @@ def run_staged(c, report):
         return old, new
     check6_changes(c, report, email, changes, label, old_new=old_new, day=datetime.date.today().strftime("%Y%m%d"))
     check7_changes(c, report, changes, label, old_new)
+    if checks is None or 20 in checks:
+        check20_changes(c, report, email, changes, label)
     return len(changes)
 
 
-def run_commit_range(c, report, spec):
+def run_commit_range(c, report, spec, checks=None):
     out = git("log", "--format=%H%x00%ce%x00%cs", "--no-merges", spec)
     n = 0
     epoch = c.seats.get("enforced_from")
@@ -478,8 +481,29 @@ def run_commit_range(c, report, spec):
         check6_changes(c, report, email, changes, label, report_only=report_only,
                        old_new=None if before_rule else old_new, day=day.replace("-", ""))
         check7_changes(c, report, changes, label, old_new)
+        if checks is None or 20 in checks:
+            check20_changes(c, report, email, changes, label)
         n += 1
     return n
+
+
+# ----------------------------------------------------------------------------
+# check 20: the task queue (meta_agent/tasks/index.json and claims/)
+# ----------------------------------------------------------------------------
+def check20(tree, c, report):
+    exists = None
+    if tree == REPO:
+        def exists(sha):
+            return subprocess.run(["git", "cat-file", "-e", sha + "^{commit}"], cwd=REPO, capture_output=True).returncode == 0
+    for path, msg in task_rules.problems(tree, c.seats, commit_exists=exists):
+        report.fail(20, path, msg)
+
+
+def check20_changes(c, report, email, changes, label):
+    for status, path in changes:
+        msg = task_rules.claim_committer_problem(path, status, email)
+        if msg:
+            report.fail(20, label, msg)
 
 
 # ----------------------------------------------------------------------------
@@ -1285,6 +1309,8 @@ def run_static(tree, c, report, checks, include_rejected=False):
         check17(cards, c, report, tree)
     if 18 in checks:
         check18(md_by_dir, report, tree)
+    if 20 in checks:
+        check20(tree, c, report)
     report.ran.update(ch for ch in checks if isinstance(ch, int))
     card_dirs = {os.path.dirname(p) for p, _ in cards}
     return len(cards), sum(len(v) for d, v in md_by_dir.items() if d in card_dirs), cards
@@ -1303,6 +1329,8 @@ def run_scenario(path, c, report, checks):
                 return sc.get("old", {}).get(p), sc.get("new", {}).get(p)
         check6_changes(c, report, sc.get("committer_email"), changes, label, report_only=sc.get("report_only", False),
                        old_new=texts, day=sc.get("day"))
+    if sc.get("check") == 20 and 20 in checks:
+        check20_changes(c, report, sc.get("committer_email"), changes, label)
     if sc.get("check") == 7 and 7 in checks:
         old = sc.get("old", {})
         new = sc.get("new", {})
@@ -1401,10 +1429,10 @@ def main(argv=None):
     for label, path in bundles:
         run_bundle_checks(path, c, report, checks, knowledge_root_for(tree), label=label)
     n_changes = n_commits = None
-    if args.staged and (6 in checks or 7 in checks):
-        n_changes = run_staged(c, report)
-    if args.commit_range and (6 in checks or 7 in checks):
-        n_commits = run_commit_range(c, report, args.commit_range)
+    if args.staged and (6 in checks or 7 in checks or 20 in checks):
+        n_changes = run_staged(c, report, checks)
+    if args.commit_range and (6 in checks or 7 in checks or 20 in checks):
+        n_commits = run_commit_range(c, report, args.commit_range, checks)
 
     failed = len(report.fails)
     pending = len(report.pendings)

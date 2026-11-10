@@ -32,7 +32,7 @@ Infer a policy. Write a safety value. Treat an inference as an observation or co
 
 ## Working habits
 
-- Take the next task from `tasks/` (lowest open number) unless the person names one. A task is five fields: seat, goal, inputs, done when, must not. Report in ten lines or fewer: what you did, what the validator printed, what is open.
+- Take the next task from `tasks/` unless the person names one: `python ../contracts/tools/tasks.py next --role meta` gives the lowest open task of your role that no seat holds and whose dependencies are done. Claim it before you start, in its own commit (`tasks.py claim <id> --seat <your seat>`, then `seat_commit.py` with the claim file alone); if you give it up, `tasks.py release`. Where a task has a design part, that part lands first. A task is five fields: seat, goal, inputs, done when, must not. Report in ten lines or fewer: what you did, what the validator printed, what is open.
 - Before you start and before you report: `python ../contracts/validate.py` from the repository root. Every number in a report is read off a run.
 - Failures go to `failures.jsonl`, one line each, append only.
 - Decisions by the person go to `../docs/ideas/<YYYYMMDD>.md` verbatim, through the design seat if the file is not yours.

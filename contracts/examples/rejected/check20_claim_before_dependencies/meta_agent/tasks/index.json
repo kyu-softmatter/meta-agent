@@ -1,0 +1,28 @@
+{
+  "schema_version": "0.1",
+  "note": "002 is claimed while 001, which it depends on, is open.",
+  "tasks": [
+    {
+      "id": "001",
+      "file": "001-first.md",
+      "status": "open",
+      "roles": [
+        "design"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-09"
+    },
+    {
+      "id": "002",
+      "file": "002-second.md",
+      "status": "open",
+      "roles": [
+        "design"
+      ],
+      "depends_on": [
+        "001"
+      ],
+      "opened": "2026-11-09"
+    }
+  ]
+}
