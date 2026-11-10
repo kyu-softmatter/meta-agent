@@ -17,6 +17,7 @@ One agent, `meta_agent/`, that builds scientific agents and maintains them. The 
 
 ## Where things are
 
+- `contracts/tools/` — `seats.py` (names, role rows, the self-registration rule), read by the validator and `bootstrap.py seat`; `contracts/tests/` — their tests (`python -m unittest discover -s contracts/tests`).
 - `contracts/` — schemas, vocabularies (`claim_kinds.json`, `grades.json`, `units.json`, `case_classes.json`), `registry/`, `seats.json`, `records.json`, `validate.py`, `examples/` and `examples/rejected/`, `hooks/`.
 - `meta_agent/` — the agent. Its own `CLAUDE.md` says what it does and does not do.
 - `docs/ideas/` — the person's words and decisions, dated. `docs/reference/` — reference cases. `docs/origin/` — the frozen Korean plan.
@@ -31,6 +32,8 @@ set PYTHONUTF8=1   (or export PYTHONUTF8=1)
 python contracts/validate.py
 python bootstrap.py check
 python bootstrap.py install node rea --yes
+git config meta-agent.machine <tag>     (the tag the person gave this computer)
+python bootstrap.py seat <role>         (the next free seat name here and its entry; --write adds it)
 ```
 
 External tools are pinned in `tools.lock.json` and never vendored. `bootstrap.py` fetches them from their own sources into the user's tools home and changes no PATH or agent configuration; `.mcp.json` starts REA through it, and Claude Code asks once before it starts a project server. REA's tools are for binaries and runtime behaviour, and only under an `analysis_permission` (plan.md 5.1 S2).

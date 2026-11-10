@@ -8,6 +8,9 @@
   python bootstrap.py install harness2 [--yes]   Linux or WSL only: the pinned harness2 commit with a Python 3.12 venv
   python bootstrap.py run rea [ARGS ...]         REA with the pinned Node; .mcp.json calls `run rea mcp`
   python bootstrap.py selftest                   offline checks of this script
+  python bootstrap.py seat ROLE [--machine TAG] [--task ID] [--write]
+                                                 the next free seat name for this computer and its entry for
+                                                 contracts/seats.json (plan.md 9); --write adds the entry
 
 Nothing is vendored: each tool comes from its own source at the version the lock names, and lands for the
 current user under the tools home (tools.lock.json), outside the repository. Without --yes an install prints
@@ -367,8 +370,65 @@ def selftest(lock):
     return 0
 
 
+def seat(rest):
+    """Name the next seat of a role on this computer and print its entry (the standing rule of 2026-11-09)."""
+    import datetime
+    sys.path.insert(0, os.path.join(HERE, "contracts", "tools"))
+    import seats as seat_rules
+    args = {"--machine": None, "--task": None}
+    write = "--write" in rest
+    rest = [r for r in rest if r != "--write"]
+    role = None
+    i = 0
+    while i < len(rest):
+        if rest[i] in args and i + 1 < len(rest):
+            args[rest[i]] = rest[i + 1]
+            i += 2
+        elif role is None and not rest[i].startswith("-"):
+            role = rest[i]
+            i += 1
+        else:
+            raise SystemExit("seat: unexpected argument %r" % rest[i])
+    table = seat_rules.load()
+    roles = sorted(table.get("roles", {}))
+    if role not in roles:
+        raise SystemExit("seat: role %r is not one of %s; a new role is the person's" % (role, ", ".join(roles)))
+    machine = args["--machine"]
+    if machine is None:
+        machine = capture(["git", "config", "--get", "meta-agent.machine"], cwd=HERE)[1].strip() or None
+    if machine is None:
+        raise SystemExit("seat: this clone has no machine tag. Record it once: git config meta-agent.machine <tag>  "
+                         "(known: %s), or pass --machine" % ", ".join(sorted(table.get("machines", {}))))
+    if machine not in table.get("machines", {}):
+        raise SystemExit("seat: machine tag %r is not in contracts/seats.json; the person gives a new computer "
+                         "its tag before its first seat (known: %s)" % (machine, ", ".join(sorted(table.get("machines", {})))))
+    today = datetime.date.today()
+    name = seat_rules.next_name(table, role, machine, today.strftime("%Y%m%d"))
+    seated = "%s, self-registered%s" % (today.isoformat(), " for tasks/%s" % args["--task"] if args["--task"] else "")
+    entry = seat_rules.entry_for(table, name, "self, under the person's standing rule of 2026-11-09 "
+                                 "(docs/ideas/20261109.md)", seated)
+    problems = seat_rules.entry_problems(table, entry)
+    if problems:
+        raise SystemExit("seat: " + "; ".join(problems))
+    print("seat      %s" % name)
+    print("committer seat:%s <%s>" % (name, entry["committer_email"]))
+    print("entry     %s" % json.dumps(entry, ensure_ascii=False))
+    commit = 'python contracts/tools/seat_commit.py --seat %s -m "contracts/seats: %s seats itself" contracts/seats.json' % (name, name)
+    if write:
+        table["seats"].append(entry)
+        with open(seat_rules.SEATS_PATH, "w", encoding="utf-8") as f:
+            f.write(seat_rules.dump(table))
+        print("written   contracts/seats.json (this entry only). Register it in its own commit before any other work:")
+    else:
+        print("nothing written. With --write the entry is added; then register it in its own commit:")
+    print("  " + commit)
+    return 0
+
+
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv[:1] == ["seat"]:
+        return seat(argv[1:])
     lock = load_lock()
     if not argv or argv[0] in ("-h", "--help", "help"):
         print(__doc__)

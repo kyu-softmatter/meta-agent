@@ -33,6 +33,9 @@ REJECTED = os.path.join(HERE, "examples", "rejected")
 IMPLEMENTED = [1, 2, 3, 6, 7, 11, 15, 16, 17, 18]
 SKIP_DIRS = {".git", ".agent", ".venv", ".pixi", "node_modules", "__pycache__"}
 
+sys.path.insert(0, os.path.join(HERE, "tools"))
+import seats as seat_rules  # noqa: E402  (contracts/tools/seats.py: names, role rows, the self-registration rule)
+
 try:
     import jsonschema
     from jsonschema import Draft202012Validator
@@ -323,6 +326,12 @@ def check6_changes(c, report, email, changes, label, report_only=False):
                 report.pending(6, label, msg + " (at or before enforced_from, reported only)")
             else:
                 report.fail(6, label, msg)
+
+
+def check6_table(seats, report, label):
+    """Every seat is what its name says and owns exactly its role's row."""
+    for msg in seat_rules.table_problems(seats):
+        report.fail(6, label, msg)
 
 
 # ----------------------------------------------------------------------------
@@ -1262,7 +1271,9 @@ def run_scenario(path, c, report, checks):
     sc = load_json(path)
     label = rel(path, REPO)
     changes = [(ch["status"], ch["path"]) for ch in sc.get("changes", [])]
-    if sc.get("check") == 6 and 6 in checks:
+    if sc.get("check") == 6 and 6 in checks and isinstance(sc.get("seats"), dict):
+        check6_table(sc["seats"], report, label)
+    if sc.get("check") == 6 and 6 in checks and (changes or "seats" not in sc):
         check6_changes(c, report, sc.get("committer_email"), changes, label, report_only=sc.get("report_only", False))
     if sc.get("check") == 7 and 7 in checks:
         old = sc.get("old", {})
@@ -1356,6 +1367,8 @@ def main(argv=None):
             verdict, bundle.replace(os.sep, "/"), head_sha(), failed, pending, report.failed_checks()))
         return 0 if verdict == "PASS" else 1
     n_cards, n_md, cards = run_static(tree, c, report, checks)
+    if 6 in checks and tree == REPO:
+        check6_table(c.seats, report, "contracts/seats.json")
     bundles = bundles_of(cards, tree)
     for label, path in bundles:
         run_bundle_checks(path, c, report, checks, knowledge_root_for(tree), label=label)

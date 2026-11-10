@@ -1,0 +1,23 @@
+{
+  "check": 6,
+  "note": "A seat's paths must equal its role's row: this meta seat was given contracts/ as well.",
+  "seats": {
+    "machines": {"office": "the Office computer"},
+    "roles": {
+      "meta": {"paths": ["meta_agent/"], "excludes": ["meta_agent/CLAUDE.md", "meta_agent/.claude/"], "owns": ["meta_agent"]}
+    },
+    "seats": [
+      {
+        "seat": "meta-office-20261029-1",
+        "committer_email": "meta-office-20261029-1@seat.invalid",
+        "role": "meta",
+        "machine": "office",
+        "seated_by": "the person, 2026-10-29",
+        "status": "active",
+        "owns": ["meta_agent"],
+        "paths": ["meta_agent/", "contracts/"],
+        "excludes": ["meta_agent/CLAUDE.md", "meta_agent/.claude/"]
+      }
+    ]
+  }
+}

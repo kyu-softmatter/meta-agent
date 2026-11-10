@@ -671,7 +671,7 @@ Numbers are fixed and never reused after retirement. M0 implements 1, 2, 3, 6, 7
 | 3 | every number in an MD file exists in a card of the same folder | numbers |
 | 4 | safety values are `null` or `author: human` | safety |
 | 5 | `kb_refs` / `case_refs` resolve in the pinned index; `*_gaps.searched` is non-empty | references |
-| 6 | commit paths lie inside the committer seat's boundary (`seats.json`; unknown committer → reported, not failed; commits at or before `enforced_from` are reported only) | boundary |
+| 6 | commit paths lie inside the committer seat's boundary (`seats.json`; unknown committer → reported, not failed; commits at or before `enforced_from` are reported only); every seat is what its name says, on a listed machine tag, and owns exactly its role's row (`roles`, from `tasks/009`) | boundary |
 | 7 | append-only under the roots of `records.json`; a revision is a new file `v<N>_<name>` whose `revision` is N and whose predecessor exists; a JSONL file only grows | history |
 | 8 | `case` has `falsification`, `count`, `cue`, `cause_status`; `confirmed` has run / commit evidence; `cause_class` is registered | cases |
 | 9 | `harness_proposal.kind` is one of four; loosen / retire / core need the person's words + a `docs/ideas/` commit; tighten needs a fixture | harness |

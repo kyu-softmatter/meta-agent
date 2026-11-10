@@ -11,6 +11,63 @@
   "unknown_committer_note": "A committer absent from this list is reported (PENDING), not refused, so that the person committing by hand is never blocked. --strict counts PENDING as failure.",
   "enforced_from": "7e2f6b2",
   "enforced_from_note": "The last commit before contracts/ existed (PLAN.ko.md v0.3.2, 2026-10-29). Check 6 reports rather than fails for commits at or before it; the four commits before it are the plan alone, all by the design seat.",
+  "machines": {
+    "office": "the Office computer",
+    "macbook": "the person's MacBook Air (given 2026-11-06)"
+  },
+  "machines_note": "A tag is given by the person before a computer's first seat. `git config meta-agent.machine <tag>` records it in a clone so that `python bootstrap.py seat <role>` can read it.",
+  "roles": {
+    "design": {
+      "paths": [
+        "*",
+        "contracts/",
+        "docs/",
+        ".claude/",
+        "meta_agent/CLAUDE.md",
+        "meta_agent/README.md",
+        "meta_agent/.claude/",
+        "meta_agent/tasks/",
+        "meta_agent/templates/",
+        "meta_agent/eval/",
+        "meta_agent/failures.jsonl",
+        "meta_agent/envelope/observed.json",
+        "meta_agent/inbox/materials/README.md",
+        "meta_agent/inbox/materials/LINKS.md",
+        "meta_agent/inbox/materials/drop/.gitkeep",
+        ".github/",
+        "meta_agent/inbox/seats/"
+      ],
+      "excludes": [],
+      "owns": [
+        "design"
+      ]
+    },
+    "meta": {
+      "paths": [
+        "meta_agent/"
+      ],
+      "excludes": [
+        "meta_agent/CLAUDE.md",
+        "meta_agent/.claude/"
+      ],
+      "owns": [
+        "meta_agent"
+      ]
+    },
+    "harness": {
+      "paths": [
+        "meta_agent/harness/",
+        "meta_agent/tasks/claims/",
+        "meta_agent/inbox/seats/"
+      ],
+      "excludes": [],
+      "owns": [
+        "harness"
+      ],
+      "note": "from M5 (plan.md 9); until a harness seat exists the meta seat writes meta_agent/harness/"
+    }
+  },
+  "roles_note": "What every active seat of a role owns; an entry's paths, excludes and owns equal its role's row (check 6). A wider path or a new role is the person's. 2026-11-09 (meta_agent/tasks/009): the design row gains .github/ for the gate's workflow, which the person permitted, and meta_agent/inbox/seats/ for notes between seats; the harness row is written down from plan.md 9 with the claims and notes folders every role may write.",
   "seats": [
     {
       "seat": "design-office-20261029-1",
@@ -37,7 +94,9 @@
         "meta_agent/envelope/observed.json",
         "meta_agent/inbox/materials/README.md",
         "meta_agent/inbox/materials/LINKS.md",
-        "meta_agent/inbox/materials/drop/.gitkeep"
+        "meta_agent/inbox/materials/drop/.gitkeep",
+        ".github/",
+        "meta_agent/inbox/seats/"
       ],
       "excludes": [],
       "note": "Root files, contracts/, docs/, the agent's instructions and settings, and the meta_agent/ skeleton M0 creates (tasks, templates, eval, the empty logs, the inbox's README, LINKS.md and drop/.gitkeep). It does not write cards, requests, profiles, knowledge, cases, harness records or builds."
@@ -87,7 +146,9 @@
         "meta_agent/envelope/observed.json",
         "meta_agent/inbox/materials/README.md",
         "meta_agent/inbox/materials/LINKS.md",
-        "meta_agent/inbox/materials/drop/.gitkeep"
+        "meta_agent/inbox/materials/drop/.gitkeep",
+        ".github/",
+        "meta_agent/inbox/seats/"
       ],
       "excludes": [],
       "note": "The design seat on the MacBook Air: the same paths as design-office-20261029-1. It does not write cards, requests, profiles, knowledge, cases, harness records or builds.",
