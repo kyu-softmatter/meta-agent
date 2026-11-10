@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1",
+  "id": "viscosity_min_measurable_at_rate",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the lowest viscosity whose torque at a given shear rate is still above the instrument's lowest torque",
+  "parameter": "viscosity",
+  "side": "min",
+  "applies_to": {
+    "parameters": [
+      "viscosity"
+    ],
+    "methods": [
+      "rheometry"
+    ],
+    "instruments": [
+      "lab_rheometer"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "min_torque",
+      "unit": "N.m",
+      "meaning": "the lowest torque the instrument's specification states"
+    },
+    {
+      "name": "cone_radius",
+      "unit": "m",
+      "meaning": "the radius of the cone"
+    },
+    {
+      "name": "shear_rate",
+      "unit": "1/s",
+      "meaning": "the shear rate at which the viscosity is to be measured; the lowest rate of a sweep gives the tightest bound"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "viscosity_min",
+      "unit": "Pa.s",
+      "meaning": "the lower bound on the measurable viscosity at that rate from the torque floor alone"
+    }
+  ],
+  "entry": {
+    "script": "scripts/bound.py",
+    "function": "bound"
+  },
+  "validity": "steady shear in a cone-and-plate geometry; surface tension and inertia set other floors and are other skills",
+  "source": {
+    "citation": "R. H. Ewoldt, M. T. Johnston, L. M. Caretta, Experimental challenges of shear rheology: how to avoid bad data, in Complex Fluids in Biological Systems, Springer, 2015",
+    "locus": "the low-torque limit: viscosity > stress factor * minimum torque / shear rate, with the cone-and-plate stress factor 3 / (2 * pi * R^3)"
+  },
+  "cases": "cases.json",
+  "note": "On the fixture rheometer's figures. The locus has not been checked against the source by a seat; a bundle that rests on this bound for a real instrument waits for that check."
+}

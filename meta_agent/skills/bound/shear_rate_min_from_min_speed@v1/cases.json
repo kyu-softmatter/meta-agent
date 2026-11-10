@@ -1,0 +1,23 @@
+[
+  {
+    "name": "a cone of 0.035 rad at 1e-6 rad/s",
+    "inputs": {
+      "min_angular_velocity": 1e-06,
+      "cone_angle": 0.035
+    },
+    "expect": {
+      "shear_rate_min": 2.8571428571428567e-05
+    },
+    "worked": "1e-6 / 0.035, by the relation the source states"
+  },
+  {
+    "name": "half the angle gives twice the rate",
+    "inputs": {
+      "min_angular_velocity": 1e-06,
+      "cone_angle": 0.0175
+    },
+    "expect": {
+      "shear_rate_min": 5.7142857142857135e-05
+    }
+  }
+]

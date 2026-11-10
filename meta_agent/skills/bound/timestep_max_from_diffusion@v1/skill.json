@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "id": "timestep_max_from_diffusion",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the largest time step an explicit treatment of diffusion allows on a grid",
+  "parameter": "time_step",
+  "side": "max",
+  "applies_to": {
+    "parameters": [
+      "time_step"
+    ],
+    "engines": [
+      "rheotool",
+      "openfoam"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "diffusion_number_limit",
+      "unit": "1",
+      "meaning": "the diffusion number the scheme is run below; a judgement that depends on the scheme and the dimension, bound to a row with its own source"
+    },
+    {
+      "name": "cell_size",
+      "unit": "m",
+      "meaning": "the smallest cell of the grid"
+    },
+    {
+      "name": "diffusivity",
+      "unit": "m^2/s",
+      "meaning": "the largest diffusivity in the problem: the kinematic viscosity for momentum"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "time_step_max",
+      "unit": "s",
+      "meaning": "the upper bound on the time step from the diffusion condition"
+    }
+  ],
+  "entry": {
+    "script": "scripts/bound.py",
+    "function": "bound"
+  },
+  "validity": "diffusion advanced explicitly; an implicit treatment is not bound by stability, and then the limit is a matter of accuracy and the row says so",
+  "source": {
+    "citation": "J. H. Ferziger, M. Perić, Computational Methods for Fluid Dynamics, Springer",
+    "locus": "explicit Euler for the diffusion equation: stable while diffusivity * time step / cell size^2 stays below a limit set by the scheme and the dimension"
+  },
+  "cases": "cases.json",
+  "note": "On the fixture engine's figures. The locus has not been checked against the source by a seat; a bundle that rests on this bound for a real engine waits for that check."
+}

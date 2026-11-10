@@ -1,0 +1,50 @@
+{
+  "schema_version": "0.1",
+  "id": "timestep_max_from_relaxation_time",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the largest time step that still resolves the fluid's relaxation time",
+  "parameter": "time_step",
+  "side": "max",
+  "applies_to": {
+    "parameters": [
+      "time_step"
+    ],
+    "engines": [
+      "rheotool",
+      "openfoam"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "relaxation_time",
+      "unit": "s",
+      "meaning": "the relaxation time of the constitutive model"
+    },
+    {
+      "name": "resolved_fraction",
+      "unit": "1",
+      "meaning": "the fraction of the relaxation time one step may span; a judgement, bound to a row with its own source"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "time_step_max",
+      "unit": "s",
+      "meaning": "the upper bound on the time step from the relaxation time"
+    }
+  ],
+  "entry": {
+    "script": "scripts/bound.py",
+    "function": "bound"
+  },
+  "validity": "a viscoelastic model integrated in time; for a steady solution reached by time marching the fraction may be large and the bound not the tightest",
+  "source": {
+    "citation": "by definition: a step that is a stated fraction of the model's relaxation time",
+    "locus": "the fraction is an input, not a property of this skill"
+  },
+  "cases": "cases.json",
+  "note": "Taken from contracts/examples/skills/bound/. On the fixture engine's figures."
+}

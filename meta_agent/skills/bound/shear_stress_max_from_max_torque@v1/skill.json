@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.1",
+  "id": "shear_stress_max_from_max_torque",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the highest shear stress a cone-and-plate geometry measures at the instrument's highest torque",
+  "parameter": "shear_stress",
+  "side": "max",
+  "applies_to": {
+    "parameters": [
+      "shear_stress"
+    ],
+    "methods": [
+      "rheometry"
+    ],
+    "instruments": [
+      "lab_rheometer"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "max_torque",
+      "unit": "N.m",
+      "meaning": "the highest torque the instrument's specification states"
+    },
+    {
+      "name": "cone_radius",
+      "unit": "m",
+      "meaning": "the radius of the cone"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "shear_stress_max",
+      "unit": "Pa",
+      "meaning": "the upper bound on the shear stress from the torque limit alone"
+    }
+  ],
+  "entry": {
+    "script": "scripts/bound.py",
+    "function": "bound"
+  },
+  "validity": "a cone-and-plate geometry filled to its rim, where the stress is uniform; a parallel plate has another factor and another skill",
+  "source": {
+    "citation": "C. W. Macosko, Rheology: Principles, Measurements, and Applications, 1994",
+    "locus": "cone and plate: shear stress = 3 * torque / (2 * pi * radius^3)"
+  },
+  "cases": "cases.json",
+  "note": "On the fixture rheometer's figures. The locus has not been checked against the source by a seat; a bundle that rests on this bound for a real instrument waits for that check."
+}

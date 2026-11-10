@@ -1,0 +1,25 @@
+[
+  {
+    "name": "a limit of 0.5 on cells of 1e-4 m at 0.05 m/s",
+    "inputs": {
+      "courant_limit": 0.5,
+      "cell_size": 0.0001,
+      "velocity": 0.05
+    },
+    "expect": {
+      "time_step_max": 0.001
+    },
+    "worked": "0.5 * 1e-4 / 0.05"
+  },
+  {
+    "name": "twice the velocity halves the step",
+    "inputs": {
+      "courant_limit": 0.5,
+      "cell_size": 0.0001,
+      "velocity": 0.1
+    },
+    "expect": {
+      "time_step_max": 0.0005
+    }
+  }
+]

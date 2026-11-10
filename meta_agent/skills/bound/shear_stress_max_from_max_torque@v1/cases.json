@@ -1,0 +1,23 @@
+[
+  {
+    "name": "a cone of radius 0.02 m at 0.2 N.m",
+    "inputs": {
+      "max_torque": 0.2,
+      "cone_radius": 0.02
+    },
+    "expect": {
+      "shear_stress_max": 11936.62073189215
+    },
+    "worked": "3 * 0.2 / (2 * pi * 0.02^3), by the relation the source states"
+  },
+  {
+    "name": "twice the radius gives an eighth of the stress",
+    "inputs": {
+      "max_torque": 0.2,
+      "cone_radius": 0.04
+    },
+    "expect": {
+      "shear_stress_max": 1492.0775914865187
+    }
+  }
+]

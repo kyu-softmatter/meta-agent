@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "id": "timestep_max_from_courant",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the largest time step the Courant condition allows on a grid",
+  "parameter": "time_step",
+  "side": "max",
+  "applies_to": {
+    "parameters": [
+      "time_step"
+    ],
+    "engines": [
+      "rheotool",
+      "openfoam"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "courant_limit",
+      "unit": "1",
+      "meaning": "the Courant number the scheme is run below; a judgement, bound to a row with its own source"
+    },
+    {
+      "name": "cell_size",
+      "unit": "m",
+      "meaning": "the smallest cell of the grid along the flow"
+    },
+    {
+      "name": "velocity",
+      "unit": "m/s",
+      "meaning": "the largest velocity expected in the domain"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "time_step_max",
+      "unit": "s",
+      "meaning": "the upper bound on the time step from the Courant condition"
+    }
+  ],
+  "entry": {
+    "script": "scripts/bound.py",
+    "function": "bound"
+  },
+  "validity": "explicit or semi-implicit advection on a grid; the limit itself depends on the scheme and is an input",
+  "source": {
+    "citation": "R. Courant, K. Friedrichs, H. Lewy, Über die partiellen Differenzengleichungen der mathematischen Physik, Mathematische Annalen 100 (1928)",
+    "locus": "the condition that the numerical domain of dependence contains the physical one: time step <= C * cell size / velocity"
+  },
+  "cases": "cases.json",
+  "note": "Taken from contracts/examples/skills/bound/. On the fixture engine's figures."
+}

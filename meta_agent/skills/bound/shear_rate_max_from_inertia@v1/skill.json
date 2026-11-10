@@ -1,0 +1,67 @@
+{
+  "schema_version": "0.1",
+  "id": "shear_rate_max_from_inertia",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the highest shear rate before secondary flow in a cone-and-plate geometry changes the torque by more than the tolerated amount",
+  "parameter": "shear_rate",
+  "side": "max",
+  "applies_to": {
+    "parameters": [
+      "shear_rate"
+    ],
+    "methods": [
+      "rheometry"
+    ],
+    "instruments": [
+      "lab_rheometer"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "critical_reynolds_number",
+      "unit": "1",
+      "meaning": "the Reynolds number of the gap below which the secondary flow is tolerated; a judgement, bound to a row with its own source"
+    },
+    {
+      "name": "viscosity",
+      "unit": "Pa.s",
+      "meaning": "the viscosity of the sample at the rates in question"
+    },
+    {
+      "name": "density",
+      "unit": "kg/m^3",
+      "meaning": "the density of the sample"
+    },
+    {
+      "name": "cone_angle",
+      "unit": "rad",
+      "meaning": "the angle between the cone and the plate"
+    },
+    {
+      "name": "cone_radius",
+      "unit": "m",
+      "meaning": "the radius of the cone"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "shear_rate_max",
+      "unit": "1/s",
+      "meaning": "the upper bound on the shear rate from the inertia criterion alone"
+    }
+  ],
+  "entry": {
+    "script": "scripts/bound.py",
+    "function": "bound"
+  },
+  "validity": "a Newtonian or weakly shear-thinning sample in a cone-and-plate geometry; the viscosity is the one at the rate in question",
+  "source": {
+    "citation": "R. M. Turian, Perturbation solution of the steady Newtonian flow in the cone and plate and parallel plate systems, Industrial and Engineering Chemistry Fundamentals 11 (1972); the criterion as used by R. H. Ewoldt, M. T. Johnston, L. M. Caretta, Experimental challenges of shear rheology: how to avoid bad data, in Complex Fluids in Biological Systems, Springer, 2015",
+    "locus": "the torque correction for secondary flow grows with the square of Re = density * angular velocity * (cone angle * radius)^2 / viscosity; with angular velocity = shear rate * cone angle the rate at a critical Re follows. The critical Re is an input, not a property of this skill"
+  },
+  "cases": "cases.json",
+  "note": "On the fixture rheometer's figures. The Reynolds number is a plain function in scripts/dimensionless.py: it bounds nothing by itself. The locus has not been checked against the source by a seat; a bundle that rests on this bound for a real instrument waits for that check."
+}

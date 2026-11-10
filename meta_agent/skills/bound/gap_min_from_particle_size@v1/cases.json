@@ -1,0 +1,23 @@
+[
+  {
+    "name": "particles of 1e-6 m and ten diameters",
+    "inputs": {
+      "particle_diameter": 1e-06,
+      "gap_to_particle_ratio": 10.0
+    },
+    "expect": {
+      "gap_min": 9.999999999999999e-06
+    },
+    "worked": "10 * 1e-6"
+  },
+  {
+    "name": "five diameters halves the floor",
+    "inputs": {
+      "particle_diameter": 1e-06,
+      "gap_to_particle_ratio": 5.0
+    },
+    "expect": {
+      "gap_min": 4.9999999999999996e-06
+    }
+  }
+]

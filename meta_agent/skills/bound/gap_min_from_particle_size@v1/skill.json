@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.1",
+  "id": "gap_min_from_particle_size",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the smallest gap that is still a stated multiple of the largest particle in the sample",
+  "parameter": "gap",
+  "side": "min",
+  "applies_to": {
+    "parameters": [
+      "gap"
+    ],
+    "methods": [
+      "rheometry"
+    ],
+    "instruments": [
+      "lab_rheometer"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "particle_diameter",
+      "unit": "m",
+      "meaning": "the diameter of the largest particle or structure in the sample"
+    },
+    {
+      "name": "gap_to_particle_ratio",
+      "unit": "1",
+      "meaning": "how many particle diameters the gap must hold; a judgement, bound to a row with its own source"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "gap_min",
+      "unit": "m",
+      "meaning": "the lower bound on the gap from the particle size alone"
+    }
+  ],
+  "entry": {
+    "script": "scripts/bound.py",
+    "function": "bound"
+  },
+  "validity": "any gap-setting geometry; for a cone the gap in question is the truncation gap at the tip",
+  "source": {
+    "citation": "by definition: a gap that is a stated multiple of the largest particle diameter",
+    "locus": "the multiple is an input, not a property of this skill"
+  },
+  "cases": "cases.json",
+  "note": "On the fixture rheometer's figures. The multiple is a rule of thumb whose value is the row's."
+}

@@ -1,0 +1,25 @@
+[
+  {
+    "name": "1e-8 N.m on a cone of radius 0.02 m at 0.1 1/s",
+    "inputs": {
+      "min_torque": 1e-08,
+      "cone_radius": 0.02,
+      "shear_rate": 0.1
+    },
+    "expect": {
+      "viscosity_min": 0.005968310365946075
+    },
+    "worked": "the stress floor 3 * 1e-8 / (2 * pi * 0.02^3) divided by 0.1"
+  },
+  {
+    "name": "ten times the rate lowers the floor tenfold",
+    "inputs": {
+      "min_torque": 1e-08,
+      "cone_radius": 0.02,
+      "shear_rate": 1.0
+    },
+    "expect": {
+      "viscosity_min": 0.0005968310365946075
+    }
+  }
+]

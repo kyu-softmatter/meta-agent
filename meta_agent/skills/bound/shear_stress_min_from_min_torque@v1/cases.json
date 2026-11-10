@@ -1,0 +1,23 @@
+[
+  {
+    "name": "a cone of radius 0.02 m at 1e-08 N.m",
+    "inputs": {
+      "min_torque": 1e-08,
+      "cone_radius": 0.02
+    },
+    "expect": {
+      "shear_stress_min": 0.0005968310365946075
+    },
+    "worked": "3 * 1e-08 / (2 * pi * 0.02^3), by the relation the source states"
+  },
+  {
+    "name": "twice the radius gives an eighth of the stress",
+    "inputs": {
+      "min_torque": 1e-08,
+      "cone_radius": 0.04
+    },
+    "expect": {
+      "shear_stress_min": 7.460387957432593e-05
+    }
+  }
+]

@@ -1,0 +1,29 @@
+[
+  {
+    "name": "a water-like sample in a cone of 0.035 rad and 0.02 m at a critical number of 4",
+    "inputs": {
+      "critical_reynolds_number": 4.0,
+      "viscosity": 0.001,
+      "density": 1000.0,
+      "cone_angle": 0.035,
+      "cone_radius": 0.02
+    },
+    "expect": {
+      "shear_rate_max": 233.2361516034985
+    },
+    "worked": "4 * 0.001 / (1000 * 0.035^3 * 0.02^2): the rate at which density * rate * angle^3 * radius^2 / viscosity reaches 4"
+  },
+  {
+    "name": "ten times the viscosity allows ten times the rate",
+    "inputs": {
+      "critical_reynolds_number": 4.0,
+      "viscosity": 0.01,
+      "density": 1000.0,
+      "cone_angle": 0.035,
+      "cone_radius": 0.02
+    },
+    "expect": {
+      "shear_rate_max": 2332.361516034985
+    }
+  }
+]
