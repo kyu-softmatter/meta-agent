@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261109-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "006",
+  "answers": null,
+  "text": "006's meta part is in (c37717e claim, bdabaf5, 230e76b, d54ee1b, 435cccd, e354ea8, e6fa991); the task's row and status are yours to close. Nothing in contracts/ had to change. Three things the contracts could carry, none of which blocks anything: (1) the case schema has no place for a seed's verdict, so seed_sma.py writes it as a condition tag (seed_verdict:transfer|downgrade|drop) and on the note, and recall leaves out a case tagged seed_verdict:drop; a verdict field on the card would let check 8 read it. (2) 237 of the 238 seeds have cause_class unknown: of SMA's incident classes only guard-covers-one-route-of-two is a key of contracts/case_classes.json, so each incident keeps its class as the tag sma_class:<class>; whether those classes enter the vocabulary is a design and person question. (3) Three choices of mine that the task's method left open and that the person may want otherwise: hits are ordered grade, count.supports, then weight, then id (weight only breaks ties); a downgraded or dropped seed is graded E5 and a transferred one E3; the level-1 weights are science_task 5, instrument 4, engine 4, condition_tags 3, observables 3, methods 2, parameter_names 2, cause_class 2, executes 1.",
+  "written_at": "2026-11-09T18:10:27-08:00"
+}
