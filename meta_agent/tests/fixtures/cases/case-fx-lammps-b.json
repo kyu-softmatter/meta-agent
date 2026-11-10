@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-fx-lammps-b",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-09T12:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "polymer melt relaxation",
+    "executes": "engine",
+    "engine": "lammps",
+    "methods": [
+      "molecular dynamics"
+    ],
+    "observables": [
+      "stress_relaxation_modulus"
+    ],
+    "parameter_names": [],
+    "condition_tags": [],
+    "cause_class": "reference_result_mismatch"
+  },
+  "what_happened": "a fixture: the relaxation modulus disagreed with the reference at long times",
+  "cause_class": "reference_result_mismatch",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "observation",
+      "ref": "fixture"
+    }
+  ],
+  "cue": "a reference curve was computed for a chain length other than the one simulated",
+  "lesson": "have the scientific validation task name the reference's conditions beside the run's and refuse a comparison across them",
+  "confidence": {
+    "level": "low",
+    "why": "a fixture written by hand"
+  },
+  "falsification": "the reference and the run carry the same conditions in every scientific task",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-11-09"
+  },
+  "grade": "E2",
+  "superseded_by": null,
+  "note": "A hand-written fixture for meta_agent/tests/test_cases.py (tasks/006); it records nothing that happened."
+}

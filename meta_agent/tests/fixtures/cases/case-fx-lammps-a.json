@@ -1,0 +1,52 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-fx-lammps-a",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-09T12:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "polymer melt relaxation",
+    "executes": "engine",
+    "engine": "lammps",
+    "observables": [
+      "stress_relaxation_modulus"
+    ],
+    "parameter_names": [],
+    "condition_tags": [],
+    "cause_class": "tool_unavailable"
+  },
+  "what_happened": "a fixture: the engine's module was not loaded on the compute node",
+  "cause_class": "tool_unavailable",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "observation",
+      "ref": "fixture"
+    }
+  ],
+  "cue": "an engine is present on the login node and absent where the job runs",
+  "lesson": "have the adapter's first interface task run the engine's version command inside the job environment",
+  "confidence": {
+    "level": "low",
+    "why": "a fixture written by hand"
+  },
+  "falsification": "the version command answers inside the job environment on every build",
+  "count": {
+    "supports": 5,
+    "contradicts": 0,
+    "last_seen": "2026-11-09"
+  },
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "A hand-written fixture for meta_agent/tests/test_cases.py (tasks/006); it records nothing that happened."
+}

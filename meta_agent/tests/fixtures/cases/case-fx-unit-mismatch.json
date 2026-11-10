@@ -1,0 +1,56 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-fx-unit-mismatch",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-09T12:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "particle tracking of tracer beads",
+    "executes": "instrument",
+    "instrument": "widefield microscope",
+    "observables": [
+      "msd"
+    ],
+    "parameter_names": [
+      "pixel_size"
+    ],
+    "condition_tags": [
+      "objective:60x"
+    ],
+    "cause_class": "unit_mismatch"
+  },
+  "what_happened": "a fixture: a pixel size entered in one length unit was read in another",
+  "cause_class": "unit_mismatch",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "observation",
+      "ref": "fixture"
+    }
+  ],
+  "cue": "a length calibration crosses from the acquisition software to the analysis as a bare value",
+  "lesson": "make the tool contract's calibration input name its unit and refuse a value without one",
+  "confidence": {
+    "level": "low",
+    "why": "a fixture written by hand"
+  },
+  "falsification": "the calibration crosses with its unit in every call of the validation tasks",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-11-09"
+  },
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "A hand-written fixture for meta_agent/tests/test_cases.py (tasks/006); it records nothing that happened."
+}

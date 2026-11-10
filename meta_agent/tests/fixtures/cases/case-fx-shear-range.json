@@ -1,0 +1,59 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-fx-shear-range",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-09T12:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "steady shear viscosity of a colloidal suspension",
+    "executes": "engine",
+    "engine": "hoomd",
+    "methods": [
+      "brownian dynamics"
+    ],
+    "observables": [
+      "shear_viscosity"
+    ],
+    "parameter_names": [
+      "shear_rate"
+    ],
+    "condition_tags": [
+      "shear_rate_1/s:1e-2..1e3"
+    ],
+    "cause_class": "numerical_instability"
+  },
+  "what_happened": "a fixture: the run diverged at the upper end of the shear-rate sweep",
+  "cause_class": "numerical_instability",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "observation",
+      "ref": "fixture"
+    }
+  ],
+  "cue": "a sweep over a driving rate reuses one time step for every rate in the range",
+  "lesson": "have the parameter sheet carry the stability condition as a bound that is recomputed for every rate of the sweep",
+  "confidence": {
+    "level": "low",
+    "why": "a fixture written by hand"
+  },
+  "falsification": "the same time step is stable across the whole range in a replay task of the bundle",
+  "count": {
+    "supports": 2,
+    "contradicts": 0,
+    "last_seen": "2026-11-09"
+  },
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "A hand-written fixture for meta_agent/tests/test_cases.py (tasks/006); it records nothing that happened."
+}

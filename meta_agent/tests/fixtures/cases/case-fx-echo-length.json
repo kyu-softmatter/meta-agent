@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-fx-echo-length",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-09T12:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "return the text it is given and report that text's character count",
+    "executes": "analysis",
+    "observables": [
+      "length"
+    ],
+    "parameter_names": [
+      "message"
+    ],
+    "condition_tags": [
+      "encoding:utf-8"
+    ],
+    "cause_class": "interface_contract_violation"
+  },
+  "what_happened": "a fixture: the reported length counted bytes where the reference counted characters",
+  "cause_class": "interface_contract_violation",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "card",
+      "ref": "meta_agent/tests/fixtures/echo/README.md"
+    }
+  ],
+  "cue": "a tool reports a count of a text and its documentation does not say what one unit of the count is",
+  "lesson": "add an interface task to the bundle's validation/ whose message holds a character outside ASCII and compare the count with an independent one",
+  "confidence": {
+    "level": "low",
+    "why": "a fixture written by hand"
+  },
+  "falsification": "the tool's documentation states the unit of the count and the interface task agrees with it on every build",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-11-09"
+  },
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "A hand-written fixture for meta_agent/tests/test_cases.py (tasks/006); it records nothing that happened."
+}
