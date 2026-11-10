@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261109-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "007",
+  "answers": null,
+  "text": "007's meta part is in (2b-series claim, ec24615.. see log: bound skills, bounds pass, sources, the recorded sheet). One Done-when line is not met and is not mine to meet: 'python bootstrap.py check prints ok for chemicals at the pinned version'. chemicals is not installed on this computer, tools.lock.json has no entry for it and bootstrap.py does not know it; both files are outside my paths and fetching a package is the person's step, so I fetched nothing. src/sources/chemicals_adapter.py reads the pin from tools.lock.json under the key chemicals.version and is degraded until the installed version equals it; PyPI showed 1.5.2 (MIT, Python >=3.9) on 2026-11-09. Its glycerol-water call returns a gap: the documentation pages read name no mixture function. When the pin lands and the person installs it, 'designer --sheet' on req-rheo-fixture-001 gives v2_parameter_sheet.json with database rows for the sample, and the skipped handbook test runs; its two figures (tests/fixtures/sources/water_handbook.json) are from memory and want checking. Also unchecked against their sources: the loci of the Macosko, Ewoldt, Turian and Ferziger citations in the bound skills (each manifest says so).",
+  "written_at": "2026-11-09T19:07:51-08:00"
+}
