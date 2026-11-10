@@ -155,6 +155,25 @@
       "excludes": [],
       "note": "The design seat on the MacBook Air: the same paths as design-office-20261029-1. It does not write cards, requests, profiles, knowledge, cases, harness records or builds.",
       "seated": "2026-11-06, by the person: role \"디자인\" (design) and machine tag \"macbook\""
+    },
+    {
+      "seat": "meta-macbook-20261109-1",
+      "committer_email": "meta-macbook-20261109-1@seat.invalid",
+      "role": "meta",
+      "machine": "macbook",
+      "seated_by": "self, under the person's standing rule of 2026-11-09 (docs/ideas/20261109.md)",
+      "status": "active",
+      "owns": [
+        "meta_agent"
+      ],
+      "paths": [
+        "meta_agent/"
+      ],
+      "excludes": [
+        "meta_agent/CLAUDE.md",
+        "meta_agent/.claude/"
+      ],
+      "seated": "2026-11-09, self-registered"
     }
   ]
 }
