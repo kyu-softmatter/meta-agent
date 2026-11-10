@@ -1,0 +1,29 @@
+{
+  "what": "a source a seat retrieved and read",
+  "why_not_a_card": "Not a material card. Check 17 fails a material whose added_by is not human (only a person drops material), and the seat retrieved this itself, on the person's decision of 2026-11-09 that correlations are value skills with a cited source. This file keeps what a card would need until the person adds the link to LINKS.md or the design role says how a seat's retrieval is registered (the ask 20261109-meta-macbook-20261109-2-6).",
+  "kind": "paper",
+  "citation": "J. Kestin, M. Sokolov, W. A. Wakeham, Viscosity of Liquid Water in the Range -8 °C to 150 °C, Journal of Physical and Chemical Reference Data 7 (1978) 941-948",
+  "location": {
+    "url": "https://srd.nist.gov/JPCRD/jpcrd121.pdf"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-10T03:52:37Z",
+    "content_hash": "sha256:bb91bf3174a0ffd1ffd74f576595a2d384bf106f6d2958252382d4fb82ae5d4f",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261109-2",
+  "access": "anonymous, read-only, no login; a reprint hosted by NIST",
+  "licence": "copyright 1978, assigned to the American Institute of Physics and the American Chemical Society (first page); no copy is kept and none may be without the person's word",
+  "pages": 8,
+  "form": "a scan: the pages are images, read by eye",
+  "read_for": [
+    {
+      "skill": "water_viscosity_kestin_1978@v1",
+      "locus": "Section 4 Eqs. (15) and (16), the 20-degree datum of Sections 1 and 4, Section 5 and Table 7"
+    }
+  ],
+  "caveats": [
+    "Table 7 below 0 degrees Celsius was not used for a case: at -8 the equation gives 2421.3 where the table prints 2421.0, and the -5 entry could not be read with certainty from the scan",
+    "twenty entries of Table 7 from 0 to 100 degrees Celsius were compared with the equations and agree within one unit of the last digit; the 65-degree entry was not legible"
+  ]
+}

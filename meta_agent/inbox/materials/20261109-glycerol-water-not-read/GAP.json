@@ -1,0 +1,47 @@
+{
+  "what": "sources a seat tried to retrieve and could not read; no skill was written from them and none from memory",
+  "wanted_for": "the viscosity of a glycerol-water mixture against temperature and glycerol mass fraction (tasks/007)",
+  "papers": [
+    {
+      "citation": "N.-S. Cheng, Formula for the Viscosity of a Glycerol-Water Mixture, Industrial and Engineering Chemistry Research 47 (2008) 3285-3288, doi 10.1021/ie071349z",
+      "tried": [
+        {
+          "url": "https://www3.ntu.edu.sg/home/cnscheng/Publications/reprint/Glycerin-water%20viscosity%20paper%20_sent%20to%20IECR_.pdf",
+          "result": "HTTP 404"
+        },
+        {
+          "url": "https://www3.ntu.edu.sg/home/cnscheng/Publications.htm",
+          "result": "HTTP 404"
+        },
+        {
+          "url": "https://personal.ntu.edu.sg/cnscheng/Publications.htm",
+          "result": "HTTP 404"
+        },
+        {
+          "url": "https://dr.ntu.edu.sg",
+          "result": "HTTP 405"
+        },
+        {
+          "url": "https://pubs.acs.org/doi/10.1021/ie071349z",
+          "result": "HTTP 403"
+        }
+      ]
+    },
+    {
+      "citation": "A. Volk, C. J. Kähler, Density model for aqueous glycerol solutions, Experiments in Fluids 59 (2018) 75, doi 10.1007/s00348-018-2527-y",
+      "tried": [
+        {
+          "url": "https://link.springer.com/article/10.1007/s00348-018-2527-y",
+          "result": "HTTP 303 to a sign-in page; not followed"
+        },
+        {
+          "url": "https://link.springer.com/content/pdf/10.1007/s00348-018-2527-y.pdf",
+          "result": "HTTP 303 to a sign-in page; not followed"
+        }
+      ]
+    }
+  ],
+  "tried_at": "2026-11-10",
+  "tried_by": "meta-macbook-20261109-2",
+  "requires": "the person drops the Cheng (2008) paper, or another source that prints the mixture formula with its coefficients and a stated value, into meta_agent/inbox/materials/drop/"
+}

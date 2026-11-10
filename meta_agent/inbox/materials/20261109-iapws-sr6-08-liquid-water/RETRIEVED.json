@@ -1,0 +1,30 @@
+{
+  "what": "a source a seat retrieved and read",
+  "why_not_a_card": "Not a material card. Check 17 fails a material whose added_by is not human (only a person drops material), and the seat retrieved this itself, on the person's decision of 2026-11-09 that correlations are value skills with a cited source. This file keeps what a card would need until the person adds the link to LINKS.md or the design role says how a seat's retrieval is registered (the ask 20261109-meta-macbook-20261109-2-6).",
+  "kind": "paper",
+  "citation": "IAPWS SR6-08(2011), Revised Supplementary Release on Properties of Liquid Water at 0.1 MPa, The International Association for the Properties of Water and Steam, Plzeň, September 2011",
+  "location": {
+    "url": "https://iapws.org/technical-guidance/release/LiquidWater.download"
+  },
+  "landing_page": "http://www.iapws.org/relguide/LiquidWater.pdf",
+  "source_snapshot": {
+    "retrieved_at": "2026-11-10T03:51:09Z",
+    "content_hash": "sha256:fda79dde9f441a90da755477c6533e23065e4f90c7f59a505f64c394d775bd45",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261109-2",
+  "access": "anonymous, read-only, no login",
+  "licence": "the cover page allows publication in whole or in part in all countries provided attribution is given to IAPWS; no copy is kept here all the same, since may_quote is the person's to set",
+  "pages": 12,
+  "read_for": [
+    {
+      "skill": "water_viscosity_iapws_sr6@v1",
+      "locus": "Section 3.2 Eq. (7), Table 5, Section 3.3; Table 8 (viscosity)"
+    },
+    {
+      "skill": "water_density_iapws_sr6@v1",
+      "locus": "Section 2.2 Eqs. (2) and (4), Table 1, Section 2.3 Eq. (5); Table 8 (density)"
+    }
+  ],
+  "not_used": "the Gibbs energy, the pressure derivative, the thermal conductivity and the dielectric constant (Eqs. (1), (3), (8), (9)) are in the document and no skill was written for them"
+}
