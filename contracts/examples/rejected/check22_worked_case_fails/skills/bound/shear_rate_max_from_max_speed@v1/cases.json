@@ -1,0 +1,23 @@
+[
+  {
+    "name": "a cone of 0.035 rad at 300 rad/s",
+    "inputs": {
+      "max_angular_velocity": 300.0,
+      "cone_angle": 0.035
+    },
+    "expect": {
+      "shear_rate_max": 9000.0
+    },
+    "worked": "300 / 0.035, by the relation the source states"
+  },
+  {
+    "name": "a cone of 0.0175 rad at 300 rad/s gives twice the rate",
+    "inputs": {
+      "max_angular_velocity": 300.0,
+      "cone_angle": 0.0175
+    },
+    "expect": {
+      "shear_rate_max": 17142.857142857145
+    }
+  }
+]

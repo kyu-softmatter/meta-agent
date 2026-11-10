@@ -1,0 +1,1 @@
+A skill that reaches a device compares no reading against a number of its own: a limit is a safety value.

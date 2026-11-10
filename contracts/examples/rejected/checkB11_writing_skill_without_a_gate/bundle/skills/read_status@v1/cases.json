@@ -1,0 +1,96 @@
+[
+  {
+    "name": "idle, initialised and homed is ready",
+    "transcript": [
+      {
+        "tool": "status",
+        "input": {},
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null
+        }
+      }
+    ],
+    "expect": {
+      "verdict": "ready"
+    },
+    "expect_calls": [
+      "status"
+    ]
+  },
+  {
+    "name": "homing is busy",
+    "transcript": [
+      {
+        "tool": "status",
+        "output": {
+          "state": "homing",
+          "initialised": true,
+          "homed": false,
+          "fault": null
+        }
+      }
+    ],
+    "expect": {
+      "verdict": "busy"
+    }
+  },
+  {
+    "name": "a reported fault is a fault",
+    "transcript": [
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": "air pressure low"
+        }
+      }
+    ],
+    "expect": {
+      "verdict": "fault"
+    }
+  },
+  {
+    "name": "idle but not homed is unknown, not ready",
+    "transcript": [
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": false,
+          "fault": null
+        }
+      }
+    ],
+    "expect": {
+      "verdict": "unknown"
+    }
+  },
+  {
+    "name": "an error from the tool is unknown",
+    "transcript": [
+      {
+        "tool": "status",
+        "error": {
+          "code": "tool_unavailable",
+          "category": "tool",
+          "message": "no reply",
+          "retryable": true,
+          "remediation": "check the connection"
+        }
+      }
+    ],
+    "expect": {
+      "verdict": "unknown"
+    }
+  },
+  {
+    "name": "on the bench",
+    "not_run": "requires bench"
+  }
+]

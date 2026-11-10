@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.1",
+  "id": "shear_rate_max",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the highest shear rate a cone-and-plate geometry reaches at the instrument's top angular velocity",
+  "parameter": "shear_rate",
+  "side": "max",
+  "applies_to": {
+    "parameters": [
+      "shear_rate"
+    ],
+    "methods": [
+      "rotational_rheometry"
+    ],
+    "instruments": [
+      "rotational_rheometer"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "max_angular_velocity",
+      "unit": "rad/s",
+      "meaning": "the top angular velocity the instrument's specification states"
+    },
+    {
+      "name": "cone_angle",
+      "unit": "rad",
+      "meaning": "the angle between the cone and the plate"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "shear_rate_max",
+      "unit": "1/s",
+      "meaning": "the upper bound on the shear rate from the speed limit alone"
+    }
+  ],
+  "entry": {
+    "script": "scripts/bound.py",
+    "function": "bound"
+  },
+  "validity": "small cone angles, where the shear rate is uniform across the gap; other limits (inertia, torque) are other skills",
+  "source": {
+    "citation": "C. W. Macosko, Rheology: Principles, Measurements, and Applications, 1994",
+    "locus": "cone and plate: shear rate = angular velocity / cone angle for a small angle"
+  },
+  "cases": "cases.json",
+  "note": "An example of the shape. The locus is to be checked against the book before a bundle rests on this skill."
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "note": "What check 7 reads (plan.md 6.5, 8). Records are append-only: under an append-only root a committed file is never modified or deleted; a change is a new file v<N>_<name> with revision N, whose predecessor (v<N-1>_<name>, or <name> for N = 2) exists in the same folder. A JSONL log only grows: the committed content must be a prefix of the new content.",
+  "note": "What check 7 reads (plan.md 6.5, 8). Records are append-only: under an append-only root a committed file is never modified or deleted; a change is a new file v<N>_<name> with revision N, whose predecessor (v<N-1>_<name>, or <name> for N = 2) exists in the same folder. A JSONL log only grows: the committed content must be a prefix of the new content. A skill's version is a folder <id>@v<N>/ under meta_agent/skills/: a landed version is never edited, a change is the next version's folder.",
   "append_only_roots": [
     "meta_agent/requests/",
     "meta_agent/profiles/",
@@ -13,7 +13,8 @@
     "meta_agent/harness/library/",
     "meta_agent/builds/",
     "meta_agent/inbox/",
-    "meta_agent/tasks/claims/"
+    "meta_agent/tasks/claims/",
+    "meta_agent/skills/"
   ],
   "append_only_jsonl": [
     "meta_agent/failures.jsonl",

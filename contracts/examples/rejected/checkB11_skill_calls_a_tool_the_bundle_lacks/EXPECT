@@ -1,0 +1,3 @@
+check B11
+
+read_status reaches the device through the status tool, and the bundle has no tools/status/.

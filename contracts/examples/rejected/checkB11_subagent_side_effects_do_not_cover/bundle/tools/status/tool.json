@@ -1,0 +1,44 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "status",
+  "description": "return the given text and its character count; the mock adapter in this bundle stands in for the command",
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "message": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required": [
+      "message"
+    ]
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "message": {
+        "type": "string"
+      },
+      "length": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "required": [
+      "message",
+      "length"
+    ]
+  },
+  "errors": [
+    "invalid_input"
+  ],
+  "side_effects": "none",
+  "safety_gate": {
+    "required": false,
+    "place": "no side effects; src/gate.py is consulted by the runner and finds no gate required"
+  },
+  "idempotent": true,
+  "timeout_s": null
+}

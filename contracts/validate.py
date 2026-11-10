@@ -36,7 +36,7 @@ GIT_REPO = os.environ.get(GATE_ENV) or REPO  # where git is asked; differs from 
 EXPORTED = bool(os.environ.get(GATE_ENV))
 SCHEMAS = os.path.join(HERE, "schemas")
 REJECTED = os.path.join(HERE, "examples", "rejected")
-IMPLEMENTED = [1, 2, 3, 5, 6, 7, 8, 11, 15, 16, 17, 18, 20, 21]
+IMPLEMENTED = [1, 2, 3, 5, 6, 7, 8, 11, 15, 16, 17, 18, 20, 21, 22]
 SKIP_DIRS = {".git", ".agent", ".venv", ".pixi", "node_modules", "__pycache__"}
 
 def judge_the_commits_tree(argv):
@@ -82,6 +82,7 @@ import seats as seat_rules  # noqa: E402  (contracts/tools/seats.py: names, role
 import tasks as task_rules  # noqa: E402  (contracts/tools/tasks.py: the task index and claims)
 import notes as note_rules  # noqa: E402  (contracts/tools/notes.py: notes between seats)
 import cases as case_rules  # noqa: E402  (contracts/tools/cases.py: condition tags, store indexes, references)
+import skills as skill_rules  # noqa: E402  (contracts/tools/skills.py: what a skill is; its source read, its cases run)
 
 try:
     import jsonschema
@@ -150,6 +151,7 @@ class Contracts:
         self.kinds = load_json(os.path.join(HERE, "claim_kinds.json"))
         self.records = load_json(os.path.join(HERE, "records.json"))
         self.seats = load_json(os.path.join(HERE, "seats.json"))
+        self.skill_kinds = load_json(os.path.join(HERE, "skill_kinds.json"))
         classes = load_json(os.path.join(HERE, "case_classes.json")).get("classes", {})
         self.case_classes = set(classes) if isinstance(classes, dict) else {x.get("id") for x in classes if isinstance(x, dict)}
         self._validators = {}
@@ -659,6 +661,21 @@ def check21_changes(c, report, email, changes, label):
 
 
 # ----------------------------------------------------------------------------
+# check 22: skills (a folder <id>@v<n>/ under skills/: manifest, source read, worked cases run)
+# ----------------------------------------------------------------------------
+def check22(tree, c, report, include_rejected=False):
+    for d in skill_rules.find_skill_dirs(tree, skip=[] if include_rejected else [REJECTED]):
+        manifest = skill_rules.read_manifest(d)
+        errors = []
+        if manifest is not None:
+            for e in sorted(c.validator("skill").iter_errors(manifest), key=lambda e: list(e.absolute_path))[:5]:
+                loc = "$" + "".join("[%r]" % p if isinstance(p, int) else "." + str(p) for p in e.absolute_path)
+                errors.append("%s: %s" % (loc, e.message[:200]))
+        for msg in skill_rules.problems(d, c.skill_kinds, errors):
+            report.fail(22, rel(d, tree), msg)
+
+
+# ----------------------------------------------------------------------------
 # check 11: tool_profile claims
 # ----------------------------------------------------------------------------
 def permission_ok(p):
@@ -675,8 +692,14 @@ def check11(cards, c, report, tree):
             continue
         r = rel(path, tree)
         perm = data.get("analysis_permission")
-        for i, cl in enumerate(data.get("claims") or []):
-            label = "claims[%d]" % i
+        labelled = [("claims[%d]" % i, cl) for i, cl in enumerate(data.get("claims") or [])]
+        for i, sc in enumerate(data.get("self_calibration") or []):
+            cl = sc.get("claim") if isinstance(sc, dict) else None
+            labelled.append(("self_calibration[%d].claim" % i, cl))
+            if isinstance(sc, dict) and isinstance(cl, dict) and sc.get("mode") in ("self", "assisted") and cl.get("kind") == "unknown":
+                report.fail(11, r, "self_calibration[%d]: mode %s rests on an unknown claim; whether a device calibrates %s itself "
+                            "is checked, not assumed (mode unknown until it is)" % (i, sc.get("mode"), sc.get("quantity")))
+        for label, cl in labelled:
             if not isinstance(cl, dict):
                 report.fail(11, r, "%s: not an object" % label)
                 continue
@@ -879,7 +902,7 @@ def check17(cards, c, report, tree):
 # B checks: one built bundle (plan.md 5.1 S5, 8). Run with --bundle PATH, on every
 # bundle a build card points at, and on <fixture>/bundle/ under --expect-fail.
 # ----------------------------------------------------------------------------
-B_IMPLEMENTED = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9"]
+B_IMPLEMENTED = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B11"]
 BUNDLE_FILES = ["CLAUDE.md", ".claude/settings.json", "CAPABILITIES.json", "envelope/safety.json",
                 "envelope/snapshot.json", "envelope/parameters.json", "failures.jsonl",
                 "src/gate.py", "src/run_tool.py", "src/replay.py", "src/validate_tasks.py"]
@@ -1219,6 +1242,64 @@ def checkB9(bundle, label, report):
             report.fail("B9", "src/run_tool.py", "the runner does not consult the gate (no check_before) while %s needs one" % name)
 
 
+SKILL_TOKEN_RE = re.compile(r"`([a-z][a-z0-9_]*@v[1-9][0-9]*)`")
+
+
+def checkB11(bundle, label, report):
+    """Skills and subagents of a bundle: what is named exists, a subagent's side effects cover its skills,
+    one subagent alone may change a device, and a skill reaches a device through tools the bundle has, the
+    writing ones behind the gate."""
+    skills = {}
+    sdir = os.path.join(bundle, "skills")
+    if os.path.isdir(sdir):
+        for d in skill_rules.find_skill_dirs(sdir):
+            m = skill_rules.read_manifest(d)
+            if isinstance(m, dict):
+                skills[os.path.basename(d)] = m
+    tools = set(tool_dirs(bundle))
+    for ref, m in sorted(skills.items()):
+        for t in m.get("calls_tools") or []:
+            if t not in tools:
+                report.fail("B11", "skills/%s" % ref, "calls the tool %s and the bundle has no tools/%s/" % (t, t))
+                continue
+            if m.get("side_effect") == "write_device":
+                tc = bundle_json(bundle, "tools/%s/tool.json" % t, report, "B11")
+                gate = tc.get("safety_gate") if isinstance(tc, dict) and isinstance(tc.get("safety_gate"), dict) else {}
+                if not gate.get("required"):
+                    report.fail("B11", "skills/%s" % ref, "changes the device through %s, whose contract asks for no gate" % t)
+    writers = []
+    adir = os.path.join(bundle, ".claude", "agents")
+    texts = {"CLAUDE.md": open(os.path.join(bundle, "CLAUDE.md"), encoding="utf-8").read()
+             if os.path.isfile(os.path.join(bundle, "CLAUDE.md")) else ""}
+    for name in sorted(os.listdir(adir)) if os.path.isdir(adir) else []:
+        if not name.endswith(".md"):
+            continue
+        relpath = ".claude/agents/%s" % name
+        text = open(os.path.join(adir, name), encoding="utf-8").read()
+        texts[relpath] = text
+        fm = skill_rules.front_matter(text)
+        if fm.get("name") != name[:-3]:
+            report.fail("B11", relpath, "front matter name %r is not the file's" % (fm.get("name"),))
+        effects = skill_rules.front_list(text, "side_effects")
+        unknown = [e for e in effects if e not in ("none", "read_device", "write_device")]
+        if unknown:
+            report.fail("B11", relpath, "side_effects %s are not none, read_device or write_device" % unknown)
+        if "write_device" in effects:
+            writers.append(name[:-3])
+        for ref in skill_rules.front_list(text, "skills"):
+            m = skills.get(ref)
+            if m is None:
+                report.fail("B11", relpath, "names the skill %s, which the bundle does not carry" % ref)
+            elif m.get("side_effect") != "none" and m.get("side_effect") not in effects:
+                report.fail("B11", relpath, "names %s, which is %s, and its side_effects are %s" % (ref, m.get("side_effect"), effects or "none"))
+    if len(writers) > 1:
+        report.fail("B11", ".claude/agents", "%s all list write_device; one subagent alone may change a device" % ", ".join(writers))
+    for relpath, text in sorted(texts.items()):
+        for ref in sorted(set(SKILL_TOKEN_RE.findall(text))):
+            if ref not in skills:
+                report.fail("B11", relpath, "names the skill `%s`, which the bundle does not carry" % ref)
+
+
 def run_bundle_checks(bundle, c, report, checks, knowledge_root, label=None):
     bundle = os.path.abspath(bundle)
     label = label or rel(bundle, REPO)
@@ -1244,6 +1325,8 @@ def run_bundle_checks(bundle, c, report, checks, knowledge_root, label=None):
         checkB8(bundle, label, report)
     if "B9" in checks:
         checkB9(bundle, label, report)
+    if "B11" in checks:
+        checkB11(bundle, label, report)
     report.ran.update(ch for ch in checks if isinstance(ch, str))
 
 
@@ -1469,6 +1552,8 @@ def run_static(tree, c, report, checks, include_rejected=False):
         check20(tree, c, report)
     if 21 in checks:
         check21(tree, c, report)
+    if 22 in checks:
+        check22(tree, c, report, include_rejected)
     report.ran.update(ch for ch in checks if isinstance(ch, int))
     card_dirs = {os.path.dirname(p) for p, _ in cards}
     return len(cards), sum(len(v) for d, v in md_by_dir.items() if d in card_dirs), cards

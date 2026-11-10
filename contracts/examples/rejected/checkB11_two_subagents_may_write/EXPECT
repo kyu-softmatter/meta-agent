@@ -1,0 +1,3 @@
+check B11
+
+Two subagents list write_device; one subagent alone may change a device.

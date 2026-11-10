@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.1",
+  "note": "The kinds of skill (plan.md 14-30, 14-31; the person, 2026-11-09). A skill is source code a model takes when it needs it. The list is open: a new kind is one entry here, landed by the design seat on the person's word (meta_agent/tasks/011 adds scale and capability). side_effects are the ones a skill of the kind may declare; none touches no device, read_device reads one, write_device changes its state. A device is reached only through the tools a skill names (calls_tools), never from the skill's own code.",
+  "side_effects": [
+    "none",
+    "read_device",
+    "write_device"
+  ],
+  "kinds": {
+    "bound": {
+      "side_effects": [
+        "none"
+      ],
+      "what": "computes a maximum, a minimum or a value of one parameter from one physical, numerical or instrument reason"
+    },
+    "data_analysis": {
+      "side_effects": [
+        "none"
+      ],
+      "what": "turns data it is handed into computed numbers with their basis"
+    },
+    "hardware_connection": {
+      "side_effects": [
+        "read_device"
+      ],
+      "what": "finds what answers, reads its identity, opens and closes a session; writes no setting"
+    },
+    "hardware_state": {
+      "side_effects": [
+        "read_device"
+      ],
+      "what": "reads what state a device is in and says ready, busy, fault or unknown by a rule in the skill"
+    },
+    "hardware_boot": {
+      "side_effects": [
+        "write_device"
+      ],
+      "what": "the ordered steps that bring a device from off to ready, each verified, a person's steps waited for"
+    },
+    "hardware_control": {
+      "side_effects": [
+        "write_device"
+      ],
+      "what": "a procedure of gated tool calls that changes a device's state"
+    },
+    "hardware_calibration": {
+      "side_effects": [
+        "none",
+        "write_device"
+      ],
+      "what": "reads whether the device calibrates the quantity itself; self: the device's routine as gated tool calls; assisted: a calibration design drafted with the person; unknown: a gap"
+    },
+    "hardware_range": {
+      "side_effects": [
+        "read_device"
+      ],
+      "what": "reads what the device reports about its own ranges and modes (the person, 2026-11-09: the agent finds the instrument's operable range itself; meta_agent/tasks/014)"
+    }
+  }
+}

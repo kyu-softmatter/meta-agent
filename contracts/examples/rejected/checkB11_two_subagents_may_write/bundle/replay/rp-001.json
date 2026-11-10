@@ -1,0 +1,17 @@
+{
+  "id": "rp-001",
+  "name": "echo returns the text and its length",
+  "call": {
+    "tool": "echo",
+    "input": {
+      "message": "replay"
+    }
+  },
+  "expected": {
+    "output": {
+      "message": "replay",
+      "length": 6
+    }
+  },
+  "expected_verdict": "pass"
+}

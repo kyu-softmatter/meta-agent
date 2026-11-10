@@ -1,0 +1,1 @@
+The kind is not in contracts/skill_kinds.json.

@@ -1,0 +1,101 @@
+{
+  "schema_version": "0.1",
+  "id": "bring_to_ready",
+  "version": 1,
+  "kind": "hardware_boot",
+  "side_effect": "write_device",
+  "status": "held",
+  "summary": "brings the instrument from switched on to ready: the person's steps, initialise, home, and a last check",
+  "applies_to": {
+    "instruments": [
+      "rotational_rheometer"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "person_confirmed",
+      "unit": "1",
+      "meaning": "the numbers of the person's steps the person has said are done (operator_read)"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "ready",
+      "unit": "1",
+      "meaning": "true only when the last check returned ready"
+    },
+    {
+      "name": "stopped_at",
+      "unit": "1",
+      "meaning": "the step the sequence stopped at, or null"
+    }
+  ],
+  "calls_tools": [
+    "initialise",
+    "home"
+  ],
+  "uses_skills": [
+    "read_status@v1"
+  ],
+  "entry": {
+    "script": "scripts/bring_to_ready.py",
+    "function": "bring_to_ready"
+  },
+  "steps": [
+    {
+      "n": 1,
+      "actor": "person",
+      "action": "open the air supply to the bearing",
+      "verify": {
+        "reading": "person_confirmed",
+        "expect": 1
+      }
+    },
+    {
+      "n": 2,
+      "actor": "person",
+      "action": "remove the transport lock",
+      "verify": {
+        "reading": "person_confirmed",
+        "expect": 2
+      }
+    },
+    {
+      "n": 3,
+      "actor": "device",
+      "action": "initialise the motor and the electronics",
+      "tool": "initialise",
+      "verify": {
+        "reading": "initialised",
+        "expect": true
+      }
+    },
+    {
+      "n": 4,
+      "actor": "device",
+      "action": "find the home position",
+      "tool": "home",
+      "precondition": "initialised",
+      "verify": {
+        "reading": "homed",
+        "expect": true
+      }
+    },
+    {
+      "n": 5,
+      "actor": "device",
+      "action": "confirm the device is ready",
+      "verify": {
+        "skill": "read_status@v1",
+        "verdict": "ready"
+      }
+    }
+  ],
+  "validity": "the start-up order of the fixture rheometer profile; another instrument has another order and another skill",
+  "source": {
+    "citation": "the fixture rheometer profile of contracts/examples/",
+    "locus": "its start-up procedure"
+  },
+  "cases": "cases.json",
+  "note": "An example of the shape, on recorded transcripts; held, and never run against a device from this repository (MP1)."
+}

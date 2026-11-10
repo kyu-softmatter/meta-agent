@@ -1,0 +1,327 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/calibration_design.schema.json",
+  "title": "calibration_design",
+  "description": "A calibration that needs outside help, designed with the person (the person, 2026-11-09; plan.md 14-31(l)). The agent proposes and the person decides: the card is a draft until the person confirms it, and the acceptance limit is a threshold only a person writes. Written by a hardware_calibration skill when the tool_profile's self_calibration claim for the quantity says assisted.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "calibration_design"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "rid": {
+      "type": "string"
+    },
+    "instrument": {
+      "type": "string",
+      "minLength": 1
+    },
+    "quantity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mode": {
+      "const": "assisted"
+    },
+    "profile_claim": {
+      "type": "string",
+      "minLength": 1,
+      "description": "where the tool_profile says the quantity is not self-calibrating: card id and the self_calibration quantity"
+    },
+    "reference": {
+      "type": "object",
+      "properties": {
+        "what": {
+          "type": "string",
+          "minLength": 1
+        },
+        "traceability": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provided_by": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "what",
+        "traceability"
+      ],
+      "additionalProperties": false
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "actor": {
+            "enum": [
+              "person",
+              "device"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reading": {
+            "type": "string"
+          },
+          "recorded_as": {
+            "enum": [
+              "operator_read",
+              "measured",
+              "none"
+            ]
+          }
+        },
+        "required": [
+          "n",
+          "actor",
+          "action",
+          "recorded_as"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "interval": {
+      "type": "string",
+      "minLength": 1,
+      "description": "how often, in words; the validity of a calibration number is its expires"
+    },
+    "acceptance": {
+      "type": "object",
+      "properties": {
+        "criterion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "common.schema.json#/$defs/number"
+            }
+          ]
+        },
+        "author": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "common.schema.json#/$defs/author"
+            }
+          ]
+        }
+      },
+      "required": [
+        "criterion",
+        "limit",
+        "author"
+      ],
+      "additionalProperties": false
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "what the agent asks the person before the design can be confirmed"
+    },
+    "confirmed_by": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "common.schema.json#/$defs/author"
+        }
+      ]
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "instrument",
+    "quantity",
+    "mode",
+    "profile_claim",
+    "reference",
+    "steps",
+    "interval",
+    "acceptance",
+    "open_questions",
+    "confirmed_by",
+    "superseded_by"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "acceptance": {
+            "properties": {
+              "limit": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "limit"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "acceptance": {
+            "properties": {
+              "author": {
+                "const": "human"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "an acceptance limit is a threshold: only a person writes it"
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "validated",
+              "approved",
+              "done"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "confirmed_by": {
+            "const": "human"
+          },
+          "acceptance": {
+            "properties": {
+              "limit": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "a design leaves draft only when a person confirms it, and by then the limit is set"
+    },
+    {
+      "if": {
+        "properties": {
+          "confirmed_by": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "confirmed_by"
+        ]
+      },
+      "then": {
+        "properties": {
+          "confirmed_by": {
+            "const": "human"
+          }
+        }
+      },
+      "$comment": "only a person confirms"
+    }
+  ]
+}

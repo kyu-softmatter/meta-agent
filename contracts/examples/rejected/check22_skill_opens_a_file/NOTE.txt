@@ -1,0 +1,1 @@
+A skill opens nothing: this bound reads a file for its constant.

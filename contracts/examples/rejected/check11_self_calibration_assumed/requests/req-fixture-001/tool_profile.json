@@ -1,0 +1,136 @@
+{
+  "card": "tool_profile",
+  "schema_version": "0.1",
+  "id": "tp-fixture-001",
+  "rid": "req-fixture-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [
+    {
+      "name": "tutorial_time_step",
+      "value": 0.0001,
+      "unit": "s",
+      "source": "literature:src_rheotool_tutorial_0000000",
+      "grade": "E2",
+      "value_kind": "literature",
+      "note": "the value written in the tutorial's controlDict"
+    },
+    {
+      "name": "tutorial_relaxation_time",
+      "value": 0.5,
+      "unit": "s",
+      "source": "literature:src_rheotool_tutorial_0000000",
+      "grade": "E2",
+      "value_kind": "literature"
+    },
+    {
+      "name": "tutorial_weissenberg_number",
+      "value": 0.25,
+      "unit": "1",
+      "source": "computed:Wi_eq_lambda_gammadot",
+      "grade": "E4",
+      "value_kind": "computed",
+      "note": "lambda times the tutorial shear rate; the expression is an assumption"
+    }
+  ],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "tool": {
+    "name": "RheoTool",
+    "kind": "engine",
+    "registry_id": "rheotool",
+    "language": "C++",
+    "license": "GPL-3.0",
+    "source": "src_mat_20261029_001"
+  },
+  "analysis_permission": null,
+  "claims": [
+    {
+      "claim": "steady shear is configured through a dictionary file read at solver start",
+      "kind": "observed",
+      "basis": "source",
+      "evidence": [
+        {
+          "source_ref": "src_rheotool_tutorial_0000000",
+          "locus": "constant/constitutiveProperties"
+        }
+      ],
+      "limitations": "one tutorial read; other solvers not checked",
+      "capability": "io_format"
+    },
+    {
+      "claim": "the viscoelastic model is selected by the type keyword of the constitutive dictionary",
+      "kind": "derived",
+      "basis": "source",
+      "evidence": [
+        {
+          "source_ref": "src_rheotool_tutorial_0000000",
+          "locus": "constant/constitutiveProperties:type"
+        },
+        {
+          "source_ref": "src_rheotool_manual_0000000",
+          "locus": "section on constitutive models"
+        }
+      ],
+      "limitations": "derived from one tutorial and the manual's list",
+      "capability": "parameter"
+    },
+    {
+      "claim": "the solver accepts a time step smaller than the viscoelastic relaxation time",
+      "kind": "inferred",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "src_rheotool_manual_0000000",
+          "locus": "numerics"
+        }
+      ],
+      "limitations": "a stability bound is not stated as a number anywhere read",
+      "capability": "constraint"
+    },
+    {
+      "claim": "the polymeric stress tensor is written every N steps",
+      "kind": "unknown",
+      "basis": "run_record",
+      "evidence": [],
+      "requires": "a run in the sandbox with the tutorial case",
+      "capability": "io_format"
+    }
+  ],
+  "parameter_candidates": [
+    "relaxation_time",
+    "solvent_viscosity",
+    "polymer_viscosity",
+    "time_step",
+    "shear_rate"
+  ],
+  "gaps": [
+    {
+      "what": "runtime output cadence",
+      "reason": "not_read",
+      "requires": "a sandbox run"
+    }
+  ],
+  "material_refs": [
+    "mat-20261029-001"
+  ],
+  "self_calibration": [
+    {
+      "quantity": "torque",
+      "mode": "self",
+      "claim": {
+        "claim": "the instrument calibrates its torque itself",
+        "kind": "unknown",
+        "basis": "source",
+        "evidence": [],
+        "requires": "the manual's calibration chapter"
+      }
+    }
+  ]
+}

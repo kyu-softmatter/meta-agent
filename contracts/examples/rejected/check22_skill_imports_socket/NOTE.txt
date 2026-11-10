@@ -1,0 +1,1 @@
+A device is reached through tools.call only: this skill imports socket.

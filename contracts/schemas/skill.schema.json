@@ -1,0 +1,363 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/skill.schema.json",
+  "title": "skill",
+  "description": "The manifest of a skill, skill.json, in a folder <id>@v<version>/ beside SKILL.md, scripts/ and cases.json (plan.md 14-30, 14-31; meta_agent/tasks/010). Not a card: it carries no card key and is judged by check 22, which also reads the source and runs the worked cases. SKILL.md is what a model reads to choose; this file is what code reads.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "kind": {
+      "type": "string",
+      "minLength": 1,
+      "description": "a key of contracts/skill_kinds.json"
+    },
+    "side_effect": {
+      "enum": [
+        "none",
+        "read_device",
+        "write_device"
+      ]
+    },
+    "status": {
+      "enum": [
+        "usable",
+        "held"
+      ],
+      "description": "a write_device skill is held until a person releases it (release); it runs against a mock only while held"
+    },
+    "release": {
+      "type": "object",
+      "properties": {
+        "persons_words": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ideas": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the docs/ideas file that quotes the words"
+        }
+      },
+      "required": [
+        "persons_words",
+        "ideas"
+      ],
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "description": "one line: what it gives"
+    },
+    "applies_to": {
+      "type": "object",
+      "properties": {
+        "parameters": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "methods": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "instruments": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "engines": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "meaning": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "name",
+          "unit",
+          "meaning"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "meaning": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "name",
+          "unit",
+          "meaning"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "calls_tools": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "the bundle tools this skill reaches a device through; the only way it reaches one"
+    },
+    "uses_skills": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+      },
+      "description": "skills of the same library this one runs, as <id>@v<version>"
+    },
+    "entry": {
+      "type": "object",
+      "properties": {
+        "script": {
+          "type": "string",
+          "pattern": "^scripts/[a-z][a-z0-9_]*\\.py$"
+        },
+        "function": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        }
+      },
+      "required": [
+        "script",
+        "function"
+      ],
+      "additionalProperties": false
+    },
+    "validity": {
+      "type": "string",
+      "description": "where the relation or the procedure holds"
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "citation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "locus": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "citation"
+      ],
+      "additionalProperties": false
+    },
+    "cases": {
+      "const": "cases.json"
+    },
+    "parameter": {
+      "type": "string",
+      "minLength": 1,
+      "description": "bound: the parameter it bounds"
+    },
+    "side": {
+      "enum": [
+        "min",
+        "max",
+        "value"
+      ],
+      "description": "bound: which side"
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "description": "hardware_boot: the sequence, in order",
+      "items": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "actor": {
+            "enum": [
+              "device",
+              "person"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "minLength": 1
+          },
+          "tool": {
+            "type": "string",
+            "minLength": 1
+          },
+          "precondition": {
+            "type": "string"
+          },
+          "verify": {
+            "type": "object",
+            "properties": {
+              "reading": {
+                "type": "string"
+              },
+              "expect": {},
+              "skill": {
+                "type": "string"
+              },
+              "verdict": {
+                "type": "string"
+              }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "n",
+          "actor",
+          "action",
+          "verify"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "version",
+    "kind",
+    "side_effect",
+    "status",
+    "summary",
+    "applies_to",
+    "inputs",
+    "outputs",
+    "entry",
+    "source",
+    "cases"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "bound"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "parameter",
+          "side"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "hardware_boot"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "steps",
+          "uses_skills"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "side_effect": {
+            "enum": [
+              "read_device",
+              "write_device"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "calls_tools"
+        ],
+        "properties": {
+          "calls_tools": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "side_effect": {
+            "const": "none"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "calls_tools": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+[
+  {
+    "name": "a person's step not confirmed: it waits and calls nothing",
+    "inputs": {
+      "person_confirmed": [
+        1
+      ]
+    },
+    "transcript": [],
+    "expect": {
+      "ready": false,
+      "stopped_at": 2,
+      "waiting_for": "person"
+    },
+    "expect_calls": []
+  },
+  {
+    "name": "the whole sequence on a device that answers",
+    "inputs": {
+      "person_confirmed": [
+        1,
+        2
+      ]
+    },
+    "transcript": [
+      {
+        "tool": "initialise",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": false,
+          "fault": null
+        }
+      },
+      {
+        "tool": "home",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null
+        }
+      }
+    ],
+    "expect": {
+      "ready": true,
+      "stopped_at": null
+    },
+    "expect_calls": [
+      "initialise",
+      "status",
+      "home",
+      "status",
+      "status"
+    ]
+  },
+  {
+    "name": "the gate refuses the first device step: no call after it",
+    "inputs": {
+      "person_confirmed": [
+        1,
+        2
+      ]
+    },
+    "transcript": [
+      {
+        "tool": "initialise",
+        "error": {
+          "code": "refused_by_safety",
+          "category": "safety",
+          "message": "a safety value is not set",
+          "retryable": false,
+          "remediation": "the person writes the value"
+        }
+      }
+    ],
+    "expect": {
+      "ready": false,
+      "stopped_at": 3,
+      "refused": true
+    },
+    "expect_calls": [
+      "initialise"
+    ]
+  },
+  {
+    "name": "a verification fails: it stops there and does not home",
+    "inputs": {
+      "person_confirmed": [
+        1,
+        2
+      ]
+    },
+    "transcript": [
+      {
+        "tool": "initialise",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": false,
+          "homed": false,
+          "fault": null
+        }
+      }
+    ],
+    "expect": {
+      "ready": false,
+      "stopped_at": 3
+    },
+    "expect_calls": [
+      "initialise",
+      "status"
+    ]
+  },
+  {
+    "name": "homed is read back but the device reports a fault: not ready",
+    "inputs": {
+      "person_confirmed": [
+        1,
+        2
+      ]
+    },
+    "transcript": [
+      {
+        "tool": "initialise",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": false,
+          "fault": null
+        }
+      },
+      {
+        "tool": "home",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": "air pressure low"
+        }
+      }
+    ],
+    "expect": {
+      "ready": false,
+      "stopped_at": 5,
+      "verdict": "fault"
+    }
+  },
+  {
+    "name": "on the bench",
+    "not_run": "requires bench"
+  }
+]

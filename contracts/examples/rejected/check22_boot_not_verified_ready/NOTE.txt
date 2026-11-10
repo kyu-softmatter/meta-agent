@@ -1,0 +1,1 @@
+A boot sequence ends with a hardware_state skill returning ready; this one ends on a reading.

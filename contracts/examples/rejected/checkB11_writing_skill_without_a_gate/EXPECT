@@ -1,0 +1,3 @@
+check B11
+
+The boot sequence changes the device through initialise and home, whose contracts ask for no gate.

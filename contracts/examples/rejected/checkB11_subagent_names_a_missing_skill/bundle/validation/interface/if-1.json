@@ -1,0 +1,17 @@
+{
+  "id": "if-1",
+  "name": "a message comes back unchanged with its length",
+  "call": {
+    "tool": "echo",
+    "input": {
+      "message": "hello"
+    }
+  },
+  "expected": {
+    "output": {
+      "message": "hello",
+      "length": 5
+    }
+  },
+  "expected_verdict": "pass"
+}

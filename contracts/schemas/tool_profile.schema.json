@@ -182,6 +182,35 @@
         "type": "string",
         "minLength": 1
       }
+    },
+    "self_calibration": {
+      "type": "array",
+      "description": "Per quantity: can the device calibrate it itself? Checked, never assumed (the person, 2026-11-09; plan.md 14-31(l)). mode self or assisted rests on a claim that is observed, derived or inferred with evidence; without one the mode is unknown and the claim says what would settle it (check 11).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mode": {
+            "enum": [
+              "self",
+              "assisted",
+              "unknown"
+            ]
+          },
+          "claim": {
+            "$ref": "common.schema.json#/$defs/claim"
+          }
+        },
+        "required": [
+          "quantity",
+          "mode",
+          "claim"
+        ],
+        "additionalProperties": false
+      }
     }
   },
   "required": [

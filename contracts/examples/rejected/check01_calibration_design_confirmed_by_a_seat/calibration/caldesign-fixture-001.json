@@ -1,0 +1,62 @@
+{
+  "card": "calibration_design",
+  "schema_version": "0.1",
+  "id": "caldesign-fixture-001",
+  "revision": 1,
+  "superseded_by": null,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "approved",
+  "note": "An example of the shape. A draft: the agent proposes the steps and asks; the person writes the acceptance limit and confirms.",
+  "instrument": "rotational rheometer (fixture profile)",
+  "quantity": "torque",
+  "mode": "assisted",
+  "profile_claim": "tool_profile of the fixture rheometer: self_calibration[quantity = torque] says assisted",
+  "reference": {
+    "what": "a certified viscosity standard oil",
+    "traceability": "the certificate that comes with the standard: its lot, its viscosity at the stated temperature and the date it is valid until",
+    "provided_by": "the person"
+  },
+  "steps": [
+    {
+      "n": 1,
+      "actor": "person",
+      "action": "load the standard and bring it to the temperature on its certificate",
+      "reading": "the certificate's lot and viscosity",
+      "recorded_as": "operator_read"
+    },
+    {
+      "n": 2,
+      "actor": "device",
+      "action": "run a steady shear step at one rate inside the instrument's torque range",
+      "reading": "torque and shear rate",
+      "recorded_as": "measured"
+    },
+    {
+      "n": 3,
+      "actor": "person",
+      "action": "read the certificate value beside the measured one and decide",
+      "reading": "the difference between the two",
+      "recorded_as": "operator_read"
+    }
+  ],
+  "interval": "to be chosen by the person",
+  "acceptance": {
+    "criterion": "the measured viscosity agrees with the certificate within a limit the person chooses",
+    "limit": null,
+    "author": null
+  },
+  "open_questions": [
+    "Which standard is in the laboratory, and until when is its certificate valid?",
+    "What difference from the certificate do you accept?",
+    "How often should this be repeated?"
+  ],
+  "confirmed_by": "meta-office-20261029-1"
+}
