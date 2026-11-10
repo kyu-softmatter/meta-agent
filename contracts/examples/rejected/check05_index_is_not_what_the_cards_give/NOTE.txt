@@ -1,0 +1,1 @@
+The index names the case with a hash that is not the file's: it was edited by hand or is stale.

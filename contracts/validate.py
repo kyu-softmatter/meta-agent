@@ -36,7 +36,7 @@ GIT_REPO = os.environ.get(GATE_ENV) or REPO  # where git is asked; differs from 
 EXPORTED = bool(os.environ.get(GATE_ENV))
 SCHEMAS = os.path.join(HERE, "schemas")
 REJECTED = os.path.join(HERE, "examples", "rejected")
-IMPLEMENTED = [1, 2, 3, 6, 7, 11, 15, 16, 17, 18, 20, 21]
+IMPLEMENTED = [1, 2, 3, 5, 6, 7, 8, 11, 15, 16, 17, 18, 20, 21]
 SKIP_DIRS = {".git", ".agent", ".venv", ".pixi", "node_modules", "__pycache__"}
 
 def judge_the_commits_tree(argv):
@@ -81,6 +81,7 @@ sys.path.insert(0, os.path.join(HERE, "tools"))
 import seats as seat_rules  # noqa: E402  (contracts/tools/seats.py: names, role rows, the self-registration rule)
 import tasks as task_rules  # noqa: E402  (contracts/tools/tasks.py: the task index and claims)
 import notes as note_rules  # noqa: E402  (contracts/tools/notes.py: notes between seats)
+import cases as case_rules  # noqa: E402  (contracts/tools/cases.py: condition tags, store indexes, references)
 
 try:
     import jsonschema
@@ -149,6 +150,8 @@ class Contracts:
         self.kinds = load_json(os.path.join(HERE, "claim_kinds.json"))
         self.records = load_json(os.path.join(HERE, "records.json"))
         self.seats = load_json(os.path.join(HERE, "seats.json"))
+        classes = load_json(os.path.join(HERE, "case_classes.json")).get("classes", {})
+        self.case_classes = set(classes) if isinstance(classes, dict) else {x.get("id") for x in classes if isinstance(x, dict)}
         self._validators = {}
         self.grade_table = {}
         for rule in self.grades["rules"]:
@@ -333,6 +336,89 @@ def check3(cards, md_by_dir, report, tree):
                     continue
                 if val not in available:
                     report.fail(3, rel(md, tree), "number %s is in no card of this folder" % tok)
+
+
+# ----------------------------------------------------------------------------
+# check 5: references resolve in the store's index; a gap names where it looked
+# ----------------------------------------------------------------------------
+def check5(cards, c, report, tree):
+    judged = {}
+
+    def index_problem(store):
+        if store not in judged:
+            judged[store] = case_rules.index_problem(store)
+        return judged[store]
+
+    for path, data in cards:
+        r = rel(path, tree)
+        for key, spec in sorted(case_rules.STORES.items()):
+            refs = data.get(key)
+            if not (isinstance(refs, list) and refs):
+                continue
+            store = case_rules.store_for(path, tree, spec["dir"])
+            if store is None:
+                report.fail(5, r, "%s cites %d item(s) and no %s/ store is at or above the card" % (key, len(refs), spec["dir"]))
+                continue
+            problem = index_problem(store)
+            if problem:
+                report.fail(5, r, "%s cannot be resolved: %s: %s" % (key, rel(store, tree), problem))
+                continue
+            for ref in refs:
+                problem = case_rules.ref_problem(ref if isinstance(ref, dict) else {}, store, spec)
+                if problem:
+                    report.fail(5, r, "%s: %s" % (key, problem))
+        for key in case_rules.GAPS:
+            for i, gap in enumerate(data.get(key) or []):
+                searched = gap.get("searched") if isinstance(gap, dict) else None
+                if not (isinstance(searched, list) and any(isinstance(x, str) and x.strip() for x in searched)):
+                    report.fail(5, r, "%s[%d] names nowhere it searched" % (key, i))
+    # an index that exists is what its cards give, cited or not
+    for path, data in cards:
+        for spec in case_rules.STORES.values():
+            if card_name(data) != spec["card"]:
+                continue
+            store = case_rules.store_for(path, tree, spec["dir"])
+            if store and store not in judged and os.path.isfile(os.path.join(store, "index.json")):
+                problem = index_problem(store)
+                if problem:
+                    report.fail(5, rel(os.path.join(store, "index.json"), tree), problem)
+
+
+# ----------------------------------------------------------------------------
+# check 8: cases
+# ----------------------------------------------------------------------------
+CAPPED_GRADES = ("E3", "E4", "E5")
+
+
+def check8(cards, c, report, tree):
+    for path, data in cards:
+        if card_name(data) != "case":
+            continue
+        r = rel(path, tree)
+        for key in ("falsification", "cue", "lesson"):
+            if not (isinstance(data.get(key), str) and data[key].strip()):
+                report.fail(8, r, "%s is empty" % key)
+        if not isinstance(data.get("count"), dict):
+            report.fail(8, r, "no count")
+        cls = data.get("cause_class")
+        if cls not in c.case_classes:
+            report.fail(8, r, "cause_class %r is not in contracts/case_classes.json" % (cls,))
+        sig = data.get("signature") if isinstance(data.get("signature"), dict) else {}
+        if "cause_class" in sig and sig["cause_class"] != cls:
+            report.fail(8, r, "signature.cause_class %r is not the card's %r" % (sig["cause_class"], cls))
+        if data.get("cause_status") == "confirmed":
+            kinds = {e.get("kind") for e in data.get("evidence") or [] if isinstance(e, dict)}
+            if not kinds & {"run", "commit"}:
+                report.fail(8, r, "cause_status confirmed without run or commit evidence")
+        for tag in sig.get("condition_tags") or []:
+            parsed = case_rules.parse_tag(tag)
+            if parsed is None:
+                report.fail(8, r, "condition tag %r is not name, name:value or name:lo..hi" % (tag,))
+            elif parsed[1] == "reversed":
+                report.fail(8, r, "condition tag %r: the range runs from its lower to its upper end" % (tag,))
+        if isinstance(data.get("source_repo_commit"), str) and data["source_repo_commit"].strip() \
+                and data.get("grade") not in CAPPED_GRADES:
+            report.fail(8, r, "a case from a prior repository (source_repo_commit) is graded E3 or worse; this one says %s" % data.get("grade"))
 
 
 # ----------------------------------------------------------------------------
@@ -1363,6 +1449,10 @@ def run_static(tree, c, report, checks, include_rejected=False):
         check2(cards, c, report, tree)
     if 3 in checks:
         check3(cards, md_by_dir, report, tree)
+    if 5 in checks:
+        check5(cards, c, report, tree)
+    if 8 in checks:
+        check8(cards, c, report, tree)
     if 7 in checks:
         check7_static(cards, c, report, tree)
     if 11 in checks:

@@ -1,0 +1,1 @@
+cause_status confirmed rests on a run or a commit; this case cites a card only.

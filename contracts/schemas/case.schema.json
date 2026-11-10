@@ -137,9 +137,11 @@
         },
         "condition_tags": {
           "type": "array",
+          "description": "name, name:value or name:lo..hi with numbers lo <= hi, the unit in the name (shear_rate_1/s:1e-2..1e3). Two tags of one name meet when equal, when a number lies in a range or when ranges overlap (contracts/tools/cases.py); check 8 refuses a reversed range.",
           "items": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "pattern": "^([A-Za-z][A-Za-z0-9_./%-]*)(?::(?:([-+]?[0-9]+(?:\\.[0-9]+)?(?:[eE][-+]?[0-9]+)?)\\.\\.([-+]?[0-9]+(?:\\.[0-9]+)?(?:[eE][-+]?[0-9]+)?)|((?:(?!\\.\\.)[A-Za-z0-9_.+-])+)))?$"
           }
         }
       },

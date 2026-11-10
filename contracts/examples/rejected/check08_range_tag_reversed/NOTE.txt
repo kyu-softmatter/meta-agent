@@ -1,0 +1,1 @@
+A range tag runs from its lower to its upper end.

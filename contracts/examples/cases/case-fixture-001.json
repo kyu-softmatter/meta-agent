@@ -26,7 +26,8 @@
     ],
     "cause_class": "correctly_graded_but_wrong_for_this_instance",
     "condition_tags": [
-      "vendor_spec_vs_bench"
+      "vendor_spec_vs_bench",
+      "emission_peak_nm:500..520"
     ]
   },
   "what_happened": "a vendor emission peak entered as E3 served for an hour; the bench value differed",
@@ -52,6 +53,7 @@
   },
   "source_agent": "librarian_agent",
   "source_repo_commit": "0000000",
-  "grade": "E2",
-  "superseded_by": null
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Graded E3: a case that comes from a prior repository (source_repo_commit) is capped at E3, as a run over there is not a run over here (plan.md 14-27(c), check 8). The second condition tag is a range, matched by overlap (contracts/tools/cases.py)."
 }

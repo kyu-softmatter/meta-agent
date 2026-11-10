@@ -1,0 +1,63 @@
+{
+  "card": "agent_goal",
+  "schema_version": "0.1",
+  "id": "goal-fixture-001",
+  "rid": "req-fixture-001",
+  "revision": 1,
+  "author": "human",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [
+    {
+      "id": "case-fixture-001",
+      "version": "3"
+    }
+  ],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "approved",
+  "purpose": "an agent that configures and runs a viscoelastic planar Couette case in a rheology engine and reports the steady shear viscosity",
+  "science_task": "steady shear viscosity of a viscoelastic fluid as a function of shear rate",
+  "tool": {
+    "name": "RheoTool",
+    "kind": "engine",
+    "registry_id": "rheotool",
+    "material_refs": [
+      "mat-20261029-001"
+    ]
+  },
+  "methods": [
+    "cfd",
+    "viscoelastic_flow"
+  ],
+  "executes": "engine",
+  "must_not": [
+    "touch an instrument",
+    "bundle GPL code",
+    "invent a number"
+  ],
+  "knowledge_needs": [
+    "Oldroyd-B steady shear viscosity",
+    "planar Couette analytic solution"
+  ],
+  "parameter_scope": [
+    "relaxation_time",
+    "solvent_viscosity",
+    "polymer_viscosity",
+    "shear_rate",
+    "time_step"
+  ],
+  "destination": "D:/codes/github/rheology-agent (fixture)",
+  "priorities": [
+    "scientific validity",
+    "reproducibility",
+    "small bundle"
+  ],
+  "lab_profile_ref": "lab-fixture-01",
+  "gui_choice": "parameter_form",
+  "analysis_permission": null,
+  "requested_by": "human"
+}

@@ -1,0 +1,59 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-fixture-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "validated",
+  "kind": "failure",
+  "signature": {
+    "science_task": "tracer diffusivity",
+    "executes": "instrument",
+    "instrument": "widefield microscope",
+    "observables": [
+      "tracer_diffusivity"
+    ],
+    "parameter_names": [
+      "tracer_emission_peak"
+    ],
+    "cause_class": "bad_luck",
+    "condition_tags": [
+      "vendor_spec_vs_bench",
+      "emission_peak_nm:500..520"
+    ]
+  },
+  "what_happened": "a vendor emission peak entered as E3 served for an hour; the bench value differed",
+  "cause_class": "bad_luck",
+  "cause_status": "confirmed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@0000000 librarian_agent/failures.jsonl:4"
+    }
+  ],
+  "cue": "a value for a specific physical part comes from the vendor's characterisation and not from this bench",
+  "lesson": "set bench_confirmed=false on the parameter row and have the skill that builds the plan refuse to treat it as E1",
+  "confidence": {
+    "level": "medium",
+    "why": "one instance; the cause was confirmed by the person's measurement"
+  },
+  "falsification": "vendor values for this part class match the bench within the stated tolerance in N consecutive cases",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-19"
+  },
+  "source_agent": "librarian_agent",
+  "source_repo_commit": "0000000",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Graded E3: a case that comes from a prior repository (source_repo_commit) is capped at E3, as a run over there is not a run over here (plan.md 14-27(c), check 8). The second condition tag is a range, matched by overlap (contracts/tools/cases.py)."
+}

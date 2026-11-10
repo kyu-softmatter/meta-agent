@@ -1,0 +1,1 @@
+cause_class is a key of contracts/case_classes.json.
