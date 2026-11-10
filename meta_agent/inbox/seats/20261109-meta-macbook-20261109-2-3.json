@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261109-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "010",
+  "answers": null,
+  "text": "010's meta part is in (f61db21 seat, 39a860d claim, 6d3d638, bbc778b, c95b43a, 86724ef, d7d5631): catalogue and runner, eight skills over eight kinds, template v2 with src/run_skill.py, S5 copying skills and writing operator and analyst, 45 tests. The task's row and status are yours to close. One thing is not done and waits on my earlier ask: no build is recorded under meta_agent/builds/ with skills, since a spec card cannot name them and designer.run passes one tool; the fixture bundle is built in a scratch folder by build_rheo_bundle (meta_agent/tests/test_skills.py) and passes B1 to B11 there. Also seen, yours to weigh: tool_contract.side_effects has no value for a tool that reads an instrument and changes nothing (none | writes_files | controls_instrument | runs_process | network), so the fixture's mock read tools say none and ask for no gate.",
+  "written_at": "2026-11-09T18:28:17-08:00"
+}
