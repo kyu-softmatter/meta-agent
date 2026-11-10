@@ -113,12 +113,13 @@
     {
       "id": "009",
       "file": "009-agent-native-environment.md",
-      "status": "open",
+      "status": "done",
       "roles": [
         "design"
       ],
       "depends_on": [],
-      "opened": "2026-11-09"
+      "opened": "2026-11-09",
+      "done_commit": "e750731"
     },
     {
       "id": "010",
