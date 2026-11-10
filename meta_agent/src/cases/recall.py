@@ -222,11 +222,13 @@ def refs_and_gaps(result, what=None):
             refs.append(ref)
         return refs, []
     absent = result["store"].endswith(")")
+    reason = "no case shares an identifying field with the signature"
+    if all(f in result["searched"] for f in LEVEL_2):
+        reason += ", and none shares its cause class and what it executes"
     gap = {
         "what": what or "a prior case for this signature",
         "searched": searched_lines(result),
-        "reason": "no cases store to search" if absent else
-                  "no case shares an identifying field with the signature, and none shares its cause class and what it executes",
+        "reason": "no cases store to search" if absent else reason,
         "requires": "a case written from this agent's first incidents, validation failures or the person's interventions",
     }
     return [], [gap]
