@@ -177,6 +177,20 @@
       ],
       "opened": "2026-11-09",
       "design_part": "open"
+    },
+    {
+      "id": "014",
+      "file": "014-operating-range-by-scanning.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [
+        "010"
+      ],
+      "opened": "2026-11-09",
+      "design_part": "open"
     }
   ]
 }
