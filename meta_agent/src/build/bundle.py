@@ -10,6 +10,7 @@ that uses a skill the specification does not name, a subagent whose side effects
 and a second subagent that may change a device.
 """
 import difflib
+import json
 import os
 import shutil
 
@@ -70,9 +71,17 @@ def subagents_section(subagents):
     return "\n".join(lines)
 
 
+def front_value(text):
+    """One line of front matter. A value YAML would not read as plain text (a colon and a space, a quote, a
+    leading mark) is written as a quoted string."""
+    text = " ".join(str(text).split())
+    plain = text and ": " not in text and " #" not in text and '"' not in text and text[0] not in "[{>|*&!%@`'#-?:,"
+    return text if plain else json.dumps(text, ensure_ascii=False)
+
+
 def subagent_markdown(agent, rows):
     """.claude/agents/<name>.md: front matter name, description, skills, side_effects (what B11 reads), and a body."""
-    lines = ["---", "name: %s" % agent["name"], "description: %s" % agent["description"],
+    lines = ["---", "name: %s" % agent["name"], "description: %s" % front_value(agent["description"]),
              "skills: [%s]" % ", ".join(agent["skills"]), "side_effects: [%s]" % ", ".join(agent["side_effects"]), "---", "",
              "# %s" % agent["name"], "", agent["description"].rstrip(".") + ".", "", "## Skills", ""]
     for ref in agent["skills"]:

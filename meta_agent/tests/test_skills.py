@@ -366,6 +366,8 @@ class Bundle(unittest.TestCase):
             self.assertTrue(fm["description"])
             got[name] = (rules.front_list(text, "skills"), rules.front_list(text, "side_effects"))
             self.assertIn("python src/run_skill.py", text)
+        self.assertIn('description: "Uses the hardware skills: finds', cards.read_text(os.path.join(adir, "operator.md")))
+        self.assertEqual(bundle_mod.front_value("touches no device"), "touches no device")
         self.assertEqual(got["operator"], (["find_and_identify@v1", "read_status@v1", "read_ranges@v1"], ["read_device"]))
         self.assertEqual(got["analyst"], (["shear_rate_max_from_max_speed@v1", "flow_curve_fit@v1"], ["none"]))
 
