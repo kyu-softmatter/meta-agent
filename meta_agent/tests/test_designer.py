@@ -6,6 +6,7 @@ Run from the repository root:
 import copy
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -171,6 +172,94 @@ class EchoRequest(unittest.TestCase):
                            env=dict(os.environ, PYTHONUTF8="1"))
         self.assertIn("0 failed, 0 pending", p.stdout, p.stdout + p.stderr)
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+
+    def test_without_a_store_the_goal_and_the_two_axes_name_where_recall_looked(self):
+        for name in ("v2_agent_goal.json", "spec_a4.json", "spec_a5.json"):
+            c = self.card(self.req, name)
+            self.assertEqual(c["case_refs"], [], name)
+            self.assertEqual(len(c["case_gaps"]), 1, name)
+            self.assertEqual(c["case_gaps"][0]["searched"][0], "meta_agent/cases (absent) (0 case(s) read)", name)
+            self.assertTrue(c["case_gaps"][0]["searched"][1].startswith("level 1, the signature: science_task="), name)
+        a4 = self.card(self.req, "spec_a4.json")["case_gaps"][0]["searched"][1]
+        self.assertIn("parameter_names=message", a4)
+
+
+class EchoRequestWithAStore(unittest.TestCase):
+    """S3 with cases to find (tasks/006): the fixture store stands where meta_agent/cases/ would."""
+
+    @staticmethod
+    def run_once():
+        tmp, root = scratch_root()
+        shutil.copytree(os.path.join(META, "tests", "fixtures", "cases"), os.path.join(root, "cases"))
+        designer.run(load_intake(), SEAT, "0001", NOW, root)
+        return tmp, root
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp, cls.root = cls.run_once()
+        cls.req = os.path.join(cls.root, "requests", "req-echo-001")
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def test_the_goal_carries_the_case_recall_found(self):
+        g2 = cards.load_json(os.path.join(self.req, "v2_agent_goal.json"))
+        self.assertEqual(g2["case_gaps"], [])
+        self.assertEqual([r["id"] for r in g2["case_refs"]], ["case-fx-echo-length"])
+        ref = g2["case_refs"][0]
+        self.assertEqual(ref["path"], "meta_agent/cases/case-fx-echo-length.json")
+        self.assertEqual(ref["hash"], "sha256:" + cards.sha256_file(os.path.join(self.root, "cases", "case-fx-echo-length.json")))
+        self.assertTrue(ref["note"].startswith("level 1 (weight 6: science_task, executes); cue: a tool reports a count"))
+
+    def test_a4_searches_with_the_tool_s_parameters_and_a5_with_the_safety_rows(self):
+        a4 = cards.load_json(os.path.join(self.req, "spec_a4.json"))
+        self.assertIn("weight 8: science_task, executes, parameter_names", a4["case_refs"][0]["note"])
+        a5 = cards.load_json(os.path.join(self.req, "spec_a5.json"))
+        self.assertIn("weight 6: science_task, executes", a5["case_refs"][0]["note"])
+
+    def test_a_second_run_writes_an_identical_goal(self):
+        tmp, root = self.run_once()
+        try:
+            for name in ("v2_agent_goal.json", "spec_a4.json", "spec_a5.json"):
+                first = cards.read_text(os.path.join(self.req, name))
+                second = cards.read_text(os.path.join(root, "requests", "req-echo-001", name))
+                self.assertEqual(first, second, name)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_validator_accepts_a_goal_with_case_refs(self):
+        p = subprocess.run([sys.executable, VALIDATE, self.tmp, "--strict"], capture_output=True, text=True,
+                           env=dict(os.environ, PYTHONUTF8="1"))
+        self.assertIn("0 failed, 0 pending", p.stdout, p.stdout + p.stderr)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        checks = re.search(r"checks run \[([^\]]*)\]", p.stdout).group(1)
+        self.assertIn("5", [c.strip() for c in checks.split(",")])
+
+
+class RecallAgain(unittest.TestCase):
+    """--recall on a request that exists: the next revision when the store changed the answer, else nothing."""
+
+    def test_the_next_revision_is_written_once(self):
+        tmp, root = scratch_root()
+        try:
+            designer.run(load_intake(), SEAT, "0001", NOW, root)
+            req = os.path.join(root, "requests", "req-echo-001")
+            self.assertIsNone(designer.recall_again(req, SEAT, NOW, root))          # no store: the gap stands
+            shutil.copytree(os.path.join(META, "tests", "fixtures", "cases"), os.path.join(root, "cases"))
+            path = designer.recall_again(req, SEAT, "2026-11-09T12:00:00Z", root)
+            self.assertEqual(os.path.basename(path), "v3_agent_goal.json")
+            g3 = cards.load_json(path)
+            self.assertEqual((g3["revision"], g3["supersedes"], g3["created_at"]), (3, "goal-echo-001", "2026-11-09T12:00:00Z"))
+            self.assertEqual([r["id"] for r in g3["case_refs"]], ["case-fx-echo-length"])
+            self.assertEqual(g3["case_gaps"], [])
+            self.assertIsNone(designer.recall_again(req, SEAT, "2026-11-09T13:00:00Z", root))
+            self.assertEqual(designer.latest_goal(req)[0], 3)
+            p = subprocess.run([sys.executable, VALIDATE, tmp, "--strict"], capture_output=True, text=True,
+                               env=dict(os.environ, PYTHONUTF8="1"))
+            self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
 
 
 if __name__ == "__main__":

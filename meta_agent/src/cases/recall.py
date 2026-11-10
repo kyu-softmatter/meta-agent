@@ -151,11 +151,11 @@ def one_line(text):
     return " ".join(str(text or "").split())
 
 
-def hit_of(row, case, level, met):
+def hit_of(row, case, level, met, parent=""):
     return {
         "id": row["id"],
         "revision": row.get("revision"),
-        "path": row["path"],
+        "path": (parent + "/" if parent else "") + row["path"],
         "hash": row["hash"],
         "grade": case.get("grade"),
         "supports": (case.get("count") or {}).get("supports", 0),
@@ -175,9 +175,10 @@ def recall(signature, store_dir, label=None):
 
     Returns {store, cases_read, searched, level, hits}: `level` is 1, 2 or None (a miss), `hits` is
     ordered, `searched` is the normalized signature. `label` is how the store is named in the result
-    (a repository-relative path); it defaults to the path given.
+    (a repository-relative path); it defaults to the path given, and a hit's path is written under it.
     """
     label = (label or store_dir).replace(os.sep, "/").rstrip("/")
+    parent = label.rsplit("/", 1)[0] if "/" in label else ""
     query = normalize(signature)
     result = {"store": label + "/index.json", "cases_read": 0, "searched": query, "level": None, "hits": []}
     if not os.path.isdir(store_dir) or not os.path.isfile(os.path.join(store_dir, "index.json")):
@@ -186,12 +187,12 @@ def recall(signature, store_dir, label=None):
     store = load_store(store_dir)
     result["cases_read"] = len(store)
     scored = [(row, case, meetings(query, normalize(case.get("signature")))) for row, case in store]
-    hits = [hit_of(row, case, 1, met) for row, case, met in scored if any(f in met for f in IDENTIFYING)]
+    hits = [hit_of(row, case, 1, met, parent) for row, case, met in scored if any(f in met for f in IDENTIFYING)]
     if hits:
         result["level"], result["hits"] = 1, order(hits)
         return result
     if all(f in query for f in LEVEL_2):
-        hits = [hit_of(row, case, 2, {f: met[f] for f in LEVEL_2})
+        hits = [hit_of(row, case, 2, {f: met[f] for f in LEVEL_2}, parent)
                 for row, case, met in scored if all(f in met for f in LEVEL_2)]
         if hits:
             result["level"], result["hits"] = 2, order(hits)

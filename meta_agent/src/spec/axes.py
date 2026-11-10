@@ -3,6 +3,9 @@
 Each axis is its own card and names what it read. Conflicts between axes go
 into the synthesis with the direction of concession; anything with an
 unresolved scope, permission, side effect or validation goes to held[].
+A4 and A5 carry what recall found in cases/ for their own signature, or the
+gap naming where it looked (plan.md 14-27): the Designer searches and hands
+the result in as `case_recall`.
 """
 from .. import cards
 
@@ -10,7 +13,7 @@ TITLES = {"A1": "Boundary", "A2": "Interface", "A3": "Knowledge", "A4": "Paramet
 
 
 def make_axes(goal, profile, brief, lab_profile_ref, bundle_dir, tool_contract, interface_tasks,
-              scientific_tasks, seat, now=None, parameter_rows=None, safety_rows=None):
+              scientific_tasks, seat, now=None, parameter_rows=None, safety_rows=None, case_recall=None):
     created = cards.now_iso(now)
     rid = goal["rid"]
     base = "spec-" + rid.replace("req-", "")
@@ -70,6 +73,11 @@ def make_axes(goal, profile, brief, lab_profile_ref, bundle_dir, tool_contract, 
         c["content"] = content[axis]
         c["reads"] = list(reads)
         c["held"] = []
+        if axis in (case_recall or {}):
+            refs, gaps = case_recall[axis]
+            if not (refs or gaps):
+                raise ValueError("%s: recall must leave case_refs or case_gaps" % axis)
+            c["case_refs"], c["case_gaps"] = list(refs), list(gaps)
         axes.append(c)
     # anything a person has not decided yet is held, not shipped
     held = []

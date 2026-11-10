@@ -1,6 +1,7 @@
 """The Agent Designer: S1 to S7 on one request (plan.md 5.1).
 
     python -m meta_agent.src.designer --intake meta_agent/requests/<rid>/intake.json --seat <seat> [--build-id 0001] [--now ISO] [--root DIR]
+    python -m meta_agent.src.designer --recall meta_agent/requests/<rid> --seat <seat> [--now ISO] [--root DIR]
 
 Reads the intake (the person's paragraph, the tool's documentation reading,
 the contracts and tasks the seat wrote from it) and writes, in order:
@@ -8,14 +9,24 @@ requests/<rid>/agent_goal.json, tool_profile.json (+ .md), knowledge_brief.json,
 v2_agent_goal.json, spec_a1..a6.json, synthesis.json, agent_spec.json; then
 builds/<agent>/<build_id>/{bundle/, validation_report.json, build.json,
 diff_from_template.txt}. It stops there: hand-over is the person's.
+
+S3 searches cases/ with the goal's signature (src/cases/recall.py) and the result enters v2_agent_goal
+as case_refs or case_gaps; S4 searches again for A4 (with the parameter names) and A5 (with the safety
+rows), and each axis card records what it found or where it looked (plan.md 14-27).
+
+--recall runs S3's case search again on a request that already exists, against the store as it is
+now: when the result differs from the latest goal revision's, it writes the next one
+(v<N>_agent_goal.json; records are append-only), and when it is the same it writes nothing.
 """
 import argparse
 import os
+import re
 import sys
 
 from . import cards
 from .build import bundle as bundle_mod
 from .build import template as template_mod
+from .cases import recall as recall_mod
 from .intake import goal as goal_mod
 from .knowledge import brief as brief_mod
 from .spec import axes as axes_mod
@@ -31,6 +42,55 @@ def rel_repo(path, root):
     """A repository-relative, posix path for a file under the working root."""
     base = os.path.dirname(root)
     return os.path.relpath(path, base).replace(os.sep, "/")
+
+
+def search_cases(signature, root, what):
+    """(case_refs, case_gaps) for a signature, searched in the working root's cases/ store."""
+    store = os.path.join(root, "cases")
+    return recall_mod.refs_and_gaps(recall_mod.recall(signature, store, rel_repo(store, root)), what)
+
+
+def names_of(rows):
+    return [r["name"] for r in rows or [] if isinstance(r, dict) and isinstance(r.get("name"), str) and r["name"]]
+
+
+def axis_signatures(goal_sig, intake):
+    """What A4 and A5 search with: the goal's signature, with the parameters each axis is about."""
+    inputs = sorted(((intake.get("tool_contract") or {}).get("inputs") or {}).get("properties") or {})
+    a4 = dict(goal_sig, parameter_names=sorted(set(goal_sig["parameter_names"]) | set(names_of(intake.get("parameter_rows"))) | set(inputs)))
+    a5 = dict(goal_sig, parameter_names=sorted(set(names_of(intake.get("safety_rows")))))
+    return {"A4": a4, "A5": a5}
+
+
+GOAL_FILE = re.compile(r"^(?:v([0-9]+)_)?agent_goal\.json$")
+
+
+def latest_goal(req_dir):
+    """(revision, card) of the highest agent_goal revision in a request folder."""
+    found = []
+    for name in sorted(os.listdir(req_dir)):
+        m = GOAL_FILE.match(name)
+        if m:
+            found.append((int(m.group(1) or 1), name))
+    if not found:
+        raise FileNotFoundError("no agent_goal in %s" % req_dir)
+    rev, name = max(found)
+    return rev, cards.load_json(os.path.join(req_dir, name))
+
+
+def recall_again(req_dir, seat, now=None, root=ROOT):
+    """S3's case search on an existing request; the next goal revision when the result changed, else None."""
+    rev, goal = latest_goal(req_dir)
+    case_refs, case_gaps = search_cases(goal_mod.signature_of(goal), root, "a prior case for this goal's signature")
+    if case_refs == goal.get("case_refs", []) and case_gaps == goal.get("case_gaps", []):
+        return None
+    nxt = goal_mod.attach_recall(goal, goal.get("kb_refs", []), goal.get("kb_gaps", []), case_refs, case_gaps,
+                                 seat, cards.now_iso(now), status=goal.get("status", "validated"))
+    path = os.path.join(req_dir, "v%d_agent_goal.json" % (rev + 1))
+    if os.path.exists(path):
+        raise FileExistsError(path)
+    cards.write_json(path, nxt)
+    return path
 
 
 def profile_markdown(profile):
@@ -76,8 +136,10 @@ def run(intake, seat, build_id="0001", now=None, root=ROOT):
     put(os.path.join(req_dir, "tool_profile.md"), profile_markdown(profile))
 
     # S3 recall / scan -> knowledge_brief, v2_agent_goal
-    brief, case_refs, case_gaps = brief_mod.make_brief(goal, root, seat, created)
+    brief = brief_mod.make_brief(goal, root, seat, created)
     put(os.path.join(req_dir, "knowledge_brief.json"), brief)
+    goal_sig = goal_mod.signature_of(goal)
+    case_refs, case_gaps = search_cases(goal_sig, root, "a prior case for this goal's signature")
     kb_refs = [{"id": e["id"], "version": e["version"], "hash": e["hash"]} for e in brief["entries"]]
     goal2 = goal_mod.attach_recall(goal, kb_refs, brief["gaps"], case_refs, case_gaps, seat, created)
     put(os.path.join(req_dir, "v2_agent_goal.json"), goal2)
@@ -87,8 +149,12 @@ def run(intake, seat, build_id="0001", now=None, root=ROOT):
     bundle_path = os.path.join(build_dir, "bundle")
     bundle_rel = rel_repo(bundle_path, root)
     contract = intake["tool_contract"]
+    axis_sigs = axis_signatures(goal_sig, intake)
+    case_recall = {"A4": search_cases(axis_sigs["A4"], root, "a prior case for this agent's parameters"),
+                   "A5": search_cases(axis_sigs["A5"], root, "a prior case for this agent's safety rows")}
     axes, syn, spec = axes_mod.make_axes(goal2, profile, brief, goal["lab_profile_ref"], bundle_rel, contract,
-                                         intake["interface_tasks"], intake["scientific_tasks"], seat, created)
+                                         intake["interface_tasks"], intake["scientific_tasks"], seat, created,
+                                         case_recall=case_recall)
     for a in axes:
         put(os.path.join(req_dir, "spec_%s.json" % a["axis"].lower()), a)
     put(os.path.join(req_dir, "synthesis.json"), syn)
@@ -144,12 +210,22 @@ def run(intake, seat, build_id="0001", now=None, root=ROOT):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--intake", required=True)
+    ap.add_argument("--intake")
+    ap.add_argument("--recall", metavar="REQUEST_DIR", help="search cases/ again for an existing request's goal")
     ap.add_argument("--seat", required=True)
     ap.add_argument("--build-id", default="0001")
     ap.add_argument("--now", default=None)
     ap.add_argument("--root", default=ROOT, help="the meta_agent/ tree to write under (tests use a copy)")
     args = ap.parse_args(argv)
+    if bool(args.intake) == bool(args.recall):
+        ap.error("give --intake or --recall, one of the two")
+    if args.recall:
+        root = os.path.abspath(args.root)
+        path = recall_again(os.path.abspath(args.recall), args.seat, args.now, root)
+        rev, goal = latest_goal(os.path.abspath(args.recall))
+        print("wrote  %s" % rel_repo(path, root) if path else "nothing written: recall gives what revision %d already carries" % rev)
+        print("case_refs %d, case_gaps %d (revision %d)" % (len(goal.get("case_refs", [])), len(goal.get("case_gaps", [])), rev))
+        return 0
     intake = cards.load_json(args.intake)
     out = run(intake, args.seat, args.build_id, args.now, os.path.abspath(args.root))
     for f in out["files"]:

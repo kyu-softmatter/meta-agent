@@ -1,9 +1,9 @@
-"""S3 Recall / Scan: deterministic matching in knowledge/ and cases/ (plan.md 5.1).
+"""S3 Recall / Scan, the knowledge half: deterministic matching in knowledge/ (plan.md 5.1).
 
 No model judgement here: an entry matches a need when every word of the
-need appears in the entry's title or tags; a case matches when it names
-the same tool or the same science task. What was searched is written
+need appears in the entry's title or tags. What was searched is written
 down whether or not anything was found, so a gap names where it looked.
+The cases half is src/cases/recall.py, which the Designer calls beside this.
 """
 import os
 import re
@@ -69,27 +69,8 @@ def recall_entries(needs, root):
     return found, gaps
 
 
-def recall_cases(goal, root):
-    cases_root = os.path.join(root, "cases")
-    searched = rel_repo(cases_root, root) + ("" if os.path.isdir(cases_root) else " (absent)")
-    tool = (goal.get("tool") or {}).get("name", "").lower()
-    task_w = words(goal.get("science_task"))
-    refs, gaps = [], []
-    for path, c in load_cards(cases_root, "case"):
-        same_tool = tool and tool == str(c.get("tool") or "").lower()
-        same_task = task_w and task_w <= words(c.get("science_task")) | words(c.get("title"))
-        if same_tool or same_task:
-            refs.append({"id": c["id"], "path": rel_repo(path, root),
-                         "note": "same tool" if same_tool else "same science task"})
-    if not refs:
-        gaps.append({"what": "a prior case for tool %s or task %r" % (tool or "(none)", goal.get("science_task")),
-                     "searched": [searched], "reason": "no case matched by tool or science task",
-                     "requires": "a case written after this agent's first failures"})
-    return refs, gaps
-
-
 def make_brief(goal, root, seat, now=None):
-    """Return (knowledge_brief card, case_refs, case_gaps); root is the meta_agent/ tree."""
+    """Return the knowledge_brief card; root is the meta_agent/ tree."""
     knowledge_root = os.path.join(root, "knowledge")
     needs = list(goal.get("knowledge_needs") or [])
     entries, kb_gaps = recall_entries(needs, root)
@@ -101,5 +82,4 @@ def make_brief(goal, root, seat, now=None):
     brief["status"] = "validated"
     if not needs:
         brief["note"] = "the goal names no knowledge need; the snapshot pins the knowledge version and copies no entry"
-    case_refs, case_gaps = recall_cases(goal, root)
-    return brief, case_refs, case_gaps
+    return brief

@@ -2,7 +2,8 @@
 
 The model makes no numbers here: `numbers` stays empty and the card is
 refused if any field would carry one. S3 attaches what recall found, or
-where it looked, as a second revision.
+where it looked, as the next revision: the Designer searches cases/ with
+`signature_of(goal)` (src/cases/recall.py) and hands the result here.
 """
 import re
 
@@ -54,8 +55,24 @@ def numbers_in(card):
     return out
 
 
+def signature_of(goal):
+    """What recall searches cases/ with for this goal (the `signature` of contracts/schemas/case.schema.json).
+
+    A goal states its science task, what the agent executes, its methods and its parameter scope; the
+    tool is the instrument or the engine when its kind says so. A goal names no observable, cause class
+    or condition, so those are left empty and not guessed.
+    """
+    tool = goal.get("tool") or {}
+    sig = {"science_task": goal.get("science_task") or "", "executes": goal.get("executes") or "none",
+           "methods": list(goal.get("methods") or []), "observables": [],
+           "parameter_names": list(goal.get("parameter_scope") or []), "condition_tags": []}
+    if tool.get("kind") in ("instrument", "engine") and tool.get("name"):
+        sig[tool["kind"]] = tool["name"]
+    return sig
+
+
 def attach_recall(goal, kb_refs, kb_gaps, case_refs, case_gaps, seat, now=None, status="validated"):
-    """S3's result on the goal: a second revision with refs, or gaps naming where it looked."""
+    """S3's result on the goal: the next revision with refs, or gaps naming where it looked."""
     v2 = dict(goal)
     v2["revision"] = goal["revision"] + 1
     v2["supersedes"] = goal["id"]
