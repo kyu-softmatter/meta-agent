@@ -1,0 +1,16 @@
+[
+  {
+    "tool": "status",
+    "input": {},
+    "output": {
+      "state": "idle",
+      "initialised": true,
+      "homed": true,
+      "fault": null,
+      "temperature": 298.15,
+      "gap": 5e-05,
+      "time": "2026-11-09T09:00:00Z",
+      "run_id": null
+    }
+  }
+]

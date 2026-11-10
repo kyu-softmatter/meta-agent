@@ -1,0 +1,44 @@
+[
+  {
+    "tool": "list_devices",
+    "input": {},
+    "output": {
+      "devices": [
+        {
+          "address": "mock:rheo-1",
+          "answers": true
+        }
+      ]
+    }
+  },
+  {
+    "tool": "open_session",
+    "input": {
+      "address": "mock:rheo-1"
+    },
+    "output": {
+      "session": "s-1"
+    }
+  },
+  {
+    "tool": "identify",
+    "input": {
+      "session": "s-1"
+    },
+    "output": {
+      "manufacturer": "Fixture Instruments",
+      "model": "FR-1",
+      "serial": "FX-0001",
+      "firmware": "1.0.0"
+    }
+  },
+  {
+    "tool": "close_session",
+    "input": {
+      "session": "s-1"
+    },
+    "output": {
+      "closed": true
+    }
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "tool": "status",
+    "output": {
+      "state": "idle",
+      "initialised": true,
+      "homed": true,
+      "fault": null,
+      "temperature": 298.15,
+      "gap": 5e-05,
+      "time": "2026-11-09T09:00:00Z",
+      "run_id": null
+    }
+  },
+  {
+    "tool": "set_shear_rate",
+    "input": {
+      "shear_rate": 10.0
+    },
+    "output": {
+      "ok": true
+    }
+  },
+  {
+    "tool": "start",
+    "input": {
+      "duration": 30.0
+    },
+    "output": {
+      "ok": true,
+      "run_id": "run-fx-1"
+    }
+  },
+  {
+    "tool": "status",
+    "output": {
+      "state": "running",
+      "initialised": true,
+      "homed": true,
+      "fault": null,
+      "temperature": 298.15,
+      "gap": 5e-05,
+      "time": "2026-11-09T09:00:00Z",
+      "run_id": "run-fx-1"
+    }
+  },
+  {
+    "tool": "status",
+    "output": {
+      "state": "idle",
+      "initialised": true,
+      "homed": true,
+      "fault": null,
+      "temperature": 298.15,
+      "gap": 5e-05,
+      "time": "2026-11-09T09:00:00Z",
+      "run_id": "run-fx-1"
+    }
+  },
+  {
+    "tool": "stop",
+    "input": {},
+    "output": {
+      "ok": true
+    }
+  }
+]

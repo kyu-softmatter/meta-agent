@@ -1,0 +1,32 @@
+[
+  {
+    "tool": "ranges",
+    "input": {},
+    "output": {
+      "modes": [
+        "steady_shear",
+        "oscillation"
+      ],
+      "ranges": [
+        {
+          "quantity": "torque",
+          "min": 1e-08,
+          "max": 0.2,
+          "unit": "N.m"
+        },
+        {
+          "quantity": "angular_velocity",
+          "min": 1e-06,
+          "max": 300.0,
+          "unit": "rad/s"
+        },
+        {
+          "quantity": "temperature",
+          "min": 253.15,
+          "max": 473.15,
+          "unit": "K"
+        }
+      ]
+    }
+  }
+]

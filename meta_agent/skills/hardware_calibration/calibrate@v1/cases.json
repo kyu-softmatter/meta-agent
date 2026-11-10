@@ -1,0 +1,428 @@
+[
+  {
+    "name": "self: the device's routine returns a calibration number with its expiry",
+    "inputs": {
+      "quantity": "motor_adjustment",
+      "self_calibration": [
+        {
+          "quantity": "motor_adjustment",
+          "mode": "self",
+          "claim": {
+            "claim": "the instrument maps its own motor with a built-in routine",
+            "kind": "observed",
+            "basis": "documentation",
+            "evidence": [
+              {
+                "source_ref": "fixture-rheometer-readme",
+                "locus": "## Calibration"
+              }
+            ]
+          }
+        },
+        {
+          "quantity": "torque",
+          "mode": "assisted",
+          "claim": {
+            "claim": "torque is checked against a certified viscosity standard a person loads",
+            "kind": "observed",
+            "basis": "documentation",
+            "evidence": [
+              {
+                "source_ref": "fixture-rheometer-readme",
+                "locus": "## Calibration"
+              }
+            ]
+          }
+        },
+        {
+          "quantity": "normal_force",
+          "mode": "unknown",
+          "claim": {
+            "claim": "how the normal force is calibrated",
+            "kind": "unknown",
+            "basis": "documentation",
+            "evidence": [],
+            "requires": "the section of the manual on the normal force transducer"
+          }
+        }
+      ],
+      "instrument": "fixture rheometer"
+    },
+    "transcript": [
+      {
+        "tool": "self_calibrate",
+        "input": {
+          "quantity": "motor_adjustment"
+        },
+        "output": {
+          "calibration_id": "cal-fx-0001",
+          "quantity": "motor_adjustment",
+          "value": 1.0,
+          "unit": "1",
+          "valid_until": "2027-05-09"
+        }
+      }
+    ],
+    "expect": {
+      "mode": "self",
+      "calibrated": true,
+      "calibration": {
+        "name": "motor_adjustment_calibration",
+        "value": 1.0,
+        "unit": "1",
+        "source": "calibration:cal-fx-0001",
+        "value_kind": "measured",
+        "expires": "2027-05-09"
+      }
+    },
+    "expect_calls": [
+      "self_calibrate"
+    ]
+  },
+  {
+    "name": "self: the gate refuses the routine and nothing follows",
+    "inputs": {
+      "quantity": "motor_adjustment",
+      "self_calibration": [
+        {
+          "quantity": "motor_adjustment",
+          "mode": "self",
+          "claim": {
+            "claim": "the instrument maps its own motor with a built-in routine",
+            "kind": "observed",
+            "basis": "documentation",
+            "evidence": [
+              {
+                "source_ref": "fixture-rheometer-readme",
+                "locus": "## Calibration"
+              }
+            ]
+          }
+        },
+        {
+          "quantity": "torque",
+          "mode": "assisted",
+          "claim": {
+            "claim": "torque is checked against a certified viscosity standard a person loads",
+            "kind": "observed",
+            "basis": "documentation",
+            "evidence": [
+              {
+                "source_ref": "fixture-rheometer-readme",
+                "locus": "## Calibration"
+              }
+            ]
+          }
+        },
+        {
+          "quantity": "normal_force",
+          "mode": "unknown",
+          "claim": {
+            "claim": "how the normal force is calibrated",
+            "kind": "unknown",
+            "basis": "documentation",
+            "evidence": [],
+            "requires": "the section of the manual on the normal force transducer"
+          }
+        }
+      ],
+      "instrument": "fixture rheometer"
+    },
+    "transcript": [
+      {
+        "tool": "self_calibrate",
+        "error": {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "GATE-SAFETY-001",
+          "category": "refused_by_safety",
+          "message": "the tool needs a safety gate and a safety value is not set",
+          "retryable": false,
+          "remediation": {
+            "action": "a person sets the values in envelope/safety.json at the destination"
+          }
+        }
+      }
+    ],
+    "expect": {
+      "mode": "self",
+      "calibrated": false,
+      "refused": true,
+      "error": {
+        "category": "refused_by_safety"
+      }
+    },
+    "expect_calls": [
+      "self_calibrate"
+    ]
+  },
+  {
+    "name": "self: a routine that returns no expiry gives no number",
+    "inputs": {
+      "quantity": "motor_adjustment",
+      "self_calibration": [
+        {
+          "quantity": "motor_adjustment",
+          "mode": "self",
+          "claim": {
+            "claim": "the instrument maps its own motor with a built-in routine",
+            "kind": "observed",
+            "basis": "documentation",
+            "evidence": [
+              {
+                "source_ref": "fixture-rheometer-readme",
+                "locus": "## Calibration"
+              }
+            ]
+          }
+        },
+        {
+          "quantity": "torque",
+          "mode": "assisted",
+          "claim": {
+            "claim": "torque is checked against a certified viscosity standard a person loads",
+            "kind": "observed",
+            "basis": "documentation",
+            "evidence": [
+              {
+                "source_ref": "fixture-rheometer-readme",
+                "locus": "## Calibration"
+              }
+            ]
+          }
+        },
+        {
+          "quantity": "normal_force",
+          "mode": "unknown",
+          "claim": {
+            "claim": "how the normal force is calibrated",
+            "kind": "unknown",
+            "basis": "documentation",
+            "evidence": [],
+            "requires": "the section of the manual on the normal force transducer"
+          }
+        }
+      ],
+      "instrument": "fixture rheometer"
+    },
+    "transcript": [
+      {
+        "tool": "self_calibrate",
+        "output": {
+          "calibration_id": "cal-fx-0002",
+          "quantity": "motor_adjustment",
+          "value": 1.0,
+          "unit": "1"
+        }
+      }
+    ],
+    "expect": {
+      "mode": "self",
+      "calibrated": false
+    },
+    "expect_calls": [
+      "self_calibrate"
+    ]
+  },
+  {
+    "name": "assisted: no tool call, a draft design with the person's questions open",
+    "inputs": {
+      "quantity": "torque",
+      "self_calibration": [
+        {
+          "quantity": "motor_adjustment",
+          "mode": "self",
+          "claim": {
+            "claim": "the instrument maps its own motor with a built-in routine",
+            "kind": "observed",
+            "basis": "documentation",
+            "evidence": [
+              {
+                "source_ref": "fixture-rheometer-readme",
+                "locus": "## Calibration"
+              }
+            ]
+          }
+        },
+        {
+          "quantity": "torque",
+          "mode": "assisted",
+          "claim": {
+            "claim": "torque is checked against a certified viscosity standard a person loads",
+            "kind": "observed",
+            "basis": "documentation",
+            "evidence": [
+              {
+                "source_ref": "fixture-rheometer-readme",
+                "locus": "## Calibration"
+              }
+            ]
+          }
+        },
+        {
+          "quantity": "normal_force",
+          "mode": "unknown",
+          "claim": {
+            "claim": "how the normal force is calibrated",
+            "kind": "unknown",
+            "basis": "documentation",
+            "evidence": [],
+            "requires": "the section of the manual on the normal force transducer"
+          }
+        }
+      ],
+      "instrument": "fixture rheometer"
+    },
+    "transcript": [],
+    "expect": {
+      "mode": "assisted",
+      "calibrated": false,
+      "calibration_design": {
+        "card": "calibration_design",
+        "status": "draft",
+        "quantity": "torque",
+        "mode": "assisted",
+        "instrument": "fixture rheometer",
+        "reference": {
+          "what": null,
+          "traceability": null
+        },
+        "interval": null,
+        "acceptance": {
+          "limit": null,
+          "author": null
+        },
+        "confirmed_by": null
+      },
+      "open_questions": [
+        "Which reference for torque is in the laboratory, and what does its certificate say (lot, value, valid until)?",
+        "What difference between the reference and the reading do you accept?",
+        "How often should this be repeated?"
+      ]
+    },
+    "expect_calls": []
+  },
+  {
+    "name": "unknown: a gap naming what would settle it, and no tool call",
+    "inputs": {
+      "quantity": "normal_force",
+      "self_calibration": [
+        {
+          "quantity": "motor_adjustment",
+          "mode": "self",
+          "claim": {
+            "claim": "the instrument maps its own motor with a built-in routine",
+            "kind": "observed",
+            "basis": "documentation",
+            "evidence": [
+              {
+                "source_ref": "fixture-rheometer-readme",
+                "locus": "## Calibration"
+              }
+            ]
+          }
+        },
+        {
+          "quantity": "torque",
+          "mode": "assisted",
+          "claim": {
+            "claim": "torque is checked against a certified viscosity standard a person loads",
+            "kind": "observed",
+            "basis": "documentation",
+            "evidence": [
+              {
+                "source_ref": "fixture-rheometer-readme",
+                "locus": "## Calibration"
+              }
+            ]
+          }
+        },
+        {
+          "quantity": "normal_force",
+          "mode": "unknown",
+          "claim": {
+            "claim": "how the normal force is calibrated",
+            "kind": "unknown",
+            "basis": "documentation",
+            "evidence": [],
+            "requires": "the section of the manual on the normal force transducer"
+          }
+        }
+      ],
+      "instrument": "fixture rheometer"
+    },
+    "transcript": [],
+    "expect": {
+      "mode": "unknown",
+      "calibrated": false,
+      "gap": {
+        "what": "whether the device calibrates normal_force itself",
+        "searched": [
+          "tool_profile.self_calibration"
+        ],
+        "requires": "the section of the manual on the normal force transducer"
+      }
+    },
+    "expect_calls": []
+  },
+  {
+    "name": "a quantity the profile does not name is unknown, never assumed self",
+    "inputs": {
+      "quantity": "temperature",
+      "self_calibration": [
+        {
+          "quantity": "motor_adjustment",
+          "mode": "self",
+          "claim": {
+            "claim": "the instrument maps its own motor with a built-in routine",
+            "kind": "observed",
+            "basis": "documentation",
+            "evidence": [
+              {
+                "source_ref": "fixture-rheometer-readme",
+                "locus": "## Calibration"
+              }
+            ]
+          }
+        },
+        {
+          "quantity": "torque",
+          "mode": "assisted",
+          "claim": {
+            "claim": "torque is checked against a certified viscosity standard a person loads",
+            "kind": "observed",
+            "basis": "documentation",
+            "evidence": [
+              {
+                "source_ref": "fixture-rheometer-readme",
+                "locus": "## Calibration"
+              }
+            ]
+          }
+        },
+        {
+          "quantity": "normal_force",
+          "mode": "unknown",
+          "claim": {
+            "claim": "how the normal force is calibrated",
+            "kind": "unknown",
+            "basis": "documentation",
+            "evidence": [],
+            "requires": "the section of the manual on the normal force transducer"
+          }
+        }
+      ],
+      "instrument": "fixture rheometer"
+    },
+    "transcript": [],
+    "expect": {
+      "mode": "unknown",
+      "calibrated": false
+    },
+    "expect_calls": []
+  },
+  {
+    "name": "on the bench",
+    "not_run": "requires bench"
+  }
+]

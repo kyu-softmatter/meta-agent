@@ -1,0 +1,103 @@
+{
+  "schema_version": "0.1",
+  "id": "run_steady_shear",
+  "version": 1,
+  "kind": "hardware_control",
+  "side_effect": "write_device",
+  "status": "held",
+  "summary": "runs one steady shear step at the plan's shear rate and duration, then stops the motor",
+  "applies_to": {
+    "methods": [
+      "rheometry"
+    ],
+    "instruments": [
+      "lab_rheometer"
+    ],
+    "parameters": [
+      "shear_rate"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "shear_rate",
+      "unit": "1/s",
+      "meaning": "the shear rate the plan gives for this step"
+    },
+    {
+      "name": "duration",
+      "unit": "s",
+      "meaning": "how long the plan holds the rate"
+    },
+    {
+      "name": "max_polls",
+      "unit": "1",
+      "meaning": "how many times the caller lets the skill read the state while the step runs"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "completed",
+      "unit": "1",
+      "meaning": "true when the device returned to ready by itself and stop was called"
+    },
+    {
+      "name": "stopped_at",
+      "unit": "1",
+      "meaning": "check_state | set | start | poll, or null when completed"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why it stopped"
+    },
+    {
+      "name": "refused",
+      "unit": "1",
+      "meaning": "true when the gate refused the call it stopped at"
+    },
+    {
+      "name": "error",
+      "unit": "1",
+      "meaning": "the error contract a tool returned, unchanged"
+    },
+    {
+      "name": "verdict",
+      "unit": "1",
+      "meaning": "the last verdict of read_status"
+    },
+    {
+      "name": "run_id",
+      "unit": "1",
+      "meaning": "the run id the start tool returned"
+    },
+    {
+      "name": "polls",
+      "unit": "1",
+      "meaning": "how many times the state was read while the step ran"
+    },
+    {
+      "name": "stop_confirmed",
+      "unit": "1",
+      "meaning": "true when the stop tool answered without an error"
+    }
+  ],
+  "calls_tools": [
+    "set_shear_rate",
+    "start",
+    "stop"
+  ],
+  "uses_skills": [
+    "read_status@v1"
+  ],
+  "entry": {
+    "script": "scripts/run_steady_shear.py",
+    "function": "run_steady_shear"
+  },
+  "validity": "a device whose start runs one step and returns to idle by itself; the order follows the gate's order of docs/reference/sma_read_20261108.md 7, the checks themselves being the gate's",
+  "source": {
+    "citation": "the fixture rheometer profile, meta_agent/tests/fixtures/rheometer/README.md",
+    "locus": "its steady shear procedure: set_shear_rate, start, stop"
+  },
+  "cases": "cases.json",
+  "note": "Held, on recorded transcripts, and never run against a device from this repository (MP1)."
+}

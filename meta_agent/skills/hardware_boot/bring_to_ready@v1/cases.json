@@ -1,0 +1,353 @@
+[
+  {
+    "name": "a person's step not confirmed: it waits and calls nothing",
+    "inputs": {
+      "person_confirmed": [
+        1
+      ]
+    },
+    "transcript": [],
+    "expect": {
+      "ready": false,
+      "stopped_at": 2,
+      "waiting_for": "person"
+    },
+    "expect_calls": []
+  },
+  {
+    "name": "the whole sequence on a device that answers",
+    "inputs": {
+      "person_confirmed": [
+        1,
+        2
+      ]
+    },
+    "transcript": [
+      {
+        "tool": "initialise",
+        "input": {},
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": false,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      },
+      {
+        "tool": "home",
+        "input": {},
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      }
+    ],
+    "expect": {
+      "ready": true,
+      "stopped_at": null,
+      "verdict": "ready"
+    },
+    "expect_calls": [
+      "initialise",
+      "status",
+      "home",
+      "status",
+      "status"
+    ]
+  },
+  {
+    "name": "the gate refuses the first device step: no call after it",
+    "inputs": {
+      "person_confirmed": [
+        1,
+        2
+      ]
+    },
+    "transcript": [
+      {
+        "tool": "initialise",
+        "error": {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "GATE-SAFETY-001",
+          "category": "refused_by_safety",
+          "message": "the tool needs a safety gate and a safety value is not set",
+          "retryable": false,
+          "remediation": {
+            "action": "a person sets the values in envelope/safety.json at the destination"
+          }
+        }
+      }
+    ],
+    "expect": {
+      "ready": false,
+      "stopped_at": 3,
+      "refused": true,
+      "error": {
+        "category": "refused_by_safety"
+      }
+    },
+    "expect_calls": [
+      "initialise"
+    ]
+  },
+  {
+    "name": "the gate refuses home: initialise was verified and nothing follows the refusal",
+    "inputs": {
+      "person_confirmed": [
+        1,
+        2
+      ]
+    },
+    "transcript": [
+      {
+        "tool": "initialise",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": false,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      },
+      {
+        "tool": "home",
+        "error": {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "GATE-SAFETY-001",
+          "category": "refused_by_safety",
+          "message": "the tool needs a safety gate and a safety value is not set",
+          "retryable": false,
+          "remediation": {
+            "action": "a person sets the values in envelope/safety.json at the destination"
+          }
+        }
+      }
+    ],
+    "expect": {
+      "ready": false,
+      "stopped_at": 4,
+      "refused": true
+    },
+    "expect_calls": [
+      "initialise",
+      "status",
+      "home"
+    ]
+  },
+  {
+    "name": "a verification fails: it stops there and does not home",
+    "inputs": {
+      "person_confirmed": [
+        1,
+        2
+      ]
+    },
+    "transcript": [
+      {
+        "tool": "initialise",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": false,
+          "homed": false,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      }
+    ],
+    "expect": {
+      "ready": false,
+      "stopped_at": 3,
+      "verdict": "unknown"
+    },
+    "expect_calls": [
+      "initialise",
+      "status"
+    ]
+  },
+  {
+    "name": "the second verification fails: homed is not read back, it stops at home",
+    "inputs": {
+      "person_confirmed": [
+        1,
+        2
+      ]
+    },
+    "transcript": [
+      {
+        "tool": "initialise",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": false,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      },
+      {
+        "tool": "home",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": false,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      }
+    ],
+    "expect": {
+      "ready": false,
+      "stopped_at": 4,
+      "verdict": "unknown"
+    },
+    "expect_calls": [
+      "initialise",
+      "status",
+      "home",
+      "status"
+    ]
+  },
+  {
+    "name": "homed is read back but the device reports a fault: not ready",
+    "inputs": {
+      "person_confirmed": [
+        1,
+        2
+      ]
+    },
+    "transcript": [
+      {
+        "tool": "initialise",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": false,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      },
+      {
+        "tool": "home",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": "air pressure low",
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      }
+    ],
+    "expect": {
+      "ready": false,
+      "stopped_at": 5,
+      "verdict": "fault"
+    }
+  },
+  {
+    "name": "on the bench",
+    "not_run": "requires bench"
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "tool": "self_calibrate",
+    "input": {
+      "quantity": "motor_adjustment"
+    },
+    "output": {
+      "calibration_id": "cal-fx-0001",
+      "quantity": "motor_adjustment",
+      "value": 1.0,
+      "unit": "1",
+      "valid_until": "2027-05-09"
+    }
+  }
+]

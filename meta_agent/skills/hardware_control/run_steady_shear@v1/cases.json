@@ -1,0 +1,458 @@
+[
+  {
+    "name": "the whole step on a device that answers",
+    "inputs": {
+      "shear_rate": 10.0,
+      "duration": 30.0,
+      "max_polls": 3
+    },
+    "transcript": [
+      {
+        "tool": "status",
+        "input": {},
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      },
+      {
+        "tool": "set_shear_rate",
+        "input": {
+          "shear_rate": 10.0
+        },
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "start",
+        "input": {
+          "duration": 30.0
+        },
+        "output": {
+          "ok": true,
+          "run_id": "run-fx-1"
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "running",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": "run-fx-1"
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": "run-fx-1"
+        }
+      },
+      {
+        "tool": "stop",
+        "input": {},
+        "output": {
+          "ok": true
+        }
+      }
+    ],
+    "expect": {
+      "completed": true,
+      "stopped_at": null,
+      "run_id": "run-fx-1",
+      "polls": 2,
+      "verdict": "ready",
+      "stop_confirmed": true
+    },
+    "expect_calls": [
+      "status",
+      "set_shear_rate",
+      "start",
+      "status",
+      "status",
+      "stop"
+    ]
+  },
+  {
+    "name": "the device is not ready: nothing is set",
+    "inputs": {
+      "shear_rate": 10.0,
+      "duration": 30.0,
+      "max_polls": 3
+    },
+    "transcript": [
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": false,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      }
+    ],
+    "expect": {
+      "completed": false,
+      "stopped_at": "check_state",
+      "verdict": "unknown"
+    },
+    "expect_calls": [
+      "status"
+    ]
+  },
+  {
+    "name": "the gate refuses the setting: no call after it",
+    "inputs": {
+      "shear_rate": 10.0,
+      "duration": 30.0,
+      "max_polls": 3
+    },
+    "transcript": [
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      },
+      {
+        "tool": "set_shear_rate",
+        "error": {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "GATE-SAFETY-001",
+          "category": "refused_by_safety",
+          "message": "the tool needs a safety gate and a safety value is not set",
+          "retryable": false,
+          "remediation": {
+            "action": "a person sets the values in envelope/safety.json at the destination"
+          }
+        }
+      }
+    ],
+    "expect": {
+      "completed": false,
+      "stopped_at": "set",
+      "refused": true,
+      "error": {
+        "category": "refused_by_safety"
+      }
+    },
+    "expect_calls": [
+      "status",
+      "set_shear_rate"
+    ]
+  },
+  {
+    "name": "the gate refuses the start: no call after it, not even stop",
+    "inputs": {
+      "shear_rate": 10.0,
+      "duration": 30.0,
+      "max_polls": 3
+    },
+    "transcript": [
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      },
+      {
+        "tool": "set_shear_rate",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "start",
+        "error": {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "GATE-SAFETY-001",
+          "category": "refused_by_safety",
+          "message": "the tool needs a safety gate and a safety value is not set",
+          "retryable": false,
+          "remediation": {
+            "action": "a person sets the values in envelope/safety.json at the destination"
+          }
+        }
+      }
+    ],
+    "expect": {
+      "completed": false,
+      "stopped_at": "start",
+      "refused": true
+    },
+    "expect_calls": [
+      "status",
+      "set_shear_rate",
+      "start"
+    ]
+  },
+  {
+    "name": "the start fails without a refusal: stop is called",
+    "inputs": {
+      "shear_rate": 10.0,
+      "duration": 30.0,
+      "max_polls": 3
+    },
+    "transcript": [
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      },
+      {
+        "tool": "set_shear_rate",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "start",
+        "error": {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-UNAVAILABLE-001",
+          "category": "unavailable",
+          "message": "no reply from the instrument",
+          "retryable": true,
+          "remediation": {
+            "action": "check the connection"
+          }
+        }
+      },
+      {
+        "tool": "stop",
+        "output": {
+          "ok": true
+        }
+      }
+    ],
+    "expect": {
+      "completed": false,
+      "stopped_at": "start",
+      "refused": false,
+      "stop_confirmed": true
+    },
+    "expect_calls": [
+      "status",
+      "set_shear_rate",
+      "start",
+      "stop"
+    ]
+  },
+  {
+    "name": "still running after the polls the caller allowed: stop is called",
+    "inputs": {
+      "shear_rate": 10.0,
+      "duration": 30.0,
+      "max_polls": 3
+    },
+    "transcript": [
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      },
+      {
+        "tool": "set_shear_rate",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "start",
+        "output": {
+          "ok": true,
+          "run_id": "run-fx-1"
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "running",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": "run-fx-1"
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "running",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": "run-fx-1"
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "running",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": "run-fx-1"
+        }
+      },
+      {
+        "tool": "stop",
+        "output": {
+          "ok": true
+        }
+      }
+    ],
+    "expect": {
+      "completed": false,
+      "stopped_at": "poll",
+      "polls": 3,
+      "verdict": "busy",
+      "stop_confirmed": true
+    },
+    "expect_calls": [
+      "status",
+      "set_shear_rate",
+      "start",
+      "status",
+      "status",
+      "status",
+      "stop"
+    ]
+  },
+  {
+    "name": "a fault during the step: stop is called and the step is not completed",
+    "inputs": {
+      "shear_rate": 10.0,
+      "duration": 30.0,
+      "max_polls": 3
+    },
+    "transcript": [
+      {
+        "tool": "status",
+        "output": {
+          "state": "idle",
+          "initialised": true,
+          "homed": true,
+          "fault": null,
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": null
+        }
+      },
+      {
+        "tool": "set_shear_rate",
+        "output": {
+          "ok": true
+        }
+      },
+      {
+        "tool": "start",
+        "output": {
+          "ok": true,
+          "run_id": "run-fx-1"
+        }
+      },
+      {
+        "tool": "status",
+        "output": {
+          "state": "running",
+          "initialised": true,
+          "homed": true,
+          "fault": "torque overload",
+          "temperature": 298.15,
+          "gap": 5e-05,
+          "time": "2026-11-09T09:00:00Z",
+          "run_id": "run-fx-1"
+        }
+      },
+      {
+        "tool": "stop",
+        "output": {
+          "ok": true
+        }
+      }
+    ],
+    "expect": {
+      "completed": false,
+      "stopped_at": "poll",
+      "verdict": "fault",
+      "polls": 1,
+      "stop_confirmed": true
+    },
+    "expect_calls": [
+      "status",
+      "set_shear_rate",
+      "start",
+      "status",
+      "stop"
+    ]
+  },
+  {
+    "name": "on the bench",
+    "not_run": "requires bench"
+  }
+]

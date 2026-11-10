@@ -1,0 +1,16 @@
+[
+  {
+    "tool": "self_calibrate",
+    "error": {
+      "artifact": "error_contract",
+      "schema_version": "0.1",
+      "code": "GATE-SAFETY-001",
+      "category": "refused_by_safety",
+      "message": "the tool needs a safety gate and a safety value is not set",
+      "retryable": false,
+      "remediation": {
+        "action": "a person sets the values in envelope/safety.json at the destination"
+      }
+    }
+  }
+]

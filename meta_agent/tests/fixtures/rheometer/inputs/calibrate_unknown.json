@@ -1,0 +1,47 @@
+{
+  "quantity": "normal_force",
+  "self_calibration": [
+    {
+      "quantity": "motor_adjustment",
+      "mode": "self",
+      "claim": {
+        "claim": "the instrument maps its own motor with a built-in routine",
+        "kind": "observed",
+        "basis": "documentation",
+        "evidence": [
+          {
+            "source_ref": "fixture-rheometer-readme",
+            "locus": "## Calibration"
+          }
+        ]
+      }
+    },
+    {
+      "quantity": "torque",
+      "mode": "assisted",
+      "claim": {
+        "claim": "torque is checked against a certified viscosity standard a person loads",
+        "kind": "observed",
+        "basis": "documentation",
+        "evidence": [
+          {
+            "source_ref": "fixture-rheometer-readme",
+            "locus": "## Calibration"
+          }
+        ]
+      }
+    },
+    {
+      "quantity": "normal_force",
+      "mode": "unknown",
+      "claim": {
+        "claim": "how the normal force is calibrated",
+        "kind": "unknown",
+        "basis": "documentation",
+        "evidence": [],
+        "requires": "the section of the manual on the normal force transducer"
+      }
+    }
+  ],
+  "instrument": "fixture rheometer"
+}

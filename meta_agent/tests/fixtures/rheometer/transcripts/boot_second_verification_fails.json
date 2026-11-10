@@ -1,0 +1,40 @@
+[
+  {
+    "tool": "initialise",
+    "output": {
+      "ok": true
+    }
+  },
+  {
+    "tool": "status",
+    "output": {
+      "state": "idle",
+      "initialised": true,
+      "homed": false,
+      "fault": null,
+      "temperature": 298.15,
+      "gap": 5e-05,
+      "time": "2026-11-09T09:00:00Z",
+      "run_id": null
+    }
+  },
+  {
+    "tool": "home",
+    "output": {
+      "ok": true
+    }
+  },
+  {
+    "tool": "status",
+    "output": {
+      "state": "idle",
+      "initialised": true,
+      "homed": false,
+      "fault": null,
+      "temperature": 298.15,
+      "gap": 5e-05,
+      "time": "2026-11-09T09:00:00Z",
+      "run_id": null
+    }
+  }
+]

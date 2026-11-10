@@ -1,0 +1,75 @@
+{
+  "schema_version": "0.1",
+  "id": "find_and_identify",
+  "version": 1,
+  "kind": "hardware_connection",
+  "side_effect": "read_device",
+  "status": "usable",
+  "summary": "lists what answers, opens one session, reads the instrument's identity and closes the session",
+  "applies_to": {
+    "instruments": [
+      "lab_rheometer"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "address",
+      "unit": "1",
+      "meaning": "the address to open, or null to open the only instrument that answers"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "identified",
+      "unit": "1",
+      "meaning": "true when an identity was read"
+    },
+    {
+      "name": "found",
+      "unit": "1",
+      "meaning": "the addresses that answered"
+    },
+    {
+      "name": "address",
+      "unit": "1",
+      "meaning": "the address that was opened"
+    },
+    {
+      "name": "identity",
+      "unit": "1",
+      "meaning": "observed claims, one per field read: field, value, kind, tool"
+    },
+    {
+      "name": "session_closed",
+      "unit": "1",
+      "meaning": "true when the session it opened was closed again"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why no identity was read"
+    },
+    {
+      "name": "error",
+      "unit": "1",
+      "meaning": "the error contract a tool returned, unchanged"
+    }
+  ],
+  "calls_tools": [
+    "list_devices",
+    "open_session",
+    "identify",
+    "close_session"
+  ],
+  "entry": {
+    "script": "scripts/find_and_identify.py",
+    "function": "find_and_identify"
+  },
+  "validity": "an instrument whose tools list what answers and identify one session at a time",
+  "source": {
+    "citation": "the fixture rheometer profile, meta_agent/tests/fixtures/rheometer/README.md",
+    "locus": "its tools list_devices, open_session, identify and close_session"
+  },
+  "cases": "cases.json",
+  "note": "On recorded transcripts; no device was read (MP1)."
+}

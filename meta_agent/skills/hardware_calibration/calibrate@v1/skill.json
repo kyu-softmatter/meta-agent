@@ -1,0 +1,92 @@
+{
+  "schema_version": "0.1",
+  "id": "calibrate",
+  "version": 1,
+  "kind": "hardware_calibration",
+  "side_effect": "write_device",
+  "status": "held",
+  "summary": "calibrates one quantity as the profile says the device allows: its own routine, a design drafted with the person, or a gap",
+  "applies_to": {
+    "instruments": [
+      "lab_rheometer"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "quantity",
+      "unit": "1",
+      "meaning": "the quantity to calibrate, as the tool profile names it"
+    },
+    {
+      "name": "self_calibration",
+      "unit": "1",
+      "meaning": "the tool profile's self_calibration list, unchanged: quantity, mode, claim"
+    },
+    {
+      "name": "instrument",
+      "unit": "1",
+      "meaning": "the instrument's name, for the design draft"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "mode",
+      "unit": "1",
+      "meaning": "self | assisted | unknown, read off the profile's claim"
+    },
+    {
+      "name": "calibrated",
+      "unit": "1",
+      "meaning": "true only when the device's routine returned a number with an id and an expiry"
+    },
+    {
+      "name": "calibration",
+      "unit": "1",
+      "meaning": "self: name, value, unit, source calibration:<id>, value_kind, expires; no grade is stated"
+    },
+    {
+      "name": "calibration_design",
+      "unit": "1",
+      "meaning": "assisted: a calibration_design draft; reference, interval and limit are the person's"
+    },
+    {
+      "name": "open_questions",
+      "unit": "1",
+      "meaning": "assisted: what the person is asked before the design can be confirmed"
+    },
+    {
+      "name": "gap",
+      "unit": "1",
+      "meaning": "unknown: what, where it was looked for, and what would settle it"
+    },
+    {
+      "name": "refused",
+      "unit": "1",
+      "meaning": "self: true when the gate refused the routine"
+    },
+    {
+      "name": "error",
+      "unit": "1",
+      "meaning": "the error contract the tool returned, unchanged"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why no calibration number was returned"
+    }
+  ],
+  "calls_tools": [
+    "self_calibrate"
+  ],
+  "entry": {
+    "script": "scripts/calibrate.py",
+    "function": "calibrate"
+  },
+  "validity": "a tool profile whose self_calibration list names the quantity; the routine is the fixture profile's self_calibrate",
+  "source": {
+    "citation": "the fixture rheometer profile, meta_agent/tests/fixtures/rheometer/README.md",
+    "locus": "its self_calibration claims and its self_calibrate routine"
+  },
+  "cases": "cases.json",
+  "note": "Held, on recorded transcripts, and never run against a device from this repository (MP1). The draft it returns becomes a calibration_design card only when a seat gives it an id and the person answers its questions."
+}
