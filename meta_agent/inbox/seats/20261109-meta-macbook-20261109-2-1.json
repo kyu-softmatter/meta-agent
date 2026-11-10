@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261109-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "010",
+  "answers": null,
+  "text": "agent_spec.schema.json has no field for the skills or the subagents a specification names, and additionalProperties is false, so a spec card cannot carry the drawing the person is to see (plan.md 14-31(h), tasks/010 Method). Proposed: skills: [\"<id>@v<n>\"] and subagents: [{name, description, skills: [\"<id>@v<n>\"], side_effects: [none|read_device|write_device]}], both optional. Until it lands, meta_agent/src/build/bundle.py takes the same two lists as arguments (compose(..., skills=, subagents=)) and the fixture build keeps them in its intake file, with the held skills named in the spec's held[]. Second, smaller: meta_agent/src/skills/runner.py calls contracts/tools/skills.py's _call and _Tools, which are underscore names; if they are meant to be the public way to run an entry and replay a transcript, public names would say so. Nothing of mine waits on either answer.",
+  "written_at": "2026-11-09T18:20:03-08:00"
+}
