@@ -20,6 +20,7 @@ Requires jsonschema (Anaconda ships it). Without it the script re-executes itsel
 `uv run --offline --no-project --with jsonschema` when uv is present, and otherwise refuses to judge.
 """
 import argparse
+import datetime
 import json
 import os
 import re
@@ -307,7 +308,23 @@ def seat_for(c, email):
     return None
 
 
-def check6_changes(c, report, email, changes, label, report_only=False):
+def check6_changes(c, report, email, changes, label, report_only=False, old_new=None, day=None):
+    # A session adding its own entry to seats.json (the person's standing rule of 2026-11-09): judged by the
+    # rule, against the table as it was before the commit, and only as a commit of its own.
+    touched = [st for st, path in changes if path == seat_rules.SEATS_REL and st[:1] == "M"]
+    if old_new is not None and touched:
+        old, new = old_new(seat_rules.SEATS_REL)
+        candidate, problems = seat_rules.self_registration(old, new, email, day)
+        if candidate:
+            if len(changes) > 1:
+                problems = problems + ["a self-registration is its own commit, before any other work; this one "
+                                       "also touches %s" % ", ".join(p for _, p in changes if p != seat_rules.SEATS_REL)]
+            for msg in problems:
+                if report_only:
+                    report.pending(6, label, "self-registration: %s (at or before enforced_from, reported only)" % msg)
+                else:
+                    report.fail(6, label, "self-registration: " + msg)
+            return
     seat = seat_for(c, email)
     if seat is None:
         mode = c.seats.get("unknown_committer", "report")
@@ -426,34 +443,40 @@ def run_staged(c, report):
     email = committer_email()
     changes = parse_name_status(git("diff", "--cached", "--name-status", "-M"))
     label = "index (committer %s)" % email
-    check6_changes(c, report, email, changes, label)
 
     def old_new(path):
         old = git("show", "HEAD:" + path, check=False)
         new = git("show", ":" + path, check=False)
         return old, new
+    check6_changes(c, report, email, changes, label, old_new=old_new, day=datetime.date.today().strftime("%Y%m%d"))
     check7_changes(c, report, changes, label, old_new)
     return len(changes)
 
 
 def run_commit_range(c, report, spec):
-    out = git("log", "--format=%H%x00%ce", "--no-merges", spec)
+    out = git("log", "--format=%H%x00%ce%x00%cs", "--no-merges", spec)
     n = 0
     epoch = c.seats.get("enforced_from")
+    rule_epoch = c.seats.get("self_registration_from")
     for line in out.splitlines():
         if not line.strip():
             continue
-        sha, email = line.split("\x00")
+        sha, email, day = line.split("\x00")
         changes = parse_name_status(git("show", "--name-status", "--format=", "-M", sha))
         report_only = False
         if epoch:
             p = subprocess.run(["git", "merge-base", "--is-ancestor", sha, epoch], cwd=REPO, capture_output=True)
             report_only = (p.returncode == 0)
         label = "commit %s (committer %s)" % (sha[:7], email)
-        check6_changes(c, report, email, changes, label, report_only=report_only)
 
         def old_new(path, sha=sha):
             return git("show", "%s^:%s" % (sha, path), check=False), git("show", "%s:%s" % (sha, path), check=False)
+        before_rule = False
+        if rule_epoch:
+            p = subprocess.run(["git", "merge-base", "--is-ancestor", sha, rule_epoch], cwd=REPO, capture_output=True)
+            before_rule = (p.returncode == 0)
+        check6_changes(c, report, email, changes, label, report_only=report_only,
+                       old_new=None if before_rule else old_new, day=day.replace("-", ""))
         check7_changes(c, report, changes, label, old_new)
         n += 1
     return n
@@ -1274,7 +1297,12 @@ def run_scenario(path, c, report, checks):
     if sc.get("check") == 6 and 6 in checks and isinstance(sc.get("seats"), dict):
         check6_table(sc["seats"], report, label)
     if sc.get("check") == 6 and 6 in checks and (changes or "seats" not in sc):
-        check6_changes(c, report, sc.get("committer_email"), changes, label, report_only=sc.get("report_only", False))
+        texts = None
+        if "old" in sc or "new" in sc:
+            def texts(p):
+                return sc.get("old", {}).get(p), sc.get("new", {}).get(p)
+        check6_changes(c, report, sc.get("committer_email"), changes, label, report_only=sc.get("report_only", False),
+                       old_new=texts, day=sc.get("day"))
     if sc.get("check") == 7 and 7 in checks:
         old = sc.get("old", {})
         new = sc.get("new", {})

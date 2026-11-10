@@ -1,0 +1,18 @@
+{
+  "check": 6,
+  "note": "A registered meta seat adds an entry for another identity: not its own entry, so the ordinary boundary applies and contracts/ is not a meta seat's. (Refused before the self-registration rule existed as well.)",
+  "committer_email": "meta-office-20261029-1@seat.invalid",
+  "day": "20261109",
+  "changes": [
+    {
+      "status": "M",
+      "path": "contracts/seats.json"
+    }
+  ],
+  "old": {
+    "contracts/seats.json": "{\n \"machines\": {\n  \"office\": \"a computer\"\n },\n \"roles\": {\n  \"design\": {\n   \"paths\": [\n    \"*\",\n    \"contracts/\"\n   ],\n   \"excludes\": [],\n   \"owns\": [\n    \"design\"\n   ]\n  },\n  \"meta\": {\n   \"paths\": [\n    \"meta_agent/\"\n   ],\n   \"excludes\": [\n    \"meta_agent/CLAUDE.md\",\n    \"meta_agent/.claude/\"\n   ],\n   \"owns\": [\n    \"meta_agent\"\n   ]\n  }\n },\n \"seats\": [\n  {\n   \"seat\": \"design-office-20261029-1\",\n   \"committer_email\": \"design-office-20261029-1@seat.invalid\",\n   \"role\": \"design\",\n   \"machine\": \"office\",\n   \"seated_by\": \"the person, 2026-10-29\",\n   \"status\": \"active\",\n   \"owns\": [\n    \"design\"\n   ],\n   \"paths\": [\n    \"*\",\n    \"contracts/\"\n   ],\n   \"excludes\": []\n  }\n ]\n}"
+  },
+  "new": {
+    "contracts/seats.json": "{\n \"machines\": {\n  \"office\": \"a computer\"\n },\n \"roles\": {\n  \"design\": {\n   \"paths\": [\n    \"*\",\n    \"contracts/\"\n   ],\n   \"excludes\": [],\n   \"owns\": [\n    \"design\"\n   ]\n  },\n  \"meta\": {\n   \"paths\": [\n    \"meta_agent/\"\n   ],\n   \"excludes\": [\n    \"meta_agent/CLAUDE.md\",\n    \"meta_agent/.claude/\"\n   ],\n   \"owns\": [\n    \"meta_agent\"\n   ]\n  }\n },\n \"seats\": [\n  {\n   \"seat\": \"design-office-20261029-1\",\n   \"committer_email\": \"design-office-20261029-1@seat.invalid\",\n   \"role\": \"design\",\n   \"machine\": \"office\",\n   \"seated_by\": \"the person, 2026-10-29\",\n   \"status\": \"active\",\n   \"owns\": [\n    \"design\"\n   ],\n   \"paths\": [\n    \"*\",\n    \"contracts/\"\n   ],\n   \"excludes\": []\n  },\n  {\n   \"seat\": \"meta-office-20261109-1\",\n   \"committer_email\": \"meta-office-20261109-1@seat.invalid\",\n   \"role\": \"meta\",\n   \"machine\": \"office\",\n   \"seated_by\": \"self, under the person's standing rule of 2026-11-09\",\n   \"status\": \"active\",\n   \"owns\": [\n    \"meta_agent\"\n   ],\n   \"paths\": [\n    \"meta_agent/\"\n   ],\n   \"excludes\": [\n    \"meta_agent/CLAUDE.md\",\n    \"meta_agent/.claude/\"\n   ]\n  }\n ]\n}"
+  }
+}

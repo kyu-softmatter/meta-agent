@@ -5,7 +5,9 @@
   "names": "<role>-<machine>-<YYYYMMDD>-<n>. Roles: design, meta, harness (from M5). Machines: office is the Office computer, macbook is the person's MacBook Air (given 2026-11-06); a new computer gets its tag from the person before its first seat. n counts within one role, machine and date. A name is never reissued.",
   "addresses": "seat.invalid is reserved by RFC 2606 and never routes; a seat identity is a label, not a mailbox.",
   "path_syntax": "an entry ending in / is a directory prefix; '*' alone means files at the repository root; anything else is one file. excludes are applied after paths.",
-  "self_registration": "Standing rule of the person, 2026-11-09 (docs/ideas/20261109.md, plan.md 9): a session may add its own entry when the name follows the pattern on a machine tag already listed under names, the role is one of the three and is the one the person or the session's task names, paths and excludes are copied unchanged from an active seat of the same role, the entry lands in its own commit before any other work, and seated_by says self with the rule's date. A new role, a new machine tag or a wider path stays the person's. Check 6 enforces this from meta_agent/tasks/009; until then the design seat on the computer adds the entry.",
+  "self_registration": "Standing rule of the person, 2026-11-09 (docs/ideas/20261109.md, plan.md 9): a session may add its own entry when the name follows the pattern on a machine tag already listed under names, the role is one of the three and is the one the person or the session's task names, paths and excludes are copied unchanged from an active seat of the same role, the entry lands in its own commit before any other work, and seated_by says self with the rule's date. A new role, a new machine tag or a wider path stays the person's. Check 6 enforces this (meta_agent/tasks/009 part 3): such a commit touches contracts/seats.json alone and adds one entry, and it is judged against the table as it was before the commit.",
+  "self_registration_from": "2d29e1f",
+  "self_registration_from_note": "The last commit before check 6 knew the rule (meta_agent/tasks/009 part 3). A commit at or before it that adds the committer's own entry is judged as it was then, by the boundary alone: 183c593 is this computer's design seat registering itself on the person's word of 2026-11-06, before there was a rule to follow.",
   "concurrent": "Several seats may share this working copy at the same time (the person, 2026-11-09). The repository-wide committer.name can hold one seat only, so with a second seat present the committer is set for the commit itself (GIT_COMMITTER_NAME, GIT_COMMITTER_EMAIL) and the commit names its paths.",
   "unknown_committer": "report",
   "unknown_committer_note": "A committer absent from this list is reported (PENDING), not refused, so that the person committing by hand is never blocked. --strict counts PENDING as failure.",
@@ -15,7 +17,7 @@
     "office": "the Office computer",
     "macbook": "the person's MacBook Air (given 2026-11-06)"
   },
-  "machines_note": "A tag is given by the person before a computer's first seat. `git config meta-agent.machine <tag>` records it in a clone so that `python bootstrap.py seat <role>` can read it.",
+  "machines_note": "A tag is given by the person before a computer's first seat. `git config meta-agent.machine <tag>` records it in a clone so that `python bootstrap.py seat <role>` can read it. A new computer's tag is added here by a seat that already exists, citing the person's words, before the new computer's first session seats itself: a self-registration may change nothing but its own entry.",
   "roles": {
     "design": {
       "paths": [
