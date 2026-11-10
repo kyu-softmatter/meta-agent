@@ -84,7 +84,7 @@
     {
       "id": "007",
       "file": "007-parameter-bound-skills.md",
-      "status": "open",
+      "status": "done",
       "roles": [
         "design",
         "meta"
@@ -94,7 +94,8 @@
         "010"
       ],
       "opened": "2026-11-08",
-      "design_part": "landed"
+      "design_part": "landed",
+      "done_commit": "130ad45"
     },
     {
       "id": "008",
