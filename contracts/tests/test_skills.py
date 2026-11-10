@@ -44,7 +44,9 @@ class Examples(unittest.TestCase):
     def test_every_example_skill_is_clean_and_its_cases_pass(self):
         found = skills.find_skill_dirs(EXAMPLES)
         self.assertEqual(sorted(os.path.basename(d) for d in found),
-                         ["bring_to_ready@v1", "read_status@v1", "shear_rate_max_from_max_speed@v1"])
+                         ["bring_to_ready@v1", "read_status@v1", "shear_rate_max_from_max_speed@v1",
+                          "timestep_max_from_courant@v1", "timestep_max_from_relaxation_time@v1",
+                          "timestep_min_from_step_budget@v1", "weissenberg_number@v1"])
         for d in found:
             self.assertEqual(skills.problems(d, KINDS), [], d)
             verdicts = [r["verdict"] for r in skills.run_cases_here(d)]

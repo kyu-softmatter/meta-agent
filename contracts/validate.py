@@ -36,7 +36,7 @@ GIT_REPO = os.environ.get(GATE_ENV) or REPO  # where git is asked; differs from 
 EXPORTED = bool(os.environ.get(GATE_ENV))
 SCHEMAS = os.path.join(HERE, "schemas")
 REJECTED = os.path.join(HERE, "examples", "rejected")
-IMPLEMENTED = [1, 2, 3, 5, 6, 7, 8, 11, 15, 16, 17, 18, 20, 21, 22]
+IMPLEMENTED = [1, 2, 3, 4, 5, 6, 7, 8, 11, 15, 16, 17, 18, 19, 20, 21, 22]
 SKIP_DIRS = {".git", ".agent", ".venv", ".pixi", "node_modules", "__pycache__"}
 
 def judge_the_commits_tree(argv):
@@ -83,6 +83,7 @@ import tasks as task_rules  # noqa: E402  (contracts/tools/tasks.py: the task in
 import notes as note_rules  # noqa: E402  (contracts/tools/notes.py: notes between seats)
 import cases as case_rules  # noqa: E402  (contracts/tools/cases.py: condition tags, store indexes, references)
 import skills as skill_rules  # noqa: E402  (contracts/tools/skills.py: what a skill is; its source read, its cases run)
+import sheets as sheet_rules  # noqa: E402  (contracts/tools/sheets.py: a sheet's bounds recomputed, its safety rows)
 
 try:
     import jsonschema
@@ -280,6 +281,10 @@ def check2(cards, c, report, tree):
                 report.fail(2, r, "%s: grade %s enters no card" % (label, n["grade"]))
                 continue
             derived, why = c.derive_grade(n["source"], n["value_kind"])
+            if derived is not None and data.get("card") == "parameter_sheet" and isinstance(n.get("basis"), dict) \
+                    and str(n["source"]).startswith("computed:"):
+                # a computed number is never better than its worst input (plan.md 14-12, grades.json with_basis)
+                derived = sheet_rules.computed_grade(data, n["basis"]) or derived
             if derived is None:
                 report.fail(2, r, "%s: %s" % (label, why))
             elif derived != n["grade"]:
@@ -338,6 +343,24 @@ def check3(cards, md_by_dir, report, tree):
                     continue
                 if val not in available:
                     report.fail(3, rel(md, tree), "number %s is in no card of this folder" % tok)
+
+
+# ----------------------------------------------------------------------------
+# check 4: a safety-relevant row has no value but a person's
+# check 19: a sheet's bounds and computed rows are what their skills give; nothing applicable is left out
+# ----------------------------------------------------------------------------
+def check4(cards, c, report, tree):
+    for path, data in cards:
+        if data.get("card") == "parameter_sheet":
+            for msg in sheet_rules.check4(data):
+                report.fail(4, rel(path, tree), msg)
+
+
+def check19(cards, c, report, tree):
+    for path, data in cards:
+        if data.get("card") == "parameter_sheet":
+            for msg in sheet_rules.check19(data, path, tree):
+                report.fail(19, rel(path, tree), msg)
 
 
 # ----------------------------------------------------------------------------
@@ -1535,8 +1558,12 @@ def run_static(tree, c, report, checks, include_rejected=False):
         check2(cards, c, report, tree)
     if 3 in checks:
         check3(cards, md_by_dir, report, tree)
+    if 4 in checks:
+        check4(cards, c, report, tree)
     if 5 in checks:
         check5(cards, c, report, tree)
+    if 19 in checks:
+        check19(cards, c, report, tree)
     if 8 in checks:
         check8(cards, c, report, tree)
     if 7 in checks:

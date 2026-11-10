@@ -1,0 +1,3 @@
+check 19
+
+With a budget of 500 steps the floor (0.01 s) is above the Courant ceiling (0.001 s): the interval is empty, and the sheet still names a point.

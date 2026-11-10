@@ -189,6 +189,206 @@
           },
           "note": {
             "type": "string"
+          },
+          "basis": {
+            "type": "object",
+            "description": "what a computed number rests on: the skill that gave it and, per input of the skill, the row it was bound to; check 19 runs the skill again on those rows",
+            "properties": {
+              "skill": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+              },
+              "inputs": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "required": [
+              "skill",
+              "inputs"
+            ],
+            "additionalProperties": false
+          },
+          "bounds": {
+            "type": "array",
+            "description": "the maxima and minima of this parameter, one per skill and so one per reason (plan.md 14-30). The model chooses the skills and binds their inputs; code runs them and writes these.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "side": {
+                  "enum": [
+                    "min",
+                    "max"
+                  ]
+                },
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "$ref": "common.schema.json#/$defs/unit"
+                },
+                "source": {
+                  "type": "string",
+                  "pattern": "^computed:[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+                },
+                "grade": {
+                  "$ref": "common.schema.json#/$defs/grade"
+                },
+                "value_kind": {
+                  "const": "computed"
+                },
+                "basis": {
+                  "type": "object",
+                  "description": "what a computed number rests on: the skill that gave it and, per input of the skill, the row it was bound to; check 19 runs the skill again on those rows",
+                  "properties": {
+                    "skill": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+                    },
+                    "inputs": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "required": [
+                    "skill",
+                    "inputs"
+                  ],
+                  "additionalProperties": false
+                },
+                "uncertainty": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "side",
+                "value",
+                "unit",
+                "source",
+                "grade",
+                "value_kind",
+                "basis"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "interval": {
+            "type": "object",
+            "description": "the feasible interval: the highest floor and the lowest ceiling of bounds[], each naming the skill it came from; min above max is an empty interval and carries no point",
+            "properties": {
+              "min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "max": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "unit": {
+                "$ref": "common.schema.json#/$defs/unit"
+              },
+              "min_from": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+                  }
+                ]
+              },
+              "max_from": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "min",
+              "max",
+              "unit",
+              "min_from",
+              "max_from"
+            ],
+            "additionalProperties": false
+          },
+          "recommendation": {
+            "type": "object",
+            "description": "how a point inside the interval is reached (plan.md 14-26, 14-32): the value is computed by a rule; which rule or candidate is taken is a choice, recorded with who made it and why",
+            "properties": {
+              "mode": {
+                "enum": [
+                  "interval",
+                  "neighbourhood",
+                  "tradeoff",
+                  "lookup",
+                  "scale",
+                  "gap"
+                ]
+              },
+              "rule": {
+                "type": "string"
+              },
+              "point": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "candidates": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "frontier": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "chosen_by": {
+                "enum": [
+                  "human",
+                  "code",
+                  "model"
+                ]
+              },
+              "reason": {
+                "type": "string"
+              },
+              "note": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "mode",
+              "chosen_by"
+            ],
+            "additionalProperties": false
           }
         },
         "additionalProperties": false,
@@ -212,6 +412,91 @@
         "type": "integer",
         "minimum": 1,
         "maximum": 5
+      }
+    },
+    "tool_ref": {
+      "type": "object",
+      "description": "which registered tool the sheet is for; a bound skill that names instruments or engines applies when it names this one",
+      "properties": {
+        "kind": {
+          "enum": [
+            "instrument",
+            "engine"
+          ]
+        },
+        "registry_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "kind",
+        "registry_id"
+      ],
+      "additionalProperties": false
+    },
+    "skills_considered": {
+      "type": "array",
+      "description": "every skill that applies to a row of this sheet, as used or as not applied with a reason; a silent omission fails check 19",
+      "items": {
+        "type": "object",
+        "properties": {
+          "skill": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+          },
+          "verdict": {
+            "enum": [
+              "used",
+              "not_applied"
+            ]
+          },
+          "why": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "skill",
+          "verdict"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "objectives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parameter": {
+            "type": "string",
+            "minLength": 1
+          },
+          "direction": {
+            "enum": [
+              "min",
+              "max",
+              "target"
+            ]
+          },
+          "target": {
+            "type": "number"
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "name",
+          "parameter",
+          "direction",
+          "source"
+        ],
+        "additionalProperties": false
       }
     }
   },

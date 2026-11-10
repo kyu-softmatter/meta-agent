@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1",
+  "id": "weissenberg_number",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the Weissenberg number of a shear flow",
+  "parameter": "weissenberg_number",
+  "side": "value",
+  "applies_to": {
+    "parameters": [
+      "weissenberg_number"
+    ],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "relaxation_time",
+      "unit": "s",
+      "meaning": "the relaxation time of the fluid"
+    },
+    {
+      "name": "shear_rate",
+      "unit": "1/s",
+      "meaning": "the shear rate of the flow"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "weissenberg_number",
+      "unit": "1",
+      "meaning": "relaxation time times shear rate"
+    }
+  ],
+  "entry": {
+    "script": "scripts/bound.py",
+    "function": "bound"
+  },
+  "validity": "steady simple shear; other flows use the rate of the flow in question",
+  "source": {
+    "citation": "by definition: the product of the fluid's relaxation time and the shear rate",
+    "locus": "the definition used throughout viscoelastic fluid mechanics"
+  },
+  "cases": "cases.json"
+}

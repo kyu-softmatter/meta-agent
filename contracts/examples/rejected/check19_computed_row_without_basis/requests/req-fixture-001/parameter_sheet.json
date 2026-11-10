@@ -1,0 +1,232 @@
+{
+  "card": "parameter_sheet",
+  "schema_version": "0.1",
+  "id": "ps-fixture-001",
+  "rid": "req-fixture-001",
+  "revision": 1,
+  "author": "meta-office-20261029-1",
+  "created_at": "2026-10-29T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "tool": "RheoTool",
+  "search_tiers_used": [
+    1,
+    3,
+    4
+  ],
+  "rows": [
+    {
+      "name": "solvent_viscosity",
+      "value": 0.00089,
+      "unit": "Pa.s",
+      "source": "database:nist_webbook_water_298K",
+      "grade": "E2",
+      "value_kind": "measured",
+      "conditions": {
+        "temperature": {
+          "value": 298,
+          "unit": "K"
+        }
+      },
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery",
+      "note": "a fixture; the database record is not real"
+    },
+    {
+      "name": "fluid_density",
+      "value": 998.0,
+      "unit": "kg/m^3",
+      "source": "literature:src_textbook_0000000",
+      "grade": "E2",
+      "value_kind": "literature",
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery"
+    },
+    {
+      "name": "relaxation_time",
+      "value": 0.5,
+      "unit": "s",
+      "source": "literature:src_rheotool_tutorial_0000000",
+      "grade": "E2",
+      "value_kind": "literature",
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "discovery"
+    },
+    {
+      "name": "shear_rate",
+      "value": 0.5,
+      "unit": "1/s",
+      "source": "literature:src_rheotool_tutorial_0000000",
+      "grade": "E2",
+      "value_kind": "literature",
+      "safety_relevant": false,
+      "stage": "discovery",
+      "note": "the tutorial case's wall speed over its gap"
+    },
+    {
+      "name": "cell_size",
+      "value": 0.0001,
+      "unit": "m",
+      "source": "literature:src_rheotool_tutorial_0000000",
+      "grade": "E2",
+      "value_kind": "literature",
+      "safety_relevant": false,
+      "stage": "discovery",
+      "note": "the smallest cell of the tutorial mesh along the flow"
+    },
+    {
+      "name": "max_velocity",
+      "value": 0.05,
+      "unit": "m/s",
+      "source": "literature:src_rheotool_tutorial_0000000",
+      "grade": "E2",
+      "value_kind": "literature",
+      "safety_relevant": false,
+      "stage": "discovery"
+    },
+    {
+      "name": "simulated_time",
+      "value": 5.0,
+      "unit": "s",
+      "source": "literature:src_rheotool_tutorial_0000000",
+      "grade": "E2",
+      "value_kind": "literature",
+      "safety_relevant": false,
+      "stage": "discovery",
+      "note": "ten relaxation times"
+    },
+    {
+      "name": "weissenberg_number",
+      "value": 0.25,
+      "unit": "1",
+      "source": "computed:weissenberg_number@v1",
+      "grade": "E4",
+      "value_kind": "computed",
+      "safety_relevant": false,
+      "bench_confirmed": false,
+      "stage": "reasoning"
+    },
+    {
+      "name": "courant_limit",
+      "value": 0.5,
+      "unit": "1",
+      "source": "assumed:courant_below_one_for_this_scheme",
+      "grade": "E5",
+      "value_kind": "estimated",
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "a judgement: an input row with its own source, never a number inside a skill; the person may replace it"
+    },
+    {
+      "name": "step_budget",
+      "value": 100000,
+      "unit": "count",
+      "source": "assumed:steps_affordable_on_the_fixture_computer",
+      "grade": "E5",
+      "value_kind": "estimated",
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "note": "a budget: the person's to set"
+    },
+    {
+      "name": "time_step",
+      "value": null,
+      "unit": "s",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": false,
+      "stage": "reasoning",
+      "bounds": [
+        {
+          "side": "max",
+          "value": 0.001,
+          "unit": "s",
+          "source": "computed:timestep_max_from_courant@v1",
+          "grade": "E5",
+          "value_kind": "computed",
+          "uncertainty": null,
+          "basis": {
+            "skill": "timestep_max_from_courant@v1",
+            "inputs": {
+              "courant_limit": "courant_limit",
+              "cell_size": "cell_size",
+              "velocity": "max_velocity"
+            }
+          }
+        },
+        {
+          "side": "min",
+          "value": 5e-05,
+          "unit": "s",
+          "source": "computed:timestep_min_from_step_budget@v1",
+          "grade": "E5",
+          "value_kind": "computed",
+          "uncertainty": null,
+          "basis": {
+            "skill": "timestep_min_from_step_budget@v1",
+            "inputs": {
+              "simulated_time": "simulated_time",
+              "step_budget": "step_budget"
+            }
+          }
+        }
+      ],
+      "interval": {
+        "min": 5e-05,
+        "max": 0.001,
+        "unit": "s",
+        "min_from": "timestep_min_from_step_budget@v1",
+        "max_from": "timestep_max_from_courant@v1"
+      },
+      "note": "No point is chosen here: the interval is what the skills give. Both bounds are E5 because each rests on one assumed row."
+    },
+    {
+      "name": "max_shear_rate_for_instrument",
+      "value": null,
+      "unit": "1/s",
+      "source": null,
+      "grade": null,
+      "value_kind": null,
+      "safety_relevant": true,
+      "bench_confirmed": false,
+      "stage": "recommendation",
+      "note": "a safety row: the person writes it at the destination"
+    }
+  ],
+  "tool_ref": {
+    "kind": "engine",
+    "registry_id": "rheotool"
+  },
+  "skills_considered": [
+    {
+      "skill": "weissenberg_number@v1",
+      "verdict": "used",
+      "why": "relaxation_time and shear_rate are both on the sheet"
+    },
+    {
+      "skill": "timestep_max_from_courant@v1",
+      "verdict": "used",
+      "why": "a grid-based solver advancing in time"
+    },
+    {
+      "skill": "timestep_min_from_step_budget@v1",
+      "verdict": "used",
+      "why": "the run has a budget of steps"
+    },
+    {
+      "skill": "timestep_max_from_relaxation_time@v1",
+      "verdict": "not_applied",
+      "why": "the request asks for the steady viscosity, reached by marching to steady state; the transient is not what is measured, so the relaxation time need not be resolved step by step"
+    }
+  ]
+}

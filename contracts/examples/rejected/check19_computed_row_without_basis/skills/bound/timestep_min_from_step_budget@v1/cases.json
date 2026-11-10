@@ -1,0 +1,13 @@
+[
+  {
+    "name": "5 s of simulated time in 100000 steps",
+    "inputs": {
+      "simulated_time": 5.0,
+      "step_budget": 100000
+    },
+    "expect": {
+      "time_step_min": 5e-05
+    },
+    "worked": "5 / 100000"
+  }
+]

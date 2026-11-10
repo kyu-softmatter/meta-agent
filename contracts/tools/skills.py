@@ -4,6 +4,7 @@
 
   python contracts/tools/skills.py check SKILL_DIR        every problem check 22 would name, for one skill
   python contracts/tools/skills.py run-cases SKILL_DIR    run the worked cases of one skill, print the results as JSON
+  python contracts/tools/skills.py run SKILL_DIR < inputs.json    run a skill with no side effect once
 
 A skill is a folder `<id>@v<version>/` under a folder named `skills/`:
 
@@ -384,6 +385,27 @@ def case_problems(skill_dir):
     return ["case %s: %s" % (r["name"], r["why"]) for r in results if r["verdict"] == "fail"]
 
 
+def run_once(skill_dir, inputs):
+    """Run a skill with no side effect once, in a separate process: (outputs, None) or (None, why)."""
+    p = subprocess.run([sys.executable, "-I", os.path.abspath(__file__), "run", os.path.abspath(skill_dir)],
+                       input=json.dumps(inputs), capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=60)
+    try:
+        out = json.loads(p.stdout)
+    except ValueError:
+        return None, (p.stderr.strip() or p.stdout.strip() or "no output")[-300:]
+    if isinstance(out, dict) and "__error__" in out:
+        return None, out["__error__"]
+    return out, None
+
+
+def find_in_library(root, ref):
+    """The folder of `<id>@v<n>` under a skills/ folder, or None."""
+    for d in find_skill_dirs(root):
+        if os.path.basename(d) == ref:
+            return d
+    return None
+
+
 def problems(skill_dir, kinds, schema_errors=None):
     """Everything check 22 says about one skill. The source is run only when reading it found nothing."""
     manifest = read_manifest(skill_dir)
@@ -399,6 +421,15 @@ def problems(skill_dir, kinds, schema_errors=None):
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    if len(argv) == 2 and argv[0] == "run":      # one skill with no side effect, inputs as JSON on stdin
+        manifest = read_manifest(argv[1]) or {}
+        try:
+            if manifest.get("side_effect") != "none":
+                raise ValueError("only a skill with no side effect is run this way")
+            print(json.dumps(_call(argv[1], json.loads(sys.stdin.read() or "{}"), None)))
+        except Exception as e:
+            print(json.dumps({"__error__": "%s: %s" % (type(e).__name__, e)}))
+        return 0
     if len(argv) != 2 or argv[0] not in ("check", "run-cases"):
         print(__doc__)
         return 2

@@ -1,0 +1,13 @@
+[
+  {
+    "name": "a hundredth of a relaxation time of 0.5 s",
+    "inputs": {
+      "relaxation_time": 0.5,
+      "resolved_fraction": 0.01
+    },
+    "expect": {
+      "time_step_max": 0.005
+    },
+    "worked": "0.01 * 0.5"
+  }
+]

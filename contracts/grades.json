@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "note": "Grade derivation (plan.md 6.3). A number's source is <source_kind>:<locator>; the grade is looked up by (source_kind, value_kind) and never self-reported. Check 2 compares. Open question 14-12 may revise database and predicted rows; a revision is a new row, and the old row stays with retired_on.",
+  "note": "Grade derivation (plan.md 6.3). A number's source is <source_kind>:<locator>; the grade is looked up by (source_kind, value_kind) and never self-reported. Check 2 compares. Open question 14-12 may revise database and predicted rows; a revision is a new row, and the old row stays with retired_on. 2026-11-09: the computed row gains with_basis (the grade follows the worst input where a basis names them); the flat E4 stays for a computed number whose inputs are not on its card, rather than being retired, because records that carry such numbers are append-only.",
   "forbidden_grades": [
     "E6"
   ],
@@ -86,7 +86,9 @@
       "value_kinds": [
         "computed"
       ],
-      "grade": "E4"
+      "grade": "E4",
+      "with_basis": "max(E4, the worst grade among the rows the basis names)",
+      "note": "Settled 2026-11-08 (plan.md 14-12, \"Take all six\"): a computed number inherits the worst grade among its inputs and is never better than E4. Where a basis names the input rows (a parameter_sheet row or bound), checks 2 and 19 derive the grade from them; a computed number with no basis (numbers[] of other cards) keeps the flat E4, since its inputs are not on the card."
     },
     {
       "source_kind": "correlation",

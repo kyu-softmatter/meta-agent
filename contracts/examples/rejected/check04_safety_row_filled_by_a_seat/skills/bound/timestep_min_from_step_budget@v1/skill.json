@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.1",
+  "id": "timestep_min_from_step_budget",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the smallest time step that still covers the simulated time within a budget of steps",
+  "parameter": "time_step",
+  "side": "min",
+  "applies_to": {
+    "parameters": [
+      "time_step"
+    ],
+    "engines": [
+      "rheotool",
+      "openfoam"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "simulated_time",
+      "unit": "s",
+      "meaning": "the physical time the run must cover"
+    },
+    {
+      "name": "step_budget",
+      "unit": "count",
+      "meaning": "the number of steps the run may take; a budget, bound to a row with its own source"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "time_step_min",
+      "unit": "s",
+      "meaning": "the lower bound on the time step from the budget"
+    }
+  ],
+  "entry": {
+    "script": "scripts/bound.py",
+    "function": "bound"
+  },
+  "validity": "any time-marching run with a fixed step; an adaptive step makes this a mean, not a bound",
+  "source": {
+    "citation": "by definition: the simulated time divided by the number of steps",
+    "locus": "the budget is an input, not a property of this skill"
+  },
+  "cases": "cases.json"
+}
