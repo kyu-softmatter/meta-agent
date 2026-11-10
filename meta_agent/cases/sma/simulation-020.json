@@ -1,0 +1,56 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-020",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "success",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "engine": "hoomd",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:success",
+      "seed_verdict:drop"
+    ]
+  },
+  "what_happened": "what_was_asked: declared_versus_inferred_temperature carries an `external` support with who_could_confirm: simulation_agent -- 'the simulation engine's thermostat realises its declared setpoint, so the model's temperature IS the number declared rather than an estimate of it'. The store cannot hold its own premise, so grade composition stops there. manager-simulation put it to this seat.; the_answer: the conclusion holds for bd_overdamped and the mechanism it names does not exist. There is no thermostat in this configuration. Read off the code rather than reasoned: mock_backend integrates `positions = positions + rng.normal(0, sqrt(2*D*dt))` with `D = k_B*T/(3*pi*eta*d)`. That is a position-only Wiener increment -- no velocity is represented, so there is no kinetic energy and nothing to thermostat. capabilities/simulation.json already says the neighbouring half in its label: mass-based time units do not enter the overdamped limit (5.7).; so_the_support_is_true_on_stronger_ground_than_it_claims: temperature is a PARAMETER of the noise amplitude, entering only through D. There is nothing it could fail to realise, so 'the model's temperature is the declared number rather than an estimate of it' is true by construction. A thermostat realising a setpoint is an empirical claim about engine behaviour; this is not one.; why_the_distinction_is_load_bearing: it decides what kind of check the support invites. Resting on a thermostat makes it empirical, per-engine and per-configuration, and falsifiable -- a Langevin thermostat with inertia can fail to hold a setpoint, at too large a timestep or through the flying-ice-cube artefact. Resting on the noise amplitude makes it unfalsifiable and needing no confirmation. So as written the support asks for the wrong kind of confirmation for this configuration, and it would silently become the right kind if a configuration with inertia were added -- with nothing marking the change.; where_the_general_form_belongs: beside output_independent_of_input in contracts/capabilities/simulation.json, which is already exactly this shape and already carries bd_overdamped's answer citing run-20260920-001. Whether a configuration's declared temperature is realised by construction or by a thermostat is the same kind of fact about a declared model as whether its output is independent of its inputs, and CLAUDE.md put that one there for this reason. That is a contracts/ change and the manager's, not this seat's.; what_is_engine_dependent_and_what_this_seat_can_say: not whether a thermostat holds T, but whether a backend implements the declared noise amplitude correctly -- the right factor, the right units, the right RNG variance. For mock_backend that is confirmed to 0.8 per cent: run-20260920-001 returned 2.128e-13 m^2/s against the analytic 2.146e-13. For HOOMD it is unconfirmed and cannot be confirmed here.; a_finding_that_came_out_of_looking: bd_overdamped declares devices: ['hoomd_backend'] and simulation_agent/src/hoomd_backend.py DOES NOT EXIST. HOOMD is not installed and is not on PyPI. Both runs used mock_backend, and the configuration's own output_independent_of_input.why cites run-20260920-001 -- so the declaration's evidence comes from a backend the declaration does not list. Nothing is wrong with the evidence; what is wrong is that reading `devices` tells you the wrong thing about what has ever run. Raised, not edited: capabilities/ is contracts/.; the_honest_scope_for_the_librarian: the support should say bd_overdamped rather than 'the simulation engine', should name the noise amplitude rather than a thermostat, and should name mock_backend as what confirmed the amplitude. The entry's own `claim` text carries the same thermostat wording, so this touches the claim and not only the support -- and both are the librarian's to edit. Nothing about the asymmetry the entry exists to state changes: the uncertainty still sits entirely on the experiment side, and on firmer ground than before, because a parameter cannot be wrong about itself in the way a thermostat could.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:20"
+    }
+  ],
+  "cue": "a store entry's support names a mechanism the engine configuration does not have",
+  "lesson": "Replace the support's mechanism with the true one and name the configuration and the backend that confirmed it, in the knowledge store's entry.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "The configuration later gains inertia so the named mechanism becomes real.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-21"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:20, a success line. Verdict drop by rule F1 of meta_agent/src/cases/seed_sma.py: a success line records no failure to recall. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

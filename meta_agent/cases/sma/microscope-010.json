@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-microscope-010",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "instrument",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:microscope",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "planned: the session boundary: this seat reads its own tree, contracts/, the files its card names, the export the librarian publishes to this agent, and its own lines in the query log before a commit; nothing else in another agent's directory; why: wanting the forms of an issued caller_id, this seat looked where the server and other seats keep them before checking the contract that declares them; used: nothing: the id this seat used, mic-20260928-001:v1:s2, rests on the pattern in contracts/schemas/common.schema.json and on this agent's own precedent, mic-20260924-001:v1:s2 in questions/mic-20260924-001/goal.json. What the three reads showed only agreed with those; within_the_boundary: not deviations and listed so the line is complete: the ask card 050 names, simulation_agent/questions/sim-20260923-101/result_run-20260924-101-v3-hold.json at 735a1a0; librarian_agent/kb/exports/snapshot_microscope_agent.json at HEAD, read for its kb_version; this seat's own lines in the query log, counted before committing; git log over those paths; and the validator's own reading of every tree; found: architecture asked for the first read to be recorded here, because 7247e05 stated it only in its commit message; the other two surfaced while this line was being written; disposition: recorded here, where reads are confessed because no check can see one. The diagnosis file's boundary note names only the first read and is left unchanged, as architecture asked; this line is the complete record",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 microscope_agent/failures.jsonl:10"
+    }
+  ],
+  "cue": "a seat wants the form of an identifier and greps another agent's directory before checking the contract that declares it, crossing a read boundary no check can see",
+  "lesson": "Make the seat read the declaring contract first, and record every out-of-boundary read in the deviation log because no check can detect reads.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "A check that detects out-of-boundary reads is added, or seats never read beyond the contract anyway, making the confessional record unnecessary.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-28"
+  },
+  "source_agent": "microscope_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 microscope_agent/failures.jsonl:10, a deviation line. Verdict downgrade by rule F3 of meta_agent/src/cases/seed_sma.py: a microscope_agent line speaks of one bench; here it is a hint, not a finding. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

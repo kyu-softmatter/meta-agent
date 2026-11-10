@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-librarian-023",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:librarian",
+      "sma_kind:deviation",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "set line_power.calibrated back to true by loading kb/staging/devices.v0.json with json.load and writing it back with json.dumps(indent=2). The edit was a few fields; the diff was 357 lines, because the file's hand-kept formatting (inline arrays, spacing) was rewritten wholesale.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 librarian_agent/failures.jsonl:23"
+    }
+  ],
+  "cue": "a script edits a shared device table by parsing and re-serializing it, rewriting hand-kept formatting and burying the real change in noise",
+  "lesson": "Edit shared hand-formatted tables with targeted text edits and read the diff stat before committing any table.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Re-serialized tables stay within a few changed lines of the intended edit, so reviewers can still see the real change.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-24"
+  },
+  "source_agent": "librarian_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 librarian_agent/failures.jsonl:23, a deviation line. Verdict transfer by rule F5 of meta_agent/src/cases/seed_sma.py: the line itself states a general form of what recurs. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

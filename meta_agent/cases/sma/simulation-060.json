@@ -1,0 +1,56 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-060",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "success",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "engine": "hoomd",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:success",
+      "seed_verdict:drop"
+    ]
+  },
+  "what_happened": "occasion: the revision-4 grid on HOOMD: three stiffnesses from 0.1 to 10 pN/um, offsets of about 10 and 100 thermal widths, seeds 11-16; result: all six cells met the one per cent uncertainty target. Five of six recovered the stiffness within one per cent; the soft ten-width cell read 1.0107, which the plan declared would happen about one cell in four.; the_answer_to_the_question: at about ten thermal widths the predicted fractional error of the recovered stiffness is 0.74, 0.75 and 0.73 per cent at 0.1, 1 and 10 pN/um, and the block errors read 0.62, 0.64 and 0.64. Flat across two decades of stiffness, as sqrt(2*tau/T)/(offset/sigma) says it must be.; not_run: the one-thermal-width row, skipped at the conservative cost. At the measured cost it is seconds a cell.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:60"
+    }
+  ],
+  "cue": "a grid on the engine answers the question asked, with results flat across the swept axis as the formula predicts, and one row skipped at a conservative cost",
+  "lesson": "Keep reporting the predicted-versus-measured error per cell against the formula, and list unrun rows explicitly with the reason, rerunning them once the measured cost is known.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Predicted errors stop tracking measured ones across the swept axis, or skipped rows prove costlier than the measured rate says.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-24"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:60, a success line. Verdict drop by rule F1 of meta_agent/src/cases/seed_sma.py: a success line records no failure to recall. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

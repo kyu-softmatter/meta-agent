@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-006",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:class-fixed-not-swept",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "A seat fixed relative_to in one place and left two other places unfixed. It was one of seven same-shape mistakes the seat counted that day.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:6 (INC-20260918-05)"
+    }
+  ],
+  "cue": "the handling of a schema field is fixed in one place while other places reading that field stay as they were",
+  "lesson": "After changing how a field is handled, search every validator check and card schema that reads it and update them together in one commit.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "The other places are shown not to depend on the changed behaviour, so fixing one place was enough.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-18"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:6 (INC-20260918-05), an incident of class class-fixed-not-swept. Verdict downgrade by rule I1 of meta_agent/src/cases/seed_sma.py: it rests on a sentence of that repository's instructions, not on a commit, a file or a log. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

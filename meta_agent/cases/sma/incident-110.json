@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-110",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:two-writers-one-keyspace",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "The person seated a second meta-harness seat on the microscope computer, harness-scope-20261019-1, with the same paths, contracts/harness/, as this one (I-20261019-09, 4561bdac). The two seats will append to the same incidents.jsonl and ledger.jsonl and write retro files from two computers. Both key their records by date alone: INC-<date>-<nn>, HP-<nnn>, retro/<date>.json. So the first day both run, the second to commit gets a duplicate id refused by check 89, or an add/add conflict on the same retro file at merge. Nothing has collided yet: at this pass every commit touching contracts/harness/ on origin/main is this seat's. Found by this seat on reading the registry after a three-day gap.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:110 (INC-20261022-01)"
+    }
+  ],
+  "cue": "two seats with identical paths on different computers write date-keyed records into the same append-only files",
+  "lesson": "Make record ids and file names carry the machine tag so two seats on the same paths cannot collide, and keep the duplicate refusal at the gate.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Two seats on the same paths work on the same day with date-only keys and never collide.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-22"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:110 (INC-20261022-01), an incident of class two-writers-one-keyspace. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

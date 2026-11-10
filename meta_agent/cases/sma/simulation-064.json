@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-064",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "I deleted simulation_agent/runs/run-20260923-102-s1 with rm -rf before rerunning, without looking at what was in it. The first attempt had failed inside the trap backend's preflight on my own wrapper bug (trap_rest_backend refused the zero flow it had itself injected), and the operator had very likely already written the directory and config.json by then. So the record of a failed attempt was destroyed, and it was untracked, so nothing restores it.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:64"
+    }
+  ],
+  "cue": "a session deletes a failed run's directory before rerunning, without looking, and reuses the same run id, destroying the only record that the attempt happened",
+  "lesson": "Have the seat's instructions require listing a run directory before touching it, never deleting failed runs, and giving every new attempt a fresh run id.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Deleted failed-run directories prove recoverable from version control or logs, or reused ids never collide with kept records.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-24"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:64, a deviation line. Verdict transfer by rule F5 of meta_agent/src/cases/seed_sma.py: the line itself states a general form of what recurs. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

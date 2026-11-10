@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-035",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:shared-path-collision",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "The seat reporting the card 016 collision had told one seat that nosepiece_position was already 5 when that seat's card said 1, because it had read another seat's file at the same path and taken it for the recipient's; the collision was inside the message it sent.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:35 (INC-20260920-21)"
+    }
+  ],
+  "cue": "a seat reads a file at a path shared with another seat and reports its content as the recipient's",
+  "lesson": "Give each task card a distinct output path per seat and have the validator reject cards that share a goal path.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Seats sharing a goal path never report each other's file content as their own.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-20"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:35 (INC-20260920-21), an incident of class shared-path-collision. Verdict downgrade by rule I1 of meta_agent/src/cases/seed_sma.py: it rests on a sentence of that repository's instructions, not on a commit, a file or a log. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

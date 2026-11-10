@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-microscope-002",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "instrument",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:microscope",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "Trap motion on optical_tweezers without a plan, 12:05-12:33 local on 2026-09-24: 75 dispatches over TCP to the running Tweez300 GUI -- two traps created, absolute and relative position commands, strengths, a pattern loaded and assigned, and a 61-step host-streamed circle. Each was asked for by the person in chat and sent one at a time while the person watched the GUI. Laser off throughout by the person's statement, no sample, no other device opened. Card 037 says anything that moves a trap is a planned operation; I did not raise that with the person before the first move.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 microscope_agent/failures.jsonl:2"
+    }
+  ],
+  "cue": "an agent reads a person's direct instruction to operate an instrument as covering both the hand-over and the separate planning requirement, and a harmless-looking state makes it weigh the hazard instead of the rule",
+  "lesson": "Make the seat's instructions require a plan check, restated in plain words to the person, before the first command that moves anything, with no exception for apparently safe states.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Seats that skip the plan check under a stated safe condition never cause an unplanned motion or a dispute over what was approved, showing the rule adds nothing.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-24"
+  },
+  "source_agent": "microscope_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 microscope_agent/failures.jsonl:2, a deviation line. Verdict downgrade by rule F3 of meta_agent/src/cases/seed_sma.py: a microscope_agent line speaks of one bench; here it is a hint, not a finding. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

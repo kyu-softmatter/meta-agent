@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-microscope-001",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "instrument",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:microscope",
+      "sma_kind:refusal",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "The piezo controller's waveform generator is refused entirely by src/devices/python_serial.py (waveform_refusal), with no override.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 microscope_agent/failures.jsonl:1"
+    }
+  ],
+  "cue": "an instrument component accepts a numeric payload whose unit is undocumented, and a prior unit mix-up on another bench produced a large unintended motion",
+  "lesson": "Make the device adapter refuse the whole feature with no override until the input unit is measured in a bounded experiment on a safe axis with the person present.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "The adapter reads the unit from the controller itself, or a bounded measurement shows the unit is fixed and documented, so the blanket refusal blocks safe use for nothing.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-24"
+  },
+  "source_agent": "microscope_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 microscope_agent/failures.jsonl:1, a refusal line. Verdict transfer by rule F2 of meta_agent/src/cases/seed_sma.py: a refusal that says what is left is a boundary that can hold here too. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

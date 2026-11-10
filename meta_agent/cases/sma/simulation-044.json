@@ -1,0 +1,56 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-044",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "engine": "hoomd",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "estimator.py fixes DIMENSIONS = 3 as a module constant and divides by 2*DIMENSIONS in three places to turn an MSD slope into a diffusivity; hoomd_backend.py and mock_backend.py import or repeat it. Four of the six configurations declared in capabilities/simulation.json are TWO-dimensional -- bd_pairwise, abp_free and abp_wca_2d say so, and bd_pairwise_driven_tracer rides on bd_pairwise. A 2D run read through this estimator returns two thirds of the true diffusivity.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:44"
+    }
+  ],
+  "cue": "a shared estimator holds a model property such as dimensionality as a module constant, so newly declared configurations yield plausible but wrong numbers",
+  "lesson": "Declare dimensionality as a field of the capability declaration and have the estimator read it and fail when absent, before any run of a configuration with a different value executes.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Every declared configuration shares the same dimensionality, or an existing check already catches a wrong-dimension run.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-23"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:44, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

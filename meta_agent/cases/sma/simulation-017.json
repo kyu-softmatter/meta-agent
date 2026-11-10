@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-017",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "why_a_correction: the row committed minutes earlier in 7826d9f said storage_estimate is high by about 1300x and is 'wrong regardless of backend'. It is right regardless of backend. The fourth simulation session caught it and the arithmetic is theirs; this seat re-ran it rather than taking it.; the_arithmetic: revision 2 declares n_particles 1000, total_simulated_time_point 300 s, save_interval_max 0.3 s -> 1001 frames. The standing orders' formula N x 3 x frames x bytes gives 0.0120 GB at 4 bytes per coordinate and 0.0240 GB at 8. The card says 0.0200 GB, which sits between them. Verified independently from the committed v2_ plan.; how_the_error_was_made_and_it_is_the_worse_part: the 1300x came from `du` on runs/run-20260920-001, 24 KB, which holds four cards and NO TRAJECTORY. The same message that reported the ratio also explained why there is no trajectory -- the mock writes none. So the premise and the conclusion sat in one message and the premise voids the conclusion. Measuring a directory that contains none of the thing being estimated says nothing about the estimate.; the_same_defect_in_the_other_number: wall clock was reported as 'low by 6x'. Against total wall time it is: 0.360 s estimated, 2.155 s measured. Against the monitored window it is HIGH by 2.5x: 0.360 s against 0.1433 s. 93 per cent of the wall time is outside the window -- process start and a 0.02 s poll loop the mock outruns. So the direction inverts with the choice of comparand, and quoting a direction at all was the error. The inversion is itself the evidence the measurement is not about that quantity, which is the conclusion this seat had already reached and then undercut by attaching a number to it.; the_pattern_this_seat_is_now_twice_an_instance_of: both corrections today have the same shape. The sed refusal was real and was attributed to the deny entry alone when the phrasing was half of it. These two ratios were real and were attributed to the plan's estimates when they measure the harness and an empty directory. In both cases something was genuinely measured and then charged to a quantity it was not about. That is the defect librarian_agent/failures.jsonl names -- the dangerous claim is the well-sourced one about a slightly different object -- and producing findings quickly is exactly the condition that makes it easy.; what_survives: the falsifier defect, which the fourth session confirms and states better: 'a smoke run's own log' names an EVENT that will happen and not the STATE that has to obtain -- a cost measured on the backend this plan will use. They point out it is the same shape 004's section A found in a_sample, which named a document rather than a state. So the repair is to narrow the falsifier, and NOT to recompute either number: wall clock cannot be measured on the mock and storage does not need measuring.; who_holds_the_repair: not this seat and, as of 946831c, not the fourth session either -- revision 2 is committed and a_cost_reference sits inside it, so editing the source and regenerating would re-stamp a committed revision, which 000 records four instances of. They raised it to manager-simulation for a ruling on revision 3 or another route.; credit: the fourth session also disclosed the same error class in their own work in the same message -- a 41x error-bar ratio quoted from 8 seeds where 32 gave 35.5x -- which is why the correction reads as a colleague's and not as a scoring.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:17"
+    }
+  ],
+  "cue": "a seat measures an artifact that does not contain the thing being estimated and then charges the ratio to the plan's estimate",
+  "lesson": "Measure the quantity on an artifact that contains it, state the comparand, and issue a correction row instead of quoting a ratio whose direction depends on the comparand.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "The measured directory later proves to contain the estimated quantity.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-21"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:17, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

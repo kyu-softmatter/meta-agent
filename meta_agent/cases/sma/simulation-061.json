@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-061",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:abandoned_attempt",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "occasion: the first run of revision 4's grid, six cells, all seed 1; why: two reasons, neither about the numbers: the run ids contained an underscore, which the run-log and result schemas refuse, and every cell shared seed 1, which made the soft and stiff cells one experiment in reduced units. The rerun changed the ids and gave each cell its own seed (11-16); the plan did not change.; how_they_compare: both attempts met the one per cent uncertainty target in all six cells and recovered the stiffness within one per cent in five of six: the first missed at 1 pN/um and ten thermal widths (0.9871), the rerun at 0.1 pN/um and ten thermal widths (1.0107). The rerun did not move the answer toward anything.; where_they_are: moved out of the tree to the session scratchpad, never committed, not deleted",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:61"
+    }
+  ],
+  "cue": "a first attempt at a grid is abandoned after its results were read for reasons unrelated to the numbers, and the rerun reaches the same answer",
+  "lesson": "Keep the abandoned attempt's results out of the tree and say in the new record why it was dropped, and compare both attempts to show the rerun moved nothing.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Abandoned attempts are never needed to audit a rerun, or the rerun differs materially from the first so the reason was not independent of the numbers.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-24"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:61, a abandoned_attempt line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

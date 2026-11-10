@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-010",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:config-fix-reaches-only-later-sessions",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "37 minutes apart, the same question under one kb_version was asked twice and answered by two server builds, first in_published_table and then absent, because a server commit landed between the two server starts. The rule that a pinned version answers alike (plan.md 4.3.1 rule 2) failed, and the append-only query log keeps both answers.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:10 (INC-20260919-04)"
+    }
+  ],
+  "cue": "the same pinned query gets different answers from a server because its code changed between two session starts",
+  "lesson": "Keep the check that compares logged answers to the same pinned query, and have the server write its build identity into every log entry.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Repeated pinned queries answered by different builds always give identical answers, so the comparison never fires.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-19"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:10 (INC-20260919-04), an incident of class config-fix-reaches-only-later-sessions. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

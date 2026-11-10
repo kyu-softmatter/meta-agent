@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-006",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "what_this_corrects: the previous row on this task ended with 'That file now reads {}'. It did when read, at 22:25Z, and it does not now: at 22:33Z /Users/kyuhwan/Desktop/rebuild/.claude/settings.local.json reads {\"/Users/kyuhwan/Desktop/rebuild/simulation_agent\": {\"enabledMcpjsonServers\": [\"librarian\"]}}. The person edited it while this session was working. Appended rather than edited in place, per this directory's rule.; what_does_not_change: everything the row concluded. This session's server was already connected before that edit -- session_connectors_status was read at 22:26Z -- so the reading stands on the {} state and the new content had no part in it.; why_the_new_content_is_worth_a_row: it is a shape settings.json does not have. Top-level keys in a settings file are setting names -- enabledMcpjsonServers, permissions, hooks -- and the only file that keys a map by absolute project path is ~/.claude.json, under `projects`. So this edit most likely does nothing, and the risk is not that it fails: it is that it LOOKS like the per-project enable that row 4 proposed, so a later reader finds it in place, finds the server working, and concludes the per-project entry was needed after all. It was not. This session has the server with ~/.claude.json's seven rebuild entries all still empty.; what_should_happen: the person reverts it to {}. Nothing is needed in ~/.claude.json. Not this seat's file and not this seat's call -- raised, not edited.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:6"
+    }
+  ],
+  "cue": "a person edits an untracked settings file while a seat is mid-task, and its new content resembles a different file's format",
+  "lesson": "Append a correction row noting the changed content and that it does not establish a per-project enable, rather than editing the earlier row or inferring a mechanism.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "The file keeps its shape between reads, so no correcting row is needed.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-20"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:6, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

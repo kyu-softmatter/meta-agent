@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-bridge-006",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:bridge",
+      "sma_kind:abandoned_attempt",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "r1_ask_experiment.md for thr-double-well-001 was not copied into microscope_agent/inbox/thr-double-well-001/. The envelope JSON was delivered and is the authoritative copy; the markdown is only in bridge/threads/thr-double-well-001/",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 bridge/failures.jsonl:6"
+    }
+  ],
+  "cue": "a harness permission deny meant to be inert for tool paths resolves against a relative path extracted from a shell command and blocks part of a required delivery",
+  "lesson": "Exempt the inbox paths from the outward deny entries in the seat's settings, and do not route around the deny with another tool or path.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Deny entries are shown never to match relative paths in shell commands, so the block came from another cause and the exemption changes nothing.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-01"
+  },
+  "source_agent": "bridge",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 bridge/failures.jsonl:6, a abandoned_attempt line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

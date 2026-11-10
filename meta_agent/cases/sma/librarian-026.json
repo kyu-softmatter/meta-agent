@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-librarian-026",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:librarian",
+      "sma_kind:abandoned_attempt",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "looked for numeric phase boundaries to file as regime entries: the cubic-diamond region of He et al. 2020 (Extended Data Fig. 3) and Kim et al. 2026 (Fig. 5), the active-force thresholds of Kelidou et al. 2024 (Fig. 3), the transition locations and defect densities of Vyas et al. 2026 (Figs. 2-5), the MIPS diagram of Hofmann et al. 2026 (Fig. 7) and the cluster and structure-factor scalings of Frechette et al. 2025 (Figs. 6, 9).",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 librarian_agent/failures.jsonl:26"
+    }
+  ],
+  "cue": "regime boundaries or thresholds in a paper exist only as rendered figures, which a model can read off only as ungraded estimates",
+  "lesson": "Enter only what the text states, such as a threshold, a direction or one example point, and list figure-only results as not entered in the source record.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Values read off rendered figures by a model turn out to match the published numbers closely enough to be entered.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-28"
+  },
+  "source_agent": "librarian_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 librarian_agent/failures.jsonl:26, a abandoned_attempt line. Verdict transfer by rule F5 of meta_agent/src/cases/seed_sma.py: the line itself states a general form of what recurs. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-056",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "occasion: revision 4, after the person set the stiffness range to 0.1-10 pN/um; four_literals_that_were_right_by_coincidence: A3 wrote the soft corner's thermal width as a literal 0.1 of a diameter, A5 wrote four stiffness levels and twelve points, and S4 wrote four levels k1-k4. All three agreed with revision 3's assumed range and none read the goal. The person's range made the width 0.04 and the levels three; check 17 caught A3's by recomputing its formula, and the other two were found by reading. All now read the goal.; rounding_direction: revision 3's relaxation times rounded DOWN to one figure (2.356 to 2), so a timestep derived from the rounded value was inside A1's bound at the true value. The new range rounds them UP (0.471 to 0.5), which would have put the step over the bound. S4 now applies a 0.8 margin and checks every cell's step against the bound at the unrounded tau.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:56"
+    }
+  ],
+  "cue": "plan cards carry literals that matched an earlier assumed range, so a person's changed range leaves some of them right only by coincidence, and rounded derived values can drift past a bound",
+  "lesson": "Derive every plan literal from the goal card by formula and have the validator recompute it, rounding toward the safe side of each bound and checking at the unrounded value.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Changing the goal's range leaves all cards correct with no recomputation, or rounding in either direction never crosses a bound.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-24"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:56, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

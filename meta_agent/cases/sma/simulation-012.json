@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-012",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "success",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:success",
+      "seed_verdict:drop"
+    ]
+  },
+  "what_happened": "what_this_closes: the hypothesis the row at 22:30Z left open in what_is_not_verified -- 'there may be a second, separate reason that subdirectory sessions get nothing, and the per-project entries all being empty is the candidate. That is a test rather than a conclusion.' The test has now run and the candidate is refuted. There is no second cause.; why_the_22_40Z_row_did_not_close_it: that row proved the service answers from a simulation_agent/-rooted session, which is reachability. It could not separate the causes, because at 22:39Z the repository still carried an enable: .claude/settings.local.json read {'.../simulation_agent': {'enabledMcpjsonServers': ['librarian']}}. With a repo-scope enable present, a session reaching the server is consistent with the per-project arrays mattering and with them not mattering. The distinguishing case is a session that reaches the server with NO repo-scope enable at all, and that is what this one is.; so_the_mechanism_is: one user-level allow by server name, which covers every directory. The per-project arrays in ~/.claude.json were never the mechanism, so their being empty was never evidence of anything -- not weak evidence, not evidence. Three rows reasoned from them. The only thing that ever silenced a seat was the repo-local disable, because a deny beats an allow.; the_file_moved_a_third_time_and_nothing_records_it: the root CLAUDE.md says of .claude/settings.local.json: 'read it again, because it moves -- on 2026-09-20 it went from that one key to {} to absent inside ten minutes while seats were quoting it to each other, and nothing anywhere records that it did.' This row is that record for one more move. tasks/000 still quotes the {'.../simulation_agent': ...} form in the present tense and it is already stale; the intermediate value was the person putting ~/.claude.json's shape into a settings file, which is harmless and did nothing. A card that quotes an untracked gitignored file is quoting something that cannot be diffed, so it goes stale silently -- the same shape as prose that does not re-check itself, one level further out, because here nothing in the repository could re-check it even in principle.; what_it_cost_to_find: one tool call and three file reads. The probe was free -- the server files a refusal with the arguments under `claimed` and caller_id null, so check 45 cannot mistake it for a question's call. Four seats recorded this symptom across two days and the distinguishing observation was available to any of them at any time.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:12"
+    }
+  ],
+  "cue": "a hypothesis about a second cause is open and the earlier probe still had a repository-scope enable in place",
+  "lesson": "Run the distinguishing test with every override removed, and record the result so that the reasoning from per-project arrays is retired.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "A test with an enable still present separates the causes just as well as one without it.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-20"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:12, a success line. Verdict drop by rule F1 of meta_agent/src/cases/seed_sma.py: a success line records no failure to recall. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

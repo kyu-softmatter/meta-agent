@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-097",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:boundary-narrows-one-side-only",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "Found by architecture-20261007-1 reading the registry: the harness seat's narrowing keeps it inside contracts/harness/, and nothing keeps anyone else out. 40 of 40 manager-named rows hold contracts/ in paths without excluding contracts/harness/, so check 41 would accept a manager's commit to the ledger under that manager's name. A ledger whose worth is that one seat writes it has no such guarantee. No manager has committed there: every commit touching contracts/harness/ is the harness seat's (git log).",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:97 (INC-20261017-04)"
+    }
+  ],
+  "cue": "a path is meant to be written by one seat, but only that seat's own boundary narrows and other seats' boundaries still include it",
+  "lesson": "Make the validator check that a path reserved to one seat is excluded from every other seat's registered paths.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "No other seat ever commits to the reserved path, so exclusion adds no protection.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-17"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:97 (INC-20261017-04), an incident of class boundary-narrows-one-side-only. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

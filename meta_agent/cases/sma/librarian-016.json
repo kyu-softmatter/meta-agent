@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-librarian-016",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:librarian",
+      "sma_kind:deviation",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "Filed the person's 2026-09-21 ruling as TWO entries and one of them should never have been an entry. `pixel_size_calibration_is_not_repeated` -- the operator's decision not to repeat cal-pixel-size-20260919 -- went into kb/entries/ at E5 under `assumed:person_ruling_20260921`, was published in kbv-a8817e71e17b, and was withdrawn the same day at edb00b0. The store went 106 -> 108 -> 107.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 librarian_agent/failures.jsonl:16"
+    }
+  ],
+  "cue": "a person's decision or policy is filed in a claim store whose schema requires a grade, so the decision gets a grade it must not have",
+  "lesson": "File decisions and policies as source records outside the knowledge entries, and make the librarian's instructions reject any entry that needs a paragraph to explain why it almost fits.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Graded entries holding decisions are shown to be consumed correctly and never mistaken for claims about the world.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-21"
+  },
+  "source_agent": "librarian_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 librarian_agent/failures.jsonl:16, a deviation line. Verdict transfer by rule F5 of meta_agent/src/cases/seed_sma.py: the line itself states a general form of what recurs. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

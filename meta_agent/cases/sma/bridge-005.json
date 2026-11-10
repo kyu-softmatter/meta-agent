@@ -1,0 +1,57 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-bridge-005",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "success",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [
+      "tracer_diffusivity"
+    ],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:bridge",
+      "sma_kind:success",
+      "seed_verdict:drop"
+    ]
+  },
+  "what_happened": "the item-5 duplicate check for thr-tracer-diffusivity-001 was made and the service answered it. The two abandoned_attempt rows above are closed by this one: both said the window had no librarian tools, and this window has them",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 bridge/failures.jsonl:5"
+    }
+  ],
+  "cue": "a failure list of states omits the working case, and an earlier prediction about the answer's shape is checked against a real run",
+  "lesson": "Add the success state to the task's list of states, read the actual answer instead of the prediction, and derive server freshness from version control and process start times.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Seats reading the failure list alone still reach correct verdicts when the service works, so the extra state is unneeded.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-21"
+  },
+  "source_agent": "bridge",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 bridge/failures.jsonl:5, a success line. Verdict drop by rule F1 of meta_agent/src/cases/seed_sma.py: a success line records no failure to recall. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

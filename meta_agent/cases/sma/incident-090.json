@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-090",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:commit-around-the-tool",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "Nine minutes after the commit tool landed, a seat committed aa9941d6 without it: the commit is on the branch and absent from the tool's log. The root CLAUDE.md that the same commit rewrote now says every commit is made through the tool. Nothing told the committing seat at the moment it committed.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:90 (INC-20261016-03)"
+    }
+  ],
+  "cue": "a seat commits around the commit tool right after the instructions began requiring it, and nothing tells it at that moment",
+  "lesson": "Make the pre-commit hook warn a seat identity at commit time when the commit was not made through the commit tool.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Seats use the tool every time without any reminder, so commits around it do not occur.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-16"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:90 (INC-20261016-03), an incident of class commit-around-the-tool. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

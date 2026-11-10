@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-098",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:one-question-answered-in-two-windows",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "The question of where the operator console lives was drafted twice on 2026-10-17, in two sessions that did not know of each other: the GUI mockup seat's console design (a claude.ai Design artifact, recorded at 057f711f) and a plan.md section 15 drafted in architecture-20261003-1's window (microscope_runtime/, which card 076 now waits on at 1957cb6d). Work was divided by window and not by question, and nothing in the tree marks a question as taken. This seat has not compared the two designs: neither is in the tree (one is an artifact outside it, the other not yet written to plan.md), so the overlap rests on architecture-20261003-1's report.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:98 (INC-20261017-05)"
+    }
+  ],
+  "cue": "two sessions draft the same design question because work is divided by window and nothing in the tree marks a question as taken",
+  "lesson": "Add a tree-visible claim record for open design questions that a session must write before drafting, read through the task queue.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Parallel sessions never draft the same question even with no claim record.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-17"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:98 (INC-20261017-05), an incident of class one-question-answered-in-two-windows. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

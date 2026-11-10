@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-083",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:contract-has-no-slot-for-it",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "The KB entry cameras_both_kinetix22 carried 'Falsified by either camera being replaced' as a sentence in validity_conditions, where nothing can read it, and a policy question it answered was later asked as though nobody knew. The source gives no date.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:83 (INC-undated-09)"
+    }
+  ],
+  "cue": "a knowledge entry states its validity conditions as a free sentence that no check or reader can act on",
+  "lesson": "Make the knowledge-entry schema hold validity conditions as structured fields and reject an entry whose conditions exist only as prose.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Free-sentence validity conditions are read and acted on correctly by sessions or checks without structure.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-16"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:83 (INC-undated-09), an incident of class contract-has-no-slot-for-it. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision. The incident carries no day of its own; last_seen is the day it was recorded."
+}

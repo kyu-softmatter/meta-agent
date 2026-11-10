@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-microscope-011",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "instrument",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:microscope",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "planned: card 069 built on mock and committed: --mm-config and --handover-objective on operator.py and live_view.py, the person's approval of the file by sha256, the System/Startup preset stripped into a derived copy in the run folder, the load through devices/micromanager.load_configuration with AutoShutter verified, the load event in events.jsonl before focus_search_z_before, preflight with only the stand and Kinetix_red, the abort reading every lamp and shutter row after a load, and every ZDrive FocusDirection refused naming micromanager_focus_direction_encoding (card 069 at 51abeb8c); actual: paused before any code, on the person's decision of 2026-10-17 to move the microscope execution layer into a new top-level microscope_runtime/ (plan.md section 15, being written), relayed by manager-microscope-20261003-1 with the instruction to commit what is done, record the stop, and start nothing new in src/ until section 15 lands and card 069 is revised to match; done: read cards 069 and 064 at 51abeb8c and the code they touch: operator.run and main (src/operator.py 1101-1260, 1639-1731), devices/micromanager.load_configuration (570) and _core (398), session_036_readonly.derive (95), live_view.main (288), orchestrator._read_z and the focus gate (1403-1483), and tests/test_focus_search_gate.py's fake core and orchestrator setup; not_done: every build step of the card: no test written, no code written, no approval shape defined; uncommitted: nothing in src/, tests/ or failures.jsonl besides this line; nothing in scratch for this card; design_so_far: one pure module for the configuration gate, standard library only: sha256 against the person's approval files, which are read and never written; FocusDirection lines parsed, any ZDrive line refused naming the missing store entry, a PFSOffset line recorded beside the hashes; a derived copy without ConfigGroup,System,Startup lines written into the run folder, with no derived copy and a log line saying so when the file has none. In operator.run the check runs before anything is loaded, and the load, its event and the AutoShutter stop come at the start of _run_body, inside the opened stream. The loader is injectable so tests use a fake core on a non-mock backend, because --mm-config on mock is refused. Open question for the revised card: a hardware load with no run folder (no --write) has nowhere to put the derived copy; the intent was to refuse it rather than write the copy to a temporary directory",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 microscope_agent/failures.jsonl:11"
+    }
+  ],
+  "cue": "a build task is paused mid-way by a design decision that moves the layer it was changing, with no code written yet",
+  "lesson": "Record the stop with what was read, what is not done, the design so far and the open question, commit only that record, and start nothing new until the revised card lands.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Paused work that leaves no such record is resumed just as fast and correctly by the next seat, so the written state adds nothing.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-17"
+  },
+  "source_agent": "microscope_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 microscope_agent/failures.jsonl:11, a deviation line. Verdict downgrade by rule F3 of meta_agent/src/cases/seed_sma.py: a microscope_agent line speaks of one bench; here it is a hint, not a finding. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

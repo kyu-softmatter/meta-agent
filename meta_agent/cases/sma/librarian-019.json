@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-librarian-019",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:librarian",
+      "sma_kind:deviation",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "committed into the message of the log commit at 761 lines that the store HOLDS the disk period and that a caller asking `disk_period` was being told absent because the quantity name did not reach the entry -- 'not missing knowledge, unreachable knowledge', and that eight absent gaps in other agents' cards were therefore wrong. Then opened the entry. csuw1_disk_speed_exposure_constraint carries `numbers: null`. It states a CONSTRAINT -- an exposure must last an integer multiple of the disk period -- and never says what the period is. No entry anywhere in the store carries a number with `period` in its name. The eight absent answers were correct.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 librarian_agent/failures.jsonl:19"
+    }
+  ],
+  "cue": "a session infers what a knowledge entry contains from the fact that it answered a query or from a quoted clause",
+  "lesson": "Make the librarian's instructions require opening the entry before any claim about what the store holds, since query coverage shows matching subjects, never contents.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Entries that answer a query reliably carry the operand the claim assumes, so coverage alone predicts contents.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-23"
+  },
+  "source_agent": "librarian_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 librarian_agent/failures.jsonl:19, a deviation line. Verdict transfer by rule F5 of meta_agent/src/cases/seed_sma.py: the line itself states a general form of what recurs. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

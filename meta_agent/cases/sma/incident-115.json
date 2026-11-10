@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-115",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:contract-has-no-slot-for-it",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "The person decided that the permission for a proposal that loosens a rule may also be given on the console's administrator screen, by login and password, and accepted changing the way it is done (Q-20261022-office-14, docs/ideas/20261023.md at 659c2214). The harness records hold the person's word in one form only: person_word {quote, said_in_window_of, on, recorded_in}, words said in a seat's window. Check 89 refuses the landing of a loosening without it. So a permission given on the screen has no slot in either harness schema, and a landing resting on it would be refused at the gate. Nothing has been signed there yet: the screen does not exist.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:115 (INC-20261023-01)"
+    }
+  ],
+  "cue": "the person grants permission through a new channel, but the record schema holds the person's word in one form only",
+  "lesson": "Extend the person-word schema in the harness records with a console-signed form before that channel is used, so the landing check can accept it.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Permissions given through the new channel are never used, so the schema never needs the form.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-23"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:115 (INC-20261023-01), an incident of class contract-has-no-slot-for-it. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

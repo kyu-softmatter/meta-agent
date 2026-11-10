@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-024",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "success",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:success",
+      "seed_verdict:drop"
+    ]
+  },
+  "what_happened": "the_run: run-20260921-001. The operator resolved `v2_plan_simulation_sim-20260917-001.json` and the log says `plan-sim-20260917-001-r2`, revision 2 -- 009's resolution working on its first real use. Tier 1, full budget, envelope `inside` on both ceilings with the wall clock estimate 0.36 s against 7200 and storage 0.02 GB against 10. The estimates are still revision 1's assumed ones, so `inside` is honest about the comparison and not about the cost.; the_worry_that_did_not_bite: the window went 2 s -> 30 s and the record 20 s -> 300 s, and the save interval went with it, 0.02 -> 0.3 s. So frames stayed at 1001 and steps at 10000: the fifteen-fold is in the physical scale and not in the file count. Checked rather than assumed, because the storage ceiling is where it would have bitten.; what_had_to_be_built_first: revision 2 declares `window_insensitive` against `log10_ratio_of_first_half_to_second_half_diffusivity`, and **nothing computed it** -- a criterion declared against a quantity no record carried. `mock_backend.window_halves` runs the declared estimator over each half of the lag range and the operator records it. It is deliberately not another error bar: the fit's own and the block estimate both describe scatter at one window, and this asks whether the window itself was right. A fit reaching past the free regime disagrees with itself across the window while each half stays tight, and neither error bar can see that because every block spans the same lags.; the_shifts_are_the_slice_s_own: the weight is how many independent displacements entered each lag, about n_frames // shift. Renumbering the second half's shifts from one would weight it as if it were the first and quietly make it a different estimator -- the thing `fit_over` already carries a warning about.; what_the_writer_needed: three revision-1 assumptions, each found by the card refusing rather than by reading. The threshold numbers were a hardcoded list, and revision 2 has no `target_decade_resolution` because the target left numbers[] for the inline shape; they are now taken from the plan's own criteria. A criterion may carry `target:` instead of `number:`, which nothing here read -- check 6 skips those, so this module answers a case the gate does not. And a reading is emitted only when a field names it: the revision-1 record carries the intercept too, and emitting every reading a record can supply would have put an unnamed `simulated:` number on a revision-1 card, which check 21 refuses outright.; measured: 61 passed, 0 failed. check 6 recomputes 10 criteria against the cards' verdicts, check 37 admits three time bases, check 52 carries 4 targets unchanged. All six of revision 2's criteria evaluate and all six are met: 0.0243 decades from the prediction, 0.61 per cent relative error, the intercept at 1.99 block sigma against a guard of 3, and the two halves of the window disagreeing by 0.0059 decades. The revision-1 card rebuilds byte-identical.; by: simulation-6",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:24"
+    }
+  ],
+  "cue": "a revision declares a criterion against a quantity no record carries and the first run on a new revision is requested ahead of the engine",
+  "lesson": "Add the missing computation to the engine adapter before running, and let the card writer refuse until each declared criterion is backed by a recorded quantity.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "The declared criterion can be evaluated from quantities the record already carried.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-21"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:24, a success line. Verdict drop by rule F1 of meta_agent/src/cases/seed_sma.py: a success line records no failure to recall. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

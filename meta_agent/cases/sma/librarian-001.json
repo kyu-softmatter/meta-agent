@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-librarian-001",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:librarian",
+      "sma_kind:abandoned_attempt",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "tried to land the DMD control-path and light-engine facts as kb entries, then abandoned it and left them in kb/staging/",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 librarian_agent/failures.jsonl:1"
+    }
+  ],
+  "cue": "a fact needs recording but the knowledge store has no source kind that honestly describes where it came from, so the nearest existing kind would carry the wrong grade",
+  "lesson": "Add the missing source kind to the knowledge store's source vocabulary through its owner and park the fact in staging until then, never filing it under the nearest existing prefix.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Entries filed under the nearest existing prefix for such facts are later shown to carry the correct grade and to mislead no consumer.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-18"
+  },
+  "source_agent": "librarian_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 librarian_agent/failures.jsonl:1, a abandoned_attempt line. Verdict transfer by rule F5 of meta_agent/src/cases/seed_sma.py: the line itself states a general form of what recurs. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

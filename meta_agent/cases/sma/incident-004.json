@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-004",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:class-fixed-not-swept",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "A seat fixed check 36 and did not look at kb_group, which carried the same defect. It was one of seven same-shape mistakes the seat counted that day.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:4 (INC-20260918-03)"
+    }
+  ],
+  "cue": "a defect is fixed in one check while a sibling check or field of the same shape keeps it",
+  "lesson": "When fixing a defect in a validator check, search all checks and schema fields for the same pattern and fix or list each one in the same commit.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Sweeps after such fixes repeatedly find no sibling carrying the same defect.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-18"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:4 (INC-20260918-03), an incident of class class-fixed-not-swept. Verdict downgrade by rule I1 of meta_agent/src/cases/seed_sma.py: it rests on a sentence of that repository's instructions, not on a commit, a file or a log. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

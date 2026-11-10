@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-015",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:verdict-read-without-its-tree",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "Two seats reported check 48 failing on contracts/seats.json while clean archives of both HEADs passed, and the seat that had run --commit-range aeaa27b~1..aeaa27b got PASS on the identical range later. Between the runs manager-bridge had reverted uncommitted hunks in the validator's path classifier, and --commit-range judges with the working copy's contracts/validate.py rather than the committed one; the hunks were destroyed with git checkout and cannot be re-read.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:15 (INC-20260920-01)"
+    }
+  ],
+  "cue": "a commit-range validator run judges with the working copy's validator code, so one range gives different verdicts at different times",
+  "lesson": "Make the validator's commit-range mode load its own code and contracts from the committed tree of that range, or state in the verdict line which code judged.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Commit-range verdicts stay identical when the working copy's validator differs from the committed one.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-20"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:15 (INC-20260920-01), an incident of class verdict-read-without-its-tree. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

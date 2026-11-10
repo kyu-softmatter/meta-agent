@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-005",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "success",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:success",
+      "seed_verdict:drop"
+    ]
+  },
+  "what_happened": "what_this_row_is: the fifth row on this task and the result of the test the fourth row set. Row 4 named a candidate second cause and wrote itself down as a test rather than a conclusion: remove the disable, open a session rooted in simulation_agent/, read session_connectors_status. This session is that session and this row is that reading.; the_reading: session_connectors_status from a session whose working directory is /Users/kyuhwan/Desktop/rebuild/simulation_agent returns {\"name\": \"librarian\", \"kind\": \"project\", \"transport\": \"stdio\", \"status\": \"connected\", \"tool_count\": 4}. The four tools are in the session's tool list: kb_query, kb_get, kb_group, kb_conflicts.; what_is_disproved: the candidate second cause. ~/.claude.json still holds all seven rebuild project entries with enabledMcpjsonServers [] and disabledMcpjsonServers [] -- re-read in this session, unchanged from what row 3 and row 4 saw -- and the server is nevertheless connected here. So an empty per-project array does not withhold a server, the user-level enabledMcpjsonServers by server name does reach a session rooted in an agent subdirectory, and the project-scope disable in the repository root's .claude/settings.local.json was the whole of it. That file now reads {} .; so_row_3_and_row_4_resolve_differently: row 3's cause (per-session approval does not inherit) is wrong and row 4 was right to replace it. Row 4's own residual doubt is now closed in the direction that needs no further action from the person: nothing has to be added to ~/.claude.json.; what_is_NOT_established_by_this_row: that the service ANSWERS. What was read is registration and a tool count, which is the distinction the root CLAUDE.md draws in this exact place -- a seat can have the server registered and the tools missing, and the inverse of that sentence is that having the tools is not having an answer. No kb_* call was made from this session: a call takes a caller_id, the fan-out runner issues it, and inventing one to prove reachability would put a line in queries/log.jsonl under an id belonging to no question. The first real call belongs to the revision 2 fan-out (tasks/004). Until then this row says connected, not answered.; who_read_it: a third simulation session, seated by the person on 2026-09-20 as simulation session 3 and NOT REGISTERED in contracts/seats.json -- simulation, simulation-2 and manager-simulation are the only simulation-side entries. So this row is written to disk and cannot be committed under an identity of its own, and is left uncommitted rather than committed under simulation-2@seat.invalid, which would be one_identity_per_session's hole with the check passing.; ordering_note: row 4 is stamped 22:30:00Z, rounded up from a moment slightly before this one, so sorting these rows by `at` puts the answer before the question by about a minute. The stamps are honest and the order they imply is not; read them by row instead.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:5"
+    }
+  ],
+  "cue": "a test set by an earlier row has now run, and registration was read while no actual call has been made",
+  "lesson": "Keep recording a connected-service reading as registration only, distinct from the service answering, until a real call returns.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "A registered and connected server has never failed to answer, so the distinction is unnecessary.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-20"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:5, a success line. Verdict drop by rule F1 of meta_agent/src/cases/seed_sma.py: a success line records no failure to recall. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

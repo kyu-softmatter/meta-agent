@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-068",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:platform-assumption-breaks-on-another-machine",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "The second reason the Office computer had no librarian was that .mcp.json launches sh, which the app could not find, because the machine PATH held only Git's cmd directory and the user PATH had no Git entry. microscope-20261007-1 found it on 2026-10-09, and the person applied the microscope computer's remedy, Git's bin directory on the user PATH and a full app restart, on 2026-10-12.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:68 (INC-20261009-01)"
+    }
+  ],
+  "cue": "a second independent cause of the same tool outage stays hidden behind the first fix, here a search path differing between machine and user scope",
+  "lesson": "Make the bootstrap check test each launch dependency under the application's own search path, separating machine and user entries, and record the remedy per machine.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "The application's search path always equals the shell's, so a shell-side check predicts the application's behaviour on every machine.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-09"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:68 (INC-20261009-01), an incident of class platform-assumption-breaks-on-another-machine. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

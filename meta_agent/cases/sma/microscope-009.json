@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-microscope-009",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "instrument",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:microscope",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "planned: the simulation's ask, result-sim-20260923-101-run-20260924-101-v3-hold revision 1 at 735a1a0: two equal soft traps brought together until the projected histogram shows two peaks with a barrier of 1 to 4 k_B*T -- about a hundred hops an hour -- tuned by the histogram, in records of ten minutes at 10 ms; actual: 2026-09-25, runs run-20260925-012, -014 and -015 and the hand-set recording after them: one basin at every setting and no hop; at the first position one stiff well, at +5 um no reach, and at the last setting the bead lost. The separation was never tuned by histogram: three settings, none measured on the camera, in records of 3 min at 30 ms; stop_criterion_violated: none: the day's plans were verify plans whose criteria were the person's holds, and each ended as planned, by a declined hold, or by an abort already recorded in the two lines above dated 2026-09-25; why: diagnosed in questions/mic-20260928-001/diagnosis_candidates.json, six candidates ranked. First, radiation pressure: the light pushes the bead along the beam, and the grip against that push is weakest where two wells part, so the simulation's crossing becomes a way out along the beam at every separation -- which fits the lost bead. Second, the trap's shape: for a 5 um bead a trap is not the simulation's 1 um Gaussian, which fits one stiff well near 2 um and no reach at 5 um. Third, Friday's own, sharpened: the tweezers' state changed between the two positions, so neither separation is the commanded one; hints: the person gave two: card 050's, that the simulation's potential is clean and the tweezers' is not, so nonlinear phenomena appear; and, in this seat's window on 2026-09-28, 'think about radiation pressure', which moved the radiation-pressure candidate from fourth to first. The first-pass ranking is kept in the diagnosis file; disposition: held in microscope_agent/ as card 050 says: nothing to the librarian and nothing for the bridge. The separating measurement is drafted as plan-mic-20260928-001-r1, status DRAFT, with its analysis declared before data beside it; it runs only on the bench computer after the person approves it and hands over the bench",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 microscope_agent/failures.jsonl:9"
+    }
+  ],
+  "cue": "a bench experiment diverges from the simulation it was meant to confirm, and the person hints at a physical effect the simulation omits",
+  "lesson": "Rank candidate explanations in a diagnosis file, hold the result in the agent's own tree without handing it onward, and draft a separating measurement with its analysis declared before data.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "The top-ranked candidate is shown by the separating measurement to be irrelevant, or the discrepancy turns out to be a plain setup error that ranking would not have found.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-28"
+  },
+  "source_agent": "microscope_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 microscope_agent/failures.jsonl:9, a deviation line. Verdict downgrade by rule F3 of meta_agent/src/cases/seed_sma.py: a microscope_agent line speaks of one bench; here it is a hint, not a finding. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

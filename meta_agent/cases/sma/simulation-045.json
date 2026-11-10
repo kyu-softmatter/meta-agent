@@ -1,0 +1,56 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-045",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "success",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "engine": "hoomd",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:success",
+      "seed_verdict:drop"
+    ]
+  },
+  "what_happened": "HOOMD 7.2.0 integrates a free active Brownian particle correctly. md.force.Active and md.update.ActiveRotationalDiffusion both exist; built in scratch as 2D Brownian with gamma = kT/D_T, an active force v0*gamma along the orientation, and rotational diffusion D_R on the updater. Against the closed-form MSD: passive control v0=0 within 4.0 per cent, Lambda=100 within 2.8 per cent, Lambda=900 within 2.8 per cent, all at N=2000 with a single time origin where the sampling floor sqrt(2/N) is 3.2 per cent.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:45"
+    }
+  ],
+  "cue": "a capability declaration names an engine for a model whose code path does not exist, and nobody has shown the engine can do it",
+  "lesson": "Probe the engine in scratch against a closed form before starting card work, and keep the probe outside the tree and ungraded.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Declared engine capabilities always prove executable once implemented, making the early probe redundant.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-23"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:45, a success line. Verdict drop by rule F1 of meta_agent/src/cases/seed_sma.py: a success line records no failure to recall. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

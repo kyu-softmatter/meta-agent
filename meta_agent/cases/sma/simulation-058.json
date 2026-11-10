@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-058",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "occasion: first run of the revision-4 grid; run_ids: six runs were made under ids containing an underscore (run-...-v4-k1_o2), which the run-log and result schemas refuse; they turned every seat's validator red with 42 failures in the shared tree. They were never committed and were moved out of the tree, not deleted, to the session scratchpad. The grid was rerun as run-20260923-201-v4-k1-o2 and so on; the sweep point names keep their underscores, since they are not run ids.; shared_seed: the first six had also all used seed 1, and in units of the thermal width and relaxation time the 0.1 and 10 pN/um cells are the same experiment, so their results agreed to every digit. That shows the stiffness truly drops out of the dynamics, and it is one sample, not three. The rerun uses seeds 11-16.; fast_row: those first runs showed the fast-row offset 3.1 block errors high with the block error at 0.6 of the OU prediction. 100 fresh seeds at that cell gave the mean -0.016 per cent from the prediction and the spread 0.969 +- 0.071 of it: no bias. The block error there averages 0.887 of the true spread, so statistics_met is mildly optimistic on the fast row.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:58"
+    }
+  ],
+  "cue": "runs are made under identifiers that the shared schemas refuse and all share one seed, so uncommitted files turn every seat's validator red and cells that are the same experiment look like several",
+  "lesson": "Check run ids against the schema pattern and give each cell its own seed before launching, and move rejected runs out of the shared tree rather than deleting them.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Runs with bad ids never reach the shared tree, or shared-seed cells differ in outcome, showing they were independent samples.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-24"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:58, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

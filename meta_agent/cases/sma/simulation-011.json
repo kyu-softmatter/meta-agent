@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-011",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "why_a_second_row: the row before this one, committed in c4349ff, stated the read-refusal too broadly -- as though `sed` reads are refused and grep, cat and python are not. simulation-4 read the same file with `sed -n '142,260p'` and was not refused, which is the observation that forced this. The earlier row stands rather than being edited; it was published to the architecture seat and is now in plan.md at 628a983, so what it got wrong matters more than tidying it.; so_both_conditions_are_needed: the file must sit under a deny pattern AND the sed script must carry regex addresses. Either alone passes. That is why two seats running what they both called the same read got opposite answers: simulation-4's address was numeric and this seat's was a regex range.; the_mechanism_this_implies: with a numeric address the matcher finds one file argument and lets the call through as a read. With `/.../,/.../` addresses it sees extra slash-leading tokens, cannot resolve the call, and falls back to treating `sed` as a writer -- which then matches Write(tasks/**) for a file under it and matches nothing for src/. The first refusal today named simulation_agent/simulation_agent/tasks/000-read-this-first.md, a path that cannot exist, which fits a slash-leading token being resolved against the session root.; what_survives_of_the_earlier_claim: the counterexample to plan.md 6.2's inference. That section ruled out this repository's settings on the ground that every entry is Write/Edit; a Write(...) entry did refuse a read here, so the ground does not hold. The deny entry is load-bearing -- remove it and the same regex form passes on src/ -- and the harness's classification of `sed` as a writer is the mechanism. What does not survive is the flat form: it is not that sed reads are refused, it is that SOME sed reads are.; and_it_makes_the_architecture_seat_s_conclusion_worse_not_better: they wrote that a deny's effect is not in the tree and the only way to know what it blocks is to attempt the operation and be refused. Today adds that the effect depends on how the attempt is PHRASED, not only on what it does. So attempting it once is not enough either -- a seat has to attempt it in the exact form it intends to use, and a colleague's successful attempt in a different form proves nothing about yours. That is a smaller surface for a check and a larger one for a seat.; the_bypass_this_seat_should_not_have_found_by_accident: an earlier probe put the path in a shell variable, and six sed calls including the denied one all passed -- the matcher had no literal path to match. This is noted so it is on the record and not repeated as a technique. It is the same class as the heredoc: the guard reads the command's surface text.; who_fixes: not this seat. Raised with architecture, who has 628a983 to amend, and the settings and validate.py are the design seats'.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:11"
+    }
+  ],
+  "cue": "two seats run what they call the same read and get opposite answers from the permission matcher",
+  "lesson": "Attempt each operation in the exact phrasing it will be used in and record the phrasing alongside any refusal claim, since a colleague's success proves nothing for another form.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "The matcher's outcome depends only on the target path and not on the phrasing of the command.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-21"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:11, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-013",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:inferred-instead-of-reading",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "Architecture ruled that pixel size at the sample plane was a gap, splitting it into a sensor pitch at E3 plus a gap, while plan.md section 12 already held a row for a calibrated value at E2; it had applied the E3 ceiling for prior-repository numbers without confirming where the number came from. The librarian asked the person back, and the value proved to be the repository's first E2, calibrated by a person on this instrument, which had nearly gone into the store as a gap.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:13 (INC-20260919-07)"
+    }
+  ],
+  "cue": "a role applies a grade ceiling to a number by inference without reading the plan row that already covers it",
+  "lesson": "Require the architecture seat to cite the plan row or source naming a number's origin before ruling it a gap, and to ask the person when the origin is unknown.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Rulings made by inference without citing the plan match the person's answers when asked.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-19"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:13 (INC-20260919-07), an incident of class inferred-instead-of-reading. Verdict downgrade by rule I1 of meta_agent/src/cases/seed_sma.py: it rests on a sentence of that repository's instructions, not on a commit, a file or a log. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

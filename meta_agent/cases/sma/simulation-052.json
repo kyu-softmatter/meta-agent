@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-052",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "occasion: architecture asked what about `simulated:<run_id>` did not fit, after this seat reported the run observable as having no source kind; what_was_written: revision 2's and revision 3's goal each carry a constraint note saying SOURCE_GRADE has no kind that fits a simulated output, so the offset stays in the run's observables.json until 5.3 gains one.; why_it_is_wrong: `simulated:` is in the table and in cards.SOURCE_GRADE, graded max(E4, worst input). The sentence was carried from an older paragraph of this agent's CLAUDE.md and never checked against the table it describes.; what_is_actually_true: the kind exists and is GATED: it applies only to a configuration whose output is not fixed by its inputs. bd_overdamped_trapped_uniform_flow declares output_independent_of_input false, because the estimator inverts the equation the integrator solved. So the recovered stiffness correctly cannot enter a card as a graded result, and there is no gap in 5.3 -- the conclusion was right and the reason given for it was not.; not_amended: both goal cards are records of their revision and stay as written; this row is the correction.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:52"
+    }
+  ],
+  "cue": "a constraint note in a goal card states that a vocabulary or table has no entry for something, copied from older prose without checking the table it describes",
+  "lesson": "Check any claim about what a vocabulary or source table contains against the table itself, and cite the entry and its gating condition in the note.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Notes restating table contents prove consistent with the tables without such a check, or the tables change so rarely that no stale claim ever appears.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-23"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:52, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

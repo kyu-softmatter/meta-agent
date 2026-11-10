@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-049",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "occasion: forming S4 per point for the smoke run, and counting every cell's steps with all three of A1's bounds; what_was_claimed: revision 3's goal and the message of 17036d9 said the worst corner -- soft trap, offset one thermal width -- needs 200 thousand steps and fits A5's budget of 200 thousand a point with no margin.; what_is_true: it needs six million. At that row A1's NOISE bound, 0.005*tau, is twenty times tighter than the DRIFT bound, 0.1*tau/(offset/sigma) = 0.1*tau, and the claim used the drift bound. The slow row is over the conservative budget by thirty times and S4 skips all four of its cells, with the counterexample, in v3_refusal_s4.; why_it_happened: A1 x A2 is S4's product to form and the goal formed it in prose. The a5 card itself was right -- it states a budget and no product -- and so was every axis card; the false number lived only in a constraint note and a commit message, which no check reads.; what_held: the sweep IS flat in stiffness, now in all three rows rather than in two: 6e6, 6e4 and 2e5 steps at every stiffness level. The flatness claim was right and the level it was right at was not.; not_amended: the goal and the commit are left as they are. Revision 3 is the record of what was believed then, and a rewritten commit is worse than a wrong message (CLAUDE.md, 2026-09-23).",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:49"
+    }
+  ],
+  "cue": "a budget or feasibility claim is formed in prose in a goal note or commit message from one bound, while several bounds apply and no check reads that prose",
+  "lesson": "Have the plan stage compute each per-point quantity as a card field from all applicable bounds, taking the tightest, instead of stating the product in notes.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Counting every cell against all bounds in a card gives the same figures as the earlier prose claims across the whole sweep.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-23"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:49, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

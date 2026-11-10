@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-117",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:loop-runs-only-when-woken",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "No daily pass ran on 2026-10-25, 10-26, 10-27 or 10-28: the last pass record is retro/20261024.json and the next is this one. This seat acts only when a message or a person's word reaches its session, and none did from 2026-10-24T17:13Z until the intake seat relayed the person's word to wrap up (I-20261029-office-01, d15f0cb4), which started this pass. The same cause as INC-20261022-02. Whether to schedule the pass is the person's to say in this seat's own window, because a schedule is standing configuration; the question has been open since 2026-10-22 and has no answer.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:117 (INC-20261029-01)"
+    }
+  ],
+  "cue": "a daily duty goes unrun for several days because its seat acts only when woken, and the question of scheduling stays open",
+  "lesson": "Make each retro name the gap between its date and the last pass record, so missed days are visible when the pass finally runs.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Gaps between pass records never occur, so the retro's gap line would always be empty.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-29"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:117 (INC-20261029-01), an incident of class loop-runs-only-when-woken. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

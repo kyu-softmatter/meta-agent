@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-041",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:contract-has-no-slot-for-it",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "time_base offered three means of alignment, all naming hardware or the OS, and the simulation side, which has no clock, could use none of them. It was found by a seat trying to write the first card of its kind.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:41 (INC-20260920-27)"
+    }
+  ],
+  "cue": "a contract field offers alignment options that all assume hardware, leaving a producer without a clock no valid choice",
+  "lesson": "Add to the contract field an explicit option for producers without a clock, with a required reason, and draft a card from such a producer to test it.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Producers without a clock always find a valid option among the existing ones.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-20"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:41 (INC-20260920-27), an incident of class contract-has-no-slot-for-it. Verdict downgrade by rule I1 of meta_agent/src/cases/seed_sma.py: it rests on a sentence of that repository's instructions, not on a commit, a file or a log. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

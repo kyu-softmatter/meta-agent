@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-042",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:count-mixes-fixtures-with-work",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "Architecture answered the person with 19 axis cards and 3 plans, read off a validator run as instructed, but 6 of the 19 were contracts/examples/ fixtures, 2 of the 3 plans were fixtures and the one real plan card was simulation's, and contracts/examples/result.json existed while no agent tree held a result card. simulation-4 caught it an hour later by counting its own tree against the run.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:42 (INC-20260920-28)"
+    }
+  ],
+  "cue": "a count read off a validator run mixes example fixtures with real cards from agent trees",
+  "lesson": "Make the validator report fixtures separately from cards in agent trees, and require any reported count to name the tree it covers.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Fixture and real card totals never differ in practice, so a mixed count misleads nobody.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-20"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:42 (INC-20260920-28), an incident of class count-mixes-fixtures-with-work. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

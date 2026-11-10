@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-096",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:head-moves-between-read-and-write",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "The gate's check 41 compares the tree being committed with HEAD as it stands when the check runs. Twice in one morning a plan.md commit by another seat landed while manager-microscope-office-20261016-1's commit sat in the gate (ba553bdc, then 7bb67248). Check 41 then read plan.md's change as that seat's and refused, and the commit tool took the refusal as a verdict. Fixed at 275cabd4: a gate refusal with HEAD moved is treated as a moved HEAD, and the commit is rebuilt and judged again.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:96 (INC-20261017-03)"
+    }
+  ],
+  "cue": "a gate compares the tree with the branch head as it stands during the run, and another seat's commit lands meanwhile",
+  "lesson": "Make the commit tool treat a gate refusal as a verdict only when the head is unchanged since the tree was built, and otherwise rebuild and judge again.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Gate refusals under a moved head always remain true for the rebuilt tree.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-17"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:96 (INC-20261017-03), an incident of class head-moves-between-read-and-write. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-103",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:contract-has-no-slot-for-it",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "The harness_proposal schema refuses a proposal of kind loosen or retire, or one touching the core, that carries no person_word. So a loosening cannot be written down as a proposal before it is put to the person, which is the only order a loosening can happen in. The retry-limit question went to the person as a message with no proposal file behind it. Check 89 already refuses a landed ledger line for such a proposal without person_word, so the guard that matters is enforced at landing; the schema's earlier refusal only removes the record of the question. Found by this seat in its own design, at the first loosening it had to ask about rather than record after the fact.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:103 (INC-20261018-05)"
+    }
+  ],
+  "cue": "a schema refuses to record a proposal until the person's word exists, but the proposal must exist to ask the person",
+  "lesson": "Make the proposal schema accept a loosening proposal in a pending-person-word state, while the landing check still refuses landing without the word.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Loosening questions are always asked and answered without a proposal record, so the pending state is unused.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-18"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:103 (INC-20261018-05), an incident of class contract-has-no-slot-for-it. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

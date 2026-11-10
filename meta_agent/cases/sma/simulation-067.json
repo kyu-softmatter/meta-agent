@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-067",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "Revision 3's stage-4 launcher was started twice, 18 s apart (21:55:28 and 21:55:46 local), because the first background launch printed nothing and I read the silence as a launch that had not happened, and relaunched with tracing. Both copies ran the smoke run run-20260924-101-v3-hold-smoke to completion concurrently, with the same seed (11), so that directory was written twice and holds whichever finished second. Both copies then started the same five full runs under the same run ids. I stopped the second copy (every process under the traced launcher, pid 473) at about 22:02, before any of the ten full runs had reached its record step, so each full run directory is written once, by the first copy.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:67"
+    }
+  ],
+  "cue": "a background launch prints nothing and is read as not having started, so it is launched again and two copies write the same run directories, which the existing-run guard checks only at start",
+  "lesson": "Check running processes before relaunching, and add a lock in the operator at run start so concurrent runs under one id are refused.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Concurrent launches under the same id are refused by the existing guard, or silent launches always prove not to have started.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-25"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:67, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

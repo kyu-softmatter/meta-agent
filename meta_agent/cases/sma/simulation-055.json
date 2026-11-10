@@ -1,0 +1,56 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-055",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "success",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "engine": "hoomd",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:success",
+      "seed_verdict:drop"
+    ]
+  },
+  "what_happened": "occasion: the trap configuration on HOOMD: trap_hoomd_backend, and run-20260923-201-smoke-hoomd-s1 on the same revision-3 plan the mock ran; how_the_trap_is_built: HOOMD has no harmonic external potential, so the trap is hoomd.md.bond.Harmonic with r0 = 0 to a tether particle left out of the Brownian method's filter; the flow is hoomd.md.force.Constant. The force is the engine's, in C++. A bead started exactly on the tether, where r0/r is 0/0, steps to a finite position, and the tether's largest coordinate after the run reads 0.0.; the_run: 62000 steps, complete. Offset +0.68 per cent of the prediction, +0.96 block standard errors; stiffness through the drag 0.9932 of declared, relative error 0.70 per cent. Both declared success criteria met, as on the mock. 2.1 us a step against the mock's 1.9, the difference being two snapshots per frame.; the_error_model_on_the_engine: across 200 fresh seeds the spread of the offset is 0.981 +- 0.050 of sigma*sqrt(2*tau/T), the same as the mock's 200-seed figure. The variances on all three axes are 1.00 +- 0.01 and the fitted relaxation time 1.035 +- 0.021 of declared. At 100 seeds the spread ratio read 1.106, 1.5 sigma high -- the same shape the mock showed at 40 seeds, and it went away the same way.; reproducibility: the same plan ran on both engines unchanged, which is 4.6.5's definition. The plan names trap_backend in system_configuration, the engine it was written against; the run records which engine executed it, and that record is the one to read.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:55"
+    }
+  ],
+  "cue": "a configuration the engine lacks a native potential for must be built from available primitives, and the same plan is run on both mock and engine",
+  "lesson": "Keep running the same unchanged plan on mock and engine, build missing forces from engine primitives, and compare outcomes and error model, recording which engine executed.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "The engine-built construction disagrees with the mock beyond the declared uncertainty, or a plan must be edited to run on the second engine.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-24"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:55, a success line. Verdict drop by rule F1 of meta_agent/src/cases/seed_sma.py: a success line records no failure to recall. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

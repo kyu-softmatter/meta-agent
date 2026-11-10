@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-030",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "success",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:success",
+      "seed_verdict:drop"
+    ]
+  },
+  "what_happened": "1_check_45_simulation_share: THREE. check 45 reads 24; counted independently per agent it is microscope 21 + simulation 3, and excluding contracts/examples/ reproduces 24 exactly, so the split is confirmed rather than guessed. The three are v2_axis_bd_overdamped_a1, _a3 and _a4 under sim-20260917-001, with kb_refs 2 each and kb_gaps 1, 5 and 3.; 2_and_the_shape_matters_more_than_the_count: the three cards with `degraded: []` are EXACTLY the three axes plan_queries emits calls for -- a1 and a4 want kb_group, a3 wants kb_query. The other three, a2, a5 and a7, carry `degraded: [\"librarian_agent\"]` with kb_refs 0 and kb_gaps 0, and they emit no call at all.; 3_so_degraded_conflates_not-asked_with_not-answered: a2, a5 and a7 say the librarian was degraded during a fan-out in which the librarian answered their three siblings. That is false about the run. The mechanism is cards.evidence, which defaults to degraded and clears only when a reply names the server -- so an axis that never asks can never clear it, and is permanently degraded on paper. The code is doing what it was told; what is wrong is that 'no result because nothing was asked' and 'no result because nothing answered' are the same value.; 4_the_consequence_for_9_1: read per-card across all six axes, 9.1's condition -- kb_refs filled, kb_gaps filled, degraded empty -- is UNSATISFIABLE BY CONSTRUCTION, because three axes have nothing to ask and so can never empty the field. Read across the axes that query, it is met: 3 of 3. Which reading 9.1 intends is architecture's, and this is the number either way. It is the inverse of the shape simulation_agent/CLAUDE.md already names for the degraded pass -- there, a condition requiring what happens anyway verifies nothing; here, a condition requiring what cannot happen.; 5_no_slot_for_the_person_s_convergence_verdict: checked result.schema.json field by field. `criteria_evaluation` is 'every stop and success criterion of the plan, evaluated' -- machine, against declared criteria. `approval_id` points at a plan_approval or scope_approval, both of which authorise BEFORE a run and are pinned to a plan hash. `values`, `estimation`, `deviations`, `new_facts`, `targets` are none of them a judgement. There is no field a person's post-hoc verdict can occupy.; 6_and_the_nearest_looking_slot_is_the_wrong_one: `outcome` is enum DONE | FAILED | NOT_CONVERGED, and it is DERIVED -- simulation_agent/CLAUDE.md says outcome is derived from a criterion's met. So the ruling has a consequence worth naming before the schema moves: with no convergence threshold declared, nothing can derive NOT_CONVERGED, and that enum value becomes unreachable. Putting the person's verdict there instead would make a derived field carry a decision, which is the exact collapse the ruling exists to prevent.; 7_constraints_the_right_slot_has_to_meet: not a design, since the schema is the manager's and the ruling architecture's -- but the shape is constrained on four sides. Ungraded, because it is a decision (5.3.1, like a target or a ceiling). Person-authored and writable by no seat, which is the shape approvals/ already has. AFTER the run, so it cannot be a plan_approval. And it must name the RUN it judges rather than the plan, because 'run more' is a revision, so a verdict on run N must not read as a verdict on the plan -- and the next revision has to be able to cite it, which means it needs an id.; what_this_seat_did_not_do: 004 is not this seat's and is not open; no plan card field was touched. All of the above is read-only against the committed tree.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:30"
+    }
+  ],
+  "cue": "an evidence field defaults to degraded and clears only when a reply arrives, so components that never issue a query stay degraded forever",
+  "lesson": "Make the evidence builder distinguish not asked from not answered, and state success conditions that components issuing no query can satisfy.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Components that issue no query never show as degraded in cards, or the success condition is met by every component without the distinction.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-22"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:30, a success line. Verdict drop by rule F1 of meta_agent/src/cases/seed_sma.py: a success line records no failure to recall. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

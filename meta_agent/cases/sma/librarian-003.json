@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-librarian-003",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:librarian",
+      "sma_kind:abandoned_attempt",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "was about to report to manager-librarian that plan.md 6.2.3 prescribes `git config --local committer.email` for a seat identity, which is wrong under D12 worktrees: --local writes to the shared $GIT_COMMON_DIR/config, so every seat would overwrite every other seat's record. Built a scratch-repo reproduction proving it -- setting committer.email with --local from a linked worktree is read back from the main working copy.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 librarian_agent/failures.jsonl:3"
+    }
+  ],
+  "cue": "a session is about to report on a plan or contract section using a copy loaded into context at start, while other seats commit changes to that file",
+  "lesson": "Make the seat's instructions require re-reading any plan or contract section from disk immediately before reporting on it, treating loaded context as memory rather than evidence.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Reports made from the context copy are found to match the on-disk section at report time just as often as reports made after a re-read.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-18"
+  },
+  "source_agent": "librarian_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 librarian_agent/failures.jsonl:3, a abandoned_attempt line. Verdict transfer by rule F5 of meta_agent/src/cases/seed_sma.py: the line itself states a general form of what recurs. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

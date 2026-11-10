@@ -1,0 +1,56 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-025",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "success",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "engine": "hoomd",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:success",
+      "seed_verdict:drop"
+    ]
+  },
+  "what_happened": "what_landed: src/hoomd_backend.py, and two extractions it forced: src/estimator.py holds the fit the vocabulary declares and src/physics.py holds k_B and Stokes-Einstein. Both backends now delegate to both.; why_extracted_rather_than_copied: `comparable` means the same estimator demonstrably ran on both SIDES. Two backends on this side each holding their own fit is the same defect with the copies closer together, and the first thing to drift would be the weighting -- the part that was measured into the contract rather than argued into it. 010 left the door open for it: *the MSD and block machinery if it is shared*.; how_the_extraction_was_checked: both result cards on disk rebuild BYTE-IDENTICAL, and a fresh mock run at each card's own parameters reproduces that run's recorded `fit`, `uncertainty`, `window_sensitivity` and the whole `msd_curve` exactly. A refactor of an estimator that nobody can show to be a refactor is a new estimator.; the_unit_system_is_derived_and_recalled_from_nothing: sigma = bead_diameter, epsilon = k_B*T, tau = sigma^2/D with D from Stokes-Einstein. That makes kT* = 1, D* = 1 and therefore gamma* = 1, and those three being one is the statement that the engine is handed the bath and the particle rather than the answer. 10.3: nothing crossed from another repository, and an integrator setting recalled from elsewhere would be operator_recall: E5 at best.; what_is_verified: five things, measured. EngineMissing raises at __init__ and not at apply(), so a run that cannot happen fails before a run directory exists. preflight carries every key the mock's does and agrees on all six shared values. The unit round trip is exact and D*tau/sigma^2 = 1.000000. Driven by a double that integrates in REDUCED units with D* = 1 and wraps with image flags, the state machine runs submitted -> complete with 1001 frames, 10000 steps and simulated_time 300.0 s, and abort reaches `aborted`. **The fitted diffusivity converts back out to 8.511e-14 m^2/s against an analytic 8.584e-14, -0.85 per cent** -- which is the test of the unit system: get sigma or tau wrong and this is off by a factor, not by a per cent.; what_is_NOT_verified_and_is_labelled_so_in_the_file: the ~20 lines of `_start_engine` and `_snapshot_positions` that call HOOMD. They are written against HOOMD-blue v4's documented API and have never executed: conda on this machine returns `__conda_exe:6: permission denied` and 010 says do not fix that and do not install anything. The first real run is where they are checked, and the comment above them says exactly that rather than implying otherwise.; the_double_is_not_evidence: it exercises this file's wiring and says nothing about HOOMD or about any diffusivity. 4.6.5 calls mock_backend a first-class backend because it integrates the equation rather than returning canned numbers; this double is the other kind and is kept outside the tree, in the scratch directory, for that reason.; two_defects_were_in_the_double_and_none_in_the_backend: the double had to allocate on `particles.N` and to bind `get_snapshot` properly. The first is worth keeping: the real snapshot allocates on N too, which is why the backend sets N before assigning positions, and getting that order wrong would fail exactly there.; and_one_in_the_backend_found_by_writing_the_test: `Reduced` carried a `kT` property that read `self.temperature_si`, a field the class does not have. It would have returned 1.0 through a `hasattr` fallback and never raised -- a value that looks computed and is a default. Removed rather than fixed: `to_engine` already states kT and gamma.; measured_tree: 62 passed, 0 failed. check 16 passes 37 source files on the dependency direction.; by: simulation-6",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:25"
+    }
+  ],
+  "cue": "two engine adapters or both sides of a comparison each hold their own copy of an estimator or physical constants, so a claim of comparability cannot be demonstrated",
+  "lesson": "Extract the shared estimator and physics constants into one module that every engine adapter calls, and prove the extraction by rebuilding existing result cards byte-identical.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Separate per-adapter copies stay in agreement through many later changes, or a rebuilt card differs after extraction although behavior did not change.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-21"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:25, a success line. Verdict drop by rule F1 of meta_agent/src/cases/seed_sma.py: a success line records no failure to recall. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

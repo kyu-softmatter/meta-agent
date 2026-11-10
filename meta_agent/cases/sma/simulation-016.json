@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-016",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:abandoned_attempt",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "the card is built, validated and not written. `time_base.alignment` is required by result.schema.json and 4.6.9 allows three values, and none of the three is true of a run on this side: `trigger_counter` and `device_timestamp` claim hardware the engine does not have, and `software_monotonic` is read by check 37 as `physics rests on the software monotonic clock`, which here it does not -- simulated time is steps_taken * dt off an integer step count, which the operator records in trajectory_meta.json and the run log's own time_base_note already says.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:16"
+    }
+  ],
+  "cue": "a required schema field has no honest value among its enumerated members and only untrue values make the gate pass",
+  "lesson": "Raise the missing enumeration member to the schema's owner and leave the field unwritten rather than choose a value that is untrue.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "One of the existing members is shown to describe the case truthfully.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-21"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:16, a abandoned_attempt line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

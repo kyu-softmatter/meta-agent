@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-051",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "success",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:success",
+      "seed_verdict:drop"
+    ]
+  },
+  "what_happened": "occasion: the first run of bd_overdamped_trapped_uniform_flow, run-20260923-201-smoke-s1, and a seed ensemble at the same cell measured afterwards; run: cell k3_o2: 2 pN/um, 20 um/s, dt 1e-4 s, 62000 steps through the operator on trap_backend, tier 1, inside the smoke budget. The offset read 0.4677 um against a predicted 0.4712, -0.96 block standard errors; the stiffness recovered through the drag at 1.0076 of the declared, relative error 0.79 per cent, so both declared success criteria are met.; cost_measured: 1.9 us per step at N=1, against the bracket's 4 ms and 4 us. The whole twelve-cell grid, slow row included, is about thirty seconds at this rate, so the budget that skipped the slow row rested on the conservative end of the bracket by more than three decades.; error_model_tested: the question's one result that is not fixed by its inputs. Across 200 fresh seeds the spread of the offset is 0.981 +- 0.050 of sigma*sqrt(2*tau/T) -- the OU prediction holds at this cell. The within-run block standard error runs about 5 per cent under the true spread, the usual optimism of a block estimate from 25 blocks.; a_false_alarm_worth_keeping: at 40 seeds the same ratio read 1.19, 1.7 sigma high, and looked like the error model failing. At 200 it is 0.98. And before that, two single runs both read the along-flow variance 12 and 15 per cent low -- which was ONE sample, because both used seed 1 and consumed the same normal stream in the same order. Two runs that agree are not two measurements when they share a seed.; drag_beats_equipartition: at equal record the drag route's relative error is the equipartition route's divided by the offset in thermal widths, exactly, because both carry sqrt(2*tau/T): 0.79 per cent against 8.9 predicted at this cell. That is why drag calibration exists as a method, and it is measured here rather than asserted.; scope_not_claimed: one cell. That the error is independent of stiffness is the sweep's claim and needs the other levels.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:51"
+    }
+  ],
+  "cue": "a first smoke run of a new engine configuration meets its criteria, and a seed ensemble is needed to judge an error model while small ensembles show false alarms",
+  "lesson": "Keep judging an error model by an ensemble of independent seeds large enough to settle, and give every run its own seed rather than treating agreeing shared-seed runs as separate measurements.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Small ensembles and shared-seed runs give the same verdict as large independent-seed ensembles across several cells, so the extra seeds add nothing.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-23"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:51, a success line. Verdict drop by rule F1 of meta_agent/src/cases/seed_sma.py: a success line records no failure to recall. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

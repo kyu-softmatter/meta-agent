@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-118",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:limit-refuses-correct-work",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "manager-librarian-20261007-1's patch commit of 22 paths (check 92 and its six fixtures) was refused at 2026-10-27T00:40:17Z with 'HEAD moved under the gate 6 times; nothing was committed'. The same 22 paths were committed 39 minutes later at ad5f96a4 (2026-10-27T01:19:38Z) with HEAD moving twice, and the gate passed, so the refused work was correct. In this window 1 of 277 attempts reached the limit; 3 more moved 5 times and committed. The limit is the person's (51feb21b), so this seat proposes no number and puts the distribution to the person.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:118 (INC-20261029-02)"
+    }
+  ],
+  "cue": "a person-owned retry limit refuses a large correct commit that passes on a later attempt",
+  "lesson": "Make the commit tool report to the person each pass the rate of attempts reaching the limit, with the head-move distribution.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Attempts reaching the limit stay absent as the number of seats and commits grows.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-29"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:118 (INC-20261029-02), an incident of class limit-refuses-correct-work. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-099",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:confirmation-pre-supplied",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "architecture-20261003-1 pushed 9beb3c07 with --push --push-includes-others in one background command. The push published four commits, among them architecture-office-20261016-2's e0d09c02, which, as reported, the person had asked that seat to commit and not push. The tool listed the commits as designed. Nobody read the list before the push completed, because the yes had been given before the list existed. The seat had passed the flag on every push that day, harmlessly until then. 9 of 13 push lines in the tool's log from 2026-10-17T23:00Z to 2026-10-18T01:22Z passed --push-includes-others on the invocation itself. The tool's log records that a push happened, not which commits it published, so how many of those carried another seat's work cannot be counted from it.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:99 (INC-20261018-01)"
+    }
+  ],
+  "cue": "a tool asks for confirmation of a list that the caller already approved through a flag passed on the invocation itself",
+  "lesson": "Make the commit tool refuse to publish other seats' commits unless a confirmation is given after the list is shown, never through an invocation flag.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Pushes with a pre-passed flag never publish another seat's work against the person's wishes.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-18"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:99 (INC-20261018-01), an incident of class confirmation-pre-supplied. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

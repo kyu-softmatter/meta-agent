@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-112",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:commit-takes-another-seats-work",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "Commit 37e14c8b (2026-10-20T00:32:04Z, 'Add microscope watcher and rendering tests') was made under the default git identity, Kyu Hwan Choi, and not under any seat. It was not made through the commit tool. It carried 2,092 lines across five files from two seats' work in progress: microscope-office-20261017-1's unfinished card 076 files (microscope_runtime/src/watcher.py, watcher_render.py and their two tests) and the intake seat's docs/ideas/20261019.md. The runtime seat reports the content matched its working tree except one later test line, so nothing was lost. But the files entered history under no seat and outside that seat's own gated commit. Who or what made the commit is not recorded; the identity is the person's, which a session with no seat identity also commits under.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:112 (INC-20261020-01)"
+    }
+  ],
+  "cue": "a commit under the person's default identity sweeps in several seats' unfinished work outside the commit tool",
+  "lesson": "Make the pre-commit hook warn when the committer is not a registered seat and the staged paths belong to a seat's declared work.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Commits under a non-seat identity never carry a seat's unfinished work.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-20"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:112 (INC-20261020-01), an incident of class commit-takes-another-seats-work. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

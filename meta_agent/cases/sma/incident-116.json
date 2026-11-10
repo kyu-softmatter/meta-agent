@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-116",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:platform-assumption-breaks-on-another-machine",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "HP-016's check 89 reading (ffef9a67) takes the person's login from microscope_runtime/envelope/console_login.json in the working copy, as it is at the moment of the run. Check 89 judges every ledger line on every run, not only the line being added. So a console-signed line already landed would fail on any later run where that file is absent, unreadable or names another login. That includes a computer where the person has not placed the file: on the Office computer at this pass, microscope_runtime/envelope/ holds only safety.json. It also includes every computer after the person changes the login. Then every commit's gate there fails on an old, correct line. The file is meant to be placed by hand and committed by the person, as safety.json is (135e62ea, human), but nothing yet requires it to be committed before a signing. Nothing has been signed through the console, so no line is affected yet. Found by this seat reading the landed code.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:116 (INC-20261023-02)"
+    }
+  ],
+  "cue": "a check judges every old record against a working-copy file read at run time, so a missing or changed file fails old correct lines",
+  "lesson": "Make the check judge each ledger line against the file as committed at that line's landing commit, not the working copy file.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "The working copy file stays present and unchanged on every computer, so old lines always pass.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-23"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:116 (INC-20261023-02), an incident of class platform-assumption-breaks-on-another-machine. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

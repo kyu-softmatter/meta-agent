@@ -1,0 +1,57 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-036",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [
+      "tracer_diffusivity"
+    ],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:refusal",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "The person asked for active Brownian particles: sweep v0 and D_R, report MSD, persistence time, persistence length, D_eff and D_eff(t) with their log-log slopes, locate the ballistic-to-diffusive crossover and collapse on the Peclet number. Refused at S3.0, no_capable_configuration. contracts/capabilities/simulation.json declares one configuration, bd_overdamped, undriven and position-only, producing tracer_diffusivity alone. Zero candidates survived the screen. Separately and not the same kind of thing: none of the six asked observables is in contracts/observables.json.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:36"
+    }
+  ],
+  "cue": "a person requests a physical model that the capability declaration does not list, and the agent cannot write that declaration",
+  "lesson": "Have the screening step refuse with a card listing counterexamples and alternatives instead of building an undeclared backend, and register new observables before planning.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Building the backend first and declaring it afterward is accepted without objection by the person, or the capability table already holds a fitting configuration.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-23"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:36, a refusal line. Verdict downgrade by rule F4 of meta_agent/src/cases/seed_sma.py: a refusal that does not say what is left. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

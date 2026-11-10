@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-019",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "what_was_confirmed: that no check compares a result card's numbers against the run it cites. 008 found it by mutation -- forging decades_from_prediction from 0.0269 to 0.0001 and the relative standard error from 0.0061 to 1e-9, both passing. This seat confirmed it without mutating anything, by reading which run files the validator opens at all: every `runs/` read in contracts/validate.py is `log.json` (check 15, config_of_run, and check 14 which is PENDING) or a glob for `manual_steps.md`. **Nothing opens a run's `observables.json` or `trajectory_meta.json`.** Two methods, one answer, and the second says why rather than that.; what_008_did_not_name: this is not an unimplemented check. It is an UNDECLARED one. Section 8 declares 14 as command traceability inside `log.json` and nothing anywhere declares that a card's reading matches the record it names -- while section 4.1's definition of done says in as many words: *the result card passes the validator, and every number in it is traceable by `run_id`*. A milestone's completion condition rests on a property no check declares, so implementing the list would not produce it and 11-11's two gates are both open rather than one.; the_cheapest_one_to_close_is_not_that_one: `met` flipped against its own `observed_number` also passes, and that needs no new file read at all: the plan's comparator, the threshold number and the observed number are already in the same bundle, so the validator can recompute `met` exactly the way src/result_card.py derives it. A writer deriving it is an opt-in guard; the same arithmetic in the gate is a chokepoint (2.1 rule 9).; not_this_seat_s_to_fix: check 37 aside, all of it is contracts/validate.py and section 8, which 6.2 puts with the manager and architecture. Nothing in simulation_agent/ changes on account of this row: the card came out right on every mutated field, and what the measurement found is that the contract would not have known if it had not.; by: simulation-6",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:19"
+    }
+  ],
+  "cue": "a milestone's completion condition rests on a property no declared check names",
+  "lesson": "Declare in the plan's check list a check that compares a result card's numbers with the run it cites, before counting the milestone's gate closed.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Implementing the existing declared checks already yields the traceability the completion condition asks for.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-21"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:19, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

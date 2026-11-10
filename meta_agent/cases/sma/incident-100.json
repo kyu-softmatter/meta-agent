@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-incident-100",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "incident",
+  "signature": {
+    "science_task": "",
+    "executes": "none",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:incident",
+      "sma_class:limit-refuses-correct-work",
+      "seed_verdict:transfer"
+    ]
+  },
+  "what_happened": "architecture-office-20261017-1's patch commit of plan.md was refused at 2026-10-18T01:36:47Z with 'HEAD moved under the gate 6 times; nothing was committed'. The commit tool rebuilds on a moved HEAD up to 5 times by default, and HEAD moved six times during that gate. Nothing was lost and the tool said so plainly; the same seat committed at 02:16:43Z (a8995280), about forty minutes later. Across all 62 commit attempts in the tool's log, by the number of HEAD moves during each: 0: 32, 1: 13, 2: 8, 3: 4, 4: 3, 5: 1, 6: 1. One other commit (2f0d6f3b) reached exactly 5 and landed. The limit is a number nobody chose under 8.3 rule 4, so no proposal is made here; if it bites again, the distribution goes to the person.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:100 (INC-20261018-02)"
+    }
+  ],
+  "cue": "a retry limit nobody chose refuses correct work when the shared branch moves more often than expected",
+  "lesson": "Make the commit tool log the number of head moves per attempt so the person can choose the limit from the distribution.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Refusals at the limit never recur over a long window, so the distribution is not needed.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-10-18"
+  },
+  "source_agent": "harness",
+  "source_repo_commit": "7bc5a0f9~1",
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@7bc5a0f9~1 contracts/harness/incidents.jsonl:100 (INC-20261018-02), an incident of class limit-refuses-correct-work. Verdict transfer by rule I2 of meta_agent/src/cases/seed_sma.py: a commit, a file or a log there shows it. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

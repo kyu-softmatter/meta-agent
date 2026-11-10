@@ -1,0 +1,57 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-008",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "success",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [
+      "tracer_diffusivity"
+    ],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:success",
+      "seed_verdict:drop"
+    ]
+  },
+  "what_happened": "what_this_closes: the one thing the row at 22:28Z left open. That row said connected and not answered -- registration and a tool count were read, and no kb_ call was made -- and this row makes the call. kb_query(caller_id='probe-not-issued-by-any-fanout', kb_version='kbv-499312508852', observable='tracer_diffusivity') from this session, rooted at simulation_agent/, returns the server's structured refusal naming the four issued caller_id forms. A refusal is an answer: only a running server writes it. So the service answers from a subdirectory-rooted session, which is 0.3's line between reading the files and the service answering.; the_caution_was_heavier_than_it_needed_to_be: the earlier row declined to probe because inventing a caller_id would put a line in queries/log.jsonl under an id belonging to no question. The log does not work that way, and reading it afterwards is what shows it: a refused call is recorded with `outcome: refused` and the arguments under `claimed`, NOT under `caller_id`. Check 45 reads caller_id against cards, so a refused probe cannot be mistaken for a question's call. The concern was real in shape and wrong in fact, and the fact was one tail of the log away.; what_is_enforced_where: the server refuses a malformed caller_id itself (4.3.1 rule 3) and says so: that an issued-LOOKING id really came from the launcher is enforced at the launcher, not at the server. So this probe establishes reachability and nothing about provenance.; each_session_gets_its_own_server: server_session differs between the architecture seat's call at 22:37:37Z (srv-40349-1789943289) and this one at 22:39:46Z (srv-38527-1789943126). The .mcp.json resolves the store through git rev-parse --show-toplevel, so both read the same store from different processes.; corroborated_independently: the architecture seat made the same kind of call from a root-rooted session and got the same refusal, and corrected the root CLAUDE.md on it in 735409b -- the paragraph had kept 'the approval does not inherit' as the true half, and it is not true. Two sessions at two roots, one conclusion.; what_remains_untested: a call that is ACCEPTED. No issued caller_id has been used from this seat, because issuing one is the fan-out runner's and the fan-out that needs it is revision 2 (tasks/004), which is simulation-2's alone. Reachability is settled; whether a real query returns usable entries is 004's to find out.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:8"
+    }
+  ],
+  "cue": "a seat declines a reachability probe out of caution about polluting a log without having read how the log records refusals",
+  "lesson": "Read the query log's recording of refused calls before declining a probe, then use a clearly marked probe call to establish that the service answers.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Refused probes appear in the log under a question's own caller identity and corrupt its checks.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-20"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:8, a success line. Verdict drop by rule F1 of meta_agent/src/cases/seed_sma.py: a success line records no failure to recall. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-004",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "why_a_third_row: the row at 03:55Z named per-session approval as the cause, on manager-librarian's reading of ~/.claude.json. That is not the operative cause and this row names what is. Both earlier rows stand; a record corrected in place stops showing that anyone was wrong, and this seat has now been wrong about this twice.; the_actual_cause: /Users/kyuhwan/Desktop/rebuild/.claude/settings.local.json contains exactly one key: {\"disabledMcpjsonServers\": [\"librarian\"]}. The librarian is EXPLICITLY DISABLED at the project scope. Meanwhile ~/.claude/settings.json already carries {\"enabledMcpjsonServers\": [\"librarian\"]}, set 2026-09-19 20:00 -- which is the user-level approval by server name that the root CLAUDE.md prescribes. So the prescribed fix was already in place and a disable list was overriding it.; what_is_not_verified: whether removing the disable is sufficient for a session rooted in an agent subdirectory. plan.md 6.2 says Claude Code reads .claude/settings.json from the working directory only, which would mean the repository root's local settings do not reach a simulation_agent/-rooted session at all -- and yet this session has no server either. So there may be a second, separate reason that subdirectory sessions get nothing, and the per-project entries all being empty is the candidate. That is a test rather than a conclusion: remove the disable, open a session in simulation_agent/, read session_connectors_status.; why_nobody_found_it: the file is untracked AND globally gitignored -- ~/.config/git/ignore line 1 is **/.claude/settings.local.json. So it is in no commit, invisible to the commit gate, invisible to every check including 53, and unreadable by any other seat looking for the cause. manager-librarian diagnosed from ~/.claude.json, found seven empty arrays, and concluded the approval does not inherit; that conclusion is consistent with everything they could see and is wrong.; what_this_corrects_outside_this_ledger: the root CLAUDE.md gained a paragraph today naming the wrong cause -- 'The root .mcp.json is inherited; the approval is not... Approve by server name at the user level rather than per path.' The prescription had already been followed on 2026-09-19 and did not work. That file is the architecture seat's and this seat does not write it; raised rather than edited.; the_shape_to_keep: a gitignored settings file is a configuration nobody can audit. Three sessions across two agents recorded this symptom, one of them read the user's own config, and none of them could see the one file that contained an explicit refusal -- because the file is excluded from version control by a rule outside the repository. 2.1 rule 9's shape again: the protection was documented and the door beside it was one nobody could look at.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:4"
+    }
+  ],
+  "cue": "a configuration file that is untracked and globally ignored holds an override nobody can audit, and several seats diagnose from other files",
+  "lesson": "Require the validator or the bootstrap tool to report local settings files that disable a registered server, so a hidden refusal is visible to every seat.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Seats find the hidden override quickly from tracked files alone, so an extra report adds nothing.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-20"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:4, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

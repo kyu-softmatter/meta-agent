@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-043",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "occasion: writing A5 for bd_overdamped_trapped_uniform_flow, and checking my own sentence with arithmetic instead of leaving it as prose; what_i_wrote: that the timestep is fixed by the stiff corner and the record length by the soft one, so a three-decade stiffness sweep costs about three decades of steps.; why_it_is_wrong: both bounds are proportional to the SAME local relaxation time gamma/k_t. A1's binding bound is drift_step_fraction*tau/(offset_over_sigma_max) and A2's floor is relaxation_times_per_record*tau, so record/timestep is independent of tau. Measured: soft corner tau=2 s gives dt=0.002 s and T=200 s, 1e5 steps; stiff corner tau=0.002 s gives dt=2e-6 s and T=0.2 s, 1e5 steps. The same number at both ends. THE SWEEP IS FLAT IN COST.; what_the_three_decades_actually_are: the price of carrying ONE timestep and ONE record length for the whole sweep. Intersecting A1's interval over all corners gives the stiff corner's dt; intersecting A2's gives the soft corner's record; together 1e8 steps per point against 1e5. The factor is exactly the stiffness range, 1000, and it is an artefact of the axis contract rather than a property of the physics.; the_structural_finding: 4.5.3 has each axis return an allowed INTERVAL per parameter, which presumes one operating point. A swept question is not one operating point, and there is no way in the card contract to say `this parameter is a function of the swept variable`. Every sweep therefore pays the product of its ranges at S4 unless a human notices. This is manager-simulation's and architecture's, not a thing to work around inside one configuration module.; how_it_was_caught: the card was already written and validating. It was caught by computing both corners rather than re-reading the sentence -- the same rule this repository states about counts, read it off a run and not off prose, applied to a claim about scaling rather than to a number.; what_changed: the a5 abstain_reason now states the corrected relation and says which half was wrong, rather than being quietly replaced. Nothing else in the card moved: the verdict was and is abstain, and the blocking input is still the person's target accuracy.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:43"
+    }
+  ],
+  "cue": "a prose claim about how cost scales is written into a card without computing the quantity at both ends of the swept range",
+  "lesson": "Compute the quantity at both corners of the swept range before stating a scaling claim in a card, and when wrong, state the corrected relation and which half was wrong instead of silently replacing it.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Scaling sentences written from reasoning alone prove right when checked, or the corners never differ from the claim.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-23"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:43, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-041",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "Two seats independently measured that HEAD was broken -- src/axes_abp.py untracked while five axis modules import it -- and both asked me to commit the file. Both measurements were TRUE WHEN MADE and both were stale when they arrived. The file entered HEAD at 0e6673a, committer architecture@seat.invalid, 12:53:38, in a commit whose message is about check 80 and does not mention it. Order: e8b8382 12:51:53 (simulation-11 sweeps the dispatch hunks), 0e6673a 12:53:38 (architecture sweeps axes_abp.py, and HEAD becomes consistent). Verified by extracting git archive HEAD outside the tree: the file is present and all five axis modules plus fanout import.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:41"
+    }
+  ],
+  "cue": "several seats report contradictory states of one file, each true when measured, and the validator output carries no time to order them",
+  "lesson": "Have the validator's verdict line carry the time of the run beside the commit and dirty-set digest, and re-measure before acting on another seat's report of a broken tree.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Contradictory reports are resolved without any timestamp, or seats always re-measure and never act on stale reports.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-23"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:41, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-021",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "method: six synthetic records built by altering run-20260920-003's four files, so every field not under test is one that actually occurred: diverged (stop_outcome fault, a tracer past the box in one step), aborted (short record, fit window cut to 0.95 s), a record too short to fit at all, a run whose block estimate has fewer than two blocks, a run directory holding only a log, and a run id that does not exist. `result_card.RUNS` pointed at a scratch directory -- the move CLAUDE.md prescribes for `operator.ENVELOPE` -- so nothing was written into the tree and no synthetic run exists in runs/.; defect_found_and_fixed: the refusal for a missing run raised instead of refusing. It built its message with `Path.relative_to(REPO)`, which RAISES ValueError when the path is outside the repository -- and pointing RUNS outside the repository is exactly how this module is exercised. So the documented testing technique broke the error path, and it would have stayed broken because the only branch that reaches it is the one nobody runs in normal use. 005's shape in a second place: right behaviour, wrong reporting, except that here there was no reporting at all. Fixed with a `shown()` helper.; five_branches_behaved: diverged -> outcome FAILED, status FAILED, step_displacement_diverged met and cross-checked against the run's own stopped_by. Aborted -> NOT_CONVERGED with estimation.followed false and the short window named. The other three refused with the message they were written to give.; the_second_thing_that_cannot_be_said: a criterion cannot report that it was not evaluable. `met` is a required boolean in result.schema.json, so every criterion comes out true or false whatever the run did. The operator does not have this problem -- its `evaluate` skips a metric the backend does not report, on the stated grounds that a metric not reported is not a pass. The card cannot express that.; what_it_costs_measured: on the aborted case the two success criteria come out met: true, evaluated against a fit over lags up to 0.95 s when the plan declares 2 s -- and the same card says estimation.followed: false, because it is. A `met: true` standing on a `followed: false` is the failure `estimation` exists to prevent, one level down: `comparable` rests on the same estimator having run. Nothing in the card is false and a reader who joins outcome, followed and met sees it; what is missing is a way to say it in the field that carries the claim.; not_this_seat_s: result.schema.json and section 5.1. Raised beside the time_base question and found the same way -- by running the thing rather than reading it.; by: simulation-6",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:21"
+    }
+  ],
+  "cue": "a card writer is run only on successful runs while refusal branches stay unexercised and its schema cannot express non-evaluability",
+  "lesson": "Run the card writer against synthetic failed and short runs from a scratch directory and give criteria a way to report that they were not evaluable.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "Refusal branches behave correctly on real failed runs without any synthetic exercise.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-21"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:21, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}

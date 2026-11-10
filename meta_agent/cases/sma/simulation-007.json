@@ -1,0 +1,55 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-sma-simulation-007",
+  "revision": 1,
+  "author": "meta-macbook-20261109-1",
+  "created_at": "2026-11-10T02:07:29Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "unknown",
+    "condition_tags": [
+      "sma_agent:simulation",
+      "sma_kind:deviation",
+      "seed_verdict:downgrade"
+    ]
+  },
+  "what_happened": "assigned_by: tasks/000, session 3's item 2. The card names one defect: a `limits` that is not a dict reports 'carries no `smoke_budget`' because the membership test runs first, so the refusal is right and the field it names is wrong.; what_the_card_understated: that message was reachable on ONE of eight shape/budget combinations. 005 recorded 'an old flat file, a missing smoke_budget and a non-dict limits all come back unavailable instead of raising', and the non-dict half of that generalised from the single shape that had been tried. Exercised here with list, str, int and None under both budgets, before the fix: list+smoke gave the wrong-field message; list+full, str+smoke, int and None on both budgets RAISED TypeError out of the membership test or the subscript; str+full returned unavailable with 'no cost number of this plan lines up with a ceiling in the envelope', which is a shape error reported as a plan/envelope mismatch and is the most misleading of the eight. So the card's premise -- that the behaviour is right and only the sentence is wrong -- held for one case in eight.; the_fix: one isinstance(ceilings, dict) guard placed AHEAD of the membership test, naming the type found. All eight now return unavailable saying `limits` is <type> and not an object, which envelope_safety.schema.json requires -- confirmed against the schema, where $defs/target.properties.limits is {\"type\": \"object\"}.; beyond_the_card: the same defect one level down, fixed in the same edit and flagged as beyond what was assigned. `smoke_budget` nests wall_clock_max and storage_max, each a limit in its own right, so a non-object there fails exactly as the block above did. Guarded the same way. Under `full` a malformed smoke_budget is correctly ignored, because the full run does not read it.; what_is_unchanged: the happy path. The real envelope/safety.json returns `inside` on both budgets with two ceilings compared, before and after.; how_it_was_exercised: a scratch envelope written per shape with operator.ENVELOPE repointed at it, against the real plan card of sim-20260917-001. Not committed as a test -- this agent has no test directory and adding one is not this card.; why_it_generalised: the shape 005 happened to try was a list, and `'smoke_budget' not in [...]` is the one non-dict case that neither raises nor lies about the type. A verification that exercises the shape you thought of records the behaviour of that shape, and reads afterwards as though it covered the class.; state: written to the working copy and NOT COMMITTED. Session 3 is not registered in contracts/seats.json, and committing under simulation-2@seat.invalid would be one_identity_per_session's hole with check 41 passing.",
+  "cause_class": "unknown",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "commit",
+      "ref": "soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:7"
+    }
+  ],
+  "cue": "a card names one defect in input handling and the real behaviour varies across many shape and budget combinations",
+  "lesson": "Exercise every combination of malformed shape and mode on the operator's envelope reader and guard the type before the membership test, naming the type found.",
+  "confidence": {
+    "level": "low",
+    "why": "one line of a prior repository, not rerun here; cue, lesson and falsification are the model's drafts"
+  },
+  "falsification": "The single shape the card named proves to be the only combination that misbehaves.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-09-20"
+  },
+  "source_agent": "simulation_agent",
+  "source_repo_commit": "d68ee7d2",
+  "grade": "E5",
+  "superseded_by": null,
+  "note": "Seed from soft-matter-agents@d68ee7d2 simulation_agent/failures.jsonl:7, a deviation line. Verdict downgrade by rule F6 of meta_agent/src/cases/seed_sma.py: specific to its task there, with no general form stated. what_happened is copied from the line; cue, lesson and falsification are the model's drafts and stay drafts until the person confirms; the verdict is a draft ruling and the person may rule otherwise in a revision."
+}
