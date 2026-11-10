@@ -321,6 +321,12 @@ def _call(skill_dir, inputs, tools):
     return fn(inputs, tools)
 
 
+# The public names: a runner outside this file (meta_agent/src/skills/) replays a transcript and calls an
+# entry through these, so that a skill is run one way everywhere.
+Transcript = _Tools
+call_entry = _call
+
+
 def _same(expected, actual, rel):
     if isinstance(expected, bool) or isinstance(actual, bool):
         return expected is actual

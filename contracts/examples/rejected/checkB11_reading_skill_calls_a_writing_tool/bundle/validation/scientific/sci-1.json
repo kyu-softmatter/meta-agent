@@ -1,0 +1,25 @@
+{
+  "id": "sci-1",
+  "name": "length equals an independent character count of the same text",
+  "call": {
+    "tool": "echo",
+    "input": {
+      "message": "soft matter"
+    }
+  },
+  "measure": {
+    "output_field": "length",
+    "reference_function": "len_message"
+  },
+  "reference": {
+    "kind": "analytic",
+    "ref": "len(message): the character count of the input text, computed by the runner without the tool",
+    "number_names": [
+      "sci1_reference_count",
+      "sci1_agreement"
+    ]
+  },
+  "tolerance": null,
+  "expected_verdict": "undecided",
+  "note": "the tolerance is a person's number; until one is chosen the verdict is undecided"
+}

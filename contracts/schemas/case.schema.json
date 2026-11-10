@@ -261,6 +261,14 @@
     },
     "grade": {
       "$ref": "common.schema.json#/$defs/grade"
+    },
+    "seed_verdict": {
+      "enum": [
+        "transfer",
+        "downgrade",
+        "drop"
+      ],
+      "description": "a case taken from a prior repository: the ruling on it (plan.md 5.4, 14-27(c)). Drawn by rule as a draft; the ruling on a prior entry is a person's (plan.md 9)"
     }
   },
   "required": [

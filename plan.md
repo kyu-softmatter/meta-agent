@@ -709,9 +709,9 @@ Numbers are fixed and never reused after retirement. M0 implements 1, 2, 3, 6, 7
 | B6 | every number in the bundle's `CLAUDE.md` exists in `snapshot.json` | build |
 | B7 | every `tools/<name>/tool.json` passes `tool_contract`, and fixture calls honour the error contract | build |
 | B8 | every skill has a trigger sentence in `CLAUDE.md`; named scripts exist; no `inferred` claim in `CAPABILITIES.json` | build |
-| B9 | safety-relevant tool call paths have the place of a deterministic gate (A5) | build |
+| B9 | safety-relevant tool call paths have the place of a deterministic gate (A5); a tool that only reads an instrument (`reads_instrument`) is not one | build |
 | B10 | with `gui/`: every `gui_spec` input maps to a `tools/*/tool.json` parameter or a `CAPABILITIES.json` item; no numeric threshold in `gui/`; the GUI validation hook calls the scientific core's validator | build |
-| B11 | skills and subagents of a bundle: every skill a subagent or `CLAUDE.md` names is in `skills/`; a subagent's `side_effects` cover the skills it names; one subagent alone lists `write_device`; a skill's `calls_tools` exist under `tools/`, and those of a `write_device` skill ask for the gate (§14-31; `tasks/010`) | build |
+| B11 | skills and subagents of a bundle: every skill a subagent or `CLAUDE.md` names is in `skills/`; a subagent's `side_effects` cover the skills it names; one subagent alone lists `write_device`; a skill's `calls_tools` exist under `tools/`, those of a `write_device` skill ask for the gate, and a `read_device` skill calls no tool that changes anything (§14-31; `tasks/010`) | build |
 
 Rules (from SMA): check and fixture in the same commit; a new fixture is watched failing first; `--expect-fail` must reject both totals in full; UNDECIDED and PENDING are not passes; every number is read off a run and the verdict line names the judged tree.
 

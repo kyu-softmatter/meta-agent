@@ -1,0 +1,17 @@
+{
+  "schema_version": "0.1",
+  "template": "agent",
+  "version": "v1",
+  "harness_surface": {
+    "system_prompt": "CLAUDE.md (Role, Procedure)",
+    "guardrails": "CLAUDE.md (What this agent does not do) + .claude/settings.json deny",
+    "memory": "envelope/snapshot.json",
+    "tool_guidance": "tools/*/tool.json descriptions + CLAUDE.md (Tools)",
+    "skills": "skills/<name>/SKILL.md",
+    "subagents": ".claude/agents/<name>.md",
+    "scripts": "src/",
+    "hooks": ".claude/settings.json hooks"
+  },
+  "placeholders": ["agent_name", "template", "rid", "purpose", "science_task", "tools_section", "must_not", "skills_section", "seat_form"],
+  "note": "A build copies this tree, fills CLAUDE.md's placeholders, adds tools/<name>/ with adapter.py, tool.json and errors/, fills CAPABILITIES.json and envelope/, and writes validation/ and replay/ tasks. The diff from this tree is recorded next to the bundle."
+}

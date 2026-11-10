@@ -1222,7 +1222,7 @@ def checkB9(bundle, label, report):
         if not isinstance(tc, dict):
             continue
         gate = tc.get("safety_gate") if isinstance(tc.get("safety_gate"), dict) else {}
-        relevant = tc.get("side_effects") not in (None, "none") or bool(gate.get("required"))
+        relevant = tc.get("side_effects") not in (None, "none", "reads_instrument") or bool(gate.get("required"))
         if not relevant:
             continue
         if not gate.get("required"):
@@ -1262,8 +1262,11 @@ def checkB11(bundle, label, report):
             if t not in tools:
                 report.fail("B11", "skills/%s" % ref, "calls the tool %s and the bundle has no tools/%s/" % (t, t))
                 continue
+            tc = bundle_json(bundle, "tools/%s/tool.json" % t, report, "B11")
+            effect = tc.get("side_effects") if isinstance(tc, dict) else None
+            if m.get("side_effect") == "read_device" and effect not in (None, "none", "reads_instrument"):
+                report.fail("B11", "skills/%s" % ref, "says it only reads the device and calls %s, a tool with side effects %s" % (t, effect))
             if m.get("side_effect") == "write_device":
-                tc = bundle_json(bundle, "tools/%s/tool.json" % t, report, "B11")
                 gate = tc.get("safety_gate") if isinstance(tc, dict) and isinstance(tc.get("safety_gate"), dict) else {}
                 if not gate.get("required"):
                     report.fail("B11", "skills/%s" % ref, "changes the device through %s, whose contract asks for no gate" % t)

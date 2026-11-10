@@ -1,0 +1,3 @@
+check B11
+
+read_status declares that it only reads the device, and the status tool it calls is one that controls the instrument: a skill's side effect covers the tools it calls.

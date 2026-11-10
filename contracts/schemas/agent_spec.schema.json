@@ -146,6 +146,55 @@
       "items": {
         "$ref": "common.schema.json#/$defs/held_item"
       }
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+      },
+      "description": "the skills of the library this agent is built with, as <id>@v<version>; S5 copies them into the bundle unchanged (plan.md 14-31; a held skill is also named in held[])"
+    },
+    "subagents": {
+      "type": "array",
+      "description": "the drawing of the bundle's subagents, where the person sees it (plan.md 14-31(h), 14-34): S5 writes .claude/agents/<name>.md from it and bundle check B11 judges the result",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+            }
+          },
+          "side_effects": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "none",
+                "read_device",
+                "write_device"
+              ]
+            }
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "skills",
+          "side_effects"
+        ],
+        "additionalProperties": false
+      }
     }
   },
   "required": [

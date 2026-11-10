@@ -50,11 +50,13 @@
     "side_effects": {
       "enum": [
         "none",
+        "reads_instrument",
         "writes_files",
         "controls_instrument",
         "runs_process",
         "network"
-      ]
+      ],
+      "description": "reads_instrument: the tool reads a device and changes nothing; it reaches the device, so it runs through the runner like any tool, and it needs no safety value (B9)"
     },
     "safety_gate": {
       "type": "object",
