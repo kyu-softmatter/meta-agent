@@ -1,0 +1,3 @@
+check 24
+
+The skill tells a session to run `python -m tools.absent`, and the tree holds no such module.

@@ -36,7 +36,7 @@ GIT_REPO = os.environ.get(GATE_ENV) or REPO  # where git is asked; differs from 
 EXPORTED = bool(os.environ.get(GATE_ENV))
 SCHEMAS = os.path.join(HERE, "schemas")
 REJECTED = os.path.join(HERE, "examples", "rejected")
-IMPLEMENTED = [1, 2, 3, 4, 5, 6, 7, 8, 11, 15, 16, 17, 18, 19, 20, 21, 22]
+IMPLEMENTED = [1, 2, 3, 4, 5, 6, 7, 8, 11, 15, 16, 17, 18, 19, 20, 21, 22, 24]
 SKIP_DIRS = {".git", ".agent", ".venv", ".pixi", "node_modules", "__pycache__"}
 
 def judge_the_commits_tree(argv):
@@ -83,6 +83,7 @@ import tasks as task_rules  # noqa: E402  (contracts/tools/tasks.py: the task in
 import notes as note_rules  # noqa: E402  (contracts/tools/notes.py: notes between seats)
 import cases as case_rules  # noqa: E402  (contracts/tools/cases.py: condition tags, store indexes, references)
 import skills as skill_rules  # noqa: E402  (contracts/tools/skills.py: what a skill is; its source read, its cases run)
+import session_skills as session_skill_rules  # noqa: E402  (contracts/tools/session_skills.py: a procedure a session loads)
 import sheets as sheet_rules  # noqa: E402  (contracts/tools/sheets.py: a sheet's bounds recomputed, its safety rows)
 
 try:
@@ -696,6 +697,14 @@ def check22(tree, c, report, include_rejected=False):
                 errors.append("%s: %s" % (loc, e.message[:200]))
         for msg in skill_rules.problems(d, c.skill_kinds, errors):
             report.fail(22, rel(d, tree), msg)
+
+
+# ----------------------------------------------------------------------------
+# check 24: session skills (a folder .claude/skills/<name>/ with a SKILL.md a session loads; tasks/015)
+# ----------------------------------------------------------------------------
+def check24(tree, c, report, include_rejected=False):
+    for d, msg in session_skill_rules.judge(tree, skip=[] if include_rejected else [REJECTED]):
+        report.fail(24, rel(d, tree), msg)
 
 
 # ----------------------------------------------------------------------------
@@ -1584,6 +1593,8 @@ def run_static(tree, c, report, checks, include_rejected=False):
         check21(tree, c, report)
     if 22 in checks:
         check22(tree, c, report, include_rejected)
+    if 24 in checks:
+        check24(tree, c, report, include_rejected)
     report.ran.update(ch for ch in checks if isinstance(ch, int))
     card_dirs = {os.path.dirname(p) for p, _ in cards}
     return len(cards), sum(len(v) for d, v in md_by_dir.items() if d in card_dirs), cards
@@ -1653,7 +1664,7 @@ def expect_fail(c, checks, strict, quiet):
             print(line)
             if not ok and not quiet:
                 for ch, p, m in sub.fails:
-                    print("    FAIL check %d %s: %s" % (ch, p, m))
+                    print("    FAIL check %s %s: %s" % (ch, p, m))
     verdict = "PASS" if (rejected == total and exp_rejected == exp_total and total > 0) else "FAIL"
     print("expect-fail: %d of %d fixtures rejected; %d of %d expected checks rejected; checks run %s" % (
         rejected, total, exp_rejected, exp_total, sorted(checks, key=check_key)))

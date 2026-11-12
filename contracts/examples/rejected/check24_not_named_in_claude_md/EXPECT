@@ -1,0 +1,3 @@
+check 24
+
+No CLAUDE.md beside the `.claude/` folder names `begin-work`, so no session is told when to use it.

@@ -1,6 +1,6 @@
 # 015 — The agent and the agents it builds work from skills
 
-**Status:** open, 2026-11-12. Opened by `design-macbook-20261112-1` on the person's words (`../../docs/ideas/20261112.md`: "결국 이 에이전트도 스킬을 기반으로 움직이고, 만들어지는 생성물 에이전트도 스킬을 기반으로 움직이도록 하자"), recorded in plan.md 14-37. Nothing exists yet. Order: after `010` (the skill layout and the runner, done). It does not wait for `011`–`014`, and they use what it gives where it exists.
+**Status:** open; the design part landed on 2026-11-12 but for the wiring of B15 (see "What the design part landed" below), by `design-macbook-20261112-1` (claim `claims/015-design-macbook-20261112-1.json`). Opened by `design-macbook-20261112-1` on the person's words (`../../docs/ideas/20261112.md`: "결국 이 에이전트도 스킬을 기반으로 움직이고, 만들어지는 생성물 에이전트도 스킬을 기반으로 움직이도록 하자"), recorded in plan.md 14-37. Nothing exists yet. Order: after `010` (the skill layout and the runner, done). It does not wait for `011`–`014`, and they use what it gives where it exists.
 
 **Seat:** the session skills under `.claude/skills/`, the two `CLAUDE.md` files brought down to the rules, check 24, bundle check B15 and their fixtures are the design seat's and land first. The bundle's one session skill, the generated page per library skill, the template that carries them and the tests are a `meta-…` seat's.
 
@@ -42,5 +42,17 @@
 - `PYTHONUTF8=1 python -m unittest discover -s contracts/tests` and `-s meta_agent/tests -t .` are OK.
 
 **Must not:** leave a rule in a session skill only; write one session skill per library skill or per calculation; put a number, a limit or a threshold in a session skill; let a fork commit as the seat whose conversation it inherited; let a message carry a decision or a number that is not in a committed file; change B8 or check 19 before the person has answered; edit a landed library skill (a change is the next version); open a path to an instrument (MP1); copy text from the private repository.
+
+**What the design part landed (2026-11-12, `design-macbook-20261112-1`):**
+- The person named the Meta-Agent's work as skills while this part was being done (`../../docs/ideas/20261112.md`, "The Meta-Agent's work, named as skills"), so `run-pipeline` above was not written. In its place there are eleven: `research-materials`, `analyse-physical-system`, `analyse-lab-environment`, `analyse-hardware`, `understand-purpose`, `design-tool-interface`, `design-gui`, `estimate-parameter-ranges`, `build-library-skill`, `specify-and-build`, `validate-and-record`. With `begin-session`, `open-sessions` and `end-session` there are fourteen, under `../../.claude/skills/`.
+- `../../CLAUDE.md` and `../CLAUDE.md`: the setup and the new-session blocks and the stage procedure moved into the skills; the rules stayed, and two were added to the root file (working from skills; fresh and fork). Read off `wc`: the root file 52 lines to 42 and 6150 bytes to 7046, this folder's 40 lines to 39 and 5660 bytes to 5140. In bytes the two together grew, so the first "done when" line holds for lines only.
+- Check 24, `../../contracts/tools/session_skills.py` (`check`, `list`), its tests, and seven rejected fixtures `check24_*`, each watched going unrejected before the check was wired.
+- **Not landed: the wiring of B15.** The rule is `bundle_problems` in `session_skills.py`, with tests for each assertion; it applies to a bundle whose `TEMPLATE.json` says version v3 or later, so that the builds that exist are not judged by it. Wiring it into the gate made `../tests/test_skills.py` fail, which lists the bundle checks by hand (`B_CHECKS`), and that file is the meta role's. The design seat asked the meta role by a note and took the wiring and its five fixtures back out (`checkB15_no_session_skill`, `checkB15_two_session_skills`, `checkB15_session_skill_names_no_runner`, `checkB15_library_skill_as_a_session_skill`, `checkB15_session_skill_not_named`, each a bundle with a `TEMPLATE.json` of version v3). When the test reads the list from the validator, the design seat wires B15 with those fixtures in one commit.
+- A fault of the validator met on the way and fixed: `--expect-fail` raised an error while printing a fixture that was not rejected and had a bundle check among its failures.
+
+**What is left for a `meta-…` seat:**
+- `../tests/test_skills.py`: take the list of bundle checks from the validator, so that a new bundle check does not fail it (the note asks this; B12 to B14 will meet the same line).
+- The bundle part of the method above: a template version v3 that carries one session skill naming the runner, the bundle's `CLAUDE.md` naming it, the `echo` agent rebuilt from it, and the fresh session of "done when", which is the meta seat's own session when it takes this task from its card alone.
+- Whoever makes template v3 first, for this task or another, makes it with the session skill: from v3 on B15 asks for it.
 
 **Report:** ten lines or fewer — the session skills written, the line counts of the two `CLAUDE.md` files before and after, the fixture counts of 24 and B15, what the fresh session did, the template version and the bundle's verdict, the verdict line, the test counts.
