@@ -6,7 +6,7 @@
 
 **Goal:** before any precise value, the rough range of every key quantity is on a card, found by considering the limits together. Skills give every number; code lists the tool's configurations and keeps the ones that meet the requirements; the model chooses (which skills, which quantity first, which rule or candidate) and says why, and types no number.
 
-**What is settled (the person, 2026-11-09):** each key quantity is obtained by a skill; the limits are considered together; rough ranges are what is wanted; the model reasons over the skills' values and sets the engine parameters; the pass is a card of its own. Standing: a model's number is E6 and enters nothing; a safety-relevant row gets a value from nothing (check 4).
+**What is settled (the person, 2026-11-09):** each key quantity is obtained by a skill; the limits are considered together; rough ranges are what is wanted; the model reasons over the skills' values and sets the engine parameters; the pass is a card of its own. Added 2026-11-12 (`../../docs/ideas/20261112.md`: "근사치 추정과 파라미터 계산을 위한 파이썬(deterministic) 계산도 각각 스킬로 만들면 좋을것 같네"): the deterministic Python calculations for approximate estimates and for parameter calculation are each made a skill; how the design seat reads it is in plan.md 14-32, as recommendations. Standing: a model's number is E6 and enters nothing; a safety-relevant row gets a value from nothing (check 4).
 
 **Inputs:**
 - `../../plan.md` 5.3, 6.3, 14-26, 14-30, 14-31, 14-32; `../../docs/ideas/20261109.md` (the microscope example and the two cases: a field of view that fills the frame, a loose resolution that allows a lower magnification or binning).

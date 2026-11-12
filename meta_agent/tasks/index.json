@@ -194,6 +194,20 @@
       ],
       "opened": "2026-11-09",
       "design_part": "open"
+    },
+    {
+      "id": "015",
+      "file": "015-the-agent-and-its-bundles-work-from-skills.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [
+        "010"
+      ],
+      "opened": "2026-11-12",
+      "design_part": "open"
     }
   ]
 }
