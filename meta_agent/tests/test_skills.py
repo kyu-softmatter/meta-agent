@@ -7,6 +7,7 @@ Every device skill here runs on a recorded transcript written by hand from
 tests/fixtures/rheometer/README.md, or inside a scratch bundle on mock adapters. Nothing is read from a
 device and nothing opens a network or serial path (MP1).
 """
+import ast
 import json
 import os
 import shutil
@@ -31,8 +32,17 @@ NOW = "2026-11-09T12:00:00Z"
 KINDS = ["bound", "data_analysis", "hardware_boot", "hardware_calibration", "hardware_connection", "hardware_control",
          "hardware_range", "hardware_state"]
 HELD = ["bring_to_ready@v1", "calibrate@v1", "run_steady_shear@v1"]
-B_CHECKS = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B11"]
 ENV = dict({k: v for k, v in os.environ.items() if k != "PYTHONPATH"}, PYTHONUTF8="1", PYTHONDONTWRITEBYTECODE="1")
+
+
+def validator_b_checks():
+    """The bundle checks the validator implements, read from its source (`B_IMPLEMENTED`): the list is the
+    validator's, so a bundle check added in contracts/ is asked of the bundle here without this file changing."""
+    tree = ast.parse(cards.read_text(VALIDATE))
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and [getattr(t, "id", None) for t in node.targets] == ["B_IMPLEMENTED"]:
+            return ast.literal_eval(node.value)
+    raise AssertionError("contracts/validate.py assigns no B_IMPLEMENTED")
 
 
 def inputs(name):
@@ -406,7 +416,9 @@ class Bundle(unittest.TestCase):
         last = p.stdout.strip().splitlines()[-1]
         self.assertTrue(last.startswith("VERDICT PASS mode=bundle"), last)
         self.assertIn("failed=0", last)
-        self.assertIn("checks run %s" % B_CHECKS, p.stdout)
+        ran = ast.literal_eval(p.stdout.split("checks run ", 1)[1].splitlines()[0])
+        self.assertEqual(sorted(ran), sorted(validator_b_checks()))
+        self.assertTrue({"B1", "B8", "B11"} <= set(ran), ran)
 
     def test_the_whole_tree_passes_the_validator(self):
         p = subprocess.run([sys.executable, VALIDATE, self.tmp, "--strict"], capture_output=True, text=True, encoding="utf-8",
