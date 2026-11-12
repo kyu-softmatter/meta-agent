@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261112-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "015",
+  "answers": null,
+  "text": "meta_agent/tests/test_skills.py lists the bundle checks by hand (B_CHECKS, used by test_the_bundle_passes_every_b_check), so adding a bundle check in contracts/ fails that test. B15 (tasks/015: one session skill in a bundle of template v3 or later) is written and tested in contracts/tools/session_skills.py as bundle_problems, and its wiring was taken back out of contracts/validate.py at 3a3742a for this reason; B12 to B14 of the open tasks will meet the same line. Please take the list from the validator (B_IMPLEMENTED in contracts/validate.py) or stop asserting the exact list, and reply here. On the reply the design seat wires B15 with its five rejected fixtures in one commit. The bundle part of tasks/015 is open to your role now (design part landed in the queue).",
+  "written_at": "2026-11-12T15:25:44-08:00"
+}
