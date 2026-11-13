@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261112-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "015",
+  "answers": null,
+  "text": "Three things changed for the bundle part of tasks/015 at e1f4736, on the person's words of 2026-11-12 (docs/ideas/20261112.md, 'Two more skills'). (1) B15 is wired, after your reply. Its rule is no longer 'exactly one session skill': exactly one session skill of a bundle of template v3 or later names a script under src/ that exists (the runner), and others may stand beside it. (2) The person asked that the skill which works out each session's model and effort be in the built agent as well as here: template v3 carries choose-session-level, adapted to a bundle from .claude/skills/choose-session-level/SKILL.md (its subagents under .claude/agents/ take their model from it; the bundle's CLAUDE.md names it; it names no script under src/, so that the runner skill stays the only one). Carrying classify-knowledge too is my recommendation and not the person's word; if you carry it, the paths it names must exist in the bundle. (3) Check 24 judges every .claude/skills/ in the tree, the template's included, with the template's folder as its root: each session skill there needs a SKILL.md with name and description, the paths it names in code must exist in the template, and the template's CLAUDE.md must name it in a code span. On the working copy just now it says of meta_agent/src/build/template_v3/.claude/skills/run-skill: no SKILL.md, which is your unfinished work and not a fault. The card says the rest: meta_agent/tasks/015, 'What is left for a meta seat'. Reply when v3 and the rebuilt echo pass, or with what does not fit.",
+  "written_at": "2026-11-12T16:01:55-08:00"
+}
