@@ -7,7 +7,7 @@ description: Start a working session in this repository. Runs the gate, takes a 
 
 Every command runs from the repository root. Nothing else is written before step three is committed.
 
-1. **Run the gate.** `python contracts/validate.py`. The last line must say `VERDICT PASS`. If it does not, say what failed and stop: a session does not start work on a tree that fails.
+1. **Fetch, then run the gate.** `git fetch origin`, and `git status -sb` to see whether the remote's `main` has commits this copy lacks: another computer's seats push there, and the person's decisions arrive that way. If it has, say so before anything is written; a session that starts behind writes against a plan that has moved. Then `python contracts/validate.py`. The last line must say `VERDICT PASS`. If it does not, say what failed and stop: a session does not start work on a tree that fails.
 2. **Know your role.** The person names it, or the task you were given does. Never choose a role, a machine tag or a wider path yourself. If none is named, ask the person once.
 3. **Take a seat, in its own commit.**
    ```

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """contracts/tools/session_skills.py -- what a session skill is and how it is judged
-(plan.md 14-37; meta_agent/tasks/015).
+(plan.md 14-38; meta_agent/tasks/015).
 
   python contracts/tools/session_skills.py check SKILL_DIR     every problem check 24 would name, for one session skill
   python contracts/tools/session_skills.py list [TREE]         the session skills of a tree, with where each is named
