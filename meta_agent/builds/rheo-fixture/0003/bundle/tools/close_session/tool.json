@@ -1,0 +1,39 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "close_session",
+  "description": "close a session; the mock adapter in this bundle stands in for the instrument",
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "session": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required": [
+      "session"
+    ]
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "closed": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "closed"
+    ]
+  },
+  "errors": [
+    "invalid_input"
+  ],
+  "side_effects": "reads_instrument",
+  "safety_gate": {
+    "required": false,
+    "place": "the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required"
+  },
+  "idempotent": true,
+  "timeout_s": null
+}

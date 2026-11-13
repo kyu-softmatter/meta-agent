@@ -1,0 +1,78 @@
+{
+  "schema_version": "0.1",
+  "agent": "echo",
+  "tool": "echo",
+  "source": "meta_agent/tests/fixtures/echo/README.md",
+  "observed": [
+    {
+      "claim": "echo reads one JSON object from standard input and writes one JSON object to standard output",
+      "capability": "io_format",
+      "evidence": [
+        "## Command"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "the exit status is zero whether echo answers or reports an error; the error is in the output",
+      "capability": "io_format",
+      "evidence": [
+        "## Command"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "the input is an object with one required string field, message, which must not be empty",
+      "capability": "parameter",
+      "evidence": [
+        "## Input"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "the output carries message, the same text, and length, the number of characters in message",
+      "capability": "observable",
+      "evidence": [
+        "## Output"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "a missing, non-string or empty message returns the error ECHO-INPUT-001 of category invalid_input, not retryable",
+      "capability": "error_contract",
+      "evidence": [
+        "## Errors"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "echo has no state and no side effects",
+      "capability": "constraint",
+      "evidence": [
+        "(preamble)"
+      ],
+      "kind": "observed"
+    }
+  ],
+  "derived": [
+    {
+      "claim": "length equals the character count of message, so it can be checked against an independent count of the same text",
+      "capability": "observable",
+      "evidence": [
+        "## Output"
+      ],
+      "kind": "derived"
+    }
+  ],
+  "unverified": [],
+  "gaps": [
+    {
+      "what": "a maximum message length exists",
+      "requires": "a statement in the documentation, or a run in a sandbox with growing messages"
+    },
+    {
+      "what": "the real echo binary behaves as the mock adapter does",
+      "requires": "analysis_permission confirmed by a person (granted_by, scope, basis, date)",
+      "reason": "permission_required"
+    }
+  ]
+}

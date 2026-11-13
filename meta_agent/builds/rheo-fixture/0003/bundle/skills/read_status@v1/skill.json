@@ -1,0 +1,66 @@
+{
+  "schema_version": "0.1",
+  "id": "read_status",
+  "version": 1,
+  "kind": "hardware_state",
+  "side_effect": "read_device",
+  "status": "usable",
+  "summary": "reads the device's state and says ready, busy, fault or unknown",
+  "applies_to": {
+    "instruments": [
+      "lab_rheometer"
+    ]
+  },
+  "inputs": [],
+  "outputs": [
+    {
+      "name": "verdict",
+      "unit": "1",
+      "meaning": "ready | busy | fault | unknown, by the rule in the skill"
+    },
+    {
+      "name": "readings",
+      "unit": "1",
+      "meaning": "what the status tool returned, unchanged"
+    },
+    {
+      "name": "value_kind",
+      "unit": "1",
+      "meaning": "measured: the readings are the device's own, taken in this call"
+    },
+    {
+      "name": "measured_at",
+      "unit": "1",
+      "meaning": "the device's time on the reading, or null when it gave none"
+    },
+    {
+      "name": "run_id",
+      "unit": "1",
+      "meaning": "the run the reading belongs to, or null outside a run"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why the verdict is unknown, when the tool returned an error"
+    },
+    {
+      "name": "error",
+      "unit": "1",
+      "meaning": "the error contract the tool returned, unchanged"
+    }
+  ],
+  "calls_tools": [
+    "status"
+  ],
+  "entry": {
+    "script": "scripts/read_status.py",
+    "function": "read_status"
+  },
+  "validity": "a device whose status tool returns state, initialised, homed and fault",
+  "source": {
+    "citation": "the fixture rheometer profile, meta_agent/tests/fixtures/rheometer/README.md",
+    "locus": "its status tool"
+  },
+  "cases": "cases.json",
+  "note": "Taken from contracts/examples/skills/ with the time and the run id of the reading beside it. On recorded transcripts; no device was read (MP1)."
+}

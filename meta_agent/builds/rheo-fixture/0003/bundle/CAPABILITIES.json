@@ -1,0 +1,77 @@
+{
+  "schema_version": "0.1",
+  "agent": "rheo-fixture",
+  "tool": "fixture_rheometer",
+  "source": "meta_agent/tests/fixtures/rheometer/README.md",
+  "observed": [
+    {
+      "claim": "each tool takes one JSON object and returns one, or an error contract",
+      "capability": "io_format",
+      "evidence": [
+        "## Tools"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "list_devices, open_session, identify and close_session find the instrument and read its identity; none writes a setting",
+      "capability": "observable",
+      "evidence": [
+        "## Tools"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "status returns the state, whether the device is initialised and homed, a fault if there is one, the temperature, the gap, the time and the run id, and changes nothing",
+      "capability": "observable",
+      "evidence": [
+        "## Tools"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "ranges returns the modes and, per quantity, the lowest and highest value and the unit, as the device reports them about itself, and changes nothing",
+      "capability": "observable",
+      "evidence": [
+        "## Tools"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "initialise, home, set_shear_rate, start, stop and self_calibrate change the device, and every one of them is behind the bundle's gate",
+      "capability": "constraint",
+      "evidence": [
+        "## Tools"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "the start-up order is the air supply and the transport lock by a person, then initialise, then home, and the device is ready when status says idle, initialised and homed with no fault",
+      "capability": "constraint",
+      "evidence": [
+        "## Start-up"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "the motor adjustment is calibrated by the device's own routine and torque against a standard a person loads",
+      "capability": "constraint",
+      "evidence": [
+        "## Calibration"
+      ],
+      "kind": "observed"
+    }
+  ],
+  "derived": [],
+  "unverified": [],
+  "gaps": [
+    {
+      "what": "how the normal force is calibrated",
+      "requires": "the section of a manual on the normal force transducer"
+    },
+    {
+      "what": "a real instrument behaves as the mock adapters do",
+      "requires": "analysis_permission confirmed by a person (granted_by, scope, basis, date)",
+      "reason": "permission_required"
+    }
+  ]
+}

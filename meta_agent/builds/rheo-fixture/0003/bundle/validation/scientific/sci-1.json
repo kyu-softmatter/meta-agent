@@ -1,0 +1,19 @@
+{
+  "id": "sci-1",
+  "name": "the torque range the device reports agrees with its specification",
+  "call": {
+    "tool": "ranges",
+    "input": {}
+  },
+  "measure": {
+    "output_field": "ranges",
+    "reference_function": "specification_torque_range"
+  },
+  "reference": {
+    "kind": "source",
+    "ref": "the instrument's specification sheet; none exists for an instrument that does not exist"
+  },
+  "tolerance": null,
+  "expected_verdict": "not_run",
+  "note": "requires a specification and a bench; not_run is not a pass"
+}
