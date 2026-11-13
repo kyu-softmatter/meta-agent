@@ -10,6 +10,12 @@ version unless it names another.
 v1  the first bundle (tasks/002).
 v2  adds src/run_skill.py, the Skills section's runner and the Subagents
     section of CLAUDE.md (tasks/010).
+v3  adds three session skills under .claude/skills/ (tasks/015): run-skill,
+    the one that sends the bundle's session to src/run_skill.py and says
+    what a session may and may not change, with library/ beside it, where
+    a build renders one reference page per library skill; and
+    classify-knowledge and choose-session-level, adapted to a bundle.
+    Bundle check B15 judges a bundle of this version or later.
 """
 import os
 import shutil
@@ -17,8 +23,9 @@ import shutil
 from .. import cards
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "template_v2")}
-LATEST = "v2"
+SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "template_v2"),
+           "v3": os.path.join(HERE, "template_v3")}
+LATEST = "v3"
 SOURCE = SOURCES[LATEST]
 
 

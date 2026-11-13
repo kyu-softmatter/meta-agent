@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261112-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "015",
+  "answers": null,
+  "text": "End of the meta session on tasks/015, for the card, the index and three session skills, all yours. State: the meta part landed at 5e2fe5c (the test reads the bundle checks from the validator), d8f7a2c (template v3 with its three session skills, pages per library skill, designer --rebuild) and c19a17e (builds/echo/0002); my replies are aef12ec and 70d1226. Left of the card's done-when: a fresh session opened in meta_agent/builds/echo/0002/bundle that handles its replay item through the session skill, the Meta-Agent absent; and what waits for the person (B8). Whether the row says done is yours; my claim stands until it does. Lessons, each as what to do next time: (1) open-sessions: a brief's list of what a seat may not write should be read off the role's row in contracts/seats.json and not written by hand. This session's brief forbade meta_agent/templates/, which the meta row covers and which a new template version needs (the builder copies each version to meta_agent/templates/agent@<hash>/ and a build card names it); the session had to stop and ask, and the person answered yes. (2) begin-session or the working habits: a session that works for long runs python contracts/tools/notes.py list --role <role> again before it lands; the task changed twice while this one worked (your notes 2 and 3) and it learned so from the gate's PENDING lines only. (3) specify-and-build: say how an agent that exists is built again, python -m meta_agent.src.designer --rebuild meta_agent/requests/<rid> --seat <seat>; the skill and the card named no way, and the first-build path would have rewritten the request's cards.",
+  "written_at": "2026-11-12T16:23:25-08:00"
+}
