@@ -73,7 +73,11 @@ def subagents_section(subagents):
         return "This agent has no subagents."
     lines = ["Each subagent is a file under `.claude/agents/` and works in its own context. It is not a seat: it writes no "
              "record and commits nothing; this agent reports and commits what a subagent returns. Only `%s` may be given "
-             "a skill that changes a device." % WRITER, ""]
+             "a skill that changes a device." % WRITER,
+             "",
+             "Where a skill's line above says it is used by a subagent, that subagent's file lists it. A skill that "
+             "changes a device is run by `%s` only. Any other skill you may run yourself through the runner, or give "
+             "to the subagent that lists it: which of the two is a choice of level and of context, not a rule." % WRITER, ""]
     for a in subagents:
         lines.append("- `%s`: %s Skills: %s. Side effects: %s." % (
             a["name"], a["description"].rstrip(".") + ".", ", ".join("`%s`" % r for r in a["skills"]) or "none",

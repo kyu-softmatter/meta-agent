@@ -20,6 +20,13 @@ v4  changes text only, after a fresh session was watched working in a
     bundle of v3 (tasks/015): run-skill says how a tool that no library
     skill calls is called, and the start task says what the task
     validator's failure status means when a verdict is undecided.
+v5  changes text only, after a fresh session was watched working in a
+    copy of a rheometer-fixture bundle of v4 outside the repository
+    (tasks/015): the start task covers a verdict of not_run as well as
+    undecided, the envelope sentence says what a safety file with no
+    entry means, the folder named runs is said to be made by the session,
+    and an input that nothing in the bundle gives is reported like a
+    missing skill.
 """
 import os
 import shutil
@@ -28,8 +35,9 @@ from .. import cards
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "template_v2"),
-           "v3": os.path.join(HERE, "template_v3"), "v4": os.path.join(HERE, "template_v4")}
-LATEST = "v4"
+           "v3": os.path.join(HERE, "template_v3"), "v4": os.path.join(HERE, "template_v4"),
+           "v5": os.path.join(HERE, "template_v5")}
+LATEST = "v5"
 SOURCE = SOURCES[LATEST]
 
 

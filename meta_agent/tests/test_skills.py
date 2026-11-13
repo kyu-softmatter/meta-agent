@@ -590,9 +590,39 @@ class Template(unittest.TestCase):
         self.assertTrue(os.path.isdir(os.path.join(META, "templates", "agent@79909cd133f1")))
         self.assertEqual(template_mod.template_name(template_mod.SOURCES["v3"]), "agent@a46172e0b6f0")
         self.assertTrue(os.path.isdir(os.path.join(META, "templates", "agent@a46172e0b6f0")))
-        self.assertNotIn(latest, ("agent@21f0dd569975", "agent@79909cd133f1", "agent@a46172e0b6f0"))
+        self.assertEqual(template_mod.template_name(template_mod.SOURCES["v4"]), "agent@0637edb9a3d1")
+        self.assertTrue(os.path.isdir(os.path.join(META, "templates", "agent@0637edb9a3d1")))
+        self.assertNotIn(latest, ("agent@21f0dd569975", "agent@79909cd133f1", "agent@a46172e0b6f0", "agent@0637edb9a3d1"))
         self.assertEqual(cards.sha256_tree(os.path.join(META, "templates", latest)), cards.sha256_tree(template_mod.SOURCE))
-        self.assertEqual(cards.load_json(os.path.join(template_mod.SOURCE, "TEMPLATE.json"))["version"], "v4")
+        self.assertEqual(cards.load_json(os.path.join(template_mod.SOURCE, "TEMPLATE.json"))["version"], "v5")
+
+    def test_v5_changes_text_only(self):
+        v4, v5 = template_mod.SOURCES["v4"], template_mod.SOURCES["v5"]
+        self.assertEqual(cards.tree_files(v4), cards.tree_files(v5))
+        changed = sorted(r for r in cards.tree_files(v4) if cards.sha256_file(os.path.join(v4, r)) != cards.sha256_file(os.path.join(v5, r)))
+        self.assertEqual(changed, [".claude/skills/run-skill/SKILL.md", "CLAUDE.md", "TEMPLATE.json", "tasks/001-start.md"])
+        start = cards.read_text(os.path.join(v5, "tasks", "001-start.md"))
+        self.assertIn("prints `undecided` or `not_run`", start)
+        self.assertIn("Neither is a pass.", start)
+        rules_text = cards.read_text(os.path.join(v5, "CLAUDE.md"))
+        self.assertNotIn("every value is `null`", rules_text)
+        self.assertIn("A file with no entry means that no tool here requires a gate.", rules_text)
+        self.assertIn("which it makes when it first writes there", rules_text)
+        self.assertIn("An input that nothing here gives is treated the same way.", rules_text)
+        skill = cards.read_text(os.path.join(v5, ".claude", "skills", bundle_mod.SESSION_SKILL, "SKILL.md"))
+        self.assertIn("## When a skill needs an input that nothing here gives", skill)
+        self.assertEqual(rules.front_matter(skill), rules.front_matter(
+            cards.read_text(os.path.join(v4, ".claude", "skills", bundle_mod.SESSION_SKILL, "SKILL.md"))))
+        for name in SESSION_SKILLS:
+            text = cards.read_text(os.path.join(v5, ".claude", "skills", name, "SKILL.md"))
+            self.assertEqual("src/" in text, name == bundle_mod.SESSION_SKILL, "%s: only one session skill names a runner" % name)
+
+    def test_the_subagents_section_says_who_runs_a_skill(self):
+        text = bundle_mod.subagents_section([{"name": bundle_mod.WRITER, "description": "Uses the hardware skills",
+                                              "skills": ["read_status@v1"], "side_effects": ["read_device"]}])
+        self.assertIn("A skill that changes a device is run by `%s` only." % bundle_mod.WRITER, text)
+        self.assertIn("Any other skill you may run yourself through the runner, or give to the subagent that lists it", text)
+        self.assertEqual(bundle_mod.subagents_section([]), "This agent has no subagents.")
 
     def test_v4_changes_text_only(self):
         v3, v4 = template_mod.SOURCES["v3"], template_mod.SOURCES["v4"]
