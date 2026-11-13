@@ -1,6 +1,7 @@
 """The Agent Designer: S1 to S7 on one request (plan.md 5.1).
 
     python -m meta_agent.src.designer --intake meta_agent/requests/<rid>/intake.json --seat <seat> [--build-id 0001] [--now ISO] [--root DIR]
+    python -m meta_agent.src.designer --rebuild meta_agent/requests/<rid> --seat <seat> [--build-id 0002] [--now ISO] [--root DIR]
     python -m meta_agent.src.designer --recall meta_agent/requests/<rid> --seat <seat> [--now ISO] [--root DIR]
     python -m meta_agent.src.designer --bounds meta_agent/requests/<rid> [--root DIR]
     python -m meta_agent.src.designer --sheet meta_agent/requests/<rid> --seat <seat> [--now ISO] [--root DIR]
@@ -32,6 +33,11 @@ that changes nothing writes nothing. A property value comes from a `value` skill
 says it gives a correlation, bound in the same file and run in the binding's order, so that a bound may
 rest on the row it gave; no package is imported for one (the person, 2026-11-09). --bounds lists the
 bound and value skills that apply to a draft, which is what a model reads to write the binding.
+
+--rebuild runs S5 and S6 again on a request that exists, from the specification as it stands and the
+latest template: a new build under builds/<agent>/<next id>/ whose card names the build before it as its
+parent (MP3). It reads the request's cards and writes none of them, and it never touches a build that
+exists; what it refuses is a request with no specification or no earlier build.
 
 --recall runs S3's case search again on a request that already exists, against the store as it is
 now: when the result differs from the latest goal revision's, it writes the next one
@@ -197,6 +203,116 @@ def tools_of(intake, root):
              "errors": list(t.get("error_contracts", []))} for t in listed]
 
 
+def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_skills, subagents, build_id, seat, created,
+                       put, parent_build=None, note=None):
+    """S5 and S6 for one build: the bundle from the latest template, its diff, its gates read off a fresh
+    process, the validation_report and the build card. `put(path, data)` writes a file."""
+    rid, agent = intake["rid"], intake["agent_name"]
+    contracts = [t["contract"] for t in tools]
+    build_dir = os.path.join(root, "builds", agent, build_id)
+    bundle_path = os.path.join(build_dir, "bundle")
+    bundle_rel = rel_repo(bundle_path, root)
+
+    # S5 build -> bundle from the versioned template
+    template_name, template_path = template_mod.materialize(os.path.join(root, "templates"))
+    fill = {
+        "agent_name": agent,
+        "template": template_name,
+        "rid": rid,
+        "purpose": goal["purpose"],
+        "science_task": goal["science_task"],
+        "tools_section": bundle_mod.tools_section(contracts),
+        "must_not": bundle_mod.must_not_section(goal["must_not"]),
+        "skills_section": bundle_mod.skills_section([]),
+        "seat_form": "%s-<machine>-<YYYYMMDD>-<n>" % agent,
+    }
+    capabilities = profile_mod.capabilities(profile, agent)
+    envelope = {
+        "safety": {row["name"]: None for row in (intake.get("safety_rows") or [])},
+        "snapshot": {"kb_version": brief["kb_version"], "entries": brief["entries"], "numbers": []},
+        "parameters": {"rows": list(intake.get("parameter_rows") or [])},
+    }
+    sha = bundle_mod.compose(template_path, bundle_path, fill, tools, capabilities, envelope,
+                             intake["interface_tasks"], intake["scientific_tasks"], intake["replay_items"],
+                             skills=built_skills, subagents=subagents)
+    diff_text = bundle_mod.diff_from_template(template_path, bundle_path)
+    put(os.path.join(build_dir, "diff_from_template.txt"), diff_text)
+
+    # S6 validate -> the bundle's own gates, read off a fresh process; validation_report
+    build_id_full = "build-%s-%s" % (agent, build_id)
+    report = gate_mod.run_bundle(bundle_path)
+    vr, iface_v, sci_v = gate_mod.make_validation_report(report, build_id_full, rid, bundle_rel, seat, created)
+    put(os.path.join(build_dir, "validation_report.json"), vr)
+    build = bundle_mod.make_build_card(build_id_full, rid, spec, goal["lab_profile_ref"], template_name,
+                                       "diff_from_template.txt", bundle_rel, sha, seat, created, parent_build=parent_build)
+    build["gate_verdict"] = {"interface": iface_v, "scientific": sci_v, "validation_report_ref": vr["id"]}
+    build["status"] = "validated" if vr["overall"] == "pass" else "draft"
+    build["note"] = "replay: %d item(s), %s; hand-over (landed_at) is the person's" % (
+        len(report["replay"]["items"]), "all as expected" if report["replay"]["ok"] else "NOT as expected")
+    if note:
+        build["note"] += "; " + note
+    put(os.path.join(build_dir, "build.json"), build)
+    return {"template": template_name, "sha": sha, "report": report, "vr": vr, "iface": iface_v, "sci": sci_v,
+            "build_id": build_id_full, "bundle_rel": bundle_rel}
+
+
+BUILD_ID = re.compile(r"^[0-9]{4}$")
+
+
+def rebuild(req_dir, seat, build_id=None, now=None, root=ROOT):
+    """S5 and S6 again on a request that exists: the specification as it stands, the latest template, a new
+    build whose card names the build before it. Reads the request's cards and writes none of them."""
+    intake = cards.load_json(os.path.join(req_dir, "intake.json"))
+    rid, agent = intake["rid"], intake["agent_name"]
+    created = cards.now_iso(now)
+    _, goal = latest_goal(req_dir)
+    loaded = {}
+    for name in ("tool_profile.json", "knowledge_brief.json", "agent_spec.json"):
+        rev, path = latest_file(req_dir, name)
+        if path is None:
+            raise FileNotFoundError("no %s in %s: a rebuild needs a request that was specified" % (name, req_dir))
+        loaded[name] = cards.load_json(path)
+    profile, brief, spec = loaded["tool_profile.json"], loaded["knowledge_brief.json"], loaded["agent_spec.json"]
+    builds = os.path.join(root, "builds", agent)
+    have = sorted(n for n in (os.listdir(builds) if os.path.isdir(builds) else []) if BUILD_ID.match(n))
+    if not have:
+        raise FileNotFoundError("no build of %s under %s: a first build is made with --intake" % (agent, rel_repo(builds, root)))
+    parent = cards.load_json(os.path.join(builds, have[-1], "build.json"))
+    build_id = build_id or "%04d" % (int(have[-1]) + 1)
+    if not BUILD_ID.match(build_id):
+        raise ValueError("a build id is four digits, not %r" % build_id)
+    if os.path.exists(os.path.join(builds, build_id)):
+        raise FileExistsError("build exists: %s (a rebuild is a new build id)" % rel_repo(os.path.join(builds, build_id), root))
+
+    tools = tools_of(intake, root)
+    skill_rows = catalogue_mod.take(spec.get("skills") or [], os.path.join(root, "skills"))
+    built_skills = [r for r in skill_rows if r["status"] != "held"]
+    subagents = list(spec.get("subagents") or [])
+    out = {"rid": rid, "files": []}
+
+    def put(path, data):
+        if isinstance(data, str):
+            cards.write_text(path, data)
+        else:
+            cards.write_json(path, data)
+        out["files"].append(rel_repo(path, root))
+
+    built = build_and_validate(
+        root, intake, goal, profile, brief, spec, tools, built_skills, subagents, build_id, seat, created, put,
+        parent_build=parent["id"],
+        note="rebuilt from %s revision %d, unchanged, on template %s where %s was built on %s; the specification's "
+             "boundary axis still names the first build's directory" % (
+                 spec["id"], spec["revision"], template_mod.template_name(), parent["id"], parent["template_version"]))
+    out["files"].insert(0, built["bundle_rel"] + "/")
+    vr = built["vr"]
+    out.update(template=built["template"], bundle_sha256=built["sha"],
+               gates={"interface": built["iface"], "scientific": built["sci"], "overall": vr["overall"]},
+               replay_ok=built["report"]["replay"]["ok"], replay_items=len(built["report"]["replay"]["items"]),
+               held=spec["held"], skills=[r["ref"] for r in built_skills], subagents=[a["name"] for a in subagents],
+               build_id=built["build_id"], validation_report=vr["id"], parent_build=parent["id"])
+    return out
+
+
 def run(intake, seat, build_id="0001", now=None, root=ROOT):
     rid = intake["rid"]
     agent = intake["agent_name"]
@@ -243,9 +359,7 @@ def run(intake, seat, build_id="0001", now=None, root=ROOT):
     put(os.path.join(req_dir, "v2_agent_goal.json"), goal2)
 
     # S4 specify -> six axes, synthesis, agent_spec
-    build_dir = os.path.join(root, "builds", agent, build_id)
-    bundle_path = os.path.join(build_dir, "bundle")
-    bundle_rel = rel_repo(bundle_path, root)
+    bundle_rel = rel_repo(os.path.join(root, "builds", agent, build_id, "bundle"), root)
     axis_sigs = axis_signatures(goal_sig, intake)
     case_recall = {"A4": search_cases(axis_sigs["A4"], root, "a prior case for this agent's parameters"),
                    "A5": search_cases(axis_sigs["A5"], root, "a prior case for this agent's safety rows")}
@@ -258,44 +372,12 @@ def run(intake, seat, build_id="0001", now=None, root=ROOT):
     put(os.path.join(req_dir, "synthesis.json"), syn)
     put(os.path.join(req_dir, "agent_spec.json"), spec)
 
-    # S5 build -> bundle from the versioned template
-    template_name, template_path = template_mod.materialize(os.path.join(root, "templates"))
-    fill = {
-        "agent_name": agent,
-        "template": template_name,
-        "rid": rid,
-        "purpose": goal["purpose"],
-        "science_task": goal["science_task"],
-        "tools_section": bundle_mod.tools_section(contracts),
-        "must_not": bundle_mod.must_not_section(goal["must_not"]),
-        "skills_section": bundle_mod.skills_section([]),
-        "seat_form": "%s-<machine>-<YYYYMMDD>-<n>" % agent,
-    }
-    capabilities = profile_mod.capabilities(profile, agent)
-    envelope = {
-        "safety": {row["name"]: None for row in (intake.get("safety_rows") or [])},
-        "snapshot": {"kb_version": brief["kb_version"], "entries": brief["entries"], "numbers": []},
-        "parameters": {"rows": list(intake.get("parameter_rows") or [])},
-    }
-    sha = bundle_mod.compose(template_path, bundle_path, fill, tools, capabilities, envelope,
-                             intake["interface_tasks"], intake["scientific_tasks"], intake["replay_items"],
-                             skills=built_skills, subagents=subagents)
-    out["files"].append(bundle_rel + "/")
-    diff_text = bundle_mod.diff_from_template(template_path, bundle_path)
-    put(os.path.join(build_dir, "diff_from_template.txt"), diff_text)
-
-    # S6 validate -> the bundle's own gates, read off a fresh process; validation_report
-    build_id_full = "build-%s-%s" % (agent, build_id)
-    report = gate_mod.run_bundle(bundle_path)
-    vr, iface_v, sci_v = gate_mod.make_validation_report(report, build_id_full, rid, bundle_rel, seat, created)
-    put(os.path.join(build_dir, "validation_report.json"), vr)
-    build = bundle_mod.make_build_card(build_id_full, rid, spec, goal["lab_profile_ref"], template_name,
-                                       "diff_from_template.txt", bundle_rel, sha, seat, created)
-    build["gate_verdict"] = {"interface": iface_v, "scientific": sci_v, "validation_report_ref": vr["id"]}
-    build["status"] = "validated" if vr["overall"] == "pass" else "draft"
-    build["note"] = "replay: %d item(s), %s; hand-over (landed_at) is the person's" % (
-        len(report["replay"]["items"]), "all as expected" if report["replay"]["ok"] else "NOT as expected")
-    put(os.path.join(build_dir, "build.json"), build)
+    # S5 build and S6 validate
+    built = build_and_validate(root, intake, goal, profile, brief, spec, tools, built_skills, subagents, build_id, seat,
+                               created, put)
+    template_name, sha, report, vr, iface_v, sci_v = (built[k] for k in ("template", "sha", "report", "vr", "iface", "sci"))
+    out["files"].insert(len(out["files"]) - 3, bundle_rel + "/")
+    build_id_full = built["build_id"]
 
     # S7 hand over: stop here
     out.update(template=template_name, bundle_sha256=sha, gates={"interface": iface_v, "scientific": sci_v, "overall": vr["overall"]},
@@ -308,16 +390,17 @@ def run(intake, seat, build_id="0001", now=None, root=ROOT):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--intake")
+    ap.add_argument("--rebuild", metavar="REQUEST_DIR", help="build an existing request again from its specification and the latest template")
     ap.add_argument("--recall", metavar="REQUEST_DIR", help="search cases/ again for an existing request's goal")
     ap.add_argument("--bounds", metavar="REQUEST_DIR", help="list the bound skills that apply to the request's sheet draft")
     ap.add_argument("--sheet", metavar="REQUEST_DIR", help="write the request's parameter_sheet from its draft and its binding")
     ap.add_argument("--seat")
-    ap.add_argument("--build-id", default="0001")
+    ap.add_argument("--build-id", default=None, help="four digits; 0001 with --intake, the next free one with --rebuild")
     ap.add_argument("--now", default=None)
     ap.add_argument("--root", default=ROOT, help="the meta_agent/ tree to write under (tests use a copy)")
     args = ap.parse_args(argv)
-    if [bool(args.intake), bool(args.recall), bool(args.bounds), bool(args.sheet)].count(True) != 1:
-        ap.error("give --intake, --recall, --bounds or --sheet, one of them")
+    if [bool(args.intake), bool(args.rebuild), bool(args.recall), bool(args.bounds), bool(args.sheet)].count(True) != 1:
+        ap.error("give --intake, --rebuild, --recall, --bounds or --sheet, one of them")
     if not args.seat and not args.bounds:
         ap.error("--seat is required")
     if args.bounds:
@@ -351,8 +434,11 @@ def main(argv=None):
         print("wrote  %s" % rel_repo(path, root) if path else "nothing written: recall gives what revision %d already carries" % rev)
         print("case_refs %d, case_gaps %d (revision %d)" % (len(goal.get("case_refs", [])), len(goal.get("case_gaps", [])), rev))
         return 0
-    intake = cards.load_json(args.intake)
-    out = run(intake, args.seat, args.build_id, args.now, os.path.abspath(args.root))
+    if args.rebuild:
+        out = rebuild(os.path.abspath(args.rebuild), args.seat, args.build_id, args.now, os.path.abspath(args.root))
+        print("parent   %s" % out["parent_build"])
+    else:
+        out = run(cards.load_json(args.intake), args.seat, args.build_id or "0001", args.now, os.path.abspath(args.root))
     for f in out["files"]:
         print("wrote  %s" % f)
     print("template %s" % out["template"])

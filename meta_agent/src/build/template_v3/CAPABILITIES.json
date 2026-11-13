@@ -1,0 +1,10 @@
+{
+  "schema_version": "0.1",
+  "agent": null,
+  "tool": null,
+  "source": null,
+  "observed": [],
+  "derived": [],
+  "unverified": [],
+  "gaps": []
+}

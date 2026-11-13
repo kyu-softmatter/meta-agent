@@ -237,6 +237,78 @@ class EchoRequestWithAStore(unittest.TestCase):
         self.assertIn("5", [c.strip() for c in checks.split(",")])
 
 
+class Rebuild(unittest.TestCase):
+    """--rebuild: S5 and S6 again on a request that exists, as a new build, with no request card written."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp, cls.root = scratch_root()
+        designer.run(load_intake(), SEAT, "0001", NOW, cls.root)
+        cls.req = os.path.join(cls.root, "requests", "req-echo-001")
+        shutil.copy(os.path.join(META, "requests", "req-echo-001", "intake.json"), os.path.join(cls.req, "intake.json"))
+        cls.first = os.path.join(cls.root, "builds", "echo", "0001")
+        cls.before = (cards.sha256_tree(cls.req), cards.sha256_tree(cls.first))
+        cls.out = designer.rebuild(cls.req, "meta-macbook-20261112-1", None, "2026-11-12T12:00:00Z", cls.root)
+        cls.second = os.path.join(cls.root, "builds", "echo", "0002")
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def test_it_is_the_next_build_and_names_its_parent(self):
+        build = cards.load_json(os.path.join(self.second, "build.json"))
+        self.assertEqual((build["id"], build["lineage"]["parent_build"]), ("build-echo-0002", "build-echo-0001"))
+        self.assertEqual(build["spec_ref"], cards.load_json(os.path.join(self.req, "agent_spec.json"))["id"])
+        self.assertEqual(build["bundle_path"], "meta_agent/builds/echo/0002/bundle")
+        self.assertEqual(build["bundle_sha256"], cards.sha256_tree(os.path.join(self.second, "bundle")))
+        self.assertEqual(build["template_version"], self.out["template"])
+        self.assertIn("rebuilt from spec-echo-001 revision", build["note"])
+        self.assertIsNone(build["landed_at"])
+        self.assertEqual(self.out["files"], ["meta_agent/builds/echo/0002/bundle/", "meta_agent/builds/echo/0002/diff_from_template.txt",
+                                             "meta_agent/builds/echo/0002/validation_report.json",
+                                             "meta_agent/builds/echo/0002/build.json"])
+
+    def test_the_request_and_the_first_build_are_as_they_were(self):
+        self.assertEqual((cards.sha256_tree(self.req), cards.sha256_tree(self.first)), self.before)
+
+    def test_the_gates_are_read_off_the_new_bundle(self):
+        self.assertEqual(self.out["gates"], {"interface": "pass", "scientific": "undecided", "overall": "undecided"})
+        self.assertTrue(self.out["replay_ok"])
+        vr = cards.load_json(os.path.join(self.second, "validation_report.json"))
+        self.assertEqual(vr["id"], "vr-echo-0002")
+        self.assertEqual(vr["id"], cards.load_json(os.path.join(self.second, "build.json"))["gate_verdict"]["validation_report_ref"])
+
+    def test_the_new_bundle_and_the_tree_pass_the_validator(self):
+        env = dict(os.environ, PYTHONUTF8="1")
+        p = subprocess.run([sys.executable, VALIDATE, "--bundle", os.path.join(self.second, "bundle")], capture_output=True,
+                           text=True, env=env, cwd=REPO)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertTrue(p.stdout.strip().splitlines()[-1].startswith("VERDICT PASS mode=bundle"), p.stdout)
+        p = subprocess.run([sys.executable, VALIDATE, self.tmp, "--strict"], capture_output=True, text=True, env=env)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertIn("bundles=2 failed=0 pending=0", p.stdout.strip().splitlines()[-1])
+
+    def test_a_build_id_that_exists_is_refused_and_nothing_is_written(self):
+        with self.assertRaises(FileExistsError):
+            designer.rebuild(self.req, SEAT, "0001", NOW, self.root)
+        with self.assertRaises(ValueError):
+            designer.rebuild(self.req, SEAT, "two", NOW, self.root)
+        self.assertEqual(sorted(os.listdir(os.path.join(self.root, "builds", "echo"))), ["0001", "0002"])
+
+    def test_a_request_with_no_build_is_refused(self):
+        tmp, root = scratch_root()
+        try:
+            req = os.path.join(root, "requests", "req-echo-001")
+            shutil.copytree(self.req, req)
+            with self.assertRaises(FileNotFoundError) as e:
+                designer.rebuild(req, SEAT, None, NOW, root)
+            self.assertIn("a first build is made with --intake", str(e.exception))
+            self.assertFalse(os.path.exists(os.path.join(root, "builds")))
+            self.assertFalse(os.path.exists(os.path.join(root, "templates")))
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+
 class RecallAgain(unittest.TestCase):
     """--recall on a request that exists: the next revision when the store changed the answer, else nothing."""
 

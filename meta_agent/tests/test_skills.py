@@ -32,6 +32,7 @@ NOW = "2026-11-09T12:00:00Z"
 KINDS = ["bound", "data_analysis", "hardware_boot", "hardware_calibration", "hardware_connection", "hardware_control",
          "hardware_range", "hardware_state"]
 HELD = ["bring_to_ready@v1", "calibrate@v1", "run_steady_shear@v1"]
+SESSION_SKILLS = ["choose-session-level", "classify-knowledge", "run-skill"]
 ENV = dict({k: v for k, v in os.environ.items() if k != "PYTHONPATH"}, PYTHONUTF8="1", PYTHONDONTWRITEBYTECODE="1")
 
 
@@ -409,6 +410,48 @@ class Bundle(unittest.TestCase):
             self.assertIn("`%s`" % name, text)
         self.assertIn("src/run_skill.py", text)
 
+    def test_the_bundle_has_one_session_skill_which_names_the_runner(self):
+        sdir = os.path.join(self.bundle, ".claude", "skills")
+        self.assertEqual(sorted(os.listdir(sdir)), SESSION_SKILLS)
+        for name in SESSION_SKILLS:
+            self.assertEqual(cards.sha256_tree(os.path.join(sdir, name)) == cards.sha256_tree(
+                os.path.join(template_mod.SOURCE, ".claude", "skills", name)), name != bundle_mod.SESSION_SKILL, name)
+        here = os.path.join(sdir, bundle_mod.SESSION_SKILL, "SKILL.md")
+        there = os.path.join(template_mod.SOURCE, ".claude", "skills", bundle_mod.SESSION_SKILL, "SKILL.md")
+        self.assertEqual(cards.read_text(here), cards.read_text(there))
+        text = cards.read_text(here)
+        self.assertIn("python src/run_skill.py", text)
+        self.assertTrue(os.path.isfile(os.path.join(self.bundle, "src", "run_skill.py")))
+        for never in ("`envelope/safety.json`", "`CLAUDE.md`", "`.claude/`", "`skills/`", "`tools/`", "`src/`"):
+            self.assertIn(never, text.split("## What a session never changes")[1], never)
+        self.assertIn("`failures.jsonl`", text.split("## What a session may change")[1].split("## What a session never changes")[0])
+        claude = cards.read_text(os.path.join(self.bundle, "CLAUDE.md"))
+        self.assertIn("`%s`" % bundle_mod.SESSION_SKILL, claude)
+        for rule in ("you do not compute it yourself", "A change to any of them is a new build"):
+            self.assertIn(rule, claude)
+
+    def test_every_library_skill_has_a_page_rendered_from_its_manifest(self):
+        lib = os.path.join(self.bundle, ".claude", "skills", bundle_mod.SESSION_SKILL, "library")
+        self.assertEqual(sorted(os.listdir(lib)), sorted(["index.md"] + [r + ".md" for r in self.built]))
+        index = cards.read_text(os.path.join(lib, "index.md"))
+        for ref in self.built:
+            manifest = cards.load_json(os.path.join(self.bundle, "skills", ref, "skill.json"))
+            page = cards.read_text(os.path.join(lib, ref + ".md"))
+            self.assertEqual(page, bundle_mod.skill_page(ref, manifest), ref)
+            self.assertIn("`%s`" % ref, index)
+            self.assertIn("python src/run_skill.py %s < inputs.json" % ref, page)
+            for field in manifest["inputs"] + manifest["outputs"]:
+                self.assertIn("- `%s` (%s)" % (field["name"], field["unit"]), page)
+            for tool in manifest.get("calls_tools", []):
+                self.assertIn("`%s`" % tool, page)
+            for word in (manifest["kind"], manifest["side_effect"], manifest["status"], manifest["summary"]):
+                self.assertIn(word, page)
+            self.assertFalse(page.startswith("---"), "a page has no front matter: nothing loads it as a skill")
+        for ref in HELD:
+            self.assertNotIn(ref, index)
+        self.assertEqual(index, bundle_mod.library_index(
+            [(r, cards.load_json(os.path.join(self.bundle, "skills", r, "skill.json"))) for r in self.built]))
+
     def test_the_bundle_passes_every_b_check(self):
         p = subprocess.run([sys.executable, VALIDATE, "--bundle", self.bundle], capture_output=True, text=True, encoding="utf-8",
                            env=ENV, cwd=REPO)
@@ -543,9 +586,41 @@ class Template(unittest.TestCase):
         self.assertEqual(template_mod.template_name(template_mod.SOURCES["v1"]), "agent@21f0dd569975")
         self.assertTrue(os.path.isdir(os.path.join(META, "templates", "agent@21f0dd569975")))
         latest = template_mod.template_name()
-        self.assertNotEqual(latest, "agent@21f0dd569975")
+        self.assertEqual(template_mod.template_name(template_mod.SOURCES["v2"]), "agent@79909cd133f1")
+        self.assertTrue(os.path.isdir(os.path.join(META, "templates", "agent@79909cd133f1")))
+        self.assertNotIn(latest, ("agent@21f0dd569975", "agent@79909cd133f1"))
         self.assertEqual(cards.sha256_tree(os.path.join(META, "templates", latest)), cards.sha256_tree(template_mod.SOURCE))
-        self.assertEqual(cards.load_json(os.path.join(template_mod.SOURCE, "TEMPLATE.json"))["version"], "v2")
+        self.assertEqual(cards.load_json(os.path.join(template_mod.SOURCE, "TEMPLATE.json"))["version"], "v3")
+
+    def test_v3_adds_the_session_skill_to_v2_and_changes_no_script(self):
+        v2, v3 = template_mod.SOURCES["v2"], template_mod.SOURCES["v3"]
+        f2, f3 = set(cards.tree_files(v2)), set(cards.tree_files(v3))
+        self.assertEqual(sorted(f3 - f2), [".claude/skills/choose-session-level/SKILL.md", ".claude/skills/classify-knowledge/SKILL.md",
+                                           ".claude/skills/run-skill/SKILL.md", ".claude/skills/run-skill/library/index.md"])
+        self.assertEqual(f2 - f3, set())
+        changed = sorted(r for r in f2 if cards.sha256_file(os.path.join(v2, r)) != cards.sha256_file(os.path.join(v3, r)))
+        self.assertEqual(changed, ["CLAUDE.md", "README.md", "TEMPLATE.json"])
+        skill = cards.read_text(os.path.join(v3, ".claude", "skills", bundle_mod.SESSION_SKILL, "SKILL.md"))
+        self.assertEqual(rules.front_matter(skill)["name"], bundle_mod.SESSION_SKILL)
+        self.assertIn("python src/run_skill.py", skill)
+        claude = cards.read_text(os.path.join(v3, "CLAUDE.md"))
+        for name in SESSION_SKILLS:
+            text = cards.read_text(os.path.join(v3, ".claude", "skills", name, "SKILL.md"))
+            self.assertEqual(rules.front_matter(text)["name"], name)
+            self.assertIn("`%s`" % name, claude)
+            self.assertEqual("src/" in text, name == bundle_mod.SESSION_SKILL, "%s: only one session skill names the runner" % name)
+            self.assertNotIn("contracts/", text)
+        self.assertIsNone(bundle_mod.session_skill_dir(v2))
+
+    def test_a_template_before_v3_gets_no_pages(self):
+        tmp = tempfile.mkdtemp(prefix="ma-skills-pages-")
+        try:
+            old = os.path.join(tmp, "bundle")
+            shutil.copytree(template_mod.SOURCES["v2"], old)
+            self.assertEqual(bundle_mod.add_pages(old, []), [])
+            self.assertFalse(os.path.exists(os.path.join(old, ".claude", "skills")))
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
 
     def test_a_build_with_no_skills_fills_both_sections(self):
         tmp, root = scratch_root()
@@ -555,6 +630,9 @@ class Template(unittest.TestCase):
             bundle, _ = design(root, intake)
             text = cards.read_text(os.path.join(bundle, "CLAUDE.md"))
             self.assertIn("This agent has no skills.", text)
+            lib = os.path.join(bundle, ".claude", "skills", bundle_mod.SESSION_SKILL, "library")
+            self.assertEqual(os.listdir(lib), ["index.md"])
+            self.assertIn("This agent has no library skill.", cards.read_text(os.path.join(lib, "index.md")))
             self.assertIn("This agent has no subagents.", text)
             self.assertFalse(os.path.exists(os.path.join(bundle, ".claude", "agents")))
             spec = cards.load_json(os.path.join(root, "requests", "req-rheo-fixture-001", "agent_spec.json"))
