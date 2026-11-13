@@ -1,0 +1,3 @@
+check B15
+
+The bundle's CLAUDE.md does not name the session skill, so its session is never told to use it.

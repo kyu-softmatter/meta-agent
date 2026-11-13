@@ -140,17 +140,26 @@ class B15(Tree):
         self.write(".claude/skills/run-skills/SKILL.md", RUNNER_SKILL)
         self.assertEqual(self.said(), [])
 
-    def test_none_and_two_are_refused(self):
+    def test_none_and_two_runners_are_refused(self):
         self.bundle(claude="Use `run-skills` and `run-more`.\n")
-        self.assertTrue(any("has 0 session skills" in m for m in self.said()))
+        self.assertTrue(any("has 0 session skill(s) and none names a script" in m for m in self.said()))
         self.write(".claude/skills/run-skills/SKILL.md", RUNNER_SKILL)
         self.write(".claude/skills/run-more/SKILL.md", RUNNER_SKILL.replace("name: run-skills", "name: run-more"))
-        self.assertTrue(any("has 2 session skills" in m for m in self.said()))
+        self.assertEqual(self.said(), ["run-more, run-skills all name a script under src/; exactly one session skill sends the session to the runner"])
 
     def test_it_names_a_runner_that_exists(self):
         self.bundle()
         self.write(".claude/skills/run-skills/SKILL.md", RUNNER_SKILL.replace("Run `python src/run_skill.py` with", "Work out"))
-        self.assertTrue(any("names no script under src/" in m for m in self.said()))
+        self.assertTrue(any("has 1 session skill(s) and none names a script" in m for m in self.said()))
+        self.write(".claude/skills/run-skills/SKILL.md", RUNNER_SKILL.replace("src/run_skill.py", "src/absent.py"))
+        self.assertTrue(any("none names a script under src/ that exists" in m for m in self.said()))
+
+    def test_other_session_skills_may_stand_beside_the_one_that_runs(self):
+        self.bundle(claude="Get values through `run-skills`; choose each session's level with `choose-session-level`.\n")
+        self.write(".claude/skills/run-skills/SKILL.md", RUNNER_SKILL)
+        self.write(".claude/skills/choose-session-level/SKILL.md",
+                   "---\nname: choose-session-level\ndescription: Choose the model and the effort. Use before a subagent is opened.\n---\n\nGo by the kind of work.\n")
+        self.assertEqual(self.said(), [])
 
     def test_a_library_skill_is_not_a_session_skill(self):
         self.bundle()

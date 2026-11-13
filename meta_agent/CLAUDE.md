@@ -21,6 +21,7 @@ What to do at each part is in a session skill under `../.claude/skills/`, loaded
 - **S4 Specify** — `analyse-physical-system`, then `estimate-parameter-ranges`; `design-tool-interface`; `design-gui` only when one is asked for; `specify-and-build` for the six axes.
 - **S5 Build** — `specify-and-build`. A calculation the library lacks becomes a library skill with `build-library-skill`.
 - **S6 Validate** — `validate-and-record`.
+- **At every stage**, before a value, a statement or a data file enters a card, a sheet or a skill's inputs — `classify-knowledge`: its kind, its data type, its meaning.
 - **S7 Hand over** — you stop at `builds/`. The person moves the bundle and writes `landed_at`.
 - **Improvement loop** — observe read-only, classify, propose (`harness/`), prove with fixtures and replay, let the owning seat land. Adoption alone never means "helped"; one rollout or several components at once is `confounded`.
 

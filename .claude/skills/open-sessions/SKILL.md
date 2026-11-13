@@ -32,7 +32,7 @@ It must stand alone. In this order:
 
 ## Model and effort
 
-Choose them per session by the kind of work: more for a schema, a check or a decision about structure, less for reading and recording. Tell the person which session runs on what. There are no defaults yet; they are the person's to set.
+Use the `choose-session-level` skill: a level per session by the kind of work, one step up or down for a stated reason. Tell the person which session runs on what, and put each session's level in its brief. A model or an effort the person names holds over the skill's.
 
 ## How sessions exchange
 

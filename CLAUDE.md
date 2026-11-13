@@ -21,6 +21,7 @@ One agent, `meta_agent/`, that builds scientific agents and maintains them. The 
 
 - `begin-session` — at the start of every session, before any other write: the gate, the seat and its commit, the notes for your role, the task and its claim; and the setup of a clone that has none.
 - `open-sessions` — when work is split over other sessions: fresh or fork, the brief, the report form, reading a report against its commit.
+- `choose-session-level` — before a session or a subagent is opened: which model and how much effort, by the kind of work; a recommendation, and the person's word holds over it.
 - `end-session` — when a task is finished or given up: where each lesson goes, closing the task, the gate and the tests, the report.
 
 The skills for the Meta-Agent's own work are named in `meta_agent/CLAUDE.md`.

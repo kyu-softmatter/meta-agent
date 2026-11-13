@@ -1,0 +1,3 @@
+check B15
+
+A library skill's folder, with its skill.json, sits under .claude/skills/: a page is not a trigger.

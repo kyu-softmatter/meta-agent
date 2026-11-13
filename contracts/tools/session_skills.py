@@ -9,8 +9,8 @@
 Two things carry the word skill. A library skill is source code with a manifest and worked cases, in a
 folder `<id>@v<n>/` under a folder named `skills/`; contracts/tools/skills.py and check 22 judge it. A
 session skill is a procedure a session loads when its description matches what it is about to do: a folder
-`.claude/skills/<name>/` holding a `SKILL.md`. This file judges the second kind, and the gate's check 24
-calls it, so that the tool and the gate are one rule.
+`.claude/skills/<name>/` holding a `SKILL.md`. This file judges the second kind, and the gate's check 24 and
+bundle check B15 call it, so that the tool and the gate are one rule.
 
 What check 24 asks of a session skill:
 
@@ -26,11 +26,11 @@ What check 24 asks of a session skill:
 
 It cannot check that a rule is also in a CLAUDE.md; that stays the design seat's reading.
 
-B15 is written here as `bundle_problems` and tested, and is not wired into the gate yet: a test of the
-meta role lists the bundle checks by hand, so the wiring waits for that test (meta_agent/tasks/015).
-What B15 will ask of a bundle built from template version v3 or later (the person, 2026-11-12: the agents
-this agent builds work from skills): exactly one session skill; it names a script under `src/` that exists,
-the bundle's runner; no library skill sits under `.claude/skills/`, since a page is not a trigger; and the
+What B15 asks of a bundle built from template version v3 or later (the person, 2026-11-12: the agents
+this agent builds work from skills): exactly one of its session skills names a script under `src/` that
+exists, the bundle's runner, so that one skill and no more sends the session there; it may carry other
+session skills beside it (how a session's model and effort are chosen, how a piece of knowledge is
+classified); no library skill sits under `.claude/skills/`, since a page is not a trigger; and every
 session skill passes what check 24 asks. A bundle of an earlier template is not judged by it.
 
 Standard library only.
@@ -231,9 +231,7 @@ def bundle_problems(bundle):
         out.append((".claude/skills/%s" % os.path.basename(d),
                     "a library skill sits where a session loads skills: a page is not a trigger"))
     session = [d for d in dirs if d not in library]
-    if len(session) != 1:
-        out.append((".claude/skills", "a bundle of template v%d has %d session skills; it has exactly one, which sends its session to the runner"
-                    % (version, len(session))))
+    runners = []
     for d in session:
         rel = ".claude/skills/%s" % os.path.basename(d)
         for msg in problems(bundle, d):
@@ -241,8 +239,14 @@ def bundle_problems(bundle):
         path = os.path.join(d, "SKILL.md")
         text = read(path) if os.path.isfile(path) else ""
         scripts = sorted(set(SRC_SCRIPT_RE.findall(text)))
-        if not [s for s in scripts if os.path.isfile(os.path.join(bundle, *s.split("/")))]:
-            out.append((rel, "names no script under src/ that exists: it does not send the session to the bundle's runner"))
+        if [s for s in scripts if os.path.isfile(os.path.join(bundle, *s.split("/")))]:
+            runners.append(os.path.basename(d))
+    if not runners:
+        out.append((".claude/skills", "a bundle of template v%d has %d session skill(s) and none names a script under src/ that exists: "
+                    "nothing sends its session to the runner" % (version, len(session))))
+    elif len(runners) > 1:
+        out.append((".claude/skills", "%s all name a script under src/; exactly one session skill sends the session to the runner"
+                    % ", ".join(runners)))
     return out
 
 
