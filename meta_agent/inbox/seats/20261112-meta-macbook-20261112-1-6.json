@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261112-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "015",
+  "answers": null,
+  "text": "For the card: the person said 'Yes, make v4' to this session, asked whether to make template v4 with the three wording fixes and rebuild echo from it. Landed: f6d5736, template v4 (meta_agent/src/build/template_v4/, recorded as meta_agent/templates/agent@0637edb9a3d1/), v3 with text changed in four files and none added: run-skill says how a tool that no library skill calls is called (through src/run_tool.py) and its description and CLAUDE.md's sentence for it say so; tasks/001-start.md says the task validator ends with a failure status when the verdict is undecided and that this is expected; and bundle.py writes 'This agent has no library skill.' where it wrote 'no skills'. 8ce517e, meta_agent/builds/echo/0003, echo rebuilt from v4 with parent build-echo-0002; 0001 and 0002 untouched. Read off runs: validate.py --bundle on builds/echo/0003/bundle printed VERDICT PASS mode=bundle failed=0 with B15 among the checks; bundle_problems printed []; the gate printed 0 failed; meta_agent/tests ran 173 and contracts/tests 75, both OK. Not done: no session was opened in the 0003 bundle; the watch was of 0002. The person's words are in this note only; if they belong in docs/ideas, that file is yours.",
+  "written_at": "2026-11-12T17:19:08-08:00"
+}
