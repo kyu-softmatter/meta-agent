@@ -63,7 +63,8 @@ def must_not_section(items):
 def skills_section(skills):
     """`skills` is a list of (name, trigger sentence); B8 looks for each name in backticks."""
     if not skills:
-        return "This agent has no skills. A skill, when one is added, is named here with the sentence that triggers it."
+        return ("This agent has no library skill. A library skill, when a build adds one, is named here with the sentence "
+                "that triggers it.")
     return "\n".join("- `%s`: %s" % (name, trigger) for name, trigger in skills)
 
 

@@ -16,6 +16,10 @@ v3  adds three session skills under .claude/skills/ (tasks/015): run-skill,
     a build renders one reference page per library skill; and
     classify-knowledge and choose-session-level, adapted to a bundle.
     Bundle check B15 judges a bundle of this version or later.
+v4  changes text only, after a fresh session was watched working in a
+    bundle of v3 (tasks/015): run-skill says how a tool that no library
+    skill calls is called, and the start task says what the task
+    validator's failure status means when a verdict is undecided.
 """
 import os
 import shutil
@@ -24,8 +28,8 @@ from .. import cards
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "template_v2"),
-           "v3": os.path.join(HERE, "template_v3")}
-LATEST = "v3"
+           "v3": os.path.join(HERE, "template_v3"), "v4": os.path.join(HERE, "template_v4")}
+LATEST = "v4"
 SOURCE = SOURCES[LATEST]
 
 

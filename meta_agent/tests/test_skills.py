@@ -588,9 +588,26 @@ class Template(unittest.TestCase):
         latest = template_mod.template_name()
         self.assertEqual(template_mod.template_name(template_mod.SOURCES["v2"]), "agent@79909cd133f1")
         self.assertTrue(os.path.isdir(os.path.join(META, "templates", "agent@79909cd133f1")))
-        self.assertNotIn(latest, ("agent@21f0dd569975", "agent@79909cd133f1"))
+        self.assertEqual(template_mod.template_name(template_mod.SOURCES["v3"]), "agent@a46172e0b6f0")
+        self.assertTrue(os.path.isdir(os.path.join(META, "templates", "agent@a46172e0b6f0")))
+        self.assertNotIn(latest, ("agent@21f0dd569975", "agent@79909cd133f1", "agent@a46172e0b6f0"))
         self.assertEqual(cards.sha256_tree(os.path.join(META, "templates", latest)), cards.sha256_tree(template_mod.SOURCE))
-        self.assertEqual(cards.load_json(os.path.join(template_mod.SOURCE, "TEMPLATE.json"))["version"], "v3")
+        self.assertEqual(cards.load_json(os.path.join(template_mod.SOURCE, "TEMPLATE.json"))["version"], "v4")
+
+    def test_v4_changes_text_only(self):
+        v3, v4 = template_mod.SOURCES["v3"], template_mod.SOURCES["v4"]
+        self.assertEqual(cards.tree_files(v3), cards.tree_files(v4))
+        changed = sorted(r for r in cards.tree_files(v3) if cards.sha256_file(os.path.join(v3, r)) != cards.sha256_file(os.path.join(v4, r)))
+        self.assertEqual(changed, [".claude/skills/run-skill/SKILL.md", "CLAUDE.md", "TEMPLATE.json", "tasks/001-start.md"])
+        skill = cards.read_text(os.path.join(v4, ".claude", "skills", bundle_mod.SESSION_SKILL, "SKILL.md"))
+        self.assertIn("python src/run_tool.py <tool> < input.json", skill)
+        self.assertIn("python src/run_skill.py <id@vN> < inputs.json", skill)
+        self.assertIn("a tool called", rules.front_matter(skill)["description"])
+        self.assertIn("ends with a failure status whenever the overall verdict is not `pass`",
+                      cards.read_text(os.path.join(v4, "tasks", "001-start.md")))
+        for name in SESSION_SKILLS:
+            text = cards.read_text(os.path.join(v4, ".claude", "skills", name, "SKILL.md"))
+            self.assertEqual("src/" in text, name == bundle_mod.SESSION_SKILL, "%s: only one session skill names a runner" % name)
 
     def test_v3_adds_the_session_skill_to_v2_and_changes_no_script(self):
         v2, v3 = template_mod.SOURCES["v2"], template_mod.SOURCES["v3"]
@@ -629,7 +646,8 @@ class Template(unittest.TestCase):
             intake.update(skills=[], subagents=[])
             bundle, _ = design(root, intake)
             text = cards.read_text(os.path.join(bundle, "CLAUDE.md"))
-            self.assertIn("This agent has no skills.", text)
+            self.assertIn("This agent has no library skill.", text)
+            self.assertNotIn("has no skills", text)
             lib = os.path.join(bundle, ".claude", "skills", bundle_mod.SESSION_SKILL, "library")
             self.assertEqual(os.listdir(lib), ["index.md"])
             self.assertIn("This agent has no library skill.", cards.read_text(os.path.join(lib, "index.md")))
