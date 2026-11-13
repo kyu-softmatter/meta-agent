@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "note": "Experimental platforms beside the engines (plan.md 5.6). Unverified until a material or a person settles each field. The lab's rheometer is the first testbed; its model, control software and API are open question 14-21.",
+  "note": "Experimental platforms beside the engines (plan.md 5.6). Unverified until a material or a person settles each field. The lab's rheometer is the first testbed; its model, control software and API are open question 14-21. `testbed` names the testbed an entry is (plan.md 10): a testbed is where the general machinery is tried, not what it is written for, and a skill or a fixture whose `applies_to` names only testbed entries is that testbed's example (the person, 2026-11-11, plan.md 14-37(a)).",
   "instruments": [
     {
       "id": "lab_rheometer",
@@ -20,6 +20,7 @@
       "model": "to verify",
       "control_software": "to verify",
       "analysis_permission": null,
+      "testbed": "B",
       "note": "first testbed B (plan.md 10). Safety values (torque, temperature, gap) are written by a person and never appear here."
     },
     {
@@ -34,6 +35,7 @@
       "license": "to verify",
       "material_refs": [],
       "verified": null,
+      "testbed": "A",
       "note": "testbed A; observed read-only or through the bridge; never built here"
     }
   ]

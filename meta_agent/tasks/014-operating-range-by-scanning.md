@@ -21,7 +21,7 @@
 
 **Done when (read off a run):**
 - `python contracts/validate.py --expect-fail` rejects every fixture under `checkB14_*`; `python contracts/validate.py` prints `0 failed`.
-- `python -m meta_agent.src.skills run hardware_range/read_operating_range@v1` on the mock writes an `operating_range` card whose every `observed` item names its query and response.
+- `python -m meta_agent.src.skills run hardware_range/read_operating_range@v1` on the mocks of two fixture instruments of unrelated kinds, one of them not a rheometer, writes an `operating_range` card for each whose every `observed` item names its query and response, with the same skill version for both (two fixtures of unrelated kinds, plan.md 14-37(b), 2026-11-11).
 - `PYTHONUTF8=1 python -m unittest discover -s meta_agent/tests -t .` is OK.
 
 **Must not:** run the skill against a real device or open a path to one from this repository (MP1); find a limit by moving, heating or loading the instrument; write, fill or tighten `envelope/safety.json` from a scan (the range stands in at the gate and the file stays the person's); let an `unknown` item, a specification read from a document or a model's figure stand in; make or remove a `stand_in` mark; fill an item the device does not report; edit `tasks/010` or its skills (held by another seat); let a model write a number.

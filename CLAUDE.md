@@ -14,6 +14,7 @@ One agent, `meta_agent/`, that builds scientific agents and maintains them. The 
 - A new check lands with its rejected fixture in the same commit, and the fixture is watched failing first. `--expect-fail` must reject both totals in full.
 - Records are append-only; a change is a new file `v<N>_<name>` (check 7). Proposals land nothing.
 - Every number you report is read off a run, and the verdict line names the judged tree.
+- A testbed tests; it does not shape (the person, 2026-11-11, plan.md 10, 14-37). Nothing is developed now for the rheometer or its simulation engine. A general mechanism (a skill kind, a card, a check, a subagent drawing, a runner) counts as done only when it runs on fixtures of at least two unrelated kinds, one of them not rheology.
 - This agent and the agents it builds work from skills (the person, 2026-11-12, `docs/ideas/20261112.md`). What a session does is in a session skill under `.claude/skills/`, loaded when it is needed; what binds it is in this file and in `meta_agent/CLAUDE.md`. A session skill holds no rule that is not also in one of the two, no number, no limit and no threshold (check 24). Every calculation of a quantity is a library skill, run through the runner; a session skill is never written per library skill.
 - A session is opened fresh, with only its brief, or as a fork, which inherits a conversation. Either is its own seat: a fork never commits as the seat whose conversation it inherited. Between sessions a note is the record, and a message only points at a committed path.
 

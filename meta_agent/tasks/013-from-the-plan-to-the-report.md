@@ -28,7 +28,7 @@
 
 **Done when (read off a run):**
 - `python contracts/validate.py --expect-fail` rejects every fixture under `checkB13_*`; `python contracts/validate.py` prints `0 failed`.
-- The mock flow writes the five cards for the fixture request and a second run writes identical ones; the bundle does it with no path to `meta_agent/`.
+- The mock flow writes the five cards for two fixture requests of unrelated kinds, one of them not rheology, with the same contracts and runners in both, and a second run writes identical ones; the bundle does it with no path to `meta_agent/` (two fixtures of unrelated kinds, plan.md 14-37(b), 2026-11-11).
 - `PYTHONUTF8=1 python -m unittest discover -s meta_agent/tests -t .` is OK.
 
 **Must not:** run anything against a real device or open a path to one (MP1); write or infer an approval, a safety value or `adoption`; let `operator` leave an interval or retry a failed verification; let a model write a number of `analysis` or `report`; let a subagent write a record; change what S6's two gates judge before the person has settled plan.md 14-35.

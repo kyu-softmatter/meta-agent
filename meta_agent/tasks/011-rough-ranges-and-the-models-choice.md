@@ -23,7 +23,7 @@
 
 **Done when (read off a run):**
 - `python contracts/validate.py --expect-fail` rejects every fixture under `check23_*`; `python contracts/validate.py` prints `0 failed`.
-- The pass on the fixture microscope request writes a `range_sheet` with the two cases above as two requests, and a second run writes identical cards.
+- The pass on the fixture microscope request writes a `range_sheet` with the two cases above as two requests, the same pass on a fixture request of an unrelated kind (an engine, or another instrument that is not a microscope) writes its own `range_sheet` with no change to the code between them, and a second run writes identical cards (two fixtures of unrelated kinds, plan.md 14-37(b), 2026-11-11).
 - `PYTHONUTF8=1 python -m unittest discover -s meta_agent/tests -t .` is OK.
 
 **Must not:** let the model write a number; put a judgement constant inside a skill; add an optimiser or a solver; leave a configuration out of the listing; write a value on a safety-relevant row; treat an `inferred` axis as observed; write outside `meta_agent/` (meta seat) or inside `meta_agent/src/` and `meta_agent/skills/` (design seat).

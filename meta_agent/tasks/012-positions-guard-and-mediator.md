@@ -23,7 +23,7 @@
 
 **Done when (read off a run):**
 - `python contracts/validate.py --expect-fail` rejects every fixture under `checkB12_*`; `python contracts/validate.py` prints `0 failed`.
-- On the fixture bundle the four cases above (skipped, agreed, five rounds, `objective` relaxed) each write the outcome named; the trial's two outcomes are on file.
+- On two fixture bundles of unrelated kinds, one of them not rheology, the four cases above (skipped, agreed, five rounds, `objective` relaxed) each write the outcome named, with the same subagent drawing and code in both; the trial's two outcomes are on file (two fixtures of unrelated kinds, plan.md 14-37(b), 2026-11-11).
 - `PYTHONUTF8=1 python -m unittest discover -s meta_agent/tests -t .` is OK.
 
 **Must not:** let a subagent's word stand where a check can decide; let `safety` make, fill or concede a value; negotiate a configuration that needs a safety value that is unset and has no scanned range standing in; go past five rounds or force a compromise; relax a requirement of `objective` without the person; infer `adoption`; put `measurement` and `numerics` in one bundle; design the negotiation between two bundles (M8); give a subagent a seat or let it commit.
