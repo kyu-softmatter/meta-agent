@@ -1,0 +1,36 @@
+{
+  "card": "build",
+  "schema_version": "0.1",
+  "id": "build-echo-0003",
+  "rid": "req-echo-001",
+  "revision": 1,
+  "author": "meta-macbook-20261112-1",
+  "created_at": "2026-11-13T01:15:45Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "spec_ref": "spec-echo-001",
+  "lab_profile_ref": "lab-fixture-rich",
+  "template_version": "agent@0637edb9a3d1",
+  "diff_from_template": "diff_from_template.txt",
+  "bundle_path": "meta_agent/builds/echo/0003/bundle",
+  "bundle_sha256": "sha256:a24d9f9caafc45ee6e5ba3579cf2e2d4d05da250a0a0744f2a787fc1eea1f91b",
+  "held": [],
+  "gate_verdict": {
+    "interface": "pass",
+    "scientific": "undecided",
+    "validation_report_ref": "vr-echo-0003"
+  },
+  "lineage": {
+    "parent_build": "build-echo-0002",
+    "candidate_of": 1,
+    "k": 1
+  },
+  "landed_at": null,
+  "note": "replay: 2 item(s), all as expected; hand-over (landed_at) is the person's; rebuilt from spec-echo-001 revision 1, unchanged, on template agent@0637edb9a3d1 where build-echo-0002 was built on agent@a46172e0b6f0; the specification's boundary axis still names the first build's directory"
+}

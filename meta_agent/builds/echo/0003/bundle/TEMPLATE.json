@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1",
+  "template": "agent",
+  "version": "v4",
+  "harness_surface": {
+    "system_prompt": "CLAUDE.md (Role, Procedure)",
+    "guardrails": "CLAUDE.md (What this agent does not do) + .claude/settings.json deny",
+    "memory": "envelope/snapshot.json",
+    "tool_guidance": "tools/*/tool.json descriptions + CLAUDE.md (Tools)",
+    "skills": "skills/<id>@v<n>/ (SKILL.md, skill.json, scripts/, cases.json), run through src/run_skill.py",
+    "session_skills": ".claude/skills/<name>/SKILL.md: run-skill, the one that names the runner, with library/index.md and one page per library skill beside it, rendered from the manifests; classify-knowledge; choose-session-level",
+    "subagents": ".claude/agents/<name>.md",
+    "scripts": "src/",
+    "hooks": ".claude/settings.json hooks"
+  },
+  "placeholders": [
+    "agent_name",
+    "template",
+    "rid",
+    "purpose",
+    "science_task",
+    "tools_section",
+    "must_not",
+    "skills_section",
+    "subagents_section",
+    "seat_form"
+  ],
+  "note": "A build copies this tree, fills CLAUDE.md's placeholders, adds tools/<name>/ with adapter.py, tool.json and errors/, fills CAPABILITIES.json and envelope/, writes validation/ and replay/ tasks, copies the skills the specification names into skills/ unchanged, renders .claude/skills/run-skill/library/ from their manifests (index.md and one page per skill) and writes .claude/agents/<name>.md for the subagents it names. The diff from this tree is recorded next to the bundle. v2 added src/run_skill.py and the Subagents section to v1 (meta_agent/tasks/010). v3 adds three session skills (meta_agent/tasks/015; the person, 2026-11-12): run-skill, which sends the bundle's session to src/run_skill.py and says what a session may and may not change, with its library pages; classify-knowledge and choose-session-level, adapted to a bundle from the Meta-Agent's own, naming no path outside the bundle and no script under src/; and in CLAUDE.md the sentences that name them and the rules they repeat. Bundle check B15 judges a bundle of v3 or later. v4 changes text only, after a fresh session was watched in a bundle of v3 (meta_agent/inbox/seats/20261112-meta-macbook-20261112-1-5.json): run-skill also says how a tool that no library skill calls is called, through src/run_tool.py, and its description and CLAUDE.md's sentence for it say so; tasks/001-start.md says that src/validate_tasks.py ends with a failure status when the verdict is undecided and that this is expected; a build with no library skill writes 'no library skill' where it wrote 'no skills'. v3 stays under templates/. v1 and v2 stay under templates/."
+}
