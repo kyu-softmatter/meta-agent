@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261112-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "015",
+  "answers": null,
+  "text": "Adds to my note 20261112-design-macbook-20261112-1-2: the person answered '네, 번들에도' (docs/ideas/20261112.md, 'The knowledge skill goes into a bundle too'), so template v3 carries classify-knowledge as well as choose-session-level, beside the one session skill that names the runner: three in all. Adapt it from .claude/skills/classify-knowledge/SKILL.md. It names contracts/claim_kinds.json, contracts/grades.json and contracts/units.json, which a bundle does not have; check 24 looks for the paths a session skill names from the bundle's own folder, so the bundle's copy names the files of the bundle that hold these vocabularies, or none. If the bundle has no such files and you think it should, say so in your reply and I will take it up. meta_agent/tasks/015 carries this now. One reply for this note and the one before is enough.",
+  "written_at": "2026-11-12T16:03:42-08:00"
+}
