@@ -1,0 +1,189 @@
+# diff from template
+# template: agent@a46172e0b6f0
+
+added     replay/rp-001.json
+added     replay/rp-002.json
+added     tools/echo/adapter.py
+added     tools/echo/errors/invalid_input.json
+added     tools/echo/tool.json
+added     validation/interface/if-1.json
+added     validation/interface/if-2.json
+added     validation/interface/if-3.json
+added     validation/scientific/sci-1.json
+removed   replay/.gitkeep
+removed   tools/.gitkeep
+removed   validation/interface/.gitkeep
+removed   validation/scientific/.gitkeep
+modified  CAPABILITIES.json
+modified  CLAUDE.md
+modified  envelope/parameters.json
+modified  envelope/snapshot.json
+
+--- template/CAPABILITIES.json
++++ bundle/CAPABILITIES.json
+@@ -1,10 +1,78 @@
+ {
+   "schema_version": "0.1",
+-  "agent": null,
+-  "tool": null,
+-  "source": null,
+-  "observed": [],
+-  "derived": [],
++  "agent": "echo",
++  "tool": "echo",
++  "source": "meta_agent/tests/fixtures/echo/README.md",
++  "observed": [
++    {
++      "claim": "echo reads one JSON object from standard input and writes one JSON object to standard output",
++      "capability": "io_format",
++      "evidence": [
++        "## Command"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "the exit status is zero whether echo answers or reports an error; the error is in the output",
++      "capability": "io_format",
++      "evidence": [
++        "## Command"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "the input is an object with one required string field, message, which must not be empty",
++      "capability": "parameter",
++      "evidence": [
++        "## Input"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "the output carries message, the same text, and length, the number of characters in message",
++      "capability": "observable",
++      "evidence": [
++        "## Output"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "a missing, non-string or empty message returns the error ECHO-INPUT-001 of category invalid_input, not retryable",
++      "capability": "error_contract",
++      "evidence": [
++        "## Errors"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "echo has no state and no side effects",
++      "capability": "constraint",
++      "evidence": [
++        "(preamble)"
++      ],
++      "kind": "observed"
++    }
++  ],
++  "derived": [
++    {
++      "claim": "length equals the character count of message, so it can be checked against an independent count of the same text",
++      "capability": "observable",
++      "evidence": [
++        "## Output"
++      ],
++      "kind": "derived"
++    }
++  ],
+   "unverified": [],
+-  "gaps": []
++  "gaps": [
++    {
++      "what": "a maximum message length exists",
++      "requires": "a statement in the documentation, or a run in a sandbox with growing messages"
++    },
++    {
++      "what": "the real echo binary behaves as the mock adapter does",
++      "requires": "analysis_permission confirmed by a person (granted_by, scope, basis, date)",
++      "reason": "permission_required"
++    }
++  ]
+ }
+
+--- template/CLAUDE.md
++++ bundle/CLAUDE.md
+@@ -1,16 +1,24 @@
+-# {{agent_name}} — a scientific agent
++# echo — a scientific agent
+ 
+-Built by the Meta-Agent from template `{{template}}` for request `{{rid}}`. You are this agent; the Meta-Agent is not here. Everything you need to run, validate and report is in this directory.
++Built by the Meta-Agent from template `agent@a46172e0b6f0` for request `req-echo-001`. You are this agent; the Meta-Agent is not here. Everything you need to run, validate and report is in this directory.
+ 
+ ## Role
+ 
+-{{purpose}}
++Build the first, harmless agent: one whose only tool is echo, a command that returns the text it is given together with the text's length, so that the Designer's whole path from intake to a handed-over bundle is exercised on a tool that cannot hurt anything. The agent must run its own regression and validation gates where it lands, without the Meta-Agent, and must refuse nothing it was not told to refuse and invent no number.
+ 
+-Science task: {{science_task}}
++Science task: return the text it is given and report that text's character count
+ 
+ ## Tools
+ 
+-{{tools_section}}
++### `echo`
++
++return the given text and its character count; the mock adapter in this bundle stands in for the command
++
++- input: `message` (string, required)
++- output: `length` (integer), `message` (string)
++- errors it may return: `invalid_input`
++- side effects: none; idempotent: yes
++- gate: not required (no side effects; src/gate.py is consulted by the runner and finds no gate required)
+ 
+ Call a tool only through the runner, which applies the gate, checks the input against the tool's contract and returns either the output or an error contract:
+ 
+@@ -35,7 +43,10 @@
+ 
+ ## What this agent does not do
+ 
+-{{must_not}}
++- Touch an instrument.
++- Reach a network host.
++- Invent a number or choose a tolerance.
++- Bundle GPL code.
+ 
+ - Write outside this directory, or into `envelope/safety.json`, `CLAUDE.md` or `.claude/`.
+ - Change what it was built with: anything under `skills/`, `tools/`, `src/`, `validation/` or `replay/`, `CAPABILITIES.json`, `envelope/snapshot.json` or `envelope/parameters.json`. A change to any of them is a new build, never an edit in place, and an expected verdict is never edited to make a run pass. What a session writes is new lines at the end of `failures.jsonl` and its own files in the folder named runs.
+@@ -60,12 +71,12 @@
+ 
+ When no skill gives what a task needs, you do not compute it yourself and you write no script for it: you say what is missing and why the task needs it, as one line in `failures.jsonl`, and report it. A further library skill is built by the Meta-Agent and comes with a new build that a person brings here.
+ 
+-{{skills_section}}
++This agent has no skills. A skill, when one is added, is named here with the sentence that triggers it.
+ 
+ ## Subagents
+ 
+-{{subagents_section}}
++This agent has no subagents.
+ 
+ ## Seat
+ 
+-Commits from this directory are made as the seat the person assigns, in the form `{{seat_form}}`.
++Commits from this directory are made as the seat the person assigns, in the form `echo-<machine>-<YYYYMMDD>-<n>`.
+
+--- template/envelope/parameters.json
++++ bundle/envelope/parameters.json
+@@ -1,4 +1,3 @@
+ {
+-  "schema_version": "0.1",
+   "rows": []
+ }
+
+--- template/envelope/snapshot.json
++++ bundle/envelope/snapshot.json
+@@ -1,6 +1,5 @@
+ {
+-  "schema_version": "0.1",
+-  "kb_version": null,
++  "kb_version": "kb@e3b0c44298fc",
+   "entries": [],
+   "numbers": []
+ }
+
