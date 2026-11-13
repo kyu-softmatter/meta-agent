@@ -35,8 +35,18 @@ It runs intake through validation and writes the bundle under `meta_agent/builds
 - The bundle comes from a versioned template; the `build` card carries the difference from the template and the hash.
 - Safety values are `null`. Only the person writes them, at the destination.
 - Only `observed` and `derived` claims become capabilities.
-- The bundle carries the library skills it needs, run through its own runner. One session skill that sends the bundle's session to that runner is designed in `meta_agent/tasks/015-the-agent-and-its-bundles-work-from-skills.md` and comes with the template version that carries it.
+- The bundle carries the library skills it needs, run through its own runner. From template version v3 on it also carries its session skills: one that sends the bundle's session to that runner, with a page per library skill, and beside it the ones for choosing a session's level and for classifying a piece of knowledge.
 - Check it alone: `python contracts/validate.py --bundle <bundle folder>`.
+
+## Build an agent again
+
+An agent that exists is built again from its specification as it stands, under a new build id, and the build before it is never edited:
+
+```
+python -m meta_agent.src.designer --rebuild meta_agent/requests/<rid> --seat <seat>
+```
+
+Do not run the first-build command on a request that already has its cards: it would write them again.
 
 ## Stop at the bundle
 

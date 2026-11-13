@@ -26,7 +26,7 @@ It must stand alone. In this order:
 
 1. `Read <path of the task card> first.`
 2. The role, and: `Run the begin-session skill before any other write.`
-3. The files it may write, where its role's paths are shared with another session.
+3. The files it may write, where its role's paths are shared with another session. Read what a role may and may not write off its row in `contracts/seats.json`; never write that list from memory. A brief that forbids a path the role owns stops the session until the person is asked.
 4. What done looks like, taken from the task card's own lines.
 5. Whom it reports to, and the report form below.
 

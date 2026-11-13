@@ -19,6 +19,10 @@ Go back through the session: every correction by the person, every refused check
 
 When the path is not your seat's, ask the role that owns it: `python contracts/tools/notes.py ask --seat <name> --to <role> "…"`, committed alone. Write a lesson as what to do next time, with the command or the file. Correct an existing line before adding one.
 
+## Before you land
+
+Read what was asked of your role again: `python contracts/tools/notes.py list --role <role>`. A task can change while a session works, and a note is how you are told.
+
 ## Close the task
 
 - **Finished.** The task card's status line says done with the date and your seat, and the row in `meta_agent/tasks/index.json` says done and names the last commit of the work. The index is the design role's; another role asks by note.
