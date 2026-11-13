@@ -1,0 +1,203 @@
+[
+  {
+    "name": "everything the device reports",
+    "inputs": {
+      "quantities": []
+    },
+    "transcript": [
+      {
+        "tool": "ranges",
+        "input": {},
+        "output": {
+          "modes": [
+            "steady_shear",
+            "oscillation"
+          ],
+          "ranges": [
+            {
+              "quantity": "torque",
+              "min": 1e-08,
+              "max": 0.2,
+              "unit": "N.m"
+            },
+            {
+              "quantity": "angular_velocity",
+              "min": 1e-06,
+              "max": 300.0,
+              "unit": "rad/s"
+            },
+            {
+              "quantity": "temperature",
+              "min": 253.15,
+              "max": 473.15,
+              "unit": "K"
+            }
+          ]
+        }
+      }
+    ],
+    "expect": {
+      "reported": true,
+      "modes": [
+        "steady_shear",
+        "oscillation"
+      ],
+      "missing": [],
+      "inconsistent": [],
+      "ranges": [
+        {
+          "quantity": "torque",
+          "min": 1e-08,
+          "max": 0.2,
+          "unit": "N.m",
+          "reported_by": "device",
+          "tool": "ranges"
+        },
+        {
+          "quantity": "angular_velocity",
+          "min": 1e-06,
+          "max": 300.0,
+          "unit": "rad/s",
+          "reported_by": "device",
+          "tool": "ranges"
+        },
+        {
+          "quantity": "temperature",
+          "min": 253.15,
+          "max": 473.15,
+          "unit": "K",
+          "reported_by": "device",
+          "tool": "ranges"
+        }
+      ]
+    },
+    "expect_calls": [
+      "ranges"
+    ]
+  },
+  {
+    "name": "a wanted quantity the device does not report is missing, not filled in",
+    "inputs": {
+      "quantities": [
+        "torque",
+        "normal_force"
+      ]
+    },
+    "transcript": [
+      {
+        "tool": "ranges",
+        "output": {
+          "modes": [
+            "steady_shear",
+            "oscillation"
+          ],
+          "ranges": [
+            {
+              "quantity": "torque",
+              "min": 1e-08,
+              "max": 0.2,
+              "unit": "N.m"
+            },
+            {
+              "quantity": "angular_velocity",
+              "min": 1e-06,
+              "max": 300.0,
+              "unit": "rad/s"
+            },
+            {
+              "quantity": "temperature",
+              "min": 253.15,
+              "max": 473.15,
+              "unit": "K"
+            }
+          ]
+        }
+      }
+    ],
+    "expect": {
+      "reported": true,
+      "ranges": [
+        {
+          "quantity": "torque",
+          "min": 1e-08,
+          "max": 0.2,
+          "unit": "N.m",
+          "reported_by": "device",
+          "tool": "ranges"
+        }
+      ],
+      "missing": [
+        "normal_force"
+      ]
+    }
+  },
+  {
+    "name": "a row with reversed ends is not returned as a range",
+    "inputs": {
+      "quantities": [
+        "torque"
+      ]
+    },
+    "transcript": [
+      {
+        "tool": "ranges",
+        "output": {
+          "modes": [
+            "steady_shear"
+          ],
+          "ranges": [
+            {
+              "quantity": "torque",
+              "min": 0.2,
+              "max": 1e-08,
+              "unit": "N.m"
+            }
+          ]
+        }
+      }
+    ],
+    "expect": {
+      "reported": true,
+      "ranges": [],
+      "inconsistent": [
+        "torque"
+      ],
+      "missing": []
+    }
+  },
+  {
+    "name": "an error from the tool reports nothing",
+    "inputs": {
+      "quantities": []
+    },
+    "transcript": [
+      {
+        "tool": "ranges",
+        "error": {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-UNAVAILABLE-001",
+          "category": "unavailable",
+          "message": "no reply from the instrument",
+          "retryable": true,
+          "remediation": {
+            "action": "check the connection"
+          }
+        }
+      }
+    ],
+    "expect": {
+      "reported": false,
+      "error": {
+        "category": "unavailable"
+      }
+    },
+    "expect_calls": [
+      "ranges"
+    ]
+  },
+  {
+    "name": "on the bench",
+    "not_run": "requires bench"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "id": "rp-001",
+  "name": "the device lists its modes",
+  "call": {
+    "tool": "ranges",
+    "input": {}
+  },
+  "expected": {
+    "output": {
+      "modes": [
+        "steady_shear",
+        "oscillation"
+      ]
+    }
+  },
+  "expected_verdict": "pass"
+}

@@ -1,0 +1,85 @@
+{
+  "schema_version": "0.1",
+  "id": "flow_curve_fit",
+  "version": 1,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "fits stress = consistency * rate ^ flow_index to a flow curve and returns both with the residual",
+  "applies_to": {
+    "methods": [
+      "rheometry"
+    ],
+    "instruments": [
+      "lab_rheometer"
+    ],
+    "parameters": [
+      "shear_rate"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "shear_rate",
+      "unit": "1/s",
+      "meaning": "the shear rates of the flow curve, a list"
+    },
+    {
+      "name": "shear_stress",
+      "unit": "Pa",
+      "meaning": "the shear stress at each rate, a list of the same length"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "fitted",
+      "unit": "1",
+      "meaning": "true when a fit was made"
+    },
+    {
+      "name": "flow_index",
+      "unit": "1",
+      "meaning": "the exponent of the power law"
+    },
+    {
+      "name": "consistency",
+      "unit": "Pa.s^n",
+      "meaning": "the stress at a shear rate of one reciprocal second; its unit carries the flow index"
+    },
+    {
+      "name": "residual_rms_log",
+      "unit": "1",
+      "meaning": "root mean square of the residuals of ln(stress)"
+    },
+    {
+      "name": "points",
+      "unit": "count",
+      "meaning": "how many points were fitted"
+    },
+    {
+      "name": "value_kind",
+      "unit": "1",
+      "meaning": "computed"
+    },
+    {
+      "name": "basis",
+      "unit": "1",
+      "meaning": "how the numbers were computed, naming this skill and its version"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why no fit was made"
+    }
+  ],
+  "entry": {
+    "script": "scripts/flow_curve_fit.py",
+    "function": "flow_curve_fit"
+  },
+  "validity": "a power-law fluid over the range of the points; a yield stress or a Newtonian plateau is another model and another skill",
+  "source": {
+    "citation": "C. W. Macosko, Rheology: Principles, Measurements, and Applications, 1994",
+    "locus": "the power-law model of the viscosity of a generalised Newtonian fluid: stress = m * rate ^ n"
+  },
+  "cases": "cases.json",
+  "note": "On fixture data handed in as inputs (meta_agent/tests/fixtures/rheometer/inputs/flow_curve.json). The locus has not been checked against the book by a seat."
+}

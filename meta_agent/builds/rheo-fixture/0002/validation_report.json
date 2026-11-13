@@ -1,0 +1,59 @@
+{
+  "card": "validation_report",
+  "schema_version": "0.1",
+  "id": "vr-rheo-fixture-0002",
+  "rid": "req-rheo-fixture-001",
+  "revision": 1,
+  "author": "meta-macbook-20261112-1",
+  "created_at": "2026-11-13T06:37:30Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "build_ref": "build-rheo-fixture-0002",
+  "environment": "mock",
+  "interface": {
+    "tasks": [
+      {
+        "id": "if-1",
+        "name": "the status tool answers with a state",
+        "verdict": "pass",
+        "evidence": "meta_agent/builds/rheo-fixture/0002/bundle/validation/interface/if-1.json"
+      },
+      {
+        "id": "if-2",
+        "name": "an address that does not answer returns the documented error, not a crash",
+        "verdict": "pass",
+        "evidence": "meta_agent/builds/rheo-fixture/0002/bundle/validation/interface/if-2.json"
+      },
+      {
+        "id": "if-3",
+        "name": "identify without a session is an invalid input",
+        "verdict": "pass",
+        "evidence": "meta_agent/builds/rheo-fixture/0002/bundle/validation/interface/if-3.json"
+      }
+    ]
+  },
+  "scientific": {
+    "tasks": [
+      {
+        "id": "sci-1",
+        "name": "the torque range the device reports agrees with its specification",
+        "verdict": "not_run",
+        "reference": {
+          "kind": "source",
+          "ref": "the instrument's specification sheet; none exists for an instrument that does not exist"
+        },
+        "tolerance": null,
+        "evidence": "meta_agent/builds/rheo-fixture/0002/bundle/validation/scientific/sci-1.json",
+        "reason": "no reference function 'specification_torque_range' in this bundle"
+      }
+    ]
+  },
+  "overall": "not_run",
+  "note": "gates read off the bundle's own runners: interface pass, scientific not_run, replay 2 item(s) ok"
+}

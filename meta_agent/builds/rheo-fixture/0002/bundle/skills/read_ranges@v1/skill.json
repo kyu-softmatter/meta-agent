@@ -1,0 +1,72 @@
+{
+  "schema_version": "0.1",
+  "id": "read_ranges",
+  "version": 1,
+  "kind": "hardware_range",
+  "side_effect": "read_device",
+  "status": "usable",
+  "summary": "reads the modes and the range of each quantity as the device itself reports them",
+  "applies_to": {
+    "instruments": [
+      "lab_rheometer"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "quantities",
+      "unit": "1",
+      "meaning": "the names of the quantities wanted; an empty list means all the device reports"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reported",
+      "unit": "1",
+      "meaning": "true when the device answered"
+    },
+    {
+      "name": "modes",
+      "unit": "1",
+      "meaning": "the modes the device lists"
+    },
+    {
+      "name": "ranges",
+      "unit": "1",
+      "meaning": "one row per quantity: quantity, min, max, unit, reported_by, tool"
+    },
+    {
+      "name": "missing",
+      "unit": "1",
+      "meaning": "wanted quantities the device did not report"
+    },
+    {
+      "name": "inconsistent",
+      "unit": "1",
+      "meaning": "quantities whose row lacks an end or a unit, or whose ends are reversed"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why nothing was reported"
+    },
+    {
+      "name": "error",
+      "unit": "1",
+      "meaning": "the error contract the tool returned, unchanged"
+    }
+  ],
+  "calls_tools": [
+    "ranges"
+  ],
+  "entry": {
+    "script": "scripts/read_ranges.py",
+    "function": "read_ranges"
+  },
+  "validity": "a device whose ranges tool returns modes and rows of quantity, min, max and unit",
+  "source": {
+    "citation": "the fixture rheometer profile, meta_agent/tests/fixtures/rheometer/README.md",
+    "locus": "its ranges tool"
+  },
+  "cases": "cases.json",
+  "note": "The first hardware_range skill (the person, 2026-11-09: the agent finds the instrument's operable range itself; tasks/014 builds the scan on it). On recorded transcripts; no device was read (MP1)."
+}

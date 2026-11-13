@@ -1,0 +1,14 @@
+{
+  "id": "if-3",
+  "name": "identify without a session is an invalid input",
+  "call": {
+    "tool": "identify",
+    "input": {}
+  },
+  "expected": {
+    "error": {
+      "category": "invalid_input"
+    }
+  },
+  "expected_verdict": "pass"
+}

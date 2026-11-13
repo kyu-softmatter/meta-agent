@@ -1,0 +1,122 @@
+[
+  {
+    "name": "four points on stress = 2 * rate ^ 0.5 give back the two numbers",
+    "inputs": {
+      "shear_rate": [
+        1.0,
+        4.0,
+        16.0,
+        100.0
+      ],
+      "shear_stress": [
+        2.0,
+        4.0,
+        8.0,
+        20.0
+      ]
+    },
+    "expect": {
+      "fitted": true,
+      "flow_index": 0.5,
+      "consistency": 2.0,
+      "points": 4,
+      "value_kind": "computed"
+    },
+    "tolerance": {
+      "rel": 1e-12
+    },
+    "worked": "2 * sqrt(1, 4, 16, 100) = 2, 4, 8, 20, so the line through the logarithms is exact"
+  },
+  {
+    "name": "the fixture flow curve, four decades with scatter",
+    "inputs": {
+      "shear_rate": [
+        0.1,
+        1.0,
+        10.0,
+        100.0
+      ],
+      "shear_stress": [
+        0.65,
+        2.0,
+        6.1,
+        21.0
+      ]
+    },
+    "expect": {
+      "fitted": true,
+      "flow_index": 0.5012217653619976,
+      "consistency": 2.017261675862101,
+      "residual_rms_log": 0.03160882484012407,
+      "points": 4
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "an independent least-squares line through (ln rate, ln stress), computed with another program than the skill's code"
+  },
+  {
+    "name": "one point is not a fit",
+    "inputs": {
+      "shear_rate": [
+        1.0
+      ],
+      "shear_stress": [
+        2.0
+      ]
+    },
+    "expect": {
+      "fitted": false
+    }
+  },
+  {
+    "name": "a stress of zero has no logarithm",
+    "inputs": {
+      "shear_rate": [
+        1.0,
+        10.0
+      ],
+      "shear_stress": [
+        0.0,
+        2.0
+      ]
+    },
+    "expect": {
+      "fitted": false,
+      "why": "a rate or a stress is not positive; the logarithm is not defined"
+    }
+  },
+  {
+    "name": "lists of different lengths",
+    "inputs": {
+      "shear_rate": [
+        1.0,
+        10.0,
+        100.0
+      ],
+      "shear_stress": [
+        2.0,
+        6.0
+      ]
+    },
+    "expect": {
+      "fitted": false
+    }
+  },
+  {
+    "name": "one rate repeated",
+    "inputs": {
+      "shear_rate": [
+        10.0,
+        10.0
+      ],
+      "shear_stress": [
+        6.0,
+        6.2
+      ]
+    },
+    "expect": {
+      "fitted": false
+    }
+  }
+]
