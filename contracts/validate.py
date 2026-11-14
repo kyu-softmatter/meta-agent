@@ -85,6 +85,7 @@ import cases as case_rules  # noqa: E402  (contracts/tools/cases.py: condition t
 import skills as skill_rules  # noqa: E402  (contracts/tools/skills.py: what a skill is; its source read, its cases run)
 import session_skills as session_skill_rules  # noqa: E402  (contracts/tools/session_skills.py: a procedure a session loads)
 import sheets as sheet_rules  # noqa: E402  (contracts/tools/sheets.py: a sheet's bounds recomputed, its safety rows)
+import tool_contracts as tool_contract_rules  # noqa: E402  (contracts/tools/tool_contracts.py: a contract's required names)
 
 try:
     import jsonschema
@@ -934,7 +935,7 @@ def check17(cards, c, report, tree):
 # B checks: one built bundle (plan.md 5.1 S5, 8). Run with --bundle PATH, on every
 # bundle a build card points at, and on <fixture>/bundle/ under --expect-fail.
 # ----------------------------------------------------------------------------
-B_IMPLEMENTED = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B11", "B15"]  # a plain list literal: a test of the meta role reads it from this source
+B_IMPLEMENTED = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B11", "B15", "B16"]  # a plain list literal: a test of the meta role reads it from this source
 BUNDLE_FILES = ["CLAUDE.md", ".claude/settings.json", "CAPABILITIES.json", "envelope/safety.json",
                 "envelope/snapshot.json", "envelope/parameters.json", "failures.jsonl",
                 "src/gate.py", "src/run_tool.py", "src/replay.py", "src/validate_tasks.py"]
@@ -1343,6 +1344,13 @@ def checkB15(bundle, label, report):
         report.fail("B15", relpath, msg)
 
 
+def checkB16(bundle, label, report):
+    """A bundle of the template version after v5 or later: in every tool contract each name under
+    `required` is declared under the `properties` beside it, for inputs and for outputs (tasks/015)."""
+    for relpath, msg in tool_contract_rules.bundle_problems(bundle):
+        report.fail("B16", relpath, msg)
+
+
 def run_bundle_checks(bundle, c, report, checks, knowledge_root, label=None):
     bundle = os.path.abspath(bundle)
     label = label or rel(bundle, REPO)
@@ -1372,6 +1380,8 @@ def run_bundle_checks(bundle, c, report, checks, knowledge_root, label=None):
         checkB11(bundle, label, report)
     if "B15" in checks:
         checkB15(bundle, label, report)
+    if "B16" in checks:
+        checkB16(bundle, label, report)
     report.ran.update(ch for ch in checks if isinstance(ch, str))
 
 

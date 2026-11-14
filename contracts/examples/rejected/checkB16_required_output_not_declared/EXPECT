@@ -1,0 +1,3 @@
+check B16
+
+A bundle of template v6 whose `status` tool, of an instrument, names `fault` under the `required` of its outputs and declares no such property: a caller is promised a field the contract does not describe.

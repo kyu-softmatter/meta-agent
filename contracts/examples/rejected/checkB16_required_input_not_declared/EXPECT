@@ -1,0 +1,3 @@
+check B16
+
+A bundle of template v6 whose `echo` tool, a command and no instrument, names `repeat` under the `required` of its inputs and declares no such property: a caller must send a field the contract does not describe.
