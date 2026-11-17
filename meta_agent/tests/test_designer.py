@@ -578,5 +578,82 @@ class FromAnIntakeCard(unittest.TestCase):
         self.assertIn("is not the latest intake", str(e.exception))
 
 
+class ExecutionPermission(unittest.TestCase):
+    """The person, 2026-11-16 (docs/ideas/20261116.md): a tool that starts an engine or writes files opens by the lab's
+    confirmed execution permission. The Designer copies the level from the profile a build names into
+    envelope/execution_permission.json, and writes none where the profile carries the permission as words."""
+
+    LAB = "lab-kyu-softmatter"
+
+    def setUp(self):
+        self.tmp, self.root = scratch_root()
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        shutil.copytree(os.path.join(META, "profiles", self.LAB), os.path.join(self.root, "profiles", self.LAB))
+
+    def intake(self, lab, effects="runs_process", expect=None):
+        i = copy.deepcopy(load_intake())
+        i["lab_profile_ref"] = lab
+        i["tool_contract"].update(side_effects=effects, errors=["invalid_input", "refused_by_safety"],
+                                  safety_gate={"required": True, "place": "src/gate.py, consulted by src/run_tool.py before the call",
+                                               "opens_by": "execution_permission"})
+        if expect:
+            for item in i["interface_tasks"] + i["replay_items"] + i["scientific_tasks"]:
+                item["expected"] = {"error": {"category": "refused_by_safety", "code": expect}}
+                if "measure" in item:
+                    item.update(expected_verdict="not_run")
+        return i
+
+    def test_the_level_is_copied_from_the_profile_and_words_give_none(self):
+        p = designer.execution_permission(META, self.LAB)
+        self.assertEqual((p["reaches"], p["confirmed_by"], p["lab_profile_ref"]), ("engine", "human", self.LAB))
+        self.assertEqual(p["profile_revision"], cards.load_json(os.path.join(META, "profiles", self.LAB, "v3_lab_profile.json"))["revision"])
+        self.assertIsNone(designer.execution_permission(META, "lab-fixture-rich"))     # its profile has words only
+        # an earlier revision with words only gives none either: the level is never read off the sentence
+        words_only = os.path.join(self.tmp, "words")
+        os.makedirs(os.path.join(words_only, "profiles", self.LAB))
+        shutil.copy(os.path.join(META, "profiles", self.LAB, "v2_lab_profile.json"),
+                    os.path.join(words_only, "profiles", self.LAB, "v2_lab_profile.json"))
+        self.assertIsNone(designer.execution_permission(words_only, self.LAB))
+
+    def test_an_engine_tool_is_built_open_on_the_lab_s_permission_and_the_tree_passes(self):
+        for effects in ("runs_process", "writes_files"):
+            tmp, root = scratch_root()
+            try:
+                shutil.copytree(os.path.join(META, "profiles", self.LAB), os.path.join(root, "profiles", self.LAB))
+                out = designer.run(self.intake(self.LAB, effects), SEAT, "0001", NOW, root)
+                bundle = os.path.join(root, "builds", "echo", "0001", "bundle")
+                perm = cards.load_json(os.path.join(bundle, "envelope", "execution_permission.json"))
+                self.assertEqual(perm, designer.execution_permission(root, self.LAB))
+                self.assertEqual(out["held"], [], effects)                   # no safety row is asked of such a tool
+                self.assertEqual(out["gates"]["interface"], "pass", effects)  # the calls ran: the gate opened
+                a5 = cards.load_json(os.path.join(root, "requests", "req-echo-001", "spec_a5.json"))["content"]
+                self.assertIn("execution_permission.json", a5["gate"])
+                p = subprocess.run([sys.executable, VALIDATE, tmp, "--strict"], capture_output=True, text=True,
+                                   env=dict(os.environ, PYTHONUTF8="1"))
+                self.assertIn("0 failed, 0 pending", p.stdout, p.stdout + p.stderr)
+            finally:
+                shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_a_lab_with_words_only_stops_the_designer_and_nothing_is_written(self):
+        with self.assertRaises(designer.Stopped) as e:
+            designer.run(self.intake("lab-fixture-rich"), SEAT, "0001", NOW, self.root)
+        self.assertIn("no level a person confirmed", str(e.exception))
+        self.assertFalse(os.path.exists(os.path.join(self.root, "requests")))
+        self.assertFalse(os.path.exists(os.path.join(self.root, "builds")))
+
+    def test_a_level_below_an_engine_is_held_and_the_gate_refuses_naming_it(self):
+        folder = os.path.join(self.root, "profiles", self.LAB)
+        lower = cards.load_json(os.path.join(folder, "v3_lab_profile.json"))
+        lower.update(revision=4, supersedes=lower["id"])
+        lower["policy"]["execution_permission"]["value"] = {"reaches": "sandbox", "words": "mock and sandbox"}
+        cards.write_json(os.path.join(folder, "v4_lab_profile.json"), lower)
+        out = designer.run(self.intake(self.LAB, expect="GATE-PERMISSION-001"), SEAT, "0001", NOW, self.root)
+        self.assertEqual(len(out["held"]), 1)
+        self.assertIn("the level sandbox, which opens no engine", str(out["held"][0]))
+        self.assertEqual(out["gates"]["interface"], "pass")          # every call was refused, as the tasks expect
+        bundle = os.path.join(self.root, "builds", "echo", "0001", "bundle")
+        self.assertEqual(cards.load_json(os.path.join(bundle, "envelope", "execution_permission.json"))["reaches"], "sandbox")
+
+
 if __name__ == "__main__":
     unittest.main()

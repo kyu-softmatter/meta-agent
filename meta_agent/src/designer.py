@@ -243,6 +243,55 @@ def open_policy(root, lab_id):
     return out
 
 
+LEVELS = ("none", "mock", "sandbox", "engine", "instrument")
+
+
+def execution_permission(root, lab_id):
+    """envelope/execution_permission.json for a build that names this lab, copied from the latest revision of its
+    profile; None when the profile carries the permission as a string, as the records of before 2026-11-16 do, or
+    when no person confirmed it. A string opens nothing and is never read for a level (contracts/schemas/
+    execution_permission.schema.json)."""
+    _, path = latest_file(os.path.join(root, "profiles", lab_id), "lab_profile.json")
+    if path is None:
+        return None
+    profile = cards.load_json(path)
+    leaf = (profile.get("policy") or {}).get("execution_permission") or {}
+    value = leaf.get("value")
+    if not (isinstance(value, dict) and value.get("reaches") in LEVELS and value.get("words")):
+        return None
+    if leaf.get("state") != "confirmed" or leaf.get("confirmed_by") != "human" or not leaf.get("date"):
+        return None
+    return {"artifact": "execution_permission", "schema_version": "0.1", "reaches": value["reaches"],
+            "words": value["words"], "confirmed_by": "human", "date": leaf["date"],
+            "lab_profile_ref": profile["id"], "profile_revision": profile["revision"]}
+
+
+def reaches_of(root, lab_id):
+    """The level of a lab's confirmed execution permission, or None where its profile carries only words."""
+    p = execution_permission(root, lab_id)
+    return p["reaches"] if p else None
+
+
+def opens_by_permission(intake):
+    """The names of the tools of an intake whose gate opens by the lab's execution permission."""
+    listed = [t["contract"] for t in intake.get("tools") or []] or ([intake["tool_contract"]] if "tool_contract" in intake else [])
+    return [c.get("name") for c in listed if (c.get("safety_gate") or {}).get("opens_by") == "execution_permission"]
+
+
+def permission_stop(intake, root):
+    """Raise Stopped when a tool opens by the execution permission and the lab's profile gives no level to copy:
+    the bundle would carry no envelope/execution_permission.json, and bundle check B9 refuses that."""
+    names = opens_by_permission(intake)
+    lab = intake.get("lab_profile_ref")
+    if names and execution_permission(root, lab) is None:
+        raise Stopped("%s open%s by the lab's execution permission, and the latest profile of %s carries it as words and no "
+                      "level a person confirmed, so there is nothing to copy into envelope/execution_permission.json. The "
+                      "level is the person's (python -m meta_agent.src.onboarding --lab-id %s --out %s --answers <file> --seat "
+                      "<seat>, the answer {reaches, words}); nothing is inferred from the words" % (
+                          ", ".join(names), "s" if len(names) == 1 else "", lab, lab,
+                          rel_repo(os.path.join(root, "profiles", lab), root)))
+
+
 def may_start(intake, intake_path, req_dir, root):
     """Raise Stopped when a first run from this intake must not begin. Nothing is written before this passes."""
     rid = intake["rid"]
@@ -266,6 +315,7 @@ def may_start(intake, intake_path, req_dir, root):
     if latest_file(req_dir, "agent_spec.json")[1]:
         raise Stopped("%s has its specification already: --respecify after its intake is revised, --rebuild for a new build" % rid)
     lab = intake["lab_profile_ref"]
+    permission_stop(intake, root)
     still = open_policy(root, lab)
     if still:
         lines = ["the profile of %s has %d policy field(s) no person has confirmed, and check 15 refuses a goal on it. "
@@ -338,6 +388,10 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
         "snapshot": {"kb_version": brief["kb_version"], "entries": brief["entries"], "numbers": []},
         "parameters": {"rows": list(intake.get("parameter_rows") or [])},
     }
+    # the lab's confirmed execution permission, as the level a gate reads; none where the profile has only words
+    permission = execution_permission(root, goal["lab_profile_ref"])
+    if permission is not None:
+        envelope["execution_permission"] = permission
     sha = bundle_mod.compose(template_path, bundle_path, fill, tools, capabilities, envelope,
                              intake["interface_tasks"], intake["scientific_tasks"], intake["replay_items"],
                              skills=built_skills, subagents=subagents)
@@ -394,6 +448,7 @@ def rebuild(req_dir, seat, build_id=None, now=None, root=ROOT):
         raise ValueError("a build id is four digits, not %r" % build_id)
     if os.path.exists(os.path.join(builds, build_id)):
         raise FileExistsError("build exists: %s (a rebuild is a new build id)" % rel_repo(os.path.join(builds, build_id), root))
+    permission_stop(dict(intake, lab_profile_ref=goal["lab_profile_ref"]), root)
 
     tools = tools_of(intake, root)
     skill_rows = catalogue_mod.take(spec.get("skills") or [], os.path.join(root, "skills"))
@@ -483,7 +538,8 @@ def respecify(req_dir, seat, now=None, root=ROOT):
                                          contracts if intake.get("tools") else contracts[0],
                                          intake["interface_tasks"], intake["scientific_tasks"], seat, created,
                                          parameter_rows=intake.get("parameter_rows"), safety_rows=intake.get("safety_rows"),
-                                         case_recall=case_recall, skills=skill_rows, subagents=subagents)
+                                         case_recall=case_recall, skills=skill_rows, subagents=subagents,
+                                         permission_reaches=reaches_of(root, goal["lab_profile_ref"]))
     written, names = [], {}
     for a in axes:
         names[a["axis"]], path = next_revision(req_dir, "spec_%s.json" % a["axis"].lower(), a, AXIS_SAME)
@@ -566,7 +622,8 @@ def run(intake, seat, build_id="0001", now=None, root=ROOT, intake_path=None):
                                          contracts if intake.get("tools") else contracts[0],
                                          intake["interface_tasks"], intake["scientific_tasks"], seat, created,
                                          parameter_rows=intake.get("parameter_rows"), safety_rows=intake.get("safety_rows"),
-                                         case_recall=case_recall, skills=skill_rows, subagents=subagents)
+                                         case_recall=case_recall, skills=skill_rows, subagents=subagents,
+                                         permission_reaches=reaches_of(root, goal["lab_profile_ref"]))
     for a in axes:
         put(os.path.join(req_dir, "spec_%s.json" % a["axis"].lower()), a)
     put(os.path.join(req_dir, "synthesis.json"), syn)

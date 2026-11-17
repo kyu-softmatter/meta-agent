@@ -20,9 +20,12 @@ TITLES = {"A1": "Boundary", "A2": "Interface", "A3": "Knowledge", "A4": "Paramet
 
 def make_axes(goal, profile, brief, lab_profile_ref, bundle_dir, tool_contract, interface_tasks,
               scientific_tasks, seat, now=None, parameter_rows=None, safety_rows=None, case_recall=None,
-              skills=None, subagents=None):
+              skills=None, subagents=None, permission_reaches=None):
     """`skills` are the library's rows (src/skills/catalogue.take) for the skills the request names, in its
-    order; `subagents` is the request's drawing, [{name, description, skills, side_effects}]."""
+    order; `subagents` is the request's drawing, [{name, description, skills, side_effects}].
+    `permission_reaches` is the level of the lab's confirmed execution permission (envelope/execution_permission.json
+    as the Designer would write it), None where the profile carries only words: a tool whose gate opens_by the
+    permission needs no safety row and is held where the level opens no engine."""
     created = cards.now_iso(now)
     rid = goal["rid"]
     base = "spec-" + rid.replace("req-", "")
@@ -32,7 +35,10 @@ def make_axes(goal, profile, brief, lab_profile_ref, bundle_dir, tool_contract, 
     contracts = list(tool_contract) if isinstance(tool_contract, (list, tuple)) else [tool_contract]
     gated = [c["name"] for c in contracts
              if bool((c.get("safety_gate") or {}).get("required")) or c.get("side_effects") not in ("none", "reads_instrument")]
-    gate_needed = bool(gated)
+    # what opens each gate (the person, 2026-11-16): the lab's execution permission for a tool whose contract says so,
+    # safety values a person wrote for every other one
+    by_permission = [c["name"] for c in contracts if (c.get("safety_gate") or {}).get("opens_by") == "execution_permission"]
+    by_safety = [n for n in gated if n not in by_permission]
     tool = ", ".join(gated) if gated else ", ".join(c["name"] for c in contracts)
     if gated:
         gate_says = "; %s require%s one" % (tool, "s" if len(gated) == 1 else "")
@@ -86,6 +92,12 @@ def make_axes(goal, profile, brief, lab_profile_ref, bundle_dir, tool_contract, 
             "refusal": "an error contract or a gate refusal is reported as such; not_run and undecided are not passes",
         },
     }
+    if by_permission:
+        content["A1"]["forbidden"].insert(1, "envelope/execution_permission.json")
+        content["A5"]["gate"] += ("; %s open%s by the lab's execution permission instead, read from "
+                                  "envelope/execution_permission.json, where its level reaches an engine" % (
+                                      ", ".join(by_permission), "s" if len(by_permission) == 1 else ""))
+        content["A5"]["human_only"].append("the lab's execution permission")
     if skills or subagents:
         content["A2"]["skills"] = [{"ref": r["ref"], "kind": r["kind"], "side_effect": r["side_effect"], "status": r["status"],
                                     "calls_tools": list(r["calls_tools"])} for r in skills]
@@ -108,8 +120,12 @@ def make_axes(goal, profile, brief, lab_profile_ref, bundle_dir, tool_contract, 
     held = []
     if goal.get("gui_choice") == "undecided":
         held.append("gui: the person has not chosen")
-    if gate_needed and not safety_rows:
-        held.append("%s: a gate is required but no safety row is named" % tool)
+    if by_safety and not safety_rows:
+        held.append("%s: a gate is required but no safety row is named" % ", ".join(by_safety))
+    if by_permission and permission_reaches not in ("engine", "instrument"):
+        held.append("%s: the gate opens by the lab's execution permission, and the lab's profile carries %s" % (
+            ", ".join(by_permission), "no level, only words" if permission_reaches is None else
+            "the level %s, which opens no engine" % permission_reaches))
     for ref in held_skills:
         held.append({"item": "skill %s" % ref, "reason": "it changes a device (write_device): held in the library until a person "
                                                          "releases it, and left out of the bundle"})
