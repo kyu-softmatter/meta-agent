@@ -25,13 +25,15 @@ The kinds, and the side effect each may declare, are in `contracts/skill_kinds.j
 3. **Write a pure function.** No file, no network, no device, and only the imports the gate allows. A device is reached only through the tools the manifest names.
 4. **Hold no judgement in the code.** A margin, a multiple, a tolerance or a limit is an input with its own source.
 5. **Say where it holds.** For an estimate, the manifest's `validity` says what is neglected and over what conditions; an estimate gives a range.
-6. **Give worked cases from the cited source,** values that the source itself states. At least one must run.
-7. **Check it, then index:**
+6. **Give worked cases from the cited source,** values that the source itself states. At least one must run. A skill of kind `bound` gives one output, the bound or the value of its parameter, and carries two cases that run with inputs that differ: a second quantity is a second skill, and one case cannot tell a relation from a constant.
+7. **Check it, index, then run the library's tests:**
    ```
    python contracts/tools/skills.py check <skill folder>
    python contracts/tools/skills.py run-cases <skill folder>
    python -m meta_agent.src.skills index
+   python -m unittest discover -s meta_agent/tests -t .
    ```
+   The check says what the gate will say of the skill alone. The tests say what the code that uses the library needs of it; a new skill is not landed while one of them fails.
 8. **A change is the next version.** A landed folder is never edited; write the next version's folder beside it.
 
 ## Who lands it

@@ -1,0 +1,1 @@
+A bound skill carries two worked cases that run, with inputs that differ: one case cannot tell a relation from a constant. This one has one.

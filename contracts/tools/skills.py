@@ -406,12 +406,39 @@ def find_in_library(root, ref):
     return None
 
 
+def bound_problems(skill_dir, manifest):
+    """What a skill of kind `bound` is beyond any skill: it gives one quantity, and its relation is shown twice.
+
+    A parameter sheet reads one output of a bound skill, so a second would be dropped in silence; and one
+    worked case cannot tell a relation from a constant, so two that run are asked, with inputs that differ.
+    """
+    if manifest.get("kind") != "bound":
+        return []
+    out = []
+    outputs = manifest.get("outputs")
+    if isinstance(outputs, list) and len(outputs) != 1:
+        out.append("a bound skill gives one output, the bound or the value of its parameter: %d are declared and a "
+                   "sheet reads one; a second quantity is a second skill" % len(outputs))
+    try:
+        with open(os.path.join(skill_dir, "cases.json"), "r", encoding="utf-8") as f:
+            cases = json.load(f)
+    except (OSError, ValueError):
+        return out                      # case_problems says so
+    ran = [c for c in cases if isinstance(c, dict) and not c.get("not_run")] if isinstance(cases, list) else []
+    distinct = {json.dumps(c.get("inputs"), sort_keys=True) for c in ran}
+    if ran and len(distinct) < 2:
+        out.append("a bound skill carries two worked cases that run, with inputs that differ: one case cannot tell a "
+                   "relation from a constant")
+    return out
+
+
 def problems(skill_dir, kinds, schema_errors=None):
     """Everything check 22 says about one skill. The source is run only when reading it found nothing."""
     manifest = read_manifest(skill_dir)
     out = layout_problems(skill_dir, manifest, kinds, schema_errors)
     if manifest is None or schema_errors:
         return out
+    out.extend(bound_problems(skill_dir, manifest))
     src = source_problems(skill_dir, manifest)
     out.extend(src)
     if not src and not any(o.startswith(("no ", "entry script")) for o in out):

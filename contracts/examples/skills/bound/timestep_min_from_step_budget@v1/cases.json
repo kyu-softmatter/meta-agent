@@ -9,5 +9,16 @@
       "time_step_min": 5e-05
     },
     "worked": "5 / 100000"
+  },
+  {
+    "name": "10 s of simulated time in 1000 steps",
+    "inputs": {
+      "simulated_time": 10.0,
+      "step_budget": 1000
+    },
+    "expect": {
+      "time_step_min": 0.01
+    },
+    "worked": "10 / 1000"
   }
 ]

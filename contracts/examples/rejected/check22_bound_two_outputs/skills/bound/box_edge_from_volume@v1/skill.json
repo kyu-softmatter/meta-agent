@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.1",
+  "id": "box_edge_from_volume",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the edge of a cubic box of a given volume",
+  "parameter": "box_edge",
+  "side": "value",
+  "applies_to": {
+    "parameters": [
+      "box_edge"
+    ],
+    "methods": [
+      "md"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "box_volume",
+      "unit": "m^3",
+      "meaning": "the volume of the cubic box"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "box_edge",
+      "unit": "m",
+      "meaning": "the edge of the cube"
+    },
+    {
+      "name": "face_area",
+      "unit": "m^2",
+      "meaning": "the area of one face"
+    }
+  ],
+  "entry": {
+    "script": "scripts/box.py",
+    "function": "box_edge"
+  },
+  "validity": "a cubic box",
+  "source": {
+    "citation": "by definition: the volume of a cube is the cube of its edge",
+    "locus": "geometry"
+  },
+  "cases": "cases.json",
+  "note": "An example of the shape for the rejected fixture."
+}

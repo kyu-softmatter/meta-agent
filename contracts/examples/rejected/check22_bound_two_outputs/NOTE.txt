@@ -1,0 +1,1 @@
+A bound skill gives one output, the bound or the value of its parameter: the sheet reads one. This one declares two.

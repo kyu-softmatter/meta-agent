@@ -30,6 +30,8 @@ REASONS = {
     "check22_manifest_and_folder_disagree": ("shear_rate_max_from_max_speed@v1", "and the folder says"),
     "check22_unknown_kind": ("shear_rate_max_from_max_speed@v1", "is not in contracts/skill_kinds.json"),
     "check22_uses_a_skill_that_is_not_there": ("bring_to_ready@v1", "which is not in this library"),
+    "check22_bound_one_worked_case": ("gap_min_from_particle_size@v1", "two worked cases that run, with inputs that differ"),
+    "check22_bound_two_outputs": ("box_edge_from_volume@v1", "a bound skill gives one output"),
 }
 
 

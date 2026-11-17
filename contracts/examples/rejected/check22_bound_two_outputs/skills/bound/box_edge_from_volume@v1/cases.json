@@ -1,0 +1,22 @@
+[
+  {
+    "name": "a cube of volume 8",
+    "inputs": {
+      "box_volume": 8.0
+    },
+    "expect": {
+      "box_edge": 2.0,
+      "face_area": 4.0
+    }
+  },
+  {
+    "name": "a cube of volume 1",
+    "inputs": {
+      "box_volume": 1.0
+    },
+    "expect": {
+      "box_edge": 1.0,
+      "face_area": 1.0
+    }
+  }
+]
