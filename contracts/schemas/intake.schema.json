@@ -565,6 +565,61 @@
       "uniqueItems": true,
       "minItems": 1,
       "description": "with the stage specified: the order in which the agent's workflow calls the card's tools, each named once; a tool it leaves out is called when a task asks for it. Without it the bundle says the request gave no order."
+    },
+    "decisions": {
+      "type": "array",
+      "minItems": 1,
+      "description": "with the stage specified: each decision the agent's workflow takes while it runs, the diagnostic skill that takes it, which tool's output field is handed to which input of the skill, and the rows that hand the skill's other inputs, its criterion among them (the person, 2026-11-17)",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "decision",
+          "skill",
+          "data",
+          "rows"
+        ],
+        "properties": {
+          "decision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skill": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tool",
+              "field",
+              "input"
+            ],
+            "properties": {
+              "tool": {
+                "type": "string",
+                "minLength": 1
+              },
+              "field": {
+                "type": "string",
+                "minLength": 1
+              },
+              "input": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "rows": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
     }
   },
   "additionalProperties": false,
@@ -667,6 +722,11 @@
             {
               "required": [
                 "workflow"
+              ]
+            },
+            {
+              "required": [
+                "decisions"
               ]
             }
           ]

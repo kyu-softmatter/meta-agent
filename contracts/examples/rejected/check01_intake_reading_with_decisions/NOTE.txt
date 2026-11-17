@@ -1,0 +1,1 @@
+An intake at the stage reading that names a run-time decision: a decision names a skill, a tool's output and rows, which belong to the stage specified (tasks/016).
