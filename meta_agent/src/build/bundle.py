@@ -20,6 +20,7 @@ says when a skill applies stays in CLAUDE.md (B8).
 import difflib
 import json
 import os
+import re
 import shutil
 
 from .. import cards
@@ -70,8 +71,11 @@ def gate_line(tc):
     envelope files opened a tool's gate)."""
     gate = tc.get("safety_gate") or {}
     if tc.get("side_effects") == "network":
+        installer = (tc.get("installs_from") or {}).get("installer")
         return ("asked of every call, at %s; opened by the lab's execution permission in `envelope/execution_permission.json`, "
-                "as the one install, where it lists this tool's installer and channel" % gate.get("place", "src/gate.py"))
+                "as the one install, where it lists this tool's installer and channel" % gate.get("place", "src/gate.py")
+                + ("; the installer `%s` must already be on the computer, and putting it there is the person's step" % installer
+                   if installer else ""))
     if not gate.get("required"):
         return "not required (" + gate.get("place", "no side effects") + ")"
     if gate.get("opens_by") == "execution_permission":
@@ -92,6 +96,109 @@ def tools_section(tool_contracts):
                       "yes" if tc.get("idempotent") else "no",
                       gate_line(tc)))
     return "\n\n".join(out) if out else "This agent has no callable tool."
+
+
+def workflow_section(order, tool_names):
+    """The order in which the workflow calls the tools (test run 20261117-2: a session read the order off the tools'
+    descriptions). `order` is the request's list of tool names, or None where it gave none; a name that is not a tool
+    of the bundle is refused before anything is written."""
+    if not order:
+        return ("The request this agent was built for gave no order in which its workflow calls the tools. Each tool's "
+                "description says what it takes and what it gives; an order you read from the descriptions is an "
+                "inference, and you say that it is one when you report it.")
+    unknown = [n for n in order if n not in tool_names]
+    if unknown:
+        raise ValueError("the workflow names %s, which this bundle does not have as tools" % ", ".join(unknown))
+    if len(set(order)) != len(order):
+        raise ValueError("the workflow names a tool twice: %s" % ", ".join(order))
+    steps = ", then ".join("`%s`" % n for n in order)
+    rest = [n for n in tool_names if n not in order]
+    text = ("The workflow calls the tools in this order, each through the runner and each once the one before it has "
+            "answered: %s. The order is the one the request this agent was built for gave. A task or the person may ask "
+            "for part of it, and a step may be called again on its own." % steps)
+    if rest:
+        text += " Outside the order: %s, called when a task asks for it." % ", ".join("`%s`" % n for n in rest)
+    return text
+
+
+BUILDER_PATH_RE = re.compile(r"(?<![\w/.-])(?:(?:docs|meta_agent|contracts)/[\w./@-]*[\w/]|plan\.md)")
+
+
+def builder_paths(value, bundle_path):
+    """The paths of the builder's repository that a JSON value names in its strings and that the bundle does not carry."""
+    found = []
+    def walk(v):
+        if isinstance(v, str):
+            for m in BUILDER_PATH_RE.finditer(v):
+                p = m.group(0).rstrip("/.")
+                if p not in found and not os.path.exists(os.path.join(bundle_path, *p.split("/"))):
+                    found.append(p)
+        elif isinstance(v, dict):
+            for k in sorted(v):
+                walk(v[k])
+        elif isinstance(v, list):
+            for x in v:
+                walk(x)
+    walk(value)
+    return found
+
+
+def builder_records(paths, words=None):
+    """One entry per path: the record is the builder's and is not here; a person's words recorded in it, quoted."""
+    out = []
+    for p in paths:
+        e = {"path": p, "in_this_bundle": False,
+             "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here"}
+        quoted = [dict(w) for w in (words or {}).get(p, [])]
+        if quoted:
+            e["words"] = quoted
+        else:
+            e["words_here"] = "none: what the item rests on is what it says in its own words"
+        out.append(e)
+    return out
+
+
+def mark_builder_records(bundle_path, words=None, subs=("validation/interface", "validation/scientific", "replay"),
+                         files=("TEMPLATE.json",)):
+    """Add builder_records to each task, replay item and named file that names a record the bundle does not carry.
+    `words` is {path: [{verbatim, date, gloss?}]}, the person's words the builder had for a record."""
+    marked = []
+    targets = [os.path.join(bundle_path, f) for f in files]
+    for sub in subs:
+        d = os.path.join(bundle_path, *sub.split("/"))
+        if os.path.isdir(d):
+            targets += [os.path.join(d, f) for f in sorted(os.listdir(d)) if f.endswith(".json")]
+    for path in targets:
+        if not os.path.isfile(path):
+            continue
+        item = cards.load_json(path)
+        if not isinstance(item, dict):
+            continue
+        paths = builder_paths({k: v for k, v in item.items() if k != "builder_records"}, bundle_path)
+        if paths:
+            item["builder_records"] = builder_records(paths, words)
+            cards.write_json(path, item)
+            marked.append(os.path.relpath(path, bundle_path).replace(os.sep, "/"))
+    return marked
+
+
+def words_by_record(*cards_in):
+    """{recorded_in: [{verbatim, date, gloss?}]} from every dict in the given cards that carries verbatim and recorded_in."""
+    out = {}
+    def walk(v):
+        if isinstance(v, dict):
+            if isinstance(v.get("verbatim"), str) and isinstance(v.get("recorded_in"), str):
+                w = {k: v[k] for k in ("verbatim", "date", "gloss") if k in v}
+                if w not in out.setdefault(v["recorded_in"], []):
+                    out[v["recorded_in"]].append(w)
+            for x in v.values():
+                walk(x)
+        elif isinstance(v, list):
+            for x in v:
+                walk(x)
+    for c in cards_in:
+        walk(c)
+    return out
 
 
 def must_not_section(items):
@@ -273,8 +380,12 @@ def add_skills(bundle_path, rows, subagents):
 
 
 def compose(template_path, bundle_path, fill, tools, capabilities, envelope, interface_tasks,
-            scientific_tasks, replay_items, skills=None, subagents=None):
+            scientific_tasks, replay_items, skills=None, subagents=None, workflow=None, words=None):
     """Write the bundle. `tools` is a list of {name, contract, adapter_source, errors:[contract]}.
+
+    `workflow` is the request's order of tool names, or None, and fills the Workflow section of a template that has
+    one. `words` is {record path: [the person's words]}: each task, replay item and TEMPLATE.json that names a record
+    of the builder's repository the bundle does not carry is marked with builder_records, quoting them.
 
     `skills` is the library's rows for the `<id>@v<n>` the specification names, in the specification's order
     (src/skills/catalogue.take: each row carries its `folder`), and `subagents` the specification's list of
@@ -291,6 +402,7 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
             [(r["ref"], r["description"].rstrip(".") + "."
               + (" Used by %s." % ", ".join("`%s`" % u for u in users[r["ref"]]) if users[r["ref"]] else "")) for r in skills])
     fill.setdefault("subagents_section", subagents_section(subagents))
+    fill.setdefault("workflow_section", workflow_section(workflow, [t["name"] for t in tools]))
     shutil.copytree(template_path, bundle_path, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     add_skills(bundle_path, rows, subagents)
     add_pages(bundle_path, [r["ref"] for r in skills])
@@ -315,6 +427,7 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
         gk = os.path.join(d, ".gitkeep")
         if items and os.path.exists(gk):
             os.remove(gk)
+    mark_builder_records(bundle_path, words)
     return cards.sha256_tree(bundle_path)
 
 

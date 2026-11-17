@@ -306,6 +306,20 @@ def problems(card, req_dir=None):
     if card.get("stage") != stage_of(card):
         out.append("stage: the card says %r and carries what a card at %r carries" % (card.get("stage"), stage_of(card)))
     out += adapter_problems(card, req_dir)
+    out += workflow_problems(card)
+    return out
+
+
+def workflow_problems(card):
+    """The workflow, where a card gives one, names each of its tools once and no other (the Workflow section of
+    the bundle renders it in this order; test run 20261117-2)."""
+    order = card.get("workflow")
+    if order is None:
+        return []
+    names = [c.get("name") for c in contracts_of(card) if isinstance(c, dict)]
+    out = ["workflow: %r is not a tool of this card; its tools are %s" % (n, names) for n in order if n not in names]
+    if len(set(map(str, order))) != len(order):
+        out.append("workflow: a tool is named twice")
     return out
 
 

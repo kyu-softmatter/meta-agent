@@ -121,7 +121,7 @@ class TheVersion(unittest.TestCase):
         self.assertEqual(cards.tree_files(v9), cards.tree_files(v10))
         changed = sorted(r for r in cards.tree_files(v9) if cards.sha256_file(os.path.join(v9, r)) != cards.sha256_file(os.path.join(v10, r)))
         self.assertEqual(changed, ["CLAUDE.md", "README.md", "TEMPLATE.json", "src/run_tool.py", "tasks/001-start.md"])
-        self.assertEqual(template_mod.LATEST, "v10")
+        self.assertIn("v10", template_mod.SOURCES)
         self.assertEqual(cards.sha256_file(os.path.join(v9, "src", "gate.py")), cards.sha256_file(os.path.join(v10, "src", "gate.py")))
         text = cards.read_text(os.path.join(v10, "CLAUDE.md"))
         self.assertEqual([ch for ch in text if ch.isdigit()], [])          # B6

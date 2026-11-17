@@ -69,6 +69,14 @@ v10 changes text and the runner of tools, after round four's bundle was
     tasks/001-start.md say what the bundle carries and prints. The runner
     points the installers' caches at runs/cache before the install and
     refuses an output whose field of unit count is below zero.
+v11 changes text and the runner of tools, after round five's bundle was
+    tested standing alone (tasks/016): CLAUDE.md says that a record of the
+    builder's repository a file names is not here and is marked by the build
+    with builder_records, has a Workflow section the build fills with the
+    request's order of tools, and says that the install never installs its
+    installer; tasks/001-start.md says that the agent's own install follows
+    a scientific not_run for want of an engine's environment. The runner
+    returns an unavailable error naming the installer when it is not on PATH.
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -84,8 +92,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v3": os.path.join(HERE, "template_v3"), "v4": os.path.join(HERE, "template_v4"),
            "v5": os.path.join(HERE, "template_v5"), "v6": os.path.join(HERE, "template_v6"),
            "v7": os.path.join(HERE, "template_v7"), "v8": os.path.join(HERE, "template_v8"),
-           "v9": os.path.join(HERE, "template_v9"), "v10": os.path.join(HERE, "template_v10")}
-LATEST = "v10"
+           "v9": os.path.join(HERE, "template_v9"), "v10": os.path.join(HERE, "template_v10"),
+           "v11": os.path.join(HERE, "template_v11")}
+LATEST = "v11"
 SOURCE = SOURCES[LATEST]
 
 

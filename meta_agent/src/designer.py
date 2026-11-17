@@ -414,7 +414,8 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
         envelope["execution_permission"] = permission
     sha = bundle_mod.compose(template_path, bundle_path, fill, tools, capabilities, envelope,
                              intake["interface_tasks"], intake["scientific_tasks"], intake["replay_items"],
-                             skills=built_skills, subagents=subagents)
+                             skills=built_skills, subagents=subagents, workflow=intake.get("workflow"),
+                             words=bundle_mod.words_by_record(intake, goal, spec))
     diff_text = bundle_mod.diff_from_template(template_path, bundle_path)
     put(os.path.join(build_dir, "diff_from_template.txt"), diff_text)
 
