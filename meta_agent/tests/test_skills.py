@@ -632,11 +632,29 @@ class Template(unittest.TestCase):
         self.assertEqual(template_mod.template_name(template_mod.SOURCES["v4"]), "agent@0637edb9a3d1")
         self.assertTrue(os.path.isdir(os.path.join(META, "templates", "agent@0637edb9a3d1")))
         self.assertNotIn(latest, ("agent@21f0dd569975", "agent@79909cd133f1", "agent@a46172e0b6f0", "agent@0637edb9a3d1"))
-        self.assertEqual(cards.sha256_tree(os.path.join(META, "templates", latest)), cards.sha256_tree(template_mod.SOURCE))
         self.assertEqual(template_mod.template_name(template_mod.SOURCES["v5"]), "agent@afb9ec0fb292")
         self.assertTrue(os.path.isdir(os.path.join(META, "templates", "agent@afb9ec0fb292")))
         self.assertNotEqual(latest, "agent@afb9ec0fb292")
-        self.assertEqual(cards.load_json(os.path.join(template_mod.SOURCE, "TEMPLATE.json"))["version"], "v6")
+        self.assertEqual(template_mod.template_name(template_mod.SOURCES["v6"]), "agent@0553834d7c17")
+        self.assertTrue(os.path.isdir(os.path.join(META, "templates", "agent@0553834d7c17")))
+        self.assertNotEqual(latest, "agent@0553834d7c17")
+        self.assertEqual(cards.load_json(os.path.join(template_mod.SOURCE, "TEMPLATE.json"))["version"], template_mod.LATEST)
+
+    def test_every_folder_under_templates_is_a_version_and_every_build_s_template_is_there(self):
+        """A version is materialized by the Designer at a build and by nothing else (test run 20261116-4: a session
+        left a folder made by hand from a tree it then changed). So templates/ holds only what a version's tree
+        gives, under that tree's name, and the latest version need not be there before a build names it."""
+        names = {template_mod.template_name(root): root for root in template_mod.SOURCES.values()}
+        there = sorted(n for n in os.listdir(os.path.join(META, "templates")) if os.path.isdir(os.path.join(META, "templates", n)))
+        for name in there:
+            self.assertIn(name, names, "templates/%s is the materialization of no version" % name)
+            self.assertEqual(cards.sha256_tree(os.path.join(META, "templates", name)), cards.sha256_tree(names[name]), name)
+        builds = os.path.join(META, "builds")
+        for agent in sorted(os.listdir(builds)):
+            for build_id in sorted(os.listdir(os.path.join(builds, agent))):
+                card = os.path.join(builds, agent, build_id, "build.json")
+                if os.path.isfile(card):
+                    self.assertIn(cards.load_json(card)["template_version"], there, "%s/%s" % (agent, build_id))
 
     def test_v6_changes_text_and_no_script(self):
         v5, v6 = template_mod.SOURCES["v5"], template_mod.SOURCES["v6"]
@@ -788,6 +806,21 @@ class Template(unittest.TestCase):
             shutil.copytree(template_mod.SOURCES["v2"], old)
             self.assertEqual(bundle_mod.add_pages(old, []), [])
             self.assertFalse(os.path.exists(os.path.join(old, ".claude", "skills")))
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_the_rows_an_intake_names_reach_the_axes_of_the_rheometer_request_too(self):
+        tmp, root = scratch_root()
+        try:
+            intake = load_intake()
+            intake["parameter_rows"] = [{"name": "shear_rate", "value": None, "unit": "1/s"}]
+            intake["safety_rows"] = [{"name": "highest_angular_velocity", "unit": "rad/s"}]
+            bundle, _ = design(root, intake)
+            req = os.path.join(root, "requests", "req-rheo-fixture-001")
+            self.assertEqual(cards.load_json(os.path.join(req, "spec_a4.json"))["content"]["rows"], intake["parameter_rows"])
+            self.assertEqual(cards.load_json(os.path.join(req, "spec_a5.json"))["content"]["rows"], intake["safety_rows"])
+            self.assertEqual(cards.load_json(os.path.join(bundle, "envelope", "safety.json")), {"highest_angular_velocity": None})
+            self.assertEqual(cards.load_json(os.path.join(bundle, "envelope", "parameters.json"))["rows"], intake["parameter_rows"])
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
 

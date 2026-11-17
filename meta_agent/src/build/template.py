@@ -38,6 +38,17 @@ v6  changes text and no script, after two fresh sessions worked in copies
     and tells, in CAPABILITIES.json, a claim about a tool the bundle
     does not carry from one about a tool it has (bundle.py, profile.py).
     Bundle check B16 judges a bundle of this version or later.
+v7  changes one script and no text, after a session of a test run built
+    the first agent on an engine (tasks/016): src/validate_tasks.py also
+    judges a scientific task against the values a source states, carried
+    by the task as measure.stated, and says not_run where the call was
+    not made (the gate refused it, a permission was missing, what the
+    tool needs was not there). One tolerance judges one stated field;
+    several are judged together only by an exact tolerance.
+
+A version is materialized by the Designer when it builds, and by nothing
+else: a folder under templates/ made by hand from a tree that then
+changes is a version no build names and no session may remove.
 """
 import os
 import shutil
@@ -47,8 +58,9 @@ from .. import cards
 HERE = os.path.dirname(os.path.abspath(__file__))
 SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "template_v2"),
            "v3": os.path.join(HERE, "template_v3"), "v4": os.path.join(HERE, "template_v4"),
-           "v5": os.path.join(HERE, "template_v5"), "v6": os.path.join(HERE, "template_v6")}
-LATEST = "v6"
+           "v5": os.path.join(HERE, "template_v5"), "v6": os.path.join(HERE, "template_v6"),
+           "v7": os.path.join(HERE, "template_v7")}
+LATEST = "v7"
 SOURCE = SOURCES[LATEST]
 
 
