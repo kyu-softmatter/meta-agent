@@ -1,0 +1,1 @@
+A scientific task with no tolerance from the person is judged pass: without a tolerance a scientific verdict is undecided, or not_run when the task did not run (plan.md 8, check 12; tasks/016, run 20261117-1).

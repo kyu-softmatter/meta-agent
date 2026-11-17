@@ -429,8 +429,8 @@
       }
     },
     "tool_contract": {
-      "type": "object",
-      "description": "with one tool: its contract (tool_contract.schema.json)"
+      "$ref": "tool_contract.schema.json",
+      "description": "with one tool: its contract, as the gate judges it in a bundle"
     },
     "tools": {
       "type": "array",
@@ -439,7 +439,7 @@
         "type": "object",
         "properties": {
           "contract": {
-            "type": "object"
+            "$ref": "tool_contract.schema.json"
           },
           "adapter_source": {
             "type": "string",
@@ -448,7 +448,7 @@
           "error_contracts": {
             "type": "array",
             "items": {
-              "type": "object"
+              "$ref": "error_contract.schema.json"
             }
           }
         },
@@ -463,7 +463,7 @@
     "error_contracts": {
       "type": "array",
       "items": {
-        "type": "object"
+        "$ref": "error_contract.schema.json"
       }
     },
     "skills": {

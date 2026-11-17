@@ -1,0 +1,1 @@
+An intake at the stage specified whose tool contract has a name and a description only: an intake carries each contract and error contract as the gate judges them in a bundle (tool_contract and error_contract schemas; tasks/016, run 20261117-1).

@@ -157,7 +157,13 @@
                 "minLength": 1
               },
               "verdict": {
-                "$ref": "common.schema.json#/$defs/verdict"
+                "enum": [
+                  "pass",
+                  "fail",
+                  "not_run",
+                  "undecided"
+                ],
+                "description": "Without a tolerance chosen by the person the verdict is undecided when the task ran, not_run when it did not; never pass or fail (check 12)."
               },
               "reason": {
                 "type": "string"
@@ -251,7 +257,27 @@
               "verdict",
               "reference",
               "tolerance"
-            ]
+            ],
+            "if": {
+              "properties": {
+                "tolerance": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "tolerance"
+              ]
+            },
+            "then": {
+              "properties": {
+                "verdict": {
+                  "enum": [
+                    "undecided",
+                    "not_run"
+                  ]
+                }
+              }
+            }
           }
         }
       },

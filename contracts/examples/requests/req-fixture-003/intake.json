@@ -56,10 +56,62 @@
  ],
  "questions_for_the_person": [],
  "tool_contract": {
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
   "name": "echo",
-  "description": "returns the text it is given and its length"
+  "description": "return the given text and its character count; the mock adapter in this bundle stands in for the command",
+  "inputs": {
+   "type": "object",
+   "properties": {
+    "message": {
+     "type": "string",
+     "minLength": 1
+    }
+   },
+   "required": [
+    "message"
+   ]
+  },
+  "outputs": {
+   "type": "object",
+   "properties": {
+    "message": {
+     "type": "string"
+    },
+    "length": {
+     "type": "integer",
+     "minimum": 0
+    }
+   },
+   "required": [
+    "message",
+    "length"
+   ]
+  },
+  "errors": [
+   "invalid_input"
+  ],
+  "side_effects": "none",
+  "safety_gate": {
+   "required": false,
+   "place": "no side effects; src/gate.py is consulted by the runner and finds no gate required"
+  },
+  "idempotent": true,
+  "timeout_s": null
  },
- "error_contracts": [],
+ "error_contracts": [
+  {
+   "artifact": "error_contract",
+   "schema_version": "0.1",
+   "code": "ECHO-INPUT-001",
+   "category": "invalid_input",
+   "message": "message is missing, not a string, or empty",
+   "retryable": false,
+   "remediation": {
+    "action": "send a JSON object with a non-empty string field message"
+   }
+  }
+ ],
  "interface_tasks": [
   {
    "id": "if-1",
