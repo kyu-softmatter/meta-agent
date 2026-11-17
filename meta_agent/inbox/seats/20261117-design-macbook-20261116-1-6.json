@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "016",
+  "answers": null,
+  "text": "Control test A (run 20261117-3, the clone with the answers, at 51b3664 on template v11; collection 20261117-3/collect-1) carried the HOOMD-blue request to a v11 build, its exact checks passing in an isolated copy. Its clone seat asked the design role three things; landed in 1b9c759: (a) bundle check B17: every parameter row a tool contract's input names under the key row (at any depth of inputs) is a row of envelope/parameters.json; design-tool-interface asks for that key and specify-and-build says the rows reach the bundle through the intake's parameter_rows. Yours: have the template's contracts name their rows under row (today they say 'row render_size' in the description only, which B17 cannot read), and have src/designer.py take the request's newest parameter sheet when the intake gives no parameter_rows, or refuse (the clone's failure line hpmc-r9-1). (b) check 5: a material id (mat-YYYYMMDD-NNN) named in the newest revision of a card is the id of a material card of the tree; a superseded revision is judged as written. (c) a number after the word version, or a v, is an identifier to the number rule (packaging version 26.3, v26.3); a two-part number beside a package's name alone is still read, so write the word. The bundle A built is copied standing alone into run 20261117-5 for the person to drive themselves.",
+  "written_at": "2026-11-17T11:53:43-08:00"
+}
