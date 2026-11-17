@@ -822,5 +822,48 @@ class ValidatedInItsEnvironment(unittest.TestCase):
         self.assertTrue(gate_mod.outside(tempfile.gettempdir()))
 
 
+
+class UndecidedIsNotNotRun(unittest.TestCase):
+    """Round five of the clone (test run 20261117-1): the report wrote not_run for scientific tasks that ran and measured
+    and had no person's tolerance, where the bundle's own runner said undecided. On two kinds of task: one judged by a
+    reference function the runner computes, one against a value a source states."""
+
+    def report(self):
+        tasks = [{"id": "sci-1", "name": "a count against the runner's own count", "file": "sci-1.json", "verdict": "undecided",
+                  "measured": 11, "reference": 11, "agreement": 0, "tolerance": None,
+                  "reference_spec": {"kind": "analytic", "ref": "len(message)"}},
+                 {"id": "sci-2", "name": "a volume fraction against the page", "file": "sci-2.json", "verdict": "undecided",
+                  "measured": {"phi": 0.5}, "reference": {"phi": 0.5}, "agreement": 0, "tolerance": None,
+                  "reference_spec": {"kind": "source", "ref": "the tutorial's printed value"}},
+                 {"id": "sci-3", "name": "a call that was not made", "file": "sci-3.json", "verdict": "not_run",
+                  "reason": "the call returned X (unavailable): no environment", "tolerance": None,
+                  "reference_spec": {"kind": "analytic", "ref": "len(message)"}}]
+        return {"validate": {"interface": {"verdict": "pass", "tasks": []},
+                             "scientific": {"verdict": "undecided", "tasks": tasks}, "overall": "undecided"},
+                "replay": {"items": [], "ok": True}}
+
+    def test_with_the_report_schema_as_it_stands(self):
+        from meta_agent.src.validate import gate as gate_mod
+        vr, _, _ = gate_mod.make_validation_report(self.report(), "build-x-0001", "req-x-001", "b", SEAT, NOW)
+        allowed = gate_mod.task_verdicts()
+        got = {t["id"]: t for t in vr["scientific"]["tasks"]}
+        for sid, measured in (("sci-1", "measured 11"), ("sci-2", "measured {'phi': 0.5}")):
+            self.assertEqual(got[sid]["verdict"], "undecided" if "undecided" in allowed else "not_run")
+            self.assertIn("no tolerance chosen by a person yet: undecided; it ran and " + measured, got[sid]["reason"])
+        self.assertEqual(got["sci-3"]["verdict"], "not_run")
+        self.assertNotIn("it ran", got["sci-3"]["reason"])
+
+    def test_where_the_schema_has_the_word_the_task_is_undecided(self):
+        from meta_agent.src.validate import gate as gate_mod
+        real = gate_mod.task_verdicts
+        gate_mod.task_verdicts = lambda: ["pass", "fail", "not_run", "undecided"]
+        try:
+            vr, _, _ = gate_mod.make_validation_report(self.report(), "build-x-0001", "req-x-001", "b", SEAT, NOW)
+        finally:
+            gate_mod.task_verdicts = real
+        self.assertEqual([t["verdict"] for t in vr["scientific"]["tasks"]], ["undecided", "undecided", "not_run"])
+        self.assertNotIn("has no word undecided", vr["scientific"]["tasks"][0]["reason"])
+
+
 if __name__ == "__main__":
     unittest.main()

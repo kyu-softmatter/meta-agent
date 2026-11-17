@@ -121,6 +121,24 @@ def in_its_environment(bundle_path):
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def task_verdicts():
+    """The verdicts the validation report's schema allows a scientific task."""
+    schemas = os.path.join(REPO, "contracts", "schemas")
+    v = cards.load_json(os.path.join(schemas, "validation_report.schema.json"))["properties"]["scientific"]["properties"]["tasks"]["items"]["properties"]["verdict"]
+    if "$ref" in v:
+        name, _, pointer = v["$ref"].partition("#")
+        v = cards.load_json(os.path.join(schemas, name))
+        for part in pointer.strip("/").split("/"):
+            v = v[part]
+    return list(v.get("enum") or [])
+
+
+def measured_words(t):
+    if "measured" not in t:
+        return ""
+    return "; it ran and measured %s against the reference %s, agreement %s" % (t.get("measured"), t.get("reference"), t.get("agreement"))
+
+
 def make_validation_report(report, build_id, rid, bundle_rel, seat, now=None, environment="mock", not_made=None):
     vr = cards.skeleton("validation_report", "vr-" + build_id.replace("build-", ""), seat, cards.now_iso(now), rid=rid)
     v = report["validate"]
@@ -132,9 +150,13 @@ def make_validation_report(report, build_id, rid, bundle_rel, seat, now=None, en
                       "evidence": "%s/validation/interface/%s" % (bundle_rel, t["file"]),
                       **({"reason": t["detail"]} if t["verdict"] != "pass" else {})})
     sci = []
+    allowed = task_verdicts()
     for t in v["scientific"]["tasks"]:
         ref = t.get("reference_spec") or {"kind": "analytic", "ref": "the bundle's reference function"}
-        item = {"id": t["id"], "name": t["name"], "verdict": t["verdict"] if t["verdict"] in ("pass", "fail") else "not_run",
+        # the bundle's verdict, where the report's schema has the word for it: a task that ran and measured and has no
+        # person's tolerance is undecided, never not_run (test run 20261117-1)
+        said = t["verdict"] if t["verdict"] in ("pass", "fail") or t["verdict"] in allowed else "not_run"
+        item = {"id": t["id"], "name": t["name"], "verdict": said,
                 "reference": ref, "tolerance": t.get("tolerance"),
                 "evidence": "%s/validation/scientific/%s" % (bundle_rel, t["file"])}
         if "agreement" in t:
@@ -151,7 +173,9 @@ def make_validation_report(report, build_id, rid, bundle_rel, seat, now=None, en
                                       "grade": "E4", "value_kind": "computed",
                                       "note": "absolute difference between the measured output and the reference"})
         if t["verdict"] == "undecided":
-            item["reason"] = "no tolerance chosen by a person yet: undecided"
+            item["reason"] = "no tolerance chosen by a person yet: undecided" + measured_words(t)
+            if said != "undecided":
+                item["reason"] += "; the report's schema has no word undecided for a task, so it is written not_run"
         elif t["verdict"] == "not_run":
             item["reason"] = t.get("reason", "not run")
             if not_made:

@@ -40,6 +40,12 @@ a reading was read included); and a number check B6 would refuse in the Tools se
 CLAUDE.md, which is rendered from the contracts (B6 lets a number through only when the bundle's knowledge
 snapshot carries it, and the snapshot is made at the build, so the stage lets none through). The number
 rules, the units and the stripping are imported from contracts/validate.py and never copied.
+
+And each contract a card carries, read with the gate's tool_contract and error_contract schemas, since the
+bundle carries them as tools/<name>/tool.json and tools/<name>/errors/ and check 1 judges them there; and, where
+the card is written into a request folder of a meta_agent/ tree, each adapter_source, which must be a file under
+that tree, as the Designer reads it (test run 20261117-1, collect-1: a card named its adapters from the
+repository root and the Designer did not find them).
 """
 import importlib.util
 import json
@@ -163,6 +169,61 @@ def report_task_problems(card):
     return out
 
 
+def contract_problems(card):
+    """Each contract the card carries, read with the schemas the gate reads it with in a bundle."""
+    out = []
+    tc = validator(cards.load_json(os.path.join(SCHEMAS, "tool_contract.schema.json")))
+    ec = validator(cards.load_json(os.path.join(SCHEMAS, "error_contract.schema.json")))
+    if tc is None or ec is None:
+        return out
+    if card.get("tools"):
+        places = [("tools/%d/contract" % i, t.get("contract"), "tools/%d/error_contracts" % i, t.get("error_contracts"))
+                  for i, t in enumerate(card["tools"]) if isinstance(t, dict)]
+    elif isinstance(card.get("tool_contract"), dict):
+        places = [("tool_contract", card["tool_contract"], "error_contracts", card.get("error_contracts"))]
+    else:
+        places = []
+    for where, contract, ewhere, errors in places:
+        if isinstance(contract, dict):
+            out += ["%s (the gate's tool_contract schema refuses it)" % line for line in errors_of(tc, contract, where)]
+        for j, e in enumerate(errors or []):
+            out += ["%s (the gate's error_contract schema refuses it)" % line for line in errors_of(ec, e, "%s/%d" % (ewhere, j))]
+    return out
+
+
+def tree_of(req_dir):
+    """The meta_agent/ tree a request folder is in, or None when the folder is not <tree>/requests/<rid>."""
+    if not req_dir:
+        return None
+    req_dir = os.path.abspath(req_dir)
+    parent = os.path.dirname(req_dir)
+    return os.path.dirname(parent) if os.path.basename(parent) == "requests" else None
+
+
+def adapter_problems(card, req_dir=None):
+    """Each adapter_source must be a file under the tree the request is in, where the Designer reads it."""
+    root = tree_of(req_dir)
+    if root is None or card.get("stage") != "specified":
+        return []
+    if card.get("tools"):
+        named = [("tools/%d/adapter_source" % i, t.get("adapter_source")) for i, t in enumerate(card["tools"]) if isinstance(t, dict)]
+    else:
+        named = [("tool/adapter_source", (card.get("tool") or {}).get("adapter_source"))]
+    out = []
+    for where, src in named:
+        if not isinstance(src, str) or not src:
+            out.append("%s: a specified card names the source of each adapter, under %s" % (where, os.path.basename(root)))
+            continue
+        if os.path.isfile(os.path.join(root, src)):
+            continue
+        line = "%s: %s is not a file under %s/, where the Designer reads it" % (where, src, os.path.basename(root))
+        head = os.path.basename(root) + "/"
+        if src.startswith(head) and os.path.isfile(os.path.join(root, src[len(head):])):
+            line += "; it is named from the repository root, and under %s it is %s" % (head, src[len(head):])
+        out.append(line)
+    return out
+
+
 def numbers_left(text, available, extra=()):
     """The numbers of a page that the gate's number rule would refuse: stripped as the gate strips, then each
     numeral not in `available`."""
@@ -231,6 +292,7 @@ def problems(card, req_dir=None):
     reads beside the card."""
     out = schema_problems(card)
     out += report_task_problems(card)
+    out += contract_problems(card)
     out += page_problems(card, req_dir)
     if card.get("numbers"):
         out.append("numbers: the model makes no numbers; a value read from a source is a row of values_read")
@@ -243,6 +305,7 @@ def problems(card, req_dir=None):
         out.append("questions_for_the_person: the questions are numbered %s, not 1, 2, 3, ... in order" % asked)
     if card.get("stage") != stage_of(card):
         out.append("stage: the card says %r and carries what a card at %r carries" % (card.get("stage"), stage_of(card)))
+    out += adapter_problems(card, req_dir)
     return out
 
 

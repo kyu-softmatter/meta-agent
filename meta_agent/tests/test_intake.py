@@ -31,6 +31,16 @@ def example(rid):
     return cards.load_json(os.path.join(EXAMPLES, rid, "intake.json"))
 
 
+def specified_example():
+    """req-fixture-003 with a contract the gate's tool_contract schema accepts: the example's own contract names a tool
+    and what it does and nothing more, so the echo request's full contract and its error contract stand in for it."""
+    ex = example("req-fixture-003")
+    echo = cards.load_json(os.path.join(META, "requests", "req-echo-001", "intake.json"))
+    ex["tool_contract"] = copy.deepcopy(echo["tool_contract"])
+    ex["error_contracts"] = copy.deepcopy(echo["error_contracts"])
+    return ex
+
+
 def draft_of(card):
     return {k: copy.deepcopy(v) for k, v in card.items() if k not in card_mod.STAGE_WRITES}
 
@@ -48,8 +58,11 @@ class Write(unittest.TestCase):
         return card_mod.write(self.req, "req-fixture-002", draft_of(example("req-fixture-002")), SEAT, NOW)
 
     def test_the_two_examples_are_what_their_drafts_give(self):
+        # the example's own contract is not one the gate's tool_contract schema accepts, and the stage says so
+        self.assertTrue(card_mod.problems(example("req-fixture-003")))
+        self.assertTrue(all("tool_contract" in line for line in card_mod.problems(example("req-fixture-003"))))
         for rid, stage in (("req-fixture-002", "reading"), ("req-fixture-003", "specified")):
-            ex = example(rid)
+            ex = example(rid) if stage == "reading" else specified_example()
             self.assertEqual(card_mod.problems(ex), [], rid)
             card = card_mod.make(rid, draft_of(ex), ex["author"], ex["created_at"])
             self.assertEqual(card["stage"], stage)
@@ -94,12 +107,20 @@ class Write(unittest.TestCase):
 
     def test_the_card_is_specified_when_it_carries_the_contract_and_the_tasks(self):
         self.first()
-        spec = example("req-fixture-003")
+        spec = specified_example()
         with self.assertRaises(card_mod.Refused) as e:      # a contract with no task: the schema's rule
             card_mod.write(self.req, "req-fixture-002", {"tool_contract": spec["tool_contract"]}, SEAT, NOW, note="the contract")
         self.assertIn("interface_tasks", str(e.exception))
-        path, card = card_mod.write(self.req, "req-fixture-002", {k: spec[k] for k in ("tool_contract", "interface_tasks",
-                                    "scientific_tasks", "replay_items")}, SEAT, NOW, note="the contract and the tasks are written")
+        written = {k: spec[k] for k in ("tool_contract", "error_contracts", "interface_tasks", "scientific_tasks", "replay_items")}
+        with self.assertRaises(card_mod.Refused) as e:      # a specified card in a tree names its adapter, and the tree has it
+            card_mod.write(self.req, "req-fixture-002", written, SEAT, NOW, note="the contract and the tasks are written")
+        self.assertIn("tool/adapter_source: a specified card names the source of each adapter", str(e.exception))
+        written["tool"] = dict(example("req-fixture-002")["tool"], adapter_source="tests/fixtures/echo/adapter.py")
+        with self.assertRaises(card_mod.Refused) as e:
+            card_mod.write(self.req, "req-fixture-002", written, SEAT, NOW, note="the contract and the tasks are written")
+        self.assertIn("tests/fixtures/echo/adapter.py is not a file under meta_agent/", str(e.exception))
+        shutil.copytree(os.path.join(META, "tests", "fixtures", "echo"), os.path.join(self.root, "tests", "fixtures", "echo"))
+        path, card = card_mod.write(self.req, "req-fixture-002", written, SEAT, NOW, note="the contract and the tasks are written")
         self.assertEqual((card["stage"], card["revision"]), ("specified", 2))
 
     def test_what_is_refused_writes_nothing(self):
@@ -119,6 +140,7 @@ class Write(unittest.TestCase):
     def test_a_record_of_before_the_card_is_followed_by_a_card(self):
         req = os.path.join(self.root, "requests", "req-echo-001")
         os.makedirs(req)
+        shutil.copytree(os.path.join(META, "tests", "fixtures", "echo"), os.path.join(self.root, "tests", "fixtures", "echo"))
         shutil.copy(os.path.join(META, "requests", "req-echo-001", "intake.json"), os.path.join(req, "intake.json"))
         self.assertFalse(card_mod.is_card(cards.load_json(os.path.join(req, "intake.json"))))
         record = cards.load_json(os.path.join(req, "intake.json"))
@@ -217,7 +239,7 @@ class TheGatesOwnRules(unittest.TestCase):
         return card
 
     def echo(self, **contract):
-        d = draft_of(example("req-fixture-003"))
+        d = draft_of(specified_example())
         d["tool_contract"] = dict(d["tool_contract"], **contract)
         return d
 
@@ -237,7 +259,7 @@ class TheGatesOwnRules(unittest.TestCase):
 
     def test_a_number_in_the_tool_s_reading_is_refused_unless_a_card_carries_it(self):
         for rid in ("req-fixture-002", "req-fixture-003"):
-            d = draft_of(example(rid))
+            d = draft_of(specified_example() if rid == "req-fixture-003" else example(rid))
             claim = dict(d["tool_reading"][0], claim="the tool reads at most 7.2 items at a time")
             self.refused(rid, dict(d, tool_reading=[claim]), "tool_profile.md would carry the number 7.2", "check 3")
             # the same number, read from a source and carried as a value read, is a number a card of the folder holds
@@ -270,7 +292,7 @@ class TheGatesOwnRules(unittest.TestCase):
         d = self.echo(description="returns the text; frame -1 is the last")
         req = os.path.join(self.tmp, "req-fixture-003")
         os.makedirs(req)
-        bad = dict(example("req-fixture-003"), tool_contract=d["tool_contract"])
+        bad = dict(specified_example(), tool_contract=d["tool_contract"])
         cards.write_json(os.path.join(req, "intake.json"), bad)
         p = subprocess.run([sys.executable, "-m", "meta_agent.src.intake", "check", os.path.join(req, "intake.json")],
                            capture_output=True, text=True, cwd=REPO, env=ENV)
@@ -280,6 +302,68 @@ class TheGatesOwnRules(unittest.TestCase):
         with self.assertRaises(designer.Stopped) as e:      # the Designer reads the card with the stage's rules
             designer.may_start(bad, os.path.join(req, "intake.json"), req, self.tmp)
         self.assertIn("B6", str(e.exception))
+
+
+
+class TheContractsAndTheAdapters(unittest.TestCase):
+    """Round five of the clone (test run 20261117-1, collect-1): the stage wrote a contract the gate's tool_contract
+    schema refuses (calls_external true), and adapter_source named from the repository root, which the Designer does
+    not find under meta_agent/. On two unrelated kinds: an engine named by `tools` and an echo tool named by
+    `tool_contract`, each written into a request folder of a scratch meta_agent/ tree that has the echo adapter."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="ma-intake-contracts-")
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.root = os.path.join(self.tmp, "meta_agent")
+        shutil.copytree(os.path.join(META, "tests", "fixtures", "echo"), os.path.join(self.root, "tests", "fixtures", "echo"))
+
+    def drafts(self, contract_change=None, source="tests/fixtures/echo/adapter.py"):
+        """{rid: draft}: the echo example as one tool, and the engine example specified with the same contract as `tools`."""
+        ex = specified_example()
+        contract = dict(ex["tool_contract"], **(contract_change or {}))
+        echo = dict(draft_of(ex), tool_contract=contract, tool=dict(ex["tool"], adapter_source=source))
+        engine = draft_of(example("req-fixture-002"))
+        engine.update({k: copy.deepcopy(ex[k]) for k in ("interface_tasks", "scientific_tasks", "replay_items")})
+        engine["tools"] = [{"contract": contract, "adapter_source": source, "error_contracts": copy.deepcopy(ex["error_contracts"])}]
+        return {"req-fixture-003": echo, "req-fixture-002": engine}
+
+    def write(self, rid, draft):
+        return card_mod.write(os.path.join(self.root, "requests", rid), rid, draft, SEAT, NOW)
+
+    def test_a_contract_the_gate_s_schema_refuses_is_refused(self):
+        for rid, draft in self.drafts({"calls_external": True}).items():
+            with self.assertRaises(card_mod.Refused) as e:
+                self.write(rid, draft)
+            self.assertIn("calls_external", str(e.exception), rid)
+            self.assertIn("the gate's tool_contract schema refuses it", str(e.exception))
+            self.assertIn("tools/0/contract" if rid == "req-fixture-002" else "tool_contract", str(e.exception))
+        for rid, draft in self.drafts({"calls_external": {"program": "echo", "license": "not stated", "bundled": False}}).items():
+            self.assertEqual(self.write(rid, draft)[1]["stage"], "specified", rid)
+
+    def test_an_error_contract_the_gate_s_schema_refuses_is_refused(self):
+        draft = self.drafts()["req-fixture-002"]
+        draft["tools"][0]["error_contracts"][0].pop("remediation")
+        with self.assertRaises(card_mod.Refused) as e:
+            self.write("req-fixture-002", draft)
+        self.assertIn("tools/0/error_contracts/0", str(e.exception))
+
+    def test_an_adapter_named_from_the_repository_root_is_refused_and_the_place_under_the_tree_is_said(self):
+        for rid, draft in self.drafts(source="meta_agent/tests/fixtures/echo/adapter.py").items():
+            with self.assertRaises(card_mod.Refused) as e:
+                self.write(rid, draft)
+            self.assertIn("is not a file under meta_agent/, where the Designer reads it", str(e.exception), rid)
+            self.assertIn("under meta_agent/ it is tests/fixtures/echo/adapter.py", str(e.exception))
+            self.assertFalse(os.path.exists(os.path.join(self.root, "requests", rid)))
+        for rid, draft in self.drafts(source="tests/fixtures/echo/missing.py").items():
+            with self.assertRaises(card_mod.Refused) as e:
+                self.write(rid, draft)
+            self.assertNotIn("named from the repository root", str(e.exception))
+
+    def test_the_designer_finds_the_adapters_the_stage_let_through(self):
+        from meta_agent.src import designer
+        for rid, draft in self.drafts().items():
+            path, card = self.write(rid, draft)
+            self.assertEqual([t["name"] for t in designer.tools_of(card, self.root)], ["echo"], rid)
 
 
 if __name__ == "__main__":
