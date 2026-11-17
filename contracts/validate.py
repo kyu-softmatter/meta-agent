@@ -1112,6 +1112,15 @@ def checkB5(bundle, label, report):
             report.fail("B5", label, "%s/ has no task with an expected verdict" % sub)
 
 
+FIELD_UNIT_ONE_RE = re.compile(r"\((?:number|integer)\s*,\s*1\)")   # a field's type and unit, the unit being `1`
+
+
+def unit_res(units):
+    """A registered unit that carries a digit (m^3, kg/m^3) is a unit where it stands whole, not a number."""
+    names = sorted((u for u in units if re.search(r"\d", u) and re.search(r"[A-Za-z]", u)), key=len, reverse=True)
+    return re.compile(r"(?<![\w./^])(?:%s)(?![\w/^])" % "|".join(re.escape(u) for u in names)) if names else None
+
+
 def checkB6(bundle, label, report):
     claude = os.path.join(bundle, "CLAUDE.md")
     snap = bundle_json(bundle, "envelope/snapshot.json", report, "B6")
@@ -1120,7 +1129,8 @@ def checkB6(bundle, label, report):
     available = set()
     json_numbers(snap, available)
     text = open(claude, encoding="utf-8").read()
-    for s in STRIP_RES:
+    units = unit_res(load_json(os.path.join(HERE, "units.json"))["units"])
+    for s in STRIP_RES + [FIELD_UNIT_ONE_RE] + ([units] if units else []):
         text = s.sub(" ", text)
     for m in NUM_RE.finditer(text):
         try:

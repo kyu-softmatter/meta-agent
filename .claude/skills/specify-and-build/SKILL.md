@@ -48,6 +48,14 @@ python -m meta_agent.src.designer --rebuild meta_agent/requests/<rid> --seat <se
 
 Do not run the first-build command on a request that already has its cards: it would write them again.
 
+When the request itself has changed (a tool contract corrected, a skill or a subagent added), the change is the next revision of its intake, and the specification is written again from it before the build:
+
+```
+python -m meta_agent.src.designer --respecify meta_agent/requests/<rid> --seat <seat>
+```
+
+It writes the next revision of each card that differs and leaves the others. Then build again as above. A revision is a new file beside the one before it; no card is edited.
+
 ## Stop at the bundle
 
 You write nowhere outside `meta_agent/builds/`. The person moves the bundle to its destination and records where it landed. For an instrument, the bundle is a skeleton with the place of the gate; the code that operates the instrument is written at the destination with the person.
