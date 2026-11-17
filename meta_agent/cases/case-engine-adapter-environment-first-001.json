@@ -1,0 +1,57 @@
+{
+  "card": "case",
+  "schema_version": "0.1",
+  "id": "case-engine-adapter-environment-first-001",
+  "revision": 1,
+  "author": "meta-macbook-20261116-1",
+  "created_at": "2026-11-17T18:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "kind": "failure",
+  "signature": {
+    "science_task": "",
+    "executes": "engine",
+    "engine": "hoomd_blue",
+    "methods": [],
+    "observables": [],
+    "parameter_names": [],
+    "cause_class": "tool_unavailable",
+    "condition_tags": [
+      "environment:made_after_build"
+    ]
+  },
+  "what_happened": "An engine agent's bundle makes its own environment after the build, with an install tool. In the builder's tree that environment is absent. The first adapters of the request checked an input of their own first (a run folder that the tree, with no engine, never makes) and returned invalid_input, so the Designer's run of the tree's gates gave the scientific tasks fail where not_run was the truth. The adapters written again report the missing environment before any input problem of their own; the interface and replay items that expect invalid_input are refused by the runner's input check, which runs with or without the environment.",
+  "cause_class": "tool_unavailable",
+  "cause_status": "observed",
+  "evidence": [
+    {
+      "kind": "run",
+      "ref": "test run 20261117-1 (round five of the clone), collection collect-1 in the log folder, the clone's failure line hpmc-r8-8; the run is removed and the collection is not committed"
+    },
+    {
+      "kind": "card",
+      "ref": "meta_agent/inbox/seats/20261117-design-macbook-20261116-1-2.json, item (d)"
+    }
+  ],
+  "cue": "an adapter of a tool whose environment is made after the build checks its own inputs, or reads files the engine would write, before it checks that the environment is there",
+  "lesson": "In such an adapter, check the environment first and return unavailable naming it, before any input problem the adapter itself finds; leave the input problems the contract states to the runner's input check, so that the tree's gates say not_run and an interface item expecting invalid_input passes in the tree and at the destination alike.",
+  "confidence": {
+    "level": "medium",
+    "why": "one request on one engine, seen in one round and its fix seen in the same round; cue and lesson are the seat's wording of the round's failure line"
+  },
+  "falsification": "An adapter that checks its own inputs first gives not_run, and never fail, in a tree with no environment; or the runner's input check cannot refuse the inputs the interface items expect to be refused.",
+  "count": {
+    "supports": 1,
+    "contradicts": 0,
+    "last_seen": "2026-11-17"
+  },
+  "grade": "E3",
+  "superseded_by": null,
+  "note": "Written by meta-macbook-20261116-1 from design's note 20261117-design-macbook-20261116-1-2, which names the round, and the clone's failure line read in the collection. No rule grades a case of this system; it is held to the cap a prior repository's case has (E3), since the record it rests on, a collection outside the repository, is not better than such a case's."
+}
