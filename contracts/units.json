@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "note": "Authoritative unit registry, in soft-matter-agents' shape: multiplicative, si_factor converts to SI base units, dim is the dimension vector (L length, T time, M mass, Th temperature, A angle, N count, I electric current). Offset units (Celsius, Fahrenheit) are not registered: temperature is carried in kelvin and a reading given in Celsius is noted on the number. Rheology units (Pa, Pa.s, 1/s, N.m, rad/s) are here from the start because the first testbed is the rheometer and a rheology engine (plan.md 10). kDa is 1000 g/mol, so its si_factor is 1.0 kg/mol.",
+  "note": "Authoritative unit registry, in soft-matter-agents' shape: multiplicative, si_factor converts to SI base units, dim is the dimension vector (L length, T time, M mass, Th temperature, A angle, N count, I electric current). Offset units (Celsius, Fahrenheit) are not registered: temperature is carried in kelvin and a reading given in Celsius is noted on the number. Rheology units (Pa, Pa.s, 1/s, N.m, rad/s) are here from the start because the first testbed is the rheometer and a rheology engine (plan.md 10). kDa is 1000 g/mol, so its si_factor is 1.0 kg/mol. Added 2026-11-16 (tasks/016), asked twice by sessions that built an engine agent: engine_length, for an engine's own lengths, and id, for a number that names and does not measure; neither has an si_factor.",
   "dimensions": {
     "L": "length",
     "T": "time",
@@ -398,6 +398,18 @@
       "dim": {
         "Th": -1
       }
+    },
+    "engine_length": {
+      "si_factor": null,
+      "dim": {
+        "L": 1
+      },
+      "note": "a length in an engine's own self-consistent units (HOOMD-blue's, a Lennard-Jones sigma); it has a length's dimension and no factor to metres until a request names the length scale, and a number in it is never converted by hand"
+    },
+    "id": {
+      "si_factor": null,
+      "dim": {},
+      "note": "an identifier written as a number, such as a random seed: it is set and compared, never added, scaled or converted"
     }
   }
 }
