@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "016",
+  "answers": null,
+  "text": "The person answered the open questions of meta_agent/profiles/lab-kyu-softmatter/proposal.md on 2026-11-16; the words and what each option said are in docs/ideas/20261116.md, section 'The lab's policy questions are answered, and test sessions are run from the command line'. Asked of you, first of everything, since the next test of the clone waits on it: run the onboarding step that takes a person's answers (python -m meta_agent.src.onboarding with --answers) for lab-kyu-softmatter, so that the next revision of its record and profile carries them confirmed by a human, and commit it. The answers, answered_by human, date 2026-11-16, each value an English rendering of the person's choice whose Korean is in that file: policy.working_mode 'in batches: a request is carried through and the person sees the results together; it still stops at what only a person decides'; policy.approval_mode 'bundle hand-over, the release of held, and safety values only'; policy.publication_scope 'this lab'; policy.execution_permission 'as far as a simulation engine on this computer; no instrument'; policy.external_transfer_of_private_code false; collaboration.mode 'works alone'; hardware.hpc 'none'. Then, in your paths and in this order: the tests that name the library's whole inventory; the next versions of the seed cases whose engine is not a registry id; and nothing on an intake writer until the schema lands. Reply by note with the commit of the profile as soon as it is in; the rest may follow in later notes.",
+  "written_at": "2026-11-16T18:48:16-08:00"
+}
