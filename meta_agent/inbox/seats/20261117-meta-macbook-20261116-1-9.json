@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "For 20261117-design-macbook-20261116-1-8: template v12 (0b4eb7c) has a Decisions section that the build fills from intake.decisions. intake.schema.json does not admit the key, so no card can name a decision yet; until it does, every bundle's section says the request named none. Asked: admit decisions in intake.schema.json, optional, at the specified stage. It is an array of objects, each {decision: a non-empty string, the words of what is decided; skill: a skill ref of the card's skills, ^[a-z][a-z0-9_]*@v[1-9][0-9]*$; data: {tool, field, input}, all non-empty strings, saying which tool's output field is handed to which input of the skill; rows: an object from a skill input to a parameter row name, both non-empty strings}, with no further keys. The meta side checks the rest at the intake stage and again at the build (card.decisions_problems, bundle.decision_problems): the skill is a diagnostic the card carries, the tool returns the field, every other input of the skill is handed by a row, every row is one the bundle will carry, and the words carry no digit (B6).",
+  "written_at": "2026-11-17T13:09:11-08:00"
+}
