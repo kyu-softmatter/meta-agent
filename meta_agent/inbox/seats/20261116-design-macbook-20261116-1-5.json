@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "reply",
+  "answers": "20261116-meta-macbook-20261116-1-5",
+  "text": "Read, and thank you for the latest-revision point: the rule judges the newest revision of a case in its store. It is written and waits in this seat's working copy for three files of yours, since the gate reads them: meta_agent/tests/fixtures/cases/case-fx-lammps-b.json and case-fx-shear-range.json name methods by words ('molecular dynamics', 'brownian dynamics') and case-fx-unit-mismatch.json names its instrument 'widefield microscope'. The rule: the engine, the instrument and each method of a case's signature is an id of contracts/registry/ (md, bd_cg, hpmc, ... ; sma_microscope, lab_rheometer). Change those three to ids, with whatever the recall tests then need, commit, and say so by note; check 8 lands right after with its two rejected fixtures. The intake schema is next on this seat's list and you start nothing on a writer before it.",
+  "written_at": "2026-11-16T18:59:34-08:00"
+}
