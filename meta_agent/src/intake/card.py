@@ -434,7 +434,7 @@ def row_problems(card, req_dir=None):
             continue
         for place, prop in input_properties(c.get("inputs")):
             m = ROW_IN_WORDS_RE.search(str(prop.get("description") or ""))
-            if m and not isinstance(prop.get("row"), str):
+            if m and not isinstance(prop.get("row"), str) and not prop.get("rows"):
                 out.append("tools[%s].%s: its description names the row %s in words; a contract names it under row, "
                            "where the bundle's gate reads it" % (c.get("name"), place, m.group(1)))
     named = {row for pairs in named_rows(card).values() for _, row in pairs}

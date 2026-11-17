@@ -139,6 +139,40 @@ class TheDecisions(unittest.TestCase):
             self.assertIn('"state": "%s"' % state, p.stdout, (kind, p.stdout))
 
 
+class TheSpecifiedCard(unittest.TestCase):
+    """intake.decisions landed in the schema (537b245): a specified card that names a decision passes check 1's schema and
+    the stage's own judgement, and a swept input that names its rows under `rows` is not taken for a row in words."""
+
+    def card(self):
+        from meta_agent.tests.test_intake import specified_example
+        c = specified_example()
+        c["skills"] = [SETTLED]
+        c["parameter_rows"] = [{"name": "length_window", "value": None, "unit": "count"},
+                               {"name": "length_tolerance", "value": None, "unit": "1"}]
+        tool = (c.get("tool_contract") or c["tools"][0]["contract"])["name"]
+        c["decisions"] = [{"decision": "the length has settled", "skill": SETTLED,
+                           "data": {"tool": tool, "field": "length", "input": "series"},
+                           "rows": {"window": "length_window", "tolerance": "length_tolerance"}}]
+        return c
+
+    def test_a_card_with_a_decision_passes_the_schema_and_the_stage(self):
+        c = self.card()
+        self.assertEqual(card_mod.schema_problems(c), [])
+        self.assertEqual(card_mod.decisions_problems(c), [])
+        c["decisions"][0]["rows"].pop("window")
+        self.assertIn("the input window of series_settled@v1 is handed by no row", " ".join(card_mod.decisions_problems(c)))
+
+    def test_a_swept_input_names_its_rows_under_rows(self):
+        c = {"tools": [{"contract": contract("sweep", {}), "adapter_source": "x"}]}
+        c["tools"][0]["contract"]["inputs"]["properties"]["rates"] = {
+            "type": "array", "items": {"type": "number"}, "rows": ["rate_one", "rate_two"],
+            "description": "one point per row rate_one and rate_two"}
+        c["parameter_rows"] = [{"name": "rate_one"}, {"name": "rate_two"}]
+        self.assertEqual(card_mod.row_problems(c), [])
+        c["parameter_rows"] = [{"name": "rate_one"}]
+        self.assertIn("rate_two", " ".join(card_mod.row_problems(c)))
+
+
 class TheLibrary(unittest.TestCase):
     def test_the_library_carries_an_estimate_and_diagnostics(self):
         rows = {r["ref"]: r for r in catalogue_mod.take([SETTLED, WINDOW, BOX])}
