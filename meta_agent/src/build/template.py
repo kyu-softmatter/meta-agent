@@ -82,6 +82,10 @@ v12 changes text only, on the person's word of 2026-11-17 (tasks/016):
     run-time decision the request names, the diagnostic skill that takes it,
     the tool output it judges and the row that hands each criterion; and
     says that a value a tool's output reports is read and not computed.
+v13 changes one script (tasks/016): src/validate_tasks.py runs a
+    scientific task's analysis, a library skill on the call's output with
+    its other inputs from rows, through src/run_skill.py, and judges the
+    skill's output; a row absent or null leaves the task not_run.
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -98,8 +102,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v5": os.path.join(HERE, "template_v5"), "v6": os.path.join(HERE, "template_v6"),
            "v7": os.path.join(HERE, "template_v7"), "v8": os.path.join(HERE, "template_v8"),
            "v9": os.path.join(HERE, "template_v9"), "v10": os.path.join(HERE, "template_v10"),
-           "v11": os.path.join(HERE, "template_v11"), "v12": os.path.join(HERE, "template_v12")}
-LATEST = "v12"
+           "v11": os.path.join(HERE, "template_v11"), "v12": os.path.join(HERE, "template_v12"),
+           "v13": os.path.join(HERE, "template_v13")}
+LATEST = "v13"
 SOURCE = SOURCES[LATEST]
 
 

@@ -316,18 +316,21 @@ def problems(card, req_dir=None):
 
 
 def decisions_problems(card, req_dir=None, library=None):
-    """The decisions a card names, judged as the build judges them (bundle.decision_problems): each a diagnostic skill
-    of the card's skills, on a field one of its tools returns, every criterion handed by a row the bundle will carry."""
-    if not card.get("decisions"):
+    """The decisions a card names and its scientific tasks' analyses, judged as the build judges them
+    (bundle.decision_problems, bundle.analysis_problems): each a skill of the card's skills, a diagnostic for a decision,
+    on a field one of its tools returns, every other input handed by a row the bundle will carry."""
+    analysed = [t for t in card.get("scientific_tasks") or [] if isinstance(t, dict) and t.get("analysis")]
+    if not card.get("decisions") and not analysed:
         return []
     from ..skills import catalogue as catalogue_mod
     try:
         rows = catalogue_mod.take(card.get("skills") or [], *([library] if library else []))
     except ValueError as e:
-        return ["decisions: %s" % e]
+        return ["skills: %s" % e]
     _, params = rows_given(card, req_dir)
-    return bundle_mod.decision_problems(card["decisions"], contracts_of(card), rows,
-                                        {r.get("name") for r in params if isinstance(r, dict)})
+    names = {r.get("name") for r in params if isinstance(r, dict)}
+    return (bundle_mod.decision_problems(card.get("decisions"), contracts_of(card), rows, names)
+            + bundle_mod.analysis_problems(card.get("scientific_tasks"), contracts_of(card), rows, names))
 
 
 LEADING = ("the", "a", "an", "its", "their", "other", "all", "any")

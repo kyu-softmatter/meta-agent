@@ -121,6 +121,35 @@ def workflow_section(order, tool_names):
     return text
 
 
+def handed_problems(where, skill_ref, tool_name, data, rows, tools, skills, row_names, kind=None):
+    """What is wrong with handing one tool output field and some parameter rows to one skill: the skill is one the bundle
+    carries (and of `kind` where one is asked), the tool returns the field, the data's input is the skill's, every other
+    input of the skill is handed by a row, and every row is one the bundle carries."""
+    out = []
+    skill = skills.get(skill_ref)
+    if skill is None:
+        return ["%s: the skill %s is not one this bundle carries" % (where, skill_ref)]
+    if kind and skill.get("kind") != kind:
+        out.append("%s: %s is of kind %s; a decision is taken by a %s" % (where, skill_ref, skill.get("kind"), kind))
+    inputs = [x["name"] for x in skill.get("inputs") or []]
+    tc = tools.get(tool_name)
+    if tc is None:
+        out.append("%s: the data's tool %s is not a tool of this bundle" % (where, tool_name))
+    elif data.get("field") not in ((tc.get("outputs") or {}).get("properties") or {}):
+        out.append("%s: %s returns no field %s" % (where, tool_name, data.get("field")))
+    if data.get("input") not in inputs:
+        out.append("%s: %s has no input %s for the data" % (where, skill_ref, data.get("input")))
+    for name in inputs:
+        if name != data.get("input") and name not in rows:
+            out.append("%s: the input %s of %s is handed by no row; a criterion is a row" % (where, name, skill_ref))
+    for name, row in sorted(rows.items()):
+        if name not in inputs:
+            out.append("%s: %s has no input %s" % (where, skill_ref, name))
+        if row not in row_names:
+            out.append("%s: the row %s is not a row of envelope/parameters.json" % (where, row))
+    return out
+
+
 def decision_problems(decisions, tool_contracts, skill_rows, row_names):
     """Every reason a request's decisions cannot be written into a bundle. A decision is {decision, skill, data: {tool,
     field, input}, rows: {skill input: row}}: a diagnostic skill the bundle carries, judging one output field of one of
@@ -135,29 +164,30 @@ def decision_problems(decisions, tool_contracts, skill_rows, row_names):
             out.append("%s: no words say what is decided" % where)
         elif any(ch.isdigit() for ch in str(d["decision"])):
             out.append("%s: the words carry a digit, and CLAUDE.md carries no number its snapshot does not" % where)
-        skill = skills.get(d.get("skill"))
-        if skill is None:
-            out.append("%s: the skill %s is not one this bundle carries" % (where, d.get("skill")))
+        data = d.get("data") or {}
+        out += handed_problems(where, d.get("skill"), data.get("tool"), data, d.get("rows") or {}, tools, skills, row_names,
+                               kind="diagnostic")
+    return out
+
+
+def analysis_problems(scientific_tasks, tool_contracts, skill_rows, row_names):
+    """Every reason a scientific task's analysis cannot run in the bundle (intake schema, 23bb51b): {skill, data: {field,
+    input}, rows, output}, handed the field of the task's own call, every other input by a row the bundle carries, and
+    the output the reference judges one the skill gives."""
+    tools = {tc.get("name"): tc for tc in tool_contracts}
+    skills = {r["ref"]: r for r in skill_rows}
+    out = []
+    for i, task in enumerate(scientific_tasks or []):
+        a = task.get("analysis") if isinstance(task, dict) else None
+        if not a:
             continue
-        if skill.get("kind") != "diagnostic":
-            out.append("%s: %s is of kind %s; a decision is taken by a diagnostic" % (where, d.get("skill"), skill.get("kind")))
-        inputs = [x["name"] for x in skill.get("inputs") or []]
-        data, rows = d.get("data") or {}, d.get("rows") or {}
-        tc = tools.get(data.get("tool"))
-        if tc is None:
-            out.append("%s: the data's tool %s is not a tool of this bundle" % (where, data.get("tool")))
-        elif data.get("field") not in ((tc.get("outputs") or {}).get("properties") or {}):
-            out.append("%s: %s returns no field %s" % (where, data.get("tool"), data.get("field")))
-        if data.get("input") not in inputs:
-            out.append("%s: %s has no input %s for the data" % (where, d.get("skill"), data.get("input")))
-        for name in inputs:
-            if name != data.get("input") and name not in rows:
-                out.append("%s: the input %s of %s is handed by no row; a criterion is a row" % (where, name, d.get("skill")))
-        for name, row in sorted(rows.items()):
-            if name not in inputs:
-                out.append("%s: %s has no input %s" % (where, d.get("skill"), name))
-            if row not in row_names:
-                out.append("%s: the row %s is not a row of envelope/parameters.json" % (where, row))
+        where = "scientific_tasks[%d] (%s), its analysis" % (i, task.get("id"))
+        data = a.get("data") or {}
+        out += handed_problems(where, a.get("skill"), (task.get("call") or {}).get("tool"), data, a.get("rows") or {},
+                               tools, skills, row_names)
+        skill = skills.get(a.get("skill"))
+        if skill is not None and a.get("output") not in [o["name"] for o in skill.get("outputs") or []]:
+            out.append("%s: %s gives no output %s" % (where, a.get("skill"), a.get("output")))
     return out
 
 
@@ -464,9 +494,11 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
               + (" Used by %s." % ", ".join("`%s`" % u for u in users[r["ref"]]) if users[r["ref"]] else "")) for r in skills])
     fill.setdefault("subagents_section", subagents_section(subagents))
     fill.setdefault("workflow_section", workflow_section(workflow, [t["name"] for t in tools]))
-    fill.setdefault("decisions_section", decisions_section(
-        decisions, [t["contract"] for t in tools], skills,
-        {r.get("name") for r in (envelope.get("parameters") or {}).get("rows") or [] if isinstance(r, dict)}))
+    row_names = {r.get("name") for r in (envelope.get("parameters") or {}).get("rows") or [] if isinstance(r, dict)}
+    fill.setdefault("decisions_section", decisions_section(decisions, [t["contract"] for t in tools], skills, row_names))
+    faults = analysis_problems(scientific_tasks, [t["contract"] for t in tools], skills, row_names)
+    if faults:
+        raise ValueError("the scientific tasks' analyses cannot run in this bundle: " + "; ".join(faults))
     shutil.copytree(template_path, bundle_path, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     add_skills(bundle_path, rows, subagents)
     add_pages(bundle_path, [r["ref"] for r in skills])

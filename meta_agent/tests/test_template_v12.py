@@ -187,7 +187,7 @@ class TheVersion(unittest.TestCase):
         self.assertEqual(cards.tree_files(v11), cards.tree_files(v12))
         changed = sorted(r for r in cards.tree_files(v11) if cards.sha256_file(os.path.join(v11, r)) != cards.sha256_file(os.path.join(v12, r)))
         self.assertEqual(changed, ["CLAUDE.md", "TEMPLATE.json"])
-        self.assertEqual(template_mod.LATEST, "v12")
+        self.assertIn("v12", template_mod.SOURCES)
         meta = cards.load_json(os.path.join(v12, "TEMPLATE.json"))
         self.assertEqual((meta["version"], "decisions_section" in meta["placeholders"]), ("v12", True))
         text = cards.read_text(os.path.join(v12, "CLAUDE.md"))
