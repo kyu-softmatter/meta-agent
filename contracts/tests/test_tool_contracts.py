@@ -175,3 +175,10 @@ class Rows(unittest.TestCase):
         self.assertEqual([p for p, _ in found], ["tools/equilibrate/tool.json", "tools/set_sweep/tool.json"])
         self.assertIn("inputs.sweep[].rate", found[1][1])
         self.assertEqual(self.bundle({"echo": {"type": "object", "properties": {"message": {"type": "string"}}}}, []), [])
+
+    def test_an_input_that_takes_a_sweep_names_a_row_per_point(self):
+        sweep = {"type": "object", "properties": {"diameters": {"type": "array", "rows": ["diameter_a", "diameter_b"]}}}
+        self.assertEqual(self.bundle({"run_brownian": sweep}, ["diameter_a", "diameter_b"]), [])
+        found = self.bundle({"run_brownian": sweep}, ["diameter_a"])
+        self.assertEqual(len(found), 1)
+        self.assertIn("'diameter_b'", found[0][1])

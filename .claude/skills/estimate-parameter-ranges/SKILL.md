@@ -21,6 +21,7 @@ Load `classify-knowledge` before the first value, statement or data file of this
    ```
    The interval is the highest floor and the lowest ceiling, and names the skills they came from.
 5. **Choose inside the interval and write the reason:** which skills apply, which quantity is fixed first, which rule or candidate is taken. The value is computed from that choice.
+   A row computed by an estimate skill names, in its basis, which of the skill's outputs it is (`output`); the gate runs the skill again on the rows the basis names. A swept parameter, a value per point of a sweep, is a row per point, each with its own basis, and a quantity that follows from it (a drag or an expected coefficient for each size) is again a row per point.
 6. **An empty interval carries no point.** Say which bounds conflict and propose what would resolve it: another configuration, a measurement, a calibration, or the person's decision.
 7. **Without grounds, propose the measurement** or the calibration that would give them, instead of a value.
 8. **Check the sheet:** `python contracts/tools/sheets.py check <sheet>`.

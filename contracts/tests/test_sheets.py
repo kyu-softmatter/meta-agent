@@ -89,6 +89,53 @@ class Example(unittest.TestCase):
         self.assertFalse(any("is not in skills_considered" in m for m in found), found)
 
 
+class Estimates(unittest.TestCase):
+    """A computed row may rest on an estimate, read at the output its basis names, and a swept parameter is a
+    row per point, each with its own basis (the person's kinds of 2026-11-17; tasks/016)."""
+
+    def setUp(self):
+        self.path, base = load(EXAMPLES)
+        self.sheet = copy.deepcopy(base)
+
+    def add(self, *rows):
+        self.sheet["rows"] = list(self.sheet.get("rows") or []) + list(rows)
+
+    def given(self, name, value, unit):
+        return {"name": name, "value": value, "unit": unit, "grade": "E2", "value_kind": "literature", "source": "literature:x"}
+
+    def computed(self, name, value, unit, skill, inputs, output=None):
+        basis = {"skill": skill, "inputs": inputs}
+        if output:
+            basis["output"] = output
+        return {"name": name, "value": value, "unit": unit, "grade": "E4", "value_kind": "computed",
+                "source": "computed:%s" % skill, "basis": basis}
+
+    def problems(self):
+        return sheets.check19(self.sheet, self.path, REPO)
+
+    def test_a_sweep_of_a_simulation_box_and_an_instruments_scans_rest_on_estimates(self):
+        box = "box_length_for_volume_fraction@v1"
+        scans = "scans_for_signal_to_noise@v1"
+        self.sheet["skills_considered"] = list(self.sheet.get("skills_considered") or []) + [
+            {"skill": box, "verdict": "used"}, {"skill": scans, "verdict": "used"}]
+        self.add(self.given("count_a", 8, "count"), self.given("count_b", 1000, "count"),
+                 self.given("volume_a", 1.0, "engine_length^3"), self.given("volume_b", 0.5, "engine_length^3"),
+                 self.given("phi_a", 0.5, "1"), self.given("phi_b", 0.25, "1"),
+                 self.computed("box_length_a", 2.5198420997897464, "engine_length", box,
+                               {"particle_count": "count_a", "particle_volume": "volume_a", "volume_fraction": "phi_a"}, "box_length"),
+                 self.computed("box_length_b", 12.599210498948732, "engine_length", box,
+                               {"particle_count": "count_b", "particle_volume": "volume_b", "volume_fraction": "phi_b"}, "box_length"),
+                 self.given("snr_one", 10.0, "1"), self.given("scan_time", 2.0, "s"), self.given("snr_target", 50.0, "1"),
+                 self.computed("scans_needed", 25, "count", scans,
+                               {"single_scan_snr": "snr_one", "single_scan_time": "scan_time", "target_snr": "snr_target"}, "scan_count"))
+        self.assertEqual(self.problems(), [])
+        self.sheet["rows"][-5]["value"] = 13.0                      # box_length_b, stated wrong
+        self.assertTrue(any("stated 13.0" in p for p in self.problems()), self.problems())
+        self.sheet["rows"][-5]["value"] = 12.599210498948732
+        del self.sheet["rows"][-1]["basis"]["output"]              # two outputs and none named
+        self.assertTrue(any("names which output it is" in p for p in self.problems()), self.problems())
+
+
 class Fixtures(unittest.TestCase):
     def test_each_fixture_is_refused_for_its_own_reason(self):
         on_disk = sorted(n for n in os.listdir(REJECTED) if n.startswith(("check19_", "check04_")))

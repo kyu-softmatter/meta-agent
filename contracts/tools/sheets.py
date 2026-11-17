@@ -86,14 +86,29 @@ def _recompute(lib, sheet, basis, want_sides, label, unit, value, uncertainty, p
         return ["%s: the skill %s is not in the library" % (label, ref)], None
     m = lib.manifests[ref]
     out = []
-    if m.get("kind") != "bound" or m.get("side") not in want_sides:
+    # a value may rest on an estimate too, read at the output its basis names (the person, 2026-11-17)
+    estimate = m.get("kind") == "estimate" and tuple(want_sides) == ("value",)
+    if not estimate and (m.get("kind") != "bound" or m.get("side") not in want_sides):
         out.append("%s: %s is a %s skill of side %s, not %s" % (label, ref, m.get("kind"), m.get("side"), " or ".join(want_sides)))
         return out, m
-    if m.get("parameter") != parameter:
-        out.append("%s: %s bounds %s, and the row is %s" % (label, ref, m.get("parameter"), parameter))
     outputs = m.get("outputs") or [{}]
-    if unit != outputs[0].get("unit"):
-        out.append("%s: unit %s, and %s gives %s" % (label, unit, ref, outputs[0].get("unit")))
+    if estimate:
+        names = [o.get("name") for o in outputs]
+        wanted = (basis or {}).get("output")
+        if wanted is None and len(outputs) == 1:
+            given = outputs[0]
+        elif wanted in names:
+            given = outputs[names.index(wanted)]
+        else:
+            out.append("%s: %s gives %s, and the basis names %s: a row resting on an estimate names which output it is"
+                       % (label, ref, ", ".join(str(n) for n in names), "output %r" % wanted if wanted else "no output"))
+            return out, m
+    else:
+        given = outputs[0]
+        if m.get("parameter") != parameter:
+            out.append("%s: %s bounds %s, and the row is %s" % (label, ref, m.get("parameter"), parameter))
+    if unit != given.get("unit"):
+        out.append("%s: unit %s, and %s gives %s" % (label, unit, ref, given.get("unit")))
     rows = rows_by_name(sheet)
     bound_to = (basis or {}).get("inputs", {})
     inputs = {}
@@ -117,7 +132,7 @@ def _recompute(lib, sheet, basis, want_sides, label, unit, value, uncertainty, p
     got, why = skill_rules.run_once(lib.dirs[ref], inputs)
     if got is None:
         return ["%s: %s could not be run: %s" % (label, ref, why)], m
-    again = got.get(outputs[0].get("name"))
+    again = got.get(given.get("name"))
     tol = uncertainty if isinstance(uncertainty, (int, float)) and uncertainty > 0 else 1e-9 * max(abs(value), abs(again or 0.0))
     if not isinstance(again, (int, float)) or abs(again - value) > tol:
         out.append("%s: stated %r, and %s on the rows it names gives %r" % (label, value, ref, again))

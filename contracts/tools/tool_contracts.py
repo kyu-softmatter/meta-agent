@@ -108,6 +108,9 @@ def named_rows(schema, at="inputs"):
                 here = "%s.%s" % (at, key)
                 if isinstance(prop.get("row"), str):
                     out.append((here, prop["row"]))
+                for name in prop.get("rows") or []:          # an input that takes a swept parameter, a row per point
+                    if isinstance(name, str):
+                        out.append((here, name))
                 out.extend(named_rows(prop, here))
         if isinstance(schema.get("items"), dict):
             out.extend(named_rows(schema["items"], at + "[]"))
