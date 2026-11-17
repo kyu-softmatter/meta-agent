@@ -63,7 +63,8 @@ def calls(record):
 
 
 def load_intake():
-    return cards.load_json(os.path.join(REQ, "intake.json"))
+    """The request's intake as it stands: its latest revision."""
+    return designer.latest_intake(REQ)[1]
 
 
 def scratch_root():
@@ -594,7 +595,90 @@ class Template(unittest.TestCase):
         self.assertTrue(os.path.isdir(os.path.join(META, "templates", "agent@0637edb9a3d1")))
         self.assertNotIn(latest, ("agent@21f0dd569975", "agent@79909cd133f1", "agent@a46172e0b6f0", "agent@0637edb9a3d1"))
         self.assertEqual(cards.sha256_tree(os.path.join(META, "templates", latest)), cards.sha256_tree(template_mod.SOURCE))
-        self.assertEqual(cards.load_json(os.path.join(template_mod.SOURCE, "TEMPLATE.json"))["version"], "v5")
+        self.assertEqual(template_mod.template_name(template_mod.SOURCES["v5"]), "agent@afb9ec0fb292")
+        self.assertTrue(os.path.isdir(os.path.join(META, "templates", "agent@afb9ec0fb292")))
+        self.assertNotEqual(latest, "agent@afb9ec0fb292")
+        self.assertEqual(cards.load_json(os.path.join(template_mod.SOURCE, "TEMPLATE.json"))["version"], "v6")
+
+    def test_v6_changes_text_and_no_script(self):
+        v5, v6 = template_mod.SOURCES["v5"], template_mod.SOURCES["v6"]
+        self.assertEqual(cards.tree_files(v5), cards.tree_files(v6))
+        changed = sorted(r for r in cards.tree_files(v5) if cards.sha256_file(os.path.join(v5, r)) != cards.sha256_file(os.path.join(v6, r)))
+        self.assertEqual(changed, [".claude/skills/run-skill/SKILL.md", "CLAUDE.md", "TEMPLATE.json"])
+        rules_text = cards.read_text(os.path.join(v6, "CLAUDE.md"))
+        for said in ("`README.md` says what each folder is", "`TEMPLATE.json` records the template",   # (d)
+                     "A claim that carries `not_here` names tools this directory does not have",       # (e)
+                     "with `--record <file>` it also writes what it printed",                          # (a)
+                     "The runner of tools prints and writes no file.",
+                     "are checks of this directory and not calls of a tool",
+                     "The comparison is the script's and is not made by eye.",                         # (c)
+                     "The builder derives it from a table that this directory does not carry",         # (g)
+                     "`at`, the time; `task`, the task or the question; `needed`", "`would_settle`"):  # (h)
+            self.assertIn(said, rules_text)
+        self.assertNotIn("A grade is derived, never stated by hand", rules_text)
+        # B6: a bundle's CLAUDE.md carries no number its snapshot does not, so the statuses are told in words there
+        self.assertEqual([c for c in rules_text if c.isdigit()], [])
+        skill = cards.read_text(os.path.join(v6, ".claude", "skills", bundle_mod.SESSION_SKILL, "SKILL.md"))
+        for said in ("## What the status a runner ends with means", "## When a task has you make a replay item's call",   # (b), (c)
+                     "unless you add `--record <file>`", "`3` the runner refused it before any of its code ran"):
+            self.assertIn(said, skill)
+        self.assertEqual(rules.front_matter(skill), rules.front_matter(
+            cards.read_text(os.path.join(v5, ".claude", "skills", bundle_mod.SESSION_SKILL, "SKILL.md"))))
+        for name in SESSION_SKILLS:
+            text = cards.read_text(os.path.join(v6, ".claude", "skills", name, "SKILL.md"))
+            self.assertEqual("src/" in text, name == bundle_mod.SESSION_SKILL, "%s: only one session skill names a runner" % name)
+
+    def test_the_statuses_the_skill_tells_are_the_runners_own(self):
+        """What run-skill says a status means is read against the two runners of the template, by running them."""
+        tmp, root = scratch_root()
+        try:
+            bundle, _ = design(root, load_intake())
+            def status(args, stdin):
+                return subprocess.run([sys.executable] + args, cwd=bundle, input=stdin, capture_output=True, text=True,
+                                      encoding="utf-8", env=ENV).returncode
+            self.assertEqual(status(["src/run_skill.py", "read_status@v1"], "{}"), 0)
+            self.assertEqual(status(["src/run_skill.py", "shear_rate_max_from_max_speed@v1"], "{}"), 3)
+            self.assertEqual(status(["src/run_skill.py", "no_such_skill@v1"], "{}"), 2)
+            self.assertEqual(status(["src/run_skill.py"], "{}"), 1)
+            record = os.path.join(bundle, "runs-test.record.json")
+            self.assertEqual(status(["src/run_skill.py", "read_status@v1", "--record", record], "{}"), 0)
+            self.assertEqual(cards.load_json(record)["verdict"], "ran")
+            self.assertEqual(status(["src/run_skill.py", "read_status@v1", "--record", record], "{}"), 1)
+            self.assertEqual(status(["src/run_tool.py", "status"], "{}"), 0)
+            self.assertEqual(status(["src/run_tool.py", "status"], '{"x": 1}'), 0)
+            self.assertEqual(status(["src/run_tool.py", "no_such_tool"], "{}"), 2)
+            self.assertEqual(status(["src/run_tool.py"], "{}"), 1)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_a_bundle_names_units_and_tells_what_is_not_here(self):
+        """(e), (f) of the test run 20261116-2: the units the contract names stand in CLAUDE.md, and CAPABILITIES.json
+        names no path of the builder's tree and marks a claim about a tool the bundle does not carry."""
+        tmp, root = scratch_root()
+        try:
+            bundle, _ = design(root, load_intake())
+            text = cards.read_text(os.path.join(bundle, "CLAUDE.md"))
+            self.assertIn("`temperature` (number, K)", text)
+            self.assertIn("`gap` (number, m)", text)
+            self.assertIn("`fault` (any; null, or a sentence that says what the fault is)", text)
+            cap = cards.load_json(os.path.join(bundle, "CAPABILITIES.json"))
+            self.assertNotIn("meta_agent/", json.dumps(cap))
+            self.assertEqual(cap["source"], "the documentation of fixture_rheometer (README.md), as the builder read it; "
+                                            "the document is not in this directory")
+            here = set(os.listdir(os.path.join(bundle, "tools")))
+            self.assertEqual(sorted(h["skill"] for h in cap["held"]), ["bring_to_ready@v1", "calibrate@v1", "run_steady_shear@v1"])
+            for h in cap["held"]:
+                self.assertEqual(set(h["calls_tools"]) & here, set())
+            marked = [i for k in ("observed", "derived", "unverified") for i in cap[k] if i.get("not_here")]
+            self.assertTrue(marked)
+            for i in marked:
+                self.assertEqual(set(i["not_here"]) & here, set())
+            changes = [i for i in cap["observed"] if i["claim"].startswith("initialise, home, set_shear_rate")][0]
+            self.assertEqual(changes["not_here"], ["home", "initialise", "self_calibrate", "set_shear_rate", "start", "stop"])
+            reads = [i for i in cap["observed"] if i["claim"].startswith("status returns")][0]
+            self.assertNotIn("not_here", reads)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
 
     def test_v5_changes_text_only(self):
         v4, v5 = template_mod.SOURCES["v4"], template_mod.SOURCES["v5"]

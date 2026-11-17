@@ -40,13 +40,26 @@ def render(text, fill):
     return text
 
 
+def field(name, prop, required=False):
+    """`name` (type, unit, required; what the contract says of it): one input or output of a tool contract. The
+    unit is the one the contract names; a field with none is printed with none, never with a guessed one."""
+    parts = [str(prop.get("type", "any"))]
+    if prop.get("unit"):
+        parts.append(str(prop["unit"]))
+    if required:
+        parts.append("required")
+    text = ", ".join(parts)
+    if prop.get("description"):
+        text += "; " + str(prop["description"]).rstrip(".")
+    return "`%s` (%s)" % (name, text)
+
+
 def tools_section(tool_contracts):
     out = []
     for tc in tool_contracts:
-        ins = ", ".join("`%s` (%s%s)" % (k, v.get("type", "any"), ", required" if k in (tc.get("inputs") or {}).get("required", []) else "")
+        ins = ", ".join(field(k, v, k in (tc.get("inputs") or {}).get("required", []))
                         for k, v in sorted(((tc.get("inputs") or {}).get("properties") or {}).items()))
-        outs = ", ".join("`%s` (%s)" % (k, v.get("type", "any"))
-                         for k, v in sorted(((tc.get("outputs") or {}).get("properties") or {}).items()))
+        outs = ", ".join(field(k, v) for k, v in sorted(((tc.get("outputs") or {}).get("properties") or {}).items()))
         gate = tc.get("safety_gate") or {}
         out.append("### `%s`\n\n%s\n\n- input: %s\n- output: %s\n- errors it may return: %s\n- side effects: %s; idempotent: %s\n- gate: %s"
                    % (tc["name"], tc["description"], ins or "none", outs or "none",

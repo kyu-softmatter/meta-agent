@@ -2,6 +2,7 @@
 
     python -m meta_agent.src.designer --intake meta_agent/requests/<rid>/intake.json --seat <seat> [--build-id 0001] [--now ISO] [--root DIR]
     python -m meta_agent.src.designer --rebuild meta_agent/requests/<rid> --seat <seat> [--build-id 0002] [--now ISO] [--root DIR]
+    python -m meta_agent.src.designer --respecify meta_agent/requests/<rid> --seat <seat> [--now ISO] [--root DIR]
     python -m meta_agent.src.designer --recall meta_agent/requests/<rid> --seat <seat> [--now ISO] [--root DIR]
     python -m meta_agent.src.designer --bounds meta_agent/requests/<rid> [--root DIR]
     python -m meta_agent.src.designer --sheet meta_agent/requests/<rid> --seat <seat> [--now ISO] [--root DIR]
@@ -38,6 +39,13 @@ bound and value skills that apply to a draft, which is what a model reads to wri
 latest template: a new build under builds/<agent>/<next id>/ whose card names the build before it as its
 parent (MP3). It reads the request's cards and writes none of them, and it never touches a build that
 exists; what it refuses is a request with no specification or no earlier build.
+
+--respecify runs S4 again on a request that exists, after its intake was revised (v<N>_intake.json: a
+tool contract corrected, a task added): the six axes, the synthesis and the agent_spec are worked out
+from the latest intake, goal, tool_profile and knowledge_brief as they stand, and each card that comes out
+different from its latest revision is written as the next one (v<N>_<name>; records are append-only).
+An axis that comes out the same is not written again, and when nothing differs nothing is written. It
+builds nothing: --rebuild follows it, and reads the latest intake and the latest specification.
 
 --recall runs S3's case search again on a request that already exists, against the store as it is
 now: when the result differs from the latest goal revision's, it writes the next one
@@ -194,6 +202,19 @@ def profile_markdown(profile):
     return "\n".join(lines)
 
 
+def latest_intake(req_dir):
+    """(revision, intake) of a request: v<N>_intake.json, or intake.json for the first."""
+    rev, path = latest_file(req_dir, "intake.json")
+    if path is None:
+        raise FileNotFoundError("no intake.json in %s" % req_dir)
+    return rev, cards.load_json(path)
+
+
+def held_of(skill_rows):
+    """What profile.capabilities is handed for the skills a specification holds."""
+    return [{"skill": r["ref"], "calls_tools": list(r["calls_tools"])} for r in skill_rows if r["status"] == "held"]
+
+
 def tools_of(intake, root):
     """[{name, contract, adapter_source, errors}] for the one tool or the several an intake names."""
     listed = intake.get("tools") or [{"contract": intake["tool_contract"], "adapter_source": intake["tool"]["adapter_source"],
@@ -204,7 +225,7 @@ def tools_of(intake, root):
 
 
 def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_skills, subagents, build_id, seat, created,
-                       put, parent_build=None, note=None):
+                       put, parent_build=None, note=None, held_skills=None):
     """S5 and S6 for one build: the bundle from the latest template, its diff, its gates read off a fresh
     process, the validation_report and the build card. `put(path, data)` writes a file."""
     rid, agent = intake["rid"], intake["agent_name"]
@@ -226,7 +247,7 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
         "skills_section": bundle_mod.skills_section([]),
         "seat_form": "%s-<machine>-<YYYYMMDD>-<n>" % agent,
     }
-    capabilities = profile_mod.capabilities(profile, agent)
+    capabilities = profile_mod.capabilities(profile, agent, tools_here=[t["name"] for t in tools], held=held_skills or [])
     envelope = {
         "safety": {row["name"]: None for row in (intake.get("safety_rows") or [])},
         "snapshot": {"kb_version": brief["kb_version"], "entries": brief["entries"], "numbers": []},
@@ -260,9 +281,10 @@ BUILD_ID = re.compile(r"^[0-9]{4}$")
 
 
 def rebuild(req_dir, seat, build_id=None, now=None, root=ROOT):
-    """S5 and S6 again on a request that exists: the specification as it stands, the latest template, a new
-    build whose card names the build before it. Reads the request's cards and writes none of them."""
-    intake = cards.load_json(os.path.join(req_dir, "intake.json"))
+    """S5 and S6 again on a request that exists: the intake and the specification as they stand (the latest
+    revision of each), the latest template, a new build whose card names the build before it. Reads the
+    request's cards and writes none of them."""
+    intake_rev, intake = latest_intake(req_dir)
     rid, agent = intake["rid"], intake["agent_name"]
     created = cards.now_iso(now)
     _, goal = latest_goal(req_dir)
@@ -300,9 +322,11 @@ def rebuild(req_dir, seat, build_id=None, now=None, root=ROOT):
     built = build_and_validate(
         root, intake, goal, profile, brief, spec, tools, built_skills, subagents, build_id, seat, created, put,
         parent_build=parent["id"],
-        note="rebuilt from %s revision %d, unchanged, on template %s where %s was built on %s; the specification's "
-             "boundary axis still names the first build's directory" % (
-                 spec["id"], spec["revision"], template_mod.template_name(), parent["id"], parent["template_version"]))
+        note="rebuilt from %s revision %d, unchanged, and the intake's revision %d, on template %s where %s was built "
+             "on %s; the specification's boundary axis still names the first build's directory" % (
+                 spec["id"], spec["revision"], intake_rev, template_mod.template_name(), parent["id"],
+                 parent["template_version"]),
+        held_skills=held_of(skill_rows))
     out["files"].insert(0, built["bundle_rel"] + "/")
     vr = built["vr"]
     out.update(template=built["template"], bundle_sha256=built["sha"],
@@ -311,6 +335,80 @@ def rebuild(req_dir, seat, build_id=None, now=None, root=ROOT):
                held=spec["held"], skills=[r["ref"] for r in built_skills], subagents=[a["name"] for a in subagents],
                build_id=built["build_id"], validation_report=vr["id"], parent_build=parent["id"])
     return out
+
+
+AXIS_SAME = ("axis", "title", "content", "reads", "held", "case_refs", "case_gaps")
+SYN_SAME = ("axis_refs", "conflicts", "held")
+SPEC_SAME = ("axis_refs", "synthesis_ref", "goal_ref", "tool_profile_ref", "lab_profile_ref", "held", "skills", "subagents", "status")
+
+
+def next_revision(req_dir, name, new, same):
+    """(file name the request now means by `name`, path written or None). The card `new` is written as the
+    next revision of `name` when it differs from the latest one in any key of `same`; else nothing is."""
+    rev, path = latest_file(req_dir, name)
+    if path is None:
+        raise FileNotFoundError("no %s in %s: only a request that was specified is specified again" % (name, req_dir))
+    old = cards.load_json(path)
+    if all(old.get(k) == new.get(k) for k in same):
+        return os.path.basename(path), None
+    card = dict(new)
+    card["revision"] = rev + 1
+    card["supersedes"] = old["id"]
+    out = os.path.join(req_dir, "v%d_%s" % (rev + 1, name))
+    if os.path.exists(out):
+        raise FileExistsError(out)
+    cards.write_json(out, card)
+    return os.path.basename(out), out
+
+
+def respecify(req_dir, seat, now=None, root=ROOT):
+    """S4 again on a request that exists, from its latest intake. Returns the paths written, in order: the
+    axes that changed, then the synthesis and the agent_spec when they did. An empty list: nothing differs."""
+    _, intake = latest_intake(req_dir)
+    created = cards.now_iso(now)
+    _, goal = latest_goal(req_dir)
+    loaded = {}
+    for name in ("tool_profile.json", "knowledge_brief.json", "spec_a1.json"):
+        _, path = latest_file(req_dir, name)
+        if path is None:
+            raise FileNotFoundError("no %s in %s: only a request that was specified is specified again" % (name, req_dir))
+        loaded[name] = cards.load_json(path)
+    profile, brief = loaded["tool_profile.json"], loaded["knowledge_brief.json"]
+    tools = tools_of(intake, root)
+    contracts = [t["contract"] for t in tools]
+    skill_rows = catalogue_mod.take(intake.get("skills") or [], os.path.join(root, "skills"))
+    subagents = list(intake.get("subagents") or [])
+    held_refs = {r["ref"] for r in skill_rows if r["status"] == "held"}
+    given_held = ["%s names %s" % (a["name"], ref) for a in subagents for ref in a["skills"] if ref in held_refs]
+    if given_held:
+        raise ValueError("a held skill is given to a subagent only after a person has released it: " + "; ".join(given_held))
+    bundle_mod.check_drawing([r for r in skill_rows if r["status"] != "held"], subagents,
+                             {t["name"]: t["contract"].get("side_effects") for t in tools}, template_mod.SOURCE)
+    goal_sig = goal_mod.signature_of(goal)
+    axis_sigs = axis_signatures(goal_sig, intake)
+    case_recall = {"A4": search_cases(axis_sigs["A4"], root, "a prior case for this agent's parameters"),
+                   "A5": search_cases(axis_sigs["A5"], root, "a prior case for this agent's safety rows")}
+    # the boundary axis keeps the directory it named: a specification names its first build's
+    axes, syn, spec = axes_mod.make_axes(goal, profile, brief, goal["lab_profile_ref"],
+                                         loaded["spec_a1.json"]["content"]["directory"],
+                                         contracts if intake.get("tools") else contracts[0],
+                                         intake["interface_tasks"], intake["scientific_tasks"], seat, created,
+                                         case_recall=case_recall, skills=skill_rows, subagents=subagents)
+    written, names = [], {}
+    for a in axes:
+        names[a["axis"]], path = next_revision(req_dir, "spec_%s.json" % a["axis"].lower(), a, AXIS_SAME)
+        if path:
+            written.append(path)
+    syn["axis_refs"] = [names[a] for a in sorted(names)]
+    syn_name, path = next_revision(req_dir, "synthesis.json", syn, SYN_SAME)
+    if path:
+        written.append(path)
+    spec["axis_refs"] = dict(names)
+    spec["synthesis_ref"] = syn_name
+    _, path = next_revision(req_dir, "agent_spec.json", spec, SPEC_SAME)
+    if path:
+        written.append(path)
+    return written
 
 
 def run(intake, seat, build_id="0001", now=None, root=ROOT):
@@ -374,7 +472,7 @@ def run(intake, seat, build_id="0001", now=None, root=ROOT):
 
     # S5 build and S6 validate
     built = build_and_validate(root, intake, goal, profile, brief, spec, tools, built_skills, subagents, build_id, seat,
-                               created, put)
+                               created, put, held_skills=held_of(skill_rows))
     template_name, sha, report, vr, iface_v, sci_v = (built[k] for k in ("template", "sha", "report", "vr", "iface", "sci"))
     out["files"].insert(len(out["files"]) - 3, bundle_rel + "/")
     build_id_full = built["build_id"]
@@ -391,6 +489,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--intake")
     ap.add_argument("--rebuild", metavar="REQUEST_DIR", help="build an existing request again from its specification and the latest template")
+    ap.add_argument("--respecify", metavar="REQUEST_DIR", help="specify an existing request again from its latest intake")
     ap.add_argument("--recall", metavar="REQUEST_DIR", help="search cases/ again for an existing request's goal")
     ap.add_argument("--bounds", metavar="REQUEST_DIR", help="list the bound skills that apply to the request's sheet draft")
     ap.add_argument("--sheet", metavar="REQUEST_DIR", help="write the request's parameter_sheet from its draft and its binding")
@@ -399,8 +498,8 @@ def main(argv=None):
     ap.add_argument("--now", default=None)
     ap.add_argument("--root", default=ROOT, help="the meta_agent/ tree to write under (tests use a copy)")
     args = ap.parse_args(argv)
-    if [bool(args.intake), bool(args.rebuild), bool(args.recall), bool(args.bounds), bool(args.sheet)].count(True) != 1:
-        ap.error("give --intake, --rebuild, --recall, --bounds or --sheet, one of them")
+    if [bool(args.intake), bool(args.rebuild), bool(args.respecify), bool(args.recall), bool(args.bounds), bool(args.sheet)].count(True) != 1:
+        ap.error("give --intake, --rebuild, --respecify, --recall, --bounds or --sheet, one of them")
     if not args.seat and not args.bounds:
         ap.error("--seat is required")
     if args.bounds:
@@ -426,6 +525,14 @@ def main(argv=None):
         for row in sheet["rows"]:
             if row.get("basis") and row.get("value") is not None:
                 print("%-38s %r %s  %s" % (row["name"], row["value"], row["unit"], row["source"]))
+        return 0
+    if args.respecify:
+        root = os.path.abspath(args.root)
+        written = respecify(os.path.abspath(args.respecify), args.seat, args.now, root)
+        for path in written:
+            print("wrote  %s" % rel_repo(path, root))
+        print("%d card(s) written; a build of them is made with --rebuild" % len(written) if written
+              else "nothing written: the latest intake gives the specification the request already has")
         return 0
     if args.recall:
         root = os.path.abspath(args.root)

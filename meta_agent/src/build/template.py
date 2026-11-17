@@ -27,6 +27,17 @@ v5  changes text only, after a fresh session was watched working in a
     entry means, the folder named runs is said to be made by the session,
     and an input that nothing in the bundle gives is reported like a
     missing skill.
+v6  changes text and no script, after two fresh sessions worked in copies
+    of bundles of v5 in a test run outside the repository (tasks/016):
+    CLAUDE.md names the files a session found unexplained, says when a
+    runner writes a record and what the status each runner and check
+    ends with means, how a replay item made by hand is compared, which
+    keys a line of failures.jsonl has, and that a grade is the builder's
+    and is not derived in a bundle; run-skill repeats the procedure.
+    From this version the builder writes units into the Tools section
+    and tells, in CAPABILITIES.json, a claim about a tool the bundle
+    does not carry from one about a tool it has (bundle.py, profile.py).
+    Bundle check B16 judges a bundle of this version or later.
 """
 import os
 import shutil
@@ -36,8 +47,8 @@ from .. import cards
 HERE = os.path.dirname(os.path.abspath(__file__))
 SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "template_v2"),
            "v3": os.path.join(HERE, "template_v3"), "v4": os.path.join(HERE, "template_v4"),
-           "v5": os.path.join(HERE, "template_v5")}
-LATEST = "v5"
+           "v5": os.path.join(HERE, "template_v5"), "v6": os.path.join(HERE, "template_v6")}
+LATEST = "v6"
 SOURCE = SOURCES[LATEST]
 
 

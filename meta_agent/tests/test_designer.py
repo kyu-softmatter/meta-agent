@@ -334,5 +334,93 @@ class RecallAgain(unittest.TestCase):
             shutil.rmtree(tmp, ignore_errors=True)
 
 
+class Respecify(unittest.TestCase):
+    """--respecify: S4 again on a request whose intake was revised, here the echo request, a kind that is not
+    rheology (the rheometer fixture's own revision is the record under requests/req-rheo-fixture-001)."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp, cls.root = scratch_root()
+        designer.run(load_intake(), SEAT, "0001", NOW, cls.root)
+        cls.req = os.path.join(cls.root, "requests", "req-echo-001")
+        shutil.copy(os.path.join(META, "requests", "req-echo-001", "intake.json"), os.path.join(cls.req, "intake.json"))
+        cls.nothing = designer.respecify(cls.req, SEAT, NOW, cls.root)
+        cls.before = cards.sha256_tree(cls.req)
+        revised = load_intake()
+        revised["tool_contract"]["outputs"]["properties"]["echoed_at"] = {"description": "declared for this test and returned by nothing"}
+        revised["tool_contract"]["outputs"]["properties"]["length"]["unit"] = "character"
+        cards.write_json(os.path.join(cls.req, "v2_intake.json"), revised)
+        cls.written = designer.respecify(cls.req, "meta-macbook-20261116-1", "2026-11-16T12:00:00Z", cls.root)
+        cls.again = designer.respecify(cls.req, "meta-macbook-20261116-1", "2026-11-16T13:00:00Z", cls.root)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def test_an_intake_that_was_not_revised_writes_nothing(self):
+        self.assertEqual(self.nothing, [])
+
+    def test_only_what_differs_is_written_as_the_next_revision(self):
+        self.assertEqual([os.path.basename(p) for p in self.written], ["v2_spec_a2.json", "v2_synthesis.json", "v2_agent_spec.json"])
+        self.assertEqual(self.again, [])
+        a2 = cards.load_json(os.path.join(self.req, "v2_spec_a2.json"))
+        self.assertEqual((a2["revision"], a2["supersedes"], a2["author"]), (2, "spec-echo-001-a2", "meta-macbook-20261116-1"))
+        self.assertEqual(a2["content"]["callable_tools"][0]["outputs"], ["echoed_at", "length", "message"])
+        spec = cards.load_json(os.path.join(self.req, "v2_agent_spec.json"))
+        self.assertEqual((spec["revision"], spec["supersedes"]), (2, "spec-echo-001"))
+        self.assertEqual(spec["axis_refs"], {"A1": "spec_a1.json", "A2": "v2_spec_a2.json", "A3": "spec_a3.json",
+                                             "A4": "spec_a4.json", "A5": "spec_a5.json", "A6": "spec_a6.json"})
+        self.assertEqual(spec["synthesis_ref"], "v2_synthesis.json")
+        self.assertEqual(cards.load_json(os.path.join(self.req, "v2_synthesis.json"))["axis_refs"],
+                         ["spec_a1.json", "v2_spec_a2.json", "spec_a3.json", "spec_a4.json", "spec_a5.json", "spec_a6.json"])
+        first = cards.load_json(os.path.join(self.req, "spec_a1.json"))["content"]["directory"]
+        self.assertEqual(first, "meta_agent/builds/echo/0001/bundle")
+
+    def test_no_earlier_card_is_touched(self):
+        tmp = tempfile.mkdtemp(prefix="ma-respecify-")
+        try:
+            kept = os.path.join(tmp, "req")
+            shutil.copytree(self.req, kept)
+            for name in os.listdir(kept):
+                if name.startswith("v2_") and name != "v2_agent_goal.json":
+                    os.remove(os.path.join(kept, name))
+            self.assertEqual(cards.sha256_tree(kept), self.before)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_a_rebuild_reads_the_latest_intake_and_specification(self):
+        out = designer.rebuild(self.req, "meta-macbook-20261116-1", None, "2026-11-16T14:00:00Z", self.root)
+        build_dir = os.path.join(self.root, "builds", "echo", "0002")
+        build = cards.load_json(os.path.join(build_dir, "build.json"))
+        self.assertIn("rebuilt from spec-echo-001 revision 2, unchanged, and the intake's revision 2", build["note"])
+        contract = cards.load_json(os.path.join(build_dir, "bundle", "tools", "echo", "tool.json"))
+        self.assertIn("echoed_at", contract["outputs"]["properties"])
+        text = cards.read_text(os.path.join(build_dir, "bundle", "CLAUDE.md"))
+        self.assertIn("`length` (integer, character)", text)
+        self.assertIn("`echoed_at` (any; declared for this test and returned by nothing)", text)
+        cap = cards.load_json(os.path.join(build_dir, "bundle", "CAPABILITIES.json"))
+        self.assertEqual(cap["held"], [])
+        self.assertEqual(cap["source"], "the documentation of echo (README.md), as the builder read it; the document is not in this directory")
+        self.assertEqual([i for k in ("observed", "derived", "unverified") for i in cap[k] if "not_here" in i], [])
+        self.assertTrue(out["replay_ok"])
+        env = dict(os.environ, PYTHONUTF8="1")
+        p = subprocess.run([sys.executable, VALIDATE, "--bundle", os.path.join(build_dir, "bundle")], capture_output=True,
+                           text=True, env=env, cwd=REPO)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        p = subprocess.run([sys.executable, VALIDATE, self.tmp, "--strict"], capture_output=True, text=True, env=env)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+
+    def test_a_request_that_was_never_specified_is_refused(self):
+        tmp, root = scratch_root()
+        try:
+            req = os.path.join(root, "requests", "req-echo-001")
+            cards.write_json(os.path.join(req, "intake.json"), load_intake())
+            with self.assertRaises(FileNotFoundError):
+                designer.respecify(req, SEAT, NOW, root)
+            self.assertEqual(os.listdir(req), ["intake.json"])
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+
 if __name__ == "__main__":
     unittest.main()

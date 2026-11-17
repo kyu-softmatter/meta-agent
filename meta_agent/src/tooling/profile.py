@@ -7,6 +7,8 @@ or the runtime is turned into a gap unless a person confirmed analysis
 permission. It also derives CAPABILITIES.json for the bundle: only
 observed and derived claims become capabilities.
 """
+import re
+
 from .. import cards
 
 KINDS = ("observed", "derived", "inferred", "unknown")
@@ -60,13 +62,38 @@ def make_profile(intake, seat, now=None):
     return card
 
 
-def capabilities(profile, agent_name):
-    """CAPABILITIES.json: observed and derived claims only; inferred to unverified, unknown to gaps."""
+def names_in(text, names):
+    """The names that stand in a text as words of their own (not inside another word or a hyphenated one)."""
+    return sorted(n for n in set(names) if re.search(r"(?<![A-Za-z0-9_-])%s(?![A-Za-z0-9_-])" % re.escape(n), text or ""))
+
+
+def capabilities(profile, agent_name, tools_here=None, held=None):
+    """CAPABILITIES.json: observed and derived claims only; inferred to unverified, unknown to gaps.
+
+    A bundle stands alone (MP2), so what the builder hands in decides what the file may name. `tools_here`
+    are the names of the tools the bundle carries and `held` the skills the specification holds,
+    [{skill, calls_tools}]. When `tools_here` is given, `source` is the name of the document the builder
+    read and not its path in the builder's tree; `held` lists each held skill with the tools it would call;
+    and a claim whose words name one of those tools, the bundle not carrying it, says so under `not_here`.
+    Without `tools_here` the file is written as before template v6 wrote it."""
+    source = profile["tool"].get("source")
+    held = list(held or [])
+    absent = sorted({t for h in held for t in h.get("calls_tools") or []} - set(tools_here or []))
+    if tools_here is not None and source:
+        source = "the documentation of %s (%s), as the builder read it; the document is not in this directory" % (
+            profile["tool"]["name"], str(source).replace("\\", "/").split("/")[-1])
     cap = {"schema_version": "0.1", "agent": agent_name, "tool": profile["tool"]["name"],
-           "source": profile["tool"].get("source"), "observed": [], "derived": [], "unverified": [], "gaps": []}
+           "source": source, "observed": [], "derived": [], "unverified": [], "gaps": []}
+    if tools_here is not None:
+        cap["held"] = [{"skill": h["skill"], "calls_tools": sorted(h.get("calls_tools") or []),
+                        "reason": "held by the builder until a person releases it; neither the skill nor the tools it "
+                                  "would call are in this directory"} for h in held]
     for c in profile["claims"]:
         item = {"claim": c["claim"], "capability": c.get("capability"),
                 "evidence": [e.get("locus") for e in c.get("evidence", [])]}
+        gone = names_in(c["claim"], absent) if tools_here is not None else []
+        if gone:
+            item["not_here"] = gone
         if c["kind"] in ("observed", "derived"):
             item["kind"] = c["kind"]
             cap[c["kind"]].append(item)
