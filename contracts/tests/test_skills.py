@@ -89,3 +89,23 @@ class Reading(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class DescriptionNumbers(unittest.TestCase):
+    """What `skills.py check` notes about a description a bundle prints (tasks/016, run 20261117-1)."""
+
+    def numbers(self, description):
+        import shutil
+        import tempfile
+        d = tempfile.mkdtemp(prefix="desc-")
+        self.addCleanup(shutil.rmtree, d, True)
+        with open(os.path.join(d, "SKILL.md"), "w", encoding="utf-8") as f:
+            f.write("---\nname: x\ndescription: %s\n---\n\n# x\n" % description)
+        return skills.description_numbers(d)
+
+    def test_a_formula_and_a_range_are_noted_and_words_are_not(self):
+        # two unrelated kinds: a lattice count of a simulation box and a fluid property's range of validity
+        self.assertTrue(self.numbers("The volume fraction sqrt(2)/3 a^3 / L^3 of octahedra in a cubic box."))
+        self.assertEqual(self.numbers("Viscosity of water from 265.15 K to 423.15 K."), ["265.15", "423.15"])
+        self.assertEqual(self.numbers("The particle count of a body-centred cubic lattice of m cells a side."), [])
+        self.assertEqual(self.numbers("As printed by hoomd 7.2.2."), [])

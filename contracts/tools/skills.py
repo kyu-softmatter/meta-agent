@@ -446,6 +446,20 @@ def problems(skill_dir, kinds, schema_errors=None):
     return out
 
 
+def description_numbers(skill_dir):
+    """The numbers of a skill's description, as the bundle number rule reads them. Not a problem of check 22:
+    a builder that prints the description in a bundle's CLAUDE.md must carry each in the bundle's snapshot
+    (B6), or the description says it in words (tasks/016, run 20261117-1)."""
+    sys.path.insert(0, os.path.dirname(HERE))
+    import validate  # late: validate imports this module
+    path = os.path.join(skill_dir, "SKILL.md")
+    if not os.path.isfile(path):
+        return []
+    with open(path, "r", encoding="utf-8") as f:
+        desc = front_matter(f.read()).get("description", "")
+    return validate.bundle_text_numbers(desc)
+
+
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
     if len(argv) == 2 and argv[0] == "run":      # one skill with no side effect, inputs as JSON on stdin
@@ -468,6 +482,10 @@ def main(argv=None):
         print(msg)
     if not found:
         print("nothing to say (the manifest's schema is judged by contracts/validate.py)")
+    nums = description_numbers(argv[1])
+    if nums:
+        print("note: the description carries %s; a bundle that prints it in its CLAUDE.md must carry each in its "
+              "snapshot (B6), so say it in words where a bundle prints it (not a problem of check 22)" % ", ".join(nums))
     return 1 if found else 0
 
 

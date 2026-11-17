@@ -303,7 +303,7 @@ def check2(cards, c, report, tree):
 # ----------------------------------------------------------------------------
 # check 3: every number in an md file exists in a card of the same folder
 # ----------------------------------------------------------------------------
-NUM_RE = re.compile(r"(?<![\w./:+-])[-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?(?![\w/:%-])")
+NUM_RE = re.compile(r"(?<![\w./:+-])[-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?(?![\w/:%-]|\.\d)")   # 7.2.2, a version, is an identifier
 STRIP_RES = [
     re.compile(r"https?://\S+"),
     re.compile(r"^\s{0,3}#+\s+[\d.]+\s", re.M),                 # numbered headings
@@ -1162,6 +1162,14 @@ def unit_res(units):
     return re.compile(r"(?<![\w./^])(?:%s)(?![\w/^])" % "|".join(re.escape(u) for u in names)) if names else None
 
 
+def bundle_text_numbers(text):
+    """The numbers B6 reads in a bundle's CLAUDE.md (contracts/tools/skills.py reads a description with it)."""
+    units = unit_res(load_json(os.path.join(HERE, "units.json"))["units"])
+    for s in STRIP_RES + [FIELD_UNIT_ONE_RE] + ([units] if units else []):
+        text = s.sub(" ", text)
+    return [m.group(0) for m in NUM_RE.finditer(text)]
+
+
 def checkB6(bundle, label, report):
     claude = os.path.join(bundle, "CLAUDE.md")
     snap = bundle_json(bundle, "envelope/snapshot.json", report, "B6")
@@ -1169,17 +1177,13 @@ def checkB6(bundle, label, report):
         return
     available = set()
     json_numbers(snap, available)
-    text = open(claude, encoding="utf-8").read()
-    units = unit_res(load_json(os.path.join(HERE, "units.json"))["units"])
-    for s in STRIP_RES + [FIELD_UNIT_ONE_RE] + ([units] if units else []):
-        text = s.sub(" ", text)
-    for m in NUM_RE.finditer(text):
+    for num in bundle_text_numbers(open(claude, encoding="utf-8").read()):
         try:
-            val = float(m.group(0))
+            val = float(num)
         except ValueError:
             continue
         if val not in available:
-            report.fail("B6", label, "CLAUDE.md: number %s is not in envelope/snapshot.json" % m.group(0))
+            report.fail("B6", label, "CLAUDE.md: number %s is not in envelope/snapshot.json" % num)
 
 
 def run_fixture_call(bundle, tool, payload):
