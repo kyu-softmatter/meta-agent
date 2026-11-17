@@ -1,0 +1,17 @@
+{
+  "note": "The person's answer of 2026-11-16 on where a built agent may fetch its own packages, carried as package_sources beside the level of policy.execution_permission, so that a built agent's gate reads a listed pair and interprets no sentence. Asked whether a built agent may fetch its own packages to make its environment, the person chose the option quoted in docs/ideas/20261116.md, section 'After round two of the clone test', as pixi + conda-forge 허용 [pixi and conda-forge are allowed]; the one pair {installer: pixi, channel: conda-forge} is that answer and nothing wider. The level engine and the words are those of v3_lab_profile.json unchanged. Written by the seat meta-macbook-20261116-1 on the design seat's ask meta_agent/inbox/seats/20261116-design-macbook-20261116-1-10.json. It is for this lab's profile and for no other.",
+  "answered_by": "human",
+  "date": "2026-11-16",
+  "answers": {
+    "policy.execution_permission": {
+      "reaches": "engine",
+      "words": "as far as a simulation engine on this computer; no instrument",
+      "package_sources": [
+        {
+          "installer": "pixi",
+          "channel": "conda-forge"
+        }
+      ]
+    }
+  }
+}
