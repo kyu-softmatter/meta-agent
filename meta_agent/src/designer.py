@@ -386,6 +386,25 @@ def held_of(skill_rows):
     return [{"skill": r["ref"], "calls_tools": list(r["calls_tools"])} for r in skill_rows if r["status"] == "held"]
 
 
+def science_task_line(science_task, held):
+    """The Role's science task, and where it names what the request holds, a sentence that says so: the goal keeps the
+    science task of the revision it was made from, and a later revision may hold part of it (tasks/016, run 20261117-7,
+    rheotool-2). A held item whose name has a digit is not named, since the Role carries no number (B6)."""
+    named = intake_mod.held_named(science_task, held)
+    if not named:
+        return science_task
+    items = []
+    for item, _ in named:
+        if item not in items:
+            items.append(item)
+    shown = ["%s" % i for i in items if not any(ch.isdigit() for ch in i)]
+    unnamed = len(items) - len(shown)
+    parts = shown + (["an item of the held list in `CAPABILITIES.json`"] if unnamed else [])
+    return ("%s\n\nOf what this science task names, this agent does not compute what the request holds: %s. Each is held, "
+            "with its reason, in `CAPABILITIES.json`; nothing here computes it until a person releases it and a new build "
+            "brings it." % (science_task.rstrip(), "; ".join(parts)))
+
+
 def tools_of(intake, root):
     """[{name, contract, adapter_source, errors}] for the one tool or the several an intake names."""
     listed = intake.get("tools") or [{"contract": intake["tool_contract"], "adapter_source": intake["tool"]["adapter_source"],
@@ -412,7 +431,7 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
         "template": template_name,
         "rid": rid,
         "purpose": goal["purpose"],
-        "science_task": goal["science_task"],
+        "science_task": science_task_line(goal["science_task"], intake.get("held")),
         "tools_section": bundle_mod.tools_section(contracts),
         "must_not": bundle_mod.must_not_section(goal["must_not"]),
         "skills_section": bundle_mod.skills_section([]),

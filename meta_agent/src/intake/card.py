@@ -308,6 +308,53 @@ def problems(card, req_dir=None):
     out += adapter_problems(card, req_dir)
     out += workflow_problems(card)
     out += row_problems(card, req_dir)
+    for item, phrase in held_named(card.get("science_task"), card.get("held")):
+        out.append("science_task: it names %s, which held[] holds (%s); a science task names what the bundle computes: "
+                   "narrow it in this revision, or a person releases the item" % (phrase, item))
+    return out
+
+
+LEADING = ("the", "a", "an", "its", "their", "other", "all", "any")
+SEGMENT_RE = re.compile(r"[(),;:]|\band\b|\bor\b", re.I)
+
+
+def stem(token):
+    return token[:-1] if len(token) > 3 and token.endswith("s") and not token.endswith("ss") else token
+
+
+def words_of(text):
+    """Lower-case word stems, hyphens, underscores and slashes read as spaces."""
+    return [stem(t) for t in re.findall(r"[a-z0-9]+", re.sub(r"[-_/]", " ", str(text or "").lower()))]
+
+
+def held_phrases(item):
+    """The phrases a held item names: the item cut at brackets, commas, 'and' and 'or', each part without a leading
+    article; a part counts when it has two words or more, or is one identifier (an underscore or an inner capital)."""
+    out = []
+    for part in SEGMENT_RE.split(str(item or "")):
+        raw = part.strip()
+        words = words_of(raw)
+        while words and words[0] in LEADING:
+            words = words[1:]
+        if len(words) >= 2 or (len(words) == 1 and re.search(r"_|[a-z][A-Z]", raw)):
+            out.append(words)
+    return out
+
+
+def held_named(science_task, held):
+    """[(held item, the phrase in the science task)] for each item of held[] not yet released whose phrase the science
+    task names (tasks/016, run 20261117-7, rheotool-2: a science task written at the first revision named quantities a
+    later revision held, and the bundle's CLAUDE.md named what it does not compute)."""
+    task = words_of(science_task)
+    out = []
+    for h in held or []:
+        if isinstance(h, dict) and (h.get("released_by") or h.get("released_at")):
+            continue
+        item = h.get("item") if isinstance(h, dict) else h
+        for words in held_phrases(item):
+            n = len(words)
+            if any(task[i:i + n] == words for i in range(len(task) - n + 1)):
+                out.append((str(item), " ".join(words)))
     return out
 
 
