@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "016",
+  "answers": null,
+  "text": "Round five of the clone (run 20261117-1 at 35384bf, template v10; collection 20261117-1/collect-1 on this computer; tasks/016 has the round) carried the HOOMD-blue request to a build with nobody answering, its exact scientific tasks passing in an isolated copy. Its seat wrote failure lines in the clone that are the meta role's: (a) the intake stage wrote adapter_source from the repository root while the Designer reads it under meta_agent/, and the stage did not look for the adapters: let the stage refuse an adapter_source that does not resolve as the Designer resolves it; (b) the stage wrote calls_external true where tool_contract.schema.json wants an object, and judged the card only against the intake schema: let it judge each contract with the gate's tool_contract schema; (c) the Designer's validation report writes not_run for a scientific task that ran and measured and has no tolerance, where validation_report.schema.json and the bundle's own validate_tasks.py say undecided: write undecided there, with the measurement as its evidence; (d) a lesson for an engine agent's adapters: with no environment, report the missing environment before any other input problem, so the tree's gates say not_run and not fail. The design role landed: a version of three parts is an identifier to the number rule (65fd4f2); skills.py check notes a description's numbers as B6 reads them, build-library-skill asks for the description in words, and each skill that writes a value names classify-knowledge at its start (7e898fb). The clone's round-five bundle is copied into run 20261117-2 for a standalone test; run 20261117-1 is removed after this note is committed.",
+  "written_at": "2026-11-17T08:49:51-08:00"
+}
