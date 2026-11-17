@@ -61,6 +61,14 @@ v9  changes the gate, after a test run built an agent on an engine whose
     that installer and channel under package_sources; every other network
     tool is refused. CLAUDE.md says so, and .claude/settings.json denies a
     session's edit of envelope/execution_permission.json.
+v10 changes text and the runner of tools, after round four's bundle was
+    tested standing alone (tasks/016): CLAUDE.md says which envelope file
+    opens which gate, that tool calls and the checks leave folders under
+    runs/, that the install keeps its package cache there and that a
+    measured value's grade is the builder's to derive; README.md and
+    tasks/001-start.md say what the bundle carries and prints. The runner
+    points the installers' caches at runs/cache before the install and
+    refuses an output whose field of unit count is below zero.
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -76,8 +84,8 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v3": os.path.join(HERE, "template_v3"), "v4": os.path.join(HERE, "template_v4"),
            "v5": os.path.join(HERE, "template_v5"), "v6": os.path.join(HERE, "template_v6"),
            "v7": os.path.join(HERE, "template_v7"), "v8": os.path.join(HERE, "template_v8"),
-           "v9": os.path.join(HERE, "template_v9")}
-LATEST = "v9"
+           "v9": os.path.join(HERE, "template_v9"), "v10": os.path.join(HERE, "template_v10")}
+LATEST = "v10"
 SOURCE = SOURCES[LATEST]
 
 

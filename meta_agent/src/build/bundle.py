@@ -65,6 +65,20 @@ def field(name, prop, required=False):
     return "`%s` (%s)" % (name, text)
 
 
+def gate_line(tc):
+    """Where the gate is and which file opens it (test run 20261116-8: a session could not tell which of the two
+    envelope files opened a tool's gate)."""
+    gate = tc.get("safety_gate") or {}
+    if tc.get("side_effects") == "network":
+        return ("asked of every call, at %s; opened by the lab's execution permission in `envelope/execution_permission.json`, "
+                "as the one install, where it lists this tool's installer and channel" % gate.get("place", "src/gate.py"))
+    if not gate.get("required"):
+        return "not required (" + gate.get("place", "no side effects") + ")"
+    if gate.get("opens_by") == "execution_permission":
+        return "required, at %s; opened by the lab's execution permission in `envelope/execution_permission.json`" % gate.get("place", "src/gate.py")
+    return "required, at %s; opened by the safety values in `envelope/safety.json`" % gate.get("place", "src/gate.py")
+
+
 def tools_section(tool_contracts):
     out = []
     for tc in tool_contracts:
@@ -76,7 +90,7 @@ def tools_section(tool_contracts):
                    % (tc["name"], tc["description"], ins or "none", outs or "none",
                       ", ".join("`%s`" % e for e in tc.get("errors", [])), tc.get("side_effects"),
                       "yes" if tc.get("idempotent") else "no",
-                      ("required, at " + gate.get("place", "src/gate.py")) if gate.get("required") else "not required (" + gate.get("place", "no side effects") + ")"))
+                      gate_line(tc)))
     return "\n\n".join(out) if out else "This agent has no callable tool."
 
 

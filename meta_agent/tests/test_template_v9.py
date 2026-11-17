@@ -109,7 +109,7 @@ class TheVersion(unittest.TestCase):
         self.assertEqual(cards.tree_files(v8), cards.tree_files(v9))
         changed = sorted(r for r in cards.tree_files(v8) if cards.sha256_file(os.path.join(v8, r)) != cards.sha256_file(os.path.join(v9, r)))
         self.assertEqual(changed, [".claude/settings.json", "CLAUDE.md", "TEMPLATE.json", "src/gate.py"])
-        self.assertEqual(template_mod.LATEST, "v9")
+        self.assertIn(template_mod.LATEST, template_mod.SOURCES)
         text = cards.read_text(os.path.join(v9, "CLAUDE.md"))
         self.assertIn("The one network call this agent may make is an install", text)
         self.assertEqual([c for c in text if c.isdigit()], [])
