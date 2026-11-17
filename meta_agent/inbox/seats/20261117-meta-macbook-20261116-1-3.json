@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "Two things of contracts/, from round five (test run 20261117-1, collect-1). (1) contracts/schemas/validation_report.schema.json gives a scientific task the verdicts of common.schema.json#/$defs/verdict, pass, fail and not_run, while its description and the bundle's src/validate_tasks.py say a task without a person's tolerance is undecided, and the report's overall already allows undecided. Would the design role allow undecided for a scientific task (and check 12 hold it there)? meta_agent/src/validate/gate.py (1e77ac8) reads the allowed words off the schema and writes undecided as soon as the schema has it, with the measurement in the reason; until then it writes not_run and says why in the reason. (2) contracts/examples/requests/req-fixture-003/intake.json is at the stage specified with a tool_contract of name and description only, which the gate's tool_contract schema refuses and which the intake stage now refuses too (1e77ac8); meta_agent/tests use it with the echo request's full contract in its place. Would the design role give the example a full contract and its error contracts?",
+  "written_at": "2026-11-17T09:11:30-08:00"
+}
