@@ -152,7 +152,7 @@ class TheVersion(unittest.TestCase):
         self.assertEqual(cards.tree_files(v7), cards.tree_files(v8))
         changed = sorted(r for r in cards.tree_files(v7) if cards.sha256_file(os.path.join(v7, r)) != cards.sha256_file(os.path.join(v8, r)))
         self.assertEqual(changed, ["CLAUDE.md", "TEMPLATE.json", "src/gate.py"])
-        self.assertEqual(template_mod.LATEST, "v8")
+        self.assertIn("v8", template_mod.SOURCES)
         text = cards.read_text(os.path.join(v8, "CLAUDE.md"))
         self.assertIn("envelope/execution_permission.json", text)
         self.assertEqual([c for c in text if c.isdigit()], [])     # B6: no number the snapshot does not carry

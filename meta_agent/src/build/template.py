@@ -54,6 +54,13 @@ v8  changes the gate, after the person's word that an engine tool opens
     the level found; every other gated tool still waits for safety
     values. The Designer writes that file from the lab profile a build
     names, and none where the profile carries only words.
+v9  changes the gate, after a test run built an agent on an engine whose
+    environment no tool of its bundle could make (tasks/016): the one
+    network call a bundle may make is an install, by a tool whose contract
+    names installs_from, where the permission reaches an engine and lists
+    that installer and channel under package_sources; every other network
+    tool is refused. CLAUDE.md says so, and .claude/settings.json denies a
+    session's edit of envelope/execution_permission.json.
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -68,8 +75,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "template_v2"),
            "v3": os.path.join(HERE, "template_v3"), "v4": os.path.join(HERE, "template_v4"),
            "v5": os.path.join(HERE, "template_v5"), "v6": os.path.join(HERE, "template_v6"),
-           "v7": os.path.join(HERE, "template_v7"), "v8": os.path.join(HERE, "template_v8")}
-LATEST = "v8"
+           "v7": os.path.join(HERE, "template_v7"), "v8": os.path.join(HERE, "template_v8"),
+           "v9": os.path.join(HERE, "template_v9")}
+LATEST = "v9"
 SOURCE = SOURCES[LATEST]
 
 
