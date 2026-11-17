@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "016",
+  "answers": null,
+  "text": "GitHub Actions' gate has failed on the last three pushed heads (b3b90dd run 44157259726, d4a58fe run 44158220439, 88767f8 run 44188603671; 018664b was the last success), relayed from the person through the status-report session. The step 'Tests of the Meta-Agent' ends 'Ran 301 tests ... FAILED (failures=3)': meta_agent.tests.test_designer ValidatedInItsEnvironment.test_the_science_is_judged_in_a_copy_whose_own_install_made_its_environment (environment mock, not sandbox), ValidatedInItsEnvironment.test_when_the_install_fails_the_report_says_not_run_and_why (the report gives INSTALL_ENVIRONMENT-INSTALLER-MISSING, not ENV-PIXI-001), and ExecutionPermission.test_an_engine_tool_is_built_open_on_the_lab_s_permission_and_the_tree_passes (interface fail: network). Cause, reproduced here: since template v11 the bundle's src/run_tool.py looks for the contract's installer on PATH before the install tool runs; these tests' stand-in install adapters need no pixi, but they build on the newest template, so they pass only where a real pixi is on PATH. This Mac has one (/opt/homebrew/Caskroom/miniconda/base/bin/pixi); the Linux runner has none. With a PATH holding only a link to Python (shutil.which('pixi') None), the same three fail here, 9 run, failures=3; with pixi on PATH they pass. Asked: make these tests hermetic, for example a stand-in executable named pixi in a folder of the test put first on the PATH the build and S6 run with, so that the suite says the same on every computer; the test of the missing installer (test_template_v11) shows the other path already. CI stays red until it lands and is pushed on the person's word.",
+  "written_at": "2026-11-17T14:28:35-08:00"
+}
