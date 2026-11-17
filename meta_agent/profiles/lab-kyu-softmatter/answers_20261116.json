@@ -1,0 +1,14 @@
+{
+  "note": "The person's answers of 2026-11-16 to the questions of this folder's proposal.md. The person chose among options the design seat had written; the choices are quoted in Korean with what each option said in docs/ideas/20261116.md, section 'The lab's policy questions are answered, and test sessions are run from the command line' (c4b7005). This file was written by the seat meta-macbook-20261116-1 from that record, each value the English rendering the design seat gave in meta_agent/inbox/seats/20261116-design-macbook-20261116-1-4.json; it is what Step three read. The answers are for this lab's profile and for no other.",
+  "answered_by": "human",
+  "date": "2026-11-16",
+  "answers": {
+    "policy.working_mode": "in batches: a request is carried through and the person sees the results together; it still stops at what only a person decides",
+    "policy.approval_mode": "bundle hand-over, the release of held, and safety values only",
+    "policy.publication_scope": "this lab",
+    "policy.execution_permission": "as far as a simulation engine on this computer; no instrument",
+    "policy.external_transfer_of_private_code": false,
+    "collaboration.mode": "works alone",
+    "hardware.hpc": "none"
+  }
+}
