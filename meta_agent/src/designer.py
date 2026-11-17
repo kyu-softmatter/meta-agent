@@ -155,8 +155,9 @@ def latest_file(req_dir, name):
 
 
 def bound_skills(root):
-    """The library's rows for its bound skills (what src/parameters/bounds.py is handed)."""
-    return [r for r in catalogue_mod.build_index(os.path.join(root, "skills"))["skills"] if r["kind"] == "bound"]
+    """The library's rows for its bound and estimate skills (what src/parameters/bounds.py is handed); an estimate is
+    bound to the rows its entries name, a bound to the row named for its parameter."""
+    return [r for r in catalogue_mod.build_index(os.path.join(root, "skills"))["skills"] if r["kind"] in ("bound", "estimate")]
 
 
 def sheet_inputs(req_dir):

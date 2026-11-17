@@ -12,6 +12,9 @@ bound's value, a grade or a point.
              a row to be bounded: name, unit, value null, and whatever else the row carries
     binding  {skills: [{skill: "<id>@v<n>", verdict: used | not_applied, why, inputs: {<input>: <row name>}}]}
              run in this order, so a value skill is named before a bound that rests on the row it gives
+             an estimate skill's entry also names `target`, the row it fills, and `output`, which of its outputs
+             that row is (needed when it gives several); one estimate may be bound once per row, so that a
+             swept parameter is a row per point, each with its own basis (2026-11-17, check 19)
 
 What apply() does, in order: derives every input row's grade from contracts/grades.json; refuses a binding
 that leaves an applicable bound skill out, gives no reason for a `not_applied`, or binds an input to a row
@@ -147,9 +150,9 @@ def _run(run, ref, inputs, output):
     return value
 
 
-def _compute(run, skill, bound_rows):
-    """One skill on the rows it is bound to: (value, uncertainty or None)."""
-    output = skill["outputs"][0]["name"]
+def _compute(run, skill, bound_rows, output=None):
+    """One skill on the rows it is bound to, at one of its outputs (the first when none is named): (value, uncertainty or None)."""
+    output = output or skill["outputs"][0]["name"]
     inputs = {name: row["value"] for name, row in bound_rows.items()}
     value = _run(run, skill["ref"], inputs, output)
     variance = 0.0
@@ -193,7 +196,10 @@ def apply(draft, binding, skills, run, seat, now=None, sheet_path=None, tree=Non
     library = {r["ref"]: r for r in skills}
     entries = list(binding.get("skills") or [])
     listed = [e.get("skill") for e in entries]
-    twice = sorted({s for s in listed if listed.count(s) > 1})
+    kind_of = {r["ref"]: r.get("kind") for r in skills}
+    # a bound is listed once; an estimate once per row it fills (its entries name distinct targets)
+    twice = sorted({s for s in listed if listed.count(s) > 1 and not (
+        kind_of.get(s) == "estimate" and len({e.get("target") for e in entries if e.get("skill") == s}) == listed.count(s))})
     if twice:
         raise BindingError("the binding lists %s more than once" % ", ".join(twice))
     for e in entries:
@@ -212,10 +218,24 @@ def apply(draft, binding, skills, run, seat, now=None, sheet_path=None, tree=Non
         if e["verdict"] != "used":
             continue
         skill = library[e["skill"]]
-        target = by_name.get(skill.get("parameter"))
-        if target is None:
-            raise MissingRow("%s bounds %s, and the draft has no row of that name" % (skill["ref"], skill.get("parameter")))
-        out_unit = skill["outputs"][0]["unit"]
+        estimate = skill.get("kind") == "estimate"
+        output = None
+        if estimate:
+            target = by_name.get(e.get("target"))
+            if target is None:
+                raise MissingRow("%s is an estimate bound to the row %r, which is not a row of the draft: an estimate's entry names "
+                                 "its target" % (skill["ref"], e.get("target")))
+            names = [o["name"] for o in skill["outputs"]]
+            output = e.get("output") or (names[0] if len(names) == 1 else None)
+            if output not in names:
+                raise BindingError("%s gives %s and the entry for %s names %s: it names which output the row is"
+                                   % (skill["ref"], ", ".join(names), target["name"], "output %r" % e.get("output") if e.get("output") else "none"))
+            out_unit = skill["outputs"][names.index(output)]["unit"]
+        else:
+            target = by_name.get(skill.get("parameter"))
+            if target is None:
+                raise MissingRow("%s bounds %s, and the draft has no row of that name" % (skill["ref"], skill.get("parameter")))
+            out_unit = skill["outputs"][0]["unit"]
         if target.get("unit") != out_unit:
             raise WrongUnit("%s gives %s and the row %s is in %s" % (skill["ref"], out_unit, target["name"], target.get("unit")))
         bound_to = dict(e.get("inputs") or {})
@@ -237,12 +257,14 @@ def apply(draft, binding, skills, run, seat, now=None, sheet_path=None, tree=Non
                 raise WrongUnit("%s: input %s is in %s and the row %s is in %s"
                                 % (skill["ref"], spec["name"], spec["unit"], row_name, row.get("unit")))
             bound_rows[spec["name"]] = row
-        value, uncertainty = _compute(run, skill, bound_rows)
+        value, uncertainty = _compute(run, skill, bound_rows, output)
         basis = {"skill": skill["ref"], "inputs": {name: row["name"] for name, row in bound_rows.items()}}
+        if estimate and len(skill["outputs"]) > 1:
+            basis["output"] = output
         grade = rules.computed_grade({"rows": rows}, basis)
         if grade is None:
             raise NoGrade("%s: an input row has no grade" % skill["ref"])
-        if skill.get("side") == "value":
+        if estimate or skill.get("side") == "value":
             if target.get("safety_relevant"):
                 raise SafetyRow("%s would write a value on %s, a safety-relevant row: its value is a person's" % (skill["ref"], target["name"]))
             if target.get("value") is not None:
@@ -284,7 +306,12 @@ def apply(draft, binding, skills, run, seat, now=None, sheet_path=None, tree=Non
     sheet["rows"] = rows
     if draft.get("tool_ref"):
         sheet["tool_ref"] = dict(draft["tool_ref"])
-    sheet["skills_considered"] = [{"skill": e["skill"], "verdict": e["verdict"], "why": str(e.get("why") or "")} for e in entries]
+    considered, seen = [], set()
+    for e in entries:                                      # an estimate bound to several rows is considered once
+        if e["skill"] not in seen:
+            seen.add(e["skill"])
+            considered.append({"skill": e["skill"], "verdict": e["verdict"], "why": str(e.get("why") or "")})
+    sheet["skills_considered"] = considered
     if draft.get("objectives"):
         sheet["objectives"] = copy.deepcopy(draft["objectives"])
     if sheet_path is not None:
