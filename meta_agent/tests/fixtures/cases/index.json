@@ -24,7 +24,7 @@
       "id": "case-fx-shear-range",
       "revision": 1,
       "path": "cases/case-fx-shear-range.json",
-      "hash": "sha256:a68d1056eb4e51bf920b5a87c4a52185d129fdb257f6ca652c145b6f57aa3705"
+      "hash": "sha256:e426c5817e94f20fa3851942088f36b8b2910951d99871c940c4d88ab1ac588c"
     },
     {
       "id": "case-fx-unit-mismatch",

@@ -11,6 +11,7 @@ import sys
 import tempfile
 import unittest
 
+from meta_agent.src import cards
 from meta_agent.src.cases import promote
 from meta_agent.src.cases import recall as recall_mod
 from meta_agent.src.cases import rules
@@ -48,7 +49,7 @@ class Recall(unittest.TestCase):
         self.assertTrue(hit["cue"])
 
     def test_a_scalar_meets_whatever_its_case_and_spacing(self):
-        r = self.search({"engine": "  HOOMD ", "executes": "engine"})
+        r = self.search({"engine": "  HOOMD_Blue ", "executes": "engine"})
         self.assertEqual(ids(r), ["case-fx-shear-range"])
 
     def test_executes_alone_is_not_a_level_1_hit(self):
@@ -83,7 +84,7 @@ class Recall(unittest.TestCase):
         self.assertTrue(gaps[0]["requires"])
 
     def test_an_absent_store_is_a_gap_and_not_an_error(self):
-        r = recall_mod.recall({"engine": "hoomd"}, os.path.join(HERE, "fixtures", "no-such", "cases"), "nowhere/cases")
+        r = recall_mod.recall({"engine": "hoomd_blue"}, os.path.join(HERE, "fixtures", "no-such", "cases"), "nowhere/cases")
         self.assertEqual(r["store"], "nowhere/cases (absent)")
         refs, gaps = recall_mod.refs_and_gaps(r)
         self.assertEqual(gaps[0]["reason"], "no cases store to search")
@@ -160,8 +161,8 @@ class WhatIsNotRecalled(unittest.TestCase):
         self.rewrite("case-fx-shear-range.json", lambda c: c.update(status="refused"))
         self.reindex()
         self.assertEqual(recall_mod.recall({"engine": "lammps"}, self.store)["hits"], [])
-        self.assertEqual(recall_mod.recall({"engine": "hoomd"}, self.store)["hits"], [])
-        self.assertEqual(recall_mod.recall({"engine": "hoomd"}, self.store)["cases_read"], 2)
+        self.assertEqual(recall_mod.recall({"engine": "hoomd_blue"}, self.store)["hits"], [])
+        self.assertEqual(recall_mod.recall({"engine": "hoomd_blue"}, self.store)["cases_read"], 2)
 
     def test_only_the_latest_revision_of_an_id_is_recalled(self):
         v2 = self.rewrite("case-fx-lammps-a.json", lambda c: None)
@@ -207,7 +208,7 @@ class SeedSma(unittest.TestCase):
             self.assertEqual((c["source_repo_commit"], c["source_agent"]), ("d68ee7d2", "simulation_agent"))
             self.assertEqual(c["signature"]["executes"], "engine")
             self.assertEqual(c["count"]["supports"], 1)
-        self.assertEqual(two["signature"]["engine"], "hoomd")
+        self.assertEqual(two["signature"]["engine"], "hoomd_blue")
         self.assertNotIn("engine", one["signature"])
         self.assertEqual(three["signature"]["observables"], ["tracer_diffusivity"])
         self.assertEqual(three["what_happened"], "planned: a fixture: ten frames of tracer_diffusivity data; actual: a fixture: nine frames")
@@ -218,6 +219,33 @@ class SeedSma(unittest.TestCase):
         self.assertIn("Verdict transfer by rule F2", two["note"])
         self.assertIn("Verdict drop by rule F1", one["note"])
         self.assertIn("Verdict downgrade by rule F6", three["note"])
+
+    def test_a_seed_that_carries_a_word_for_its_engine_gets_a_next_revision_with_the_registry_id(self):
+        seed_sma.seed(SMA, self.out, SEAT, self.drafts, NOW, files=True)
+        first = os.path.join(self.out, "sma", "simulation-002.json")
+        card = cards.load_json(first)
+        self.assertIn(card["signature"]["engine"], [e["id"] for e in cards.load_json(
+            os.path.join(REPO, "contracts", "registry", "engines.json"))["engines"]])
+        self.assertEqual(seed_sma.revise_engines(self.out, SEAT, NOW), [])      # a seed made now needs none
+        card["signature"]["engine"] = "hoomd"                                   # as the first seeds were written
+        cards.write_json(first, card)
+        with open(first, "rb") as f:
+            before = f.read()
+        self.assertEqual(seed_sma.revise_engines(self.out, "meta-macbook-20261116-1", "2026-11-16T12:00:00Z"), ["case-sma-simulation-002"])
+        with open(first, "rb") as f:
+            self.assertEqual(f.read(), before)
+        second = cards.load_json(os.path.join(self.out, "sma", "v2_simulation-002.json"))
+        self.assertEqual((second["id"], second["revision"], second["supersedes"]), ("case-sma-simulation-002", 2, "case-sma-simulation-002"))
+        self.assertEqual(second["signature"]["engine"], "hoomd_blue")
+        self.assertEqual({k: v for k, v in second.items() if k not in ("revision", "supersedes", "author", "created_at", "signature", "note")},
+                         {k: v for k, v in card.items() if k not in ("revision", "author", "created_at", "signature", "note")})
+        self.assertEqual({k: v for k, v in second["signature"].items() if k != "engine"},
+                         {k: v for k, v in card["signature"].items() if k != "engine"})
+        self.assertEqual(seed_sma.revise_engines(self.out, SEAT, NOW), [])
+        rules.main(["index", self.out])
+        hits = recall_mod.recall({"engine": "hoomd_blue", "condition_tags": ["sma_kind:success"]}, self.out)["hits"]
+        self.assertEqual([(h["id"], h["revision"]) for h in hits], [("case-sma-simulation-002", 2)])
+        self.assertEqual(recall_mod.recall({"engine": "hoomd", "condition_tags": ["sma_kind:success"]}, self.out)["hits"], [])
 
     def test_a_second_run_changes_no_file(self):
         seed_sma.seed(SMA, self.out, SEAT, self.drafts, NOW, files=True)
@@ -248,7 +276,7 @@ class SeedSma(unittest.TestCase):
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
         self.assertIn("3 cards", p.stdout)
         # a dropped seed is in the store and is not recalled; the transferred one is
-        r = recall_mod.recall({"engine": "hoomd", "condition_tags": ["sma_kind:success"]}, self.out)
+        r = recall_mod.recall({"engine": "hoomd_blue", "condition_tags": ["sma_kind:success"]}, self.out)
         self.assertEqual([h["id"] for h in r["hits"]], ["case-sma-simulation-002"])
 
     def test_the_command_refuses_to_write_into_the_checkout(self):

@@ -17,7 +17,7 @@
   "signature": {
     "science_task": "steady shear viscosity of a colloidal suspension",
     "executes": "engine",
-    "engine": "hoomd",
+    "engine": "hoomd_blue",
     "methods": [
       "brownian dynamics"
     ],

@@ -2,6 +2,7 @@
 
     python -m meta_agent.src.cases.seed_sma <path-to-sma-checkout> --seat <seat>
            [--out meta_agent/cases] [--drafts meta_agent/src/cases/sma_drafts.json] [--now ISO] [--files]
+    python -m meta_agent.src.cases.seed_sma --revise-engines --seat <seat> [--out meta_agent/cases] [--now ISO]
 
 Reads, and writes nothing there:
   <agent>/failures.jsonl of librarian_agent, simulation_agent, microscope_agent and bridge, as committed at
@@ -28,7 +29,11 @@ What a case carries
 
 Signature (what recall can meet)
   executes        instrument for microscope_agent, engine for simulation_agent, none for the rest
-  engine          hoomd, when a simulation_agent line names it
+  engine          hoomd_blue, the id contracts/registry/engines.json gives the engine, when a
+                  simulation_agent line names hoomd. A case's engine is a registry id, so that a goal
+                  that names its tool by the registry meets it (the design seat, 2026-11-16). The first
+                  seeds carried the word hoomd; --revise-engines writes the next revision of each such
+                  case with the id in its place and nothing else changed, and reads no checkout.
   observables     tracer_diffusivity, when the line carries that identifier
   science_task    empty: no line states one
   cause_class     an incident's class with - as _, when contracts/case_classes.json has that key;
@@ -72,6 +77,7 @@ from . import META, REPO, rules
 from .. import cards
 
 REPOSITORY = "soft-matter-agents"
+ENGINE_IDS = {"hoomd": "hoomd_blue"}   # the word a line uses for an engine -> its id in contracts/registry/engines.json
 FAILURES_COMMIT = "d68ee7d2"
 INCIDENTS_COMMIT = "7bc5a0f9~1"
 # (source name in ids and file names, the agent folder, commit, path in the repository, executes)
@@ -179,7 +185,7 @@ def signature_of(source, executes, line, verdict, case_classes):
     tags.append("seed_verdict:" + verdict)
     sig = {"science_task": "", "executes": executes}
     if source == "simulation" and "hoomd" in text:
-        sig["engine"] = "hoomd"
+        sig["engine"] = ENGINE_IDS["hoomd"]
     sig["observables"] = [o for o in OBSERVABLE_IDS if o in text]
     sig["parameter_names"] = []
     sig["cause_class"] = cause
@@ -256,9 +262,52 @@ def seed(checkout, out_dir, seat, drafts, now=None, files=False):
     return report
 
 
+REVISION_FILE = re.compile(r"^(?:v([0-9]+)_)?(.+\.json)$")
+
+
+def revise_engines(out_dir, seat, now=None):
+    """The next revision of every seed case whose engine is a word and not a registry id. Returns the ids
+    revised. A case is never rewritten: the revision is a new file v<N>_<name> beside it, with the engine's
+    id in the signature, `supersedes`, and a sentence in its note; a second run finds nothing to revise."""
+    now = cards.now_iso(now)
+    folder = os.path.join(out_dir, "sma")
+    latest = {}
+    for fn in sorted(os.listdir(folder)) if os.path.isdir(folder) else []:
+        m = REVISION_FILE.match(fn)
+        if m and fn != "index.json":
+            rev, name = int(m.group(1) or 1), m.group(2)
+            if name not in latest or rev > latest[name][0]:
+                latest[name] = (rev, fn)
+    revised = []
+    for name in sorted(latest):
+        rev, fn = latest[name]
+        card = cards.load_json(os.path.join(folder, fn))
+        word = (card.get("signature") or {}).get("engine")
+        if word not in ENGINE_IDS:
+            continue
+        new = json.loads(json.dumps(card))
+        new["revision"] = rev + 1
+        new["supersedes"] = card["id"]
+        new["author"] = seat
+        new["created_at"] = now
+        new["signature"]["engine"] = ENGINE_IDS[word]
+        new["note"] = (card.get("note") or "").rstrip() + (
+            " Revision %d: the signature's engine is %s, the id contracts/registry/engines.json gives it, where "
+            "revision %d carried the word %s; a case's engine is a registry id (the design seat, 2026-11-16). Nothing "
+            "else is changed." % (rev + 1, ENGINE_IDS[word], rev, word))
+        target = os.path.join(folder, "v%d_%s" % (rev + 1, name))
+        if os.path.exists(target):
+            raise FileExistsError(target)
+        cards.write_json(target, new)
+        revised.append(card["id"])
+    return revised
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("checkout", help="the soft-matter-agents checkout; read only")
+    ap.add_argument("checkout", nargs="?", help="the soft-matter-agents checkout; read only")
+    ap.add_argument("--revise-engines", action="store_true",
+                    help="write the next revision of each seed case whose engine is not a registry id; reads no checkout")
     ap.add_argument("--seat", required=True)
     ap.add_argument("--out", default=os.path.join(META, "cases"), help="the cases/ store to write under")
     ap.add_argument("--drafts", default=DEFAULT_DRAFTS, help="cue, lesson and falsification by case id")
@@ -268,6 +317,16 @@ def main(argv=None):
     out_dir = os.path.abspath(args.out)
     if os.path.basename(out_dir) != "cases":
         raise SystemExit("seed_sma: --out is a cases/ folder")
+    if args.revise_engines:
+        if args.checkout:
+            raise SystemExit("seed_sma: --revise-engines reads no checkout")
+        revised = revise_engines(out_dir, args.seat, args.now)
+        print("revised    %d case(s): %s" % (len(revised), ", ".join(revised) or "none; every engine is a registry id"))
+        if revised:
+            rules.main(["index", out_dir])
+        return 0
+    if not args.checkout:
+        raise SystemExit("seed_sma: name the checkout to read, or --revise-engines")
     checkout = os.path.abspath(args.checkout)
     if out_dir == checkout or out_dir.startswith(checkout + os.sep):
         raise SystemExit("seed_sma: nothing is written into the checkout it reads")
