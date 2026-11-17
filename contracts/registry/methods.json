@@ -54,6 +54,23 @@
       "verified": null
     },
     {
+      "id": "hpmc",
+      "name": "hard particle Monte Carlo",
+      "scale": [
+        "coarse_grained",
+        "mesoscale"
+      ],
+      "settings_that_matter": [
+        "particle shape",
+        "volume fraction",
+        "trial move sizes",
+        "number of sweeps",
+        "random seed"
+      ],
+      "verified": null,
+      "note": "added 2026-11-16 (tasks/016): a request on the HOOMD-blue tutorial 'Introducing HOOMD-blue' found no id for the method the tutorial uses; named from that documentation as a test session read it, not read by the seat that added it, and unverified like the seed entries"
+    },
+    {
       "id": "mesoscale_multiphase",
       "name": "mesoscale and multiphase methods (LBM, DPD, phase field)",
       "scale": [

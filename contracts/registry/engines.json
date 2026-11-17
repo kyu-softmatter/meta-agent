@@ -109,7 +109,8 @@
       ],
       "methods": [
         "md",
-        "bd_cg"
+        "bd_cg",
+        "hpmc"
       ],
       "interface": "python_api",
       "language": "C++/Python",

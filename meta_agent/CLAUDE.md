@@ -12,7 +12,7 @@ No instrument, no engine process, no network path to an instrument computer, no 
 
 ## The pipeline you run, and the skill for each part (plan.md 4, 5)
 
-What to do at each part is in a session skill under `../.claude/skills/`, loaded when you reach it.
+What to do at each part is in a session skill under `../.claude/skills/`, loaded when you reach it. Load it, at the point it names; reading its file ahead with a shell command is not loading it, and a part done without its skill loaded is done from memory of it.
 
 - **S0 Onboarding** — `analyse-lab-environment`.
 - **S1 Intake** — `understand-purpose`.
