@@ -30,6 +30,11 @@ NOW = "2026-11-10T04:00:00Z"
 ENV = dict({k: v for k, v in os.environ.items() if k != "PYTHONPATH"}, PYTHONUTF8="1", PYTHONDONTWRITEBYTECODE="1")
 VALUES = ["water_viscosity_iapws_sr6@v1", "water_viscosity_kestin_1978@v1", "water_viscosity_relative_difference@v1",
           "water_density_iapws_sr6@v1"]
+# The bound skills these tests were written on; a bound skill added to the library changes no test here.
+BOUNDS = ["shear_rate_min_from_min_speed@v1", "shear_rate_max_from_max_speed@v1", "shear_rate_max_from_inertia@v1",
+          "shear_stress_min_from_min_torque@v1", "shear_stress_max_from_max_torque@v1", "viscosity_min_measurable_at_rate@v1",
+          "gap_min_from_particle_size@v1", "timestep_max_from_courant@v1", "timestep_max_from_diffusion@v1",
+          "timestep_max_from_relaxation_time@v1"]
 USED = VALUES + ["shear_rate_min_from_min_speed@v1", "shear_rate_max_from_max_speed@v1", "shear_rate_max_from_inertia@v1",
         "shear_stress_min_from_min_torque@v1", "shear_stress_max_from_max_torque@v1", "viscosity_min_measurable_at_rate@v1",
         "gap_min_from_particle_size@v1"]
@@ -83,10 +88,10 @@ def scratch_root():
 
 
 class BoundSkills(unittest.TestCase):
-    def test_ten_bound_skills_and_four_value_skills_each_with_passing_cases(self):
+    def test_the_bound_and_value_skills_are_there_and_every_one_has_passing_cases(self):
         rows = skills()
-        self.assertEqual(len([r for r in rows if r["side"] in ("min", "max")]), 10)
-        self.assertEqual(sorted(r["ref"] for r in rows if r["side"] == "value"), sorted(VALUES))
+        self.assertEqual(sorted(set(BOUNDS) - {r["ref"] for r in rows if r["side"] in ("min", "max")}), [])
+        self.assertEqual(sorted(set(VALUES) - {r["ref"] for r in rows if r["side"] == "value"}), [])
         kinds = rules.skill_rules.load_kinds()
         for r in rows:
             d = catalogue.find(r["ref"])
@@ -105,8 +110,8 @@ class BoundSkills(unittest.TestCase):
             self.assertEqual(len(r["outputs"]), 1)
             if r["ref"] in judgements:
                 self.assertIn(judgements[r["ref"]], [i["name"] for i in r["inputs"]])
-        self.assertEqual(sorted(r["ref"] for r in skills() if "rheotool" in (r["applies_to"].get("engines") or [])),
-                         ["timestep_max_from_courant@v1", "timestep_max_from_diffusion@v1", "timestep_max_from_relaxation_time@v1"])
+        self.assertLessEqual({"timestep_max_from_courant@v1", "timestep_max_from_diffusion@v1", "timestep_max_from_relaxation_time@v1"},
+                             {r["ref"] for r in skills() if "rheotool" in (r["applies_to"].get("engines") or [])})
 
     def test_the_reynolds_number_is_a_plain_function_of_a_sibling_module(self):
         d = catalogue.find("shear_rate_max_from_inertia@v1")

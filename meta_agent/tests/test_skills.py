@@ -32,6 +32,18 @@ NOW = "2026-11-09T12:00:00Z"
 KINDS = ["bound", "data_analysis", "hardware_boot", "hardware_calibration", "hardware_connection", "hardware_control",
          "hardware_range", "hardware_state"]
 HELD = ["bring_to_ready@v1", "calibrate@v1", "run_steady_shear@v1"]
+# The skills these tests were written on. A skill added to the library changes no test here: a test asks that
+# these are there and that every skill, whichever it is, keeps the library's rules (the design seat's reply
+# meta_agent/inbox/seats/20261116-design-macbook-20261116-1-3.json: a test that every new skill must edit is a
+# fault of the test). What a skill must be is check 22's.
+NOT_FOR_THE_RHEOMETER = ["timestep_max_from_courant@v1", "timestep_max_from_diffusion@v1", "timestep_max_from_relaxation_time@v1",
+                         "water_density_iapws_sr6@v1", "water_viscosity_iapws_sr6@v1", "water_viscosity_kestin_1978@v1",
+                         "water_viscosity_relative_difference@v1"]
+FOR_THE_RHEOMETER = ["bring_to_ready@v1", "calibrate@v1", "find_and_identify@v1", "flow_curve_fit@v1", "gap_min_from_particle_size@v1",
+                     "read_ranges@v1", "read_status@v1", "run_steady_shear@v1", "shear_rate_max_from_inertia@v1",
+                     "shear_rate_max_from_max_speed@v1", "shear_rate_min_from_min_speed@v1", "shear_stress_max_from_max_torque@v1",
+                     "shear_stress_min_from_min_torque@v1", "viscosity_min_measurable_at_rate@v1"]
+SEED = sorted(FOR_THE_RHEOMETER + NOT_FOR_THE_RHEOMETER)
 SESSION_SKILLS = ["choose-session-level", "classify-knowledge", "run-skill"]
 ENV = dict({k: v for k, v in os.environ.items() if k != "PYTHONPATH"}, PYTHONUTF8="1", PYTHONDONTWRITEBYTECODE="1")
 
@@ -91,15 +103,38 @@ def run_skill_in(bundle, ref, payload):
 
 
 class Catalogue(unittest.TestCase):
-    def test_one_skill_of_each_kind_and_ten_bounds(self):
+    def test_the_skills_the_tests_stand_on_are_there_and_each_of_their_kinds_has_one(self):
         rows = catalogue.build_index()["skills"]
-        self.assertEqual(len(rows), 21)
-        self.assertEqual(len([r for r in rows if r["kind"] == "bound" and r["side"] in ("min", "max")]), 10)
-        self.assertEqual(len([r for r in rows if r["kind"] == "bound" and r["side"] == "value"]), 4)
-        self.assertTrue(all(len([r for r in rows if r["kind"] == k]) == 1 for k in KINDS if k != "bound"))
-        self.assertEqual(sorted({r["kind"] for r in rows}), KINDS)
-        self.assertEqual(sorted(r["ref"] for r in rows if r["status"] == "held"), HELD)
+        refs = [r["ref"] for r in rows]
+        self.assertEqual(len(refs), len(set(refs)))
+        self.assertEqual(sorted(set(SEED) - set(refs)), [], "a skill these tests stand on is gone from the library")
+        self.assertLessEqual(set(KINDS), {r["kind"] for r in rows})
+        self.assertLessEqual({r["kind"] for r in rows}, set(rules.load_kinds()["kinds"]))
+        self.assertEqual(sorted(set(HELD) - {r["ref"] for r in rows if r["status"] == "held"}), [])
         self.assertTrue(all(r["side_effect"] == "write_device" for r in rows if r["status"] == "held"))
+
+    def test_a_skill_added_to_the_library_changes_no_test_here(self):
+        """The library with one more skill in it, a copy of a seed skill under a new id: the index takes it and
+        every assertion about the seed skills holds as before."""
+        tmp = tempfile.mkdtemp(prefix="ma-skills-")
+        try:
+            lib = os.path.join(tmp, "skills")
+            shutil.copytree(LIBRARY, lib, ignore=shutil.ignore_patterns("__pycache__", "index.json"))
+            src = catalogue.find("shear_rate_max_from_max_speed@v1")
+            new = os.path.join(os.path.dirname(src).replace(LIBRARY, lib), "shear_rate_max_copy_for_this_test@v1")
+            shutil.copytree(src, new, ignore=shutil.ignore_patterns("__pycache__"))
+            manifest = cards.load_json(os.path.join(new, "skill.json"))
+            manifest["id"] = "shear_rate_max_copy_for_this_test"
+            cards.write_json(os.path.join(new, "skill.json"), manifest)
+            text = cards.read_text(os.path.join(new, "SKILL.md")).replace("shear_rate_max_from_max_speed", "shear_rate_max_copy_for_this_test")
+            cards.write_text(os.path.join(new, "SKILL.md"), text)
+            rows = catalogue.build_index(lib)["skills"]
+            refs = {r["ref"] for r in rows}
+            self.assertIn("shear_rate_max_copy_for_this_test@v1", refs)
+            self.assertEqual(sorted(set(SEED) - refs), [])
+            self.assertLessEqual(set(FOR_THE_RHEOMETER), {r["ref"] for r in catalogue.select(rows, instrument="lab_rheometer")})
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
 
     def test_a_second_build_is_identical_and_is_the_file_on_disk(self):
         tmp = tempfile.mkdtemp(prefix="ma-skills-")
@@ -117,13 +152,15 @@ class Catalogue(unittest.TestCase):
     def test_list_filters_and_says_what_a_model_reads(self):
         rows = catalogue.build_index()["skills"]
         self.assertEqual([r["ref"] for r in catalogue.select(rows, kind="hardware_state")], ["read_status@v1"])
-        self.assertEqual(sorted(r["ref"] for r in catalogue.select(rows, parameter="shear_rate")),
-                         ["flow_curve_fit@v1", "run_steady_shear@v1", "shear_rate_max_from_inertia@v1",
-                          "shear_rate_max_from_max_speed@v1", "shear_rate_min_from_min_speed@v1"])
-        self.assertEqual(sorted(r["ref"] for r in catalogue.select(rows, kind="bound", parameter="time_step")),
-                         ["timestep_max_from_courant@v1", "timestep_max_from_diffusion@v1", "timestep_max_from_relaxation_time@v1"])
-        self.assertEqual(len(catalogue.select(rows, instrument="lab_rheometer")), 14)
-        self.assertEqual(catalogue.select(rows, instrument="microscope"), [])
+        self.assertLessEqual({"flow_curve_fit@v1", "run_steady_shear@v1", "shear_rate_max_from_inertia@v1",
+                              "shear_rate_max_from_max_speed@v1", "shear_rate_min_from_min_speed@v1"},
+                             {r["ref"] for r in catalogue.select(rows, parameter="shear_rate")})
+        self.assertLessEqual({"timestep_max_from_courant@v1", "timestep_max_from_diffusion@v1", "timestep_max_from_relaxation_time@v1"},
+                             {r["ref"] for r in catalogue.select(rows, kind="bound", parameter="time_step")})
+        for_it = {r["ref"] for r in catalogue.select(rows, instrument="lab_rheometer")}
+        self.assertLessEqual(set(FOR_THE_RHEOMETER), for_it)
+        self.assertEqual(for_it & set(NOT_FOR_THE_RHEOMETER), set())
+        self.assertEqual(catalogue.select(rows, instrument="an_instrument_no_skill_names"), [])
         text = catalogue.listing(catalogue.select(rows, kind="bound"))
         self.assertIn("shear_rate_max_from_max_speed@v1", text)
         self.assertIn("inputs: max_angular_velocity (rad/s), cone_angle (rad)", text)
@@ -132,7 +169,8 @@ class Catalogue(unittest.TestCase):
         p = subprocess.run([sys.executable, "-m", "meta_agent.src.skills", "list"], cwd=REPO, capture_output=True, text=True,
                            encoding="utf-8", env=ENV)
         self.assertEqual(p.returncode, 0, p.stderr)
-        self.assertIn("21 skill(s) over 8 kind(s)", p.stdout)
+        rows = catalogue.build_index()["skills"]
+        self.assertIn("%d skill(s) over %d kind(s)" % (len(rows), len({r["kind"] for r in rows})), p.stdout)
 
     def test_a_skill_check_22_would_fault_is_not_indexed(self):
         tmp = tempfile.mkdtemp(prefix="ma-skills-")
