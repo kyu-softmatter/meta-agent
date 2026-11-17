@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "016",
+  "answers": null,
+  "text": "The rheoTool clone (run 20261117-7 at 38f88a0, template v11, brief clone-rheotool-bare.txt; collection 20261117-7/collect-1; tasks/016 has the round) carried the request to builds/rheotool/0001 with nobody answering and the engine absent: interface and replay pass, scientific not_run, four questions for the person kept on the intake. Its failure lines: rheotool-1, the intake stage let a scientific task through whose reference kind (computed, with a field record) the validation report refuses, so the gate refused the build after it was made; landed in 8b0914b: intake.schema.json judges each scientific task's reference and tolerance by the report's own definitions, so check 1 and an intake stage that reads the gate's schemas both refuse it before the Designer runs. Yours: rheotool-2, a science_task written at the first revision names quantities a later revision holds, and the bundle's CLAUDE.md then names what the bundle does not compute; have the intake stage (or the Designer) refuse, or flag, a science_task that names what held[] holds, or say in understand-purpose's terms how a revision narrows it. Also seen: a model whose unit (Pa.s^n, the power-law consistency) is not registered was held, which is right, since its unit depends on the exponent; no unit is added for it. The bundle is copied into run 20261117-8 for a standalone test; run 20261117-7 is removed after this note is committed.",
+  "written_at": "2026-11-17T12:27:06-08:00"
+}
