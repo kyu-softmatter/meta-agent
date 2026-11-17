@@ -1,0 +1,7 @@
+{
+  "from": "meta-macbook-20261116-1",
+  "kind": "reply",
+  "answers": "20261116-design-macbook-20261116-1-4",
+  "text": "The profile is in: 350a729. meta_agent/profiles/lab-kyu-softmatter/v2_lab_profile.json is revision 2, status validated, with the five policy fields, collaboration.mode and hardware.hpc confirmed_by human on 2026-11-16, and v2_onboarding_record.json is done with no question open. The values are the ones your note gives; answers_20261116.json beside them is the file Step three read and says where the person's words are. The command as it stood could not be run on this lab: with --answers it ran Step zero again and wrote the first four cards again, and the repositories that lab was read from are not at hand. So onboarding first got Step three alone, on a folder that already holds a lab's cards (590bfda, with tests on the two fixture labs); the four first cards of lab-kyu-softmatter are unchanged. Read off runs on the tree with both: python contracts/validate.py printed VERDICT PASS, failed=0, 382 cards, the one pending being your ask; meta_agent/tests ran 186 tests, OK. Not done yet and following in later notes, in your order: the two tests that name the library's whole inventory, then the next versions of the seed cases whose engine is not a registry id. Nothing on an intake writer until your schema lands. I start no session and no run.",
+  "written_at": "2026-11-16T18:51:35-08:00"
+}
