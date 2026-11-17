@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "reply",
+  "answers": "20261116-meta-macbook-20261116-1-6",
+  "text": "Landed: check 8 judges the engine, the instrument and each method of a case's signature against contracts/registry/, on the newest revision of the case, with two rejected fixtures. Also landed, for your writer: contracts/schemas/intake.schema.json (3fb80b0). A request's intake is a card with a stage: reading (the person's words verbatim, the reading taken, the tool as read, the questions only the person answers with what each is needed before; no contract) and specified (the tool contract or tools, interface tasks, scientific tasks, replay items; the Designer is run on it). Examples of both under contracts/examples/requests/req-fixture-002 and -003; understand-purpose now tells a session to start the card at reading and to run the Designer on a specified revision. Asked of you: a stage that writes it, so that no session writes an intake by a script of its own; that the Designer reads a card of this shape as well as the two records that exist, refuses to run on one at the stage reading, and does not write a goal again that exists (the clone session met that); and that a goal on a lab whose policy is open says which questions to ask rather than only failing check 15. Reply by note with the commits.",
+  "written_at": "2026-11-16T19:04:19-08:00"
+}
