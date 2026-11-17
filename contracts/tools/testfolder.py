@@ -482,11 +482,25 @@ def read_transcript(path):
     s.update({
         "calls": len(calls), "calls_by_tool": by_tool, "calls_in_error": sum(1 for c in calls if c["error"]),
         "skills_loaded": [c.get("skill") for c in calls if c["tool"] == "Skill" and c.get("skill")],
+        "library_skills_run": library_skills_run(calls),
         "files_written": written,
         "written_outside": [p for p in written if cwd and not inside(p if os.path.isabs(p) else os.path.join(cwd, p), cwd)],
         "tokens": tokens, "tokens_read_as": "the last usage of each message id in the transcript, summed",
     })
     return s, calls, said
+
+
+SKILL_RUN_RE = re.compile(r"run_skill\.py\s+([a-z][a-z0-9_]*@v[1-9][0-9]*)")
+
+
+def library_skills_run(calls):
+    """{skill id: times} a session ran through a bundle's skill runner, read from its shell commands: what a
+    built agent uses of its library (the person, 2026-11-17)."""
+    out = {}
+    for c in calls:
+        for sid in SKILL_RUN_RE.findall(c.get("command") or ""):
+            out[sid] = out.get(sid, 0) + 1
+    return out
 
 
 def _result_text(content):
@@ -643,6 +657,10 @@ def report_collection(run, dest, sessions, items):
               "folder (what a shell command wrote is under the item)"
               % (s["item"], s["session"][:8], "/".join(s["models"]) or "-", "/".join(s["efforts"]) or "?", s["calls"],
                  s["calls_in_error"], ", ".join(s["skills_loaded"]) or "none", len(s["files_written"]), len(s["written_outside"])))
+        if s.get("item") != "repo":
+            ran = s.get("library_skills_run") or {}
+            print("  %s  %s  library skills run: %s" % (s["item"], s["session"][:8],
+                                                       ", ".join("%s x%d" % kv for kv in sorted(ran.items())) or "none"))
     for it in items:
         if it.get("gone"):
             print("%-11s %s  its folder is gone; transcripts only" % (it["name"], it["kind"]))

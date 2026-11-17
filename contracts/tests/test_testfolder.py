@@ -341,3 +341,13 @@ class ThisRepository(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LibrarySkillsRun(unittest.TestCase):
+    def test_the_skills_a_bundle_session_ran_are_counted_from_its_commands(self):
+        # an instrument's limit and an engine run's diagnostic (the person, 2026-11-17: a skill is judged by use)
+        calls = [{"command": "python src/run_skill.py shear_rate_max_from_max_speed@v1 --record r.json < i.json"},
+                 {"command": "python src/run_skill.py series_settled@v1 < a.json; python src/run_skill.py series_settled@v1 < b.json"},
+                 {"command": "python src/run_tool.py equilibrate < e.json"}, {"tool": "Read"}]
+        self.assertEqual(tf.library_skills_run(calls), {"shear_rate_max_from_max_speed@v1": 1, "series_settled@v1": 2})
+        self.assertEqual(tf.library_skills_run([{"command": "python src/run_tool.py render"}]), {})
