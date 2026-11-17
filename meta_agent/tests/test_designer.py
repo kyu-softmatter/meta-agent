@@ -15,6 +15,7 @@ import unittest
 
 from meta_agent.src import cards, designer
 from meta_agent.src.intake import goal as goal_mod
+from meta_agent.src.intake import card as intake_card
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 META = os.path.dirname(HERE)
@@ -150,9 +151,12 @@ class EchoRequest(unittest.TestCase):
         p = subprocess.run([sys.executable, "-I", os.path.join("src", "gate.py"), "--self-check"], cwd=self.bundle, capture_output=True, text=True, env=env)
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
 
-    def test_a_second_build_with_the_same_id_is_refused(self):
-        with self.assertRaises(FileExistsError):
+    def test_a_second_run_from_the_intake_is_stopped_and_writes_nothing(self):
+        before = cards.sha256_tree(self.root)
+        with self.assertRaises(designer.Stopped) as e:
             designer.run(self.intake, SEAT, "0001", NOW, self.root)
+        self.assertIn("has its specification already", str(e.exception))
+        self.assertEqual(cards.sha256_tree(self.root), before)
 
     def test_a_person_s_tolerance_makes_the_scientific_gate_decide(self):
         decided = copy.deepcopy(self.intake)
@@ -420,6 +424,112 @@ class Respecify(unittest.TestCase):
             self.assertEqual(os.listdir(req), ["intake.json"])
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
+
+
+def echo_card_draft():
+    """The echo request as a draft of the intake card: its record, less the rid, with the person's words."""
+    draft = {k: v for k, v in load_intake().items() if k != "rid"}
+    draft["persons_words"] = {"verbatim": "An agent that returns what it is given, to try the pipeline on.", "date": "2026-10-29"}
+    draft["questions_for_the_person"] = []
+    # the card's schema names no gap_reason on a row of the reading, which the record carries on one row
+    draft["tool_reading"] = [{k: v for k, v in row.items() if k != "gap_reason"} for row in draft["tool_reading"]]
+    return draft
+
+
+class FromAnIntakeCard(unittest.TestCase):
+    """--intake on the request's first card: the stage decides whether the Designer runs, a goal that exists is
+    kept, and a lab whose policy is open is met with its questions before anything is written."""
+
+    def setUp(self):
+        self.tmp, self.root = scratch_root()
+        self.req = os.path.join(self.root, "requests", "req-echo-001")
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def specified(self):
+        path, card = intake_card.write(self.req, "req-echo-001", echo_card_draft(), SEAT, NOW)
+        self.assertEqual((os.path.basename(path), card["stage"], card["revision"]), ("intake.json", "specified", 1))
+        return path, card
+
+    def test_a_specified_card_is_built_from_and_the_tree_passes_the_validator(self):
+        path, card = self.specified()
+        out = designer.run(card, SEAT, "0001", NOW, self.root, intake_path=path)
+        self.assertEqual(out["gates"], {"interface": "pass", "scientific": "undecided", "overall": "undecided"})
+        self.assertEqual(out["kept"], [])
+        self.assertTrue(os.path.isfile(os.path.join(self.req, "agent_goal.json")))
+        env = dict(os.environ, PYTHONUTF8="1")
+        p = subprocess.run([sys.executable, VALIDATE, self.tmp, "--strict"], capture_output=True, text=True, env=env)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+
+    def test_a_card_at_reading_stops_the_designer_with_its_questions(self):
+        draft = {k: v for k, v in echo_card_draft().items() if k not in ("tool_contract", "error_contracts", "interface_tasks",
+                                                                         "scientific_tasks", "replay_items")}
+        draft["questions_for_the_person"] = [{"n": 1, "needed_before": "the goal", "question": "Is the reading right?"}]
+        path, card = intake_card.write(self.req, "req-echo-001", draft, SEAT, NOW)
+        self.assertEqual(card["stage"], "reading")
+        with self.assertRaises(designer.Stopped) as e:
+            designer.run(card, SEAT, "0001", NOW, self.root, intake_path=path)
+        self.assertIn("is at the stage reading", str(e.exception))
+        self.assertIn("question 1, needed before the goal: Is the reading right?", str(e.exception))
+        self.assertEqual(os.listdir(self.req), ["intake.json"])
+        self.assertFalse(os.path.exists(os.path.join(self.root, "builds")))
+        p = subprocess.run([sys.executable, "-m", "meta_agent.src.designer", "--intake", path, "--seat", SEAT, "--root", self.root],
+                           cwd=REPO, capture_output=True, text=True, env=dict(os.environ, PYTHONUTF8="1"))
+        self.assertEqual(p.returncode, 1, p.stdout + p.stderr)
+        self.assertIn("nothing was written", p.stdout)
+
+    def test_a_goal_that_exists_is_kept_and_the_recall_is_its_next_revision(self):
+        path, card = self.specified()
+        goal = goal_mod.make_goal(card, "meta-macbook-20261116-1", "2026-11-16T09:00:00Z")
+        goal["priorities"] = ["the person's own order", "small bundle"]
+        cards.write_json(os.path.join(self.req, "agent_goal.json"), goal)
+        with open(os.path.join(self.req, "agent_goal.json"), "rb") as f:
+            before = f.read()
+        out = designer.run(card, SEAT, "0001", NOW, self.root, intake_path=path)
+        with open(os.path.join(self.req, "agent_goal.json"), "rb") as f:
+            self.assertEqual(f.read(), before)
+        self.assertEqual(out["kept"], ["meta_agent/requests/req-echo-001/agent_goal.json"])
+        self.assertNotIn("meta_agent/requests/req-echo-001/agent_goal.json", out["files"])
+        second = cards.load_json(os.path.join(self.req, "v2_agent_goal.json"))
+        self.assertEqual((second["revision"], second["supersedes"], second["priorities"]),
+                         (2, goal["id"], ["the person's own order", "small bundle"]))
+        self.assertTrue(second["case_refs"] or second["case_gaps"])
+
+    def test_a_lab_whose_policy_is_open_is_met_with_its_questions(self):
+        lab = os.path.join(self.root, "profiles", "lab-fixture-rich")
+        for name in ("v2_lab_profile.json", "v2_onboarding_record.json"):
+            os.remove(os.path.join(lab, name))
+        path, card = self.specified()
+        with self.assertRaises(designer.Stopped) as e:
+            designer.run(card, SEAT, "0001", NOW, self.root, intake_path=path)
+        said = str(e.exception)
+        self.assertIn("policy field(s) no person has confirmed", said)
+        record = cards.load_json(os.path.join(lab, "onboarding_record.json"))
+        for q in record["questions"]:
+            self.assertIn("%s: %s" % (q["field"], q["question"]), said)
+        self.assertIn("python -m meta_agent.src.onboarding --lab-id lab-fixture-rich", said)
+        self.assertEqual(os.listdir(self.req), ["intake.json"])
+        self.assertEqual(designer.open_policy(self.root, "a-lab-this-tree-does-not-hold"), None)
+
+    def test_a_request_whose_latest_intake_went_back_to_reading_is_not_specified_or_built_again(self):
+        path, card = self.specified()
+        designer.run(card, SEAT, "0001", NOW, self.root, intake_path=path)
+        intake_card.write(self.req, "req-echo-001", {"tool_contract": None}, SEAT, NOW, note="the contract is withdrawn for this test")
+        before = cards.sha256_tree(self.root)
+        for again in (designer.respecify, designer.rebuild):
+            with self.assertRaises(designer.Stopped) as e:
+                again(self.req, SEAT, now=NOW, root=self.root)
+            self.assertIn("is at the stage reading", str(e.exception))
+        self.assertEqual(cards.sha256_tree(self.root), before)
+
+    def test_an_intake_that_is_not_the_latest_is_not_run(self):
+        path, card = self.specified()
+        newer, _ = intake_card.write(self.req, "req-echo-001", {"priorities": ["small bundle"]}, SEAT, NOW, note="the person's word")
+        self.assertEqual(os.path.basename(newer), "v2_intake.json")
+        with self.assertRaises(designer.Stopped) as e:
+            designer.run(card, SEAT, "0001", NOW, self.root, intake_path=path)
+        self.assertIn("is not the latest intake", str(e.exception))
 
 
 if __name__ == "__main__":

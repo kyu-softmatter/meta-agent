@@ -14,6 +14,19 @@ v2_agent_goal.json, spec_a1..a6.json, synthesis.json, agent_spec.json; then
 builds/<agent>/<build_id>/{bundle/, validation_report.json, build.json,
 diff_from_template.txt}. It stops there: hand-over is the person's.
 
+The intake is the request's first card (contracts/schemas/intake.schema.json, written by
+python -m meta_agent.src.intake), or one of the two records of before the card, which are read as
+they are. --intake stops, and writes nothing, in four cases, and says what to do in each:
+  - the card is at the stage `reading`: it carries no contract and no task yet, and the questions that
+    wait for the person are printed;
+  - the file named is not the request's latest intake;
+  - the lab's profile has a policy field that no person has confirmed: the questions of that lab's
+    onboarding record are printed, with the command that takes the answers. The gate's check 15 would
+    refuse the goal; this says what to ask before any card is written;
+  - the request has its specification already: --respecify and --rebuild are the commands then.
+A goal that exists is not written again: the request's latest agent_goal is read and kept, and S3's
+result is its next revision, or nothing when that revision carries it already.
+
 S3 searches cases/ with the goal's signature (src/cases/recall.py) and the result enters v2_agent_goal
 as case_refs or case_gaps; S4 searches again for A4 (with the parameter names) and A5 (with the safety
 rows), and each axis card records what it found or where it looked (plan.md 14-27).
@@ -60,6 +73,7 @@ from . import cards
 from .build import bundle as bundle_mod
 from .build import template as template_mod
 from .cases import recall as recall_mod
+from .intake import card as intake_mod
 from .intake import goal as goal_mod
 from .knowledge import brief as brief_mod
 from .parameters import bounds as bounds_mod
@@ -202,12 +216,83 @@ def profile_markdown(profile):
     return "\n".join(lines)
 
 
+class Stopped(Exception):
+    """--intake wrote nothing; the message says why and what to do."""
+
+
+def open_policy(root, lab_id):
+    """[(field, question or None)] for the policy fields of a lab's latest profile that no person confirmed;
+    [] when all are; None when the tree has no profile of that lab (the gate is then the judge)."""
+    folder = os.path.join(root, "profiles", lab_id)
+    _, path = latest_file(folder, "lab_profile.json")
+    if path is None:
+        return None
+    profile = cards.load_json(path)
+    fields = cards.load_json(os.path.join(REPO, "contracts", "claim_kinds.json"))["policy_fields"]
+    asked = {}
+    _, rec = latest_file(folder, "onboarding_record.json")
+    if rec:
+        asked = {q.get("field"): q.get("question") for q in cards.load_json(rec).get("questions") or []}
+    out = []
+    for field in fields:
+        leaf = profile
+        for part in field.split("."):
+            leaf = leaf.get(part) if isinstance(leaf, dict) else None
+        if not (isinstance(leaf, dict) and leaf.get("state") == "confirmed"):
+            out.append((field, asked.get(field)))
+    return out
+
+
+def may_start(intake, intake_path, req_dir, root):
+    """Raise Stopped when a first run from this intake must not begin. Nothing is written before this passes."""
+    rid = intake["rid"]
+    rev, path = intake_mod.latest(req_dir)
+    if intake_path and path and os.path.abspath(path) != os.path.abspath(intake_path) \
+            and os.path.dirname(os.path.abspath(intake_path)) == os.path.abspath(req_dir):
+        raise Stopped("%s is not the latest intake of %s; that is %s" % (
+            os.path.basename(intake_path), rid, os.path.basename(path)))
+    if intake_mod.is_card(intake):
+        found = intake_mod.problems(intake)
+        if found:
+            raise Stopped("the intake is not a card the stage would write: " + "; ".join(found))
+        if intake["stage"] != "specified":
+            left = intake_mod.waiting(intake)
+            lines = ["the intake of %s is at the stage reading: it carries no tool contract, no task and no replay item, "
+                     "and the Designer is run on a card at the stage specified." % rid]
+            lines += ["  question %s, needed before %s: %s" % (q.get("n"), q.get("needed_before"), q.get("question")) for q in left]
+            lines.append("next: %sthe contracts and the tasks, then python -m meta_agent.src.intake write --rid %s --draft <file> "
+                         "--note <what changed>" % ("the person's answers (python -m meta_agent.src.intake answer), " if left else "", rid))
+            raise Stopped("\n".join(lines))
+    if latest_file(req_dir, "agent_spec.json")[1]:
+        raise Stopped("%s has its specification already: --respecify after its intake is revised, --rebuild for a new build" % rid)
+    lab = intake["lab_profile_ref"]
+    still = open_policy(root, lab)
+    if still:
+        lines = ["the profile of %s has %d policy field(s) no person has confirmed, and check 15 refuses a goal on it. "
+                 "Ask the person these, and nothing is inferred:" % (lab, len(still))]
+        lines += ["  %s: %s" % (f, q or "it follows from another answer") for f, q in still]
+        lines.append("next: the answers in a file {answered_by: human, date, answers: {field: value}}, then python -m "
+                     "meta_agent.src.onboarding --lab-id %s --out %s --answers <file> --seat <seat>" % (
+                         lab, rel_repo(os.path.join(root, "profiles", lab), root)))
+        raise Stopped("\n".join(lines))
+
+
 def latest_intake(req_dir):
     """(revision, intake) of a request: v<N>_intake.json, or intake.json for the first."""
     rev, path = latest_file(req_dir, "intake.json")
     if path is None:
         raise FileNotFoundError("no intake.json in %s" % req_dir)
     return rev, cards.load_json(path)
+
+
+def specified_intake(req_dir):
+    """latest_intake, stopped when the latest is a card at the stage reading: nothing is specified or built from it."""
+    rev, intake = latest_intake(req_dir)
+    if intake_mod.is_card(intake) and intake.get("stage") != "specified":
+        raise Stopped("the latest intake of %s (revision %d) is at the stage reading: it carries no tool contract and no task. "
+                      "%d question(s) wait for the person (python -m meta_agent.src.intake waiting --rid %s)" % (
+                          intake.get("rid"), rev, len(intake_mod.waiting(intake)), intake.get("rid")))
+    return rev, intake
 
 
 def held_of(skill_rows):
@@ -284,7 +369,7 @@ def rebuild(req_dir, seat, build_id=None, now=None, root=ROOT):
     """S5 and S6 again on a request that exists: the intake and the specification as they stand (the latest
     revision of each), the latest template, a new build whose card names the build before it. Reads the
     request's cards and writes none of them."""
-    intake_rev, intake = latest_intake(req_dir)
+    intake_rev, intake = specified_intake(req_dir)
     rid, agent = intake["rid"], intake["agent_name"]
     created = cards.now_iso(now)
     _, goal = latest_goal(req_dir)
@@ -364,7 +449,7 @@ def next_revision(req_dir, name, new, same):
 def respecify(req_dir, seat, now=None, root=ROOT):
     """S4 again on a request that exists, from its latest intake. Returns the paths written, in order: the
     axes that changed, then the synthesis and the agent_spec when they did. An empty list: nothing differs."""
-    _, intake = latest_intake(req_dir)
+    _, intake = specified_intake(req_dir)
     created = cards.now_iso(now)
     _, goal = latest_goal(req_dir)
     loaded = {}
@@ -411,12 +496,13 @@ def respecify(req_dir, seat, now=None, root=ROOT):
     return written
 
 
-def run(intake, seat, build_id="0001", now=None, root=ROOT):
+def run(intake, seat, build_id="0001", now=None, root=ROOT, intake_path=None):
     rid = intake["rid"]
     agent = intake["agent_name"]
     req_dir = os.path.join(root, "requests", rid)
     created = cards.now_iso(now)
-    out = {"rid": rid, "files": []}
+    out = {"rid": rid, "files": [], "kept": []}
+    may_start(intake, intake_path, req_dir, root)
 
     # read before anything is written: the tools, the skills of the library and the drawing of the subagents
     tools = tools_of(intake, root)
@@ -438,9 +524,15 @@ def run(intake, seat, build_id="0001", now=None, root=ROOT):
             cards.write_json(path, data)
         out["files"].append(rel_repo(path, root))
 
-    # S1 intake -> agent_goal (no numbers)
-    goal = goal_mod.make_goal(intake, seat, created)
-    put(os.path.join(req_dir, "agent_goal.json"), goal)
+    # S1 intake -> agent_goal (no numbers); a goal that exists is read and kept, never written again
+    goal_rev, goal_path = latest_file(req_dir, "agent_goal.json")
+    if goal_path:
+        goal = cards.load_json(goal_path)
+        out["kept"].append(rel_repo(goal_path, root))
+    else:
+        goal = goal_mod.make_goal(intake, seat, created)
+        put(os.path.join(req_dir, "agent_goal.json"), goal)
+        goal_rev = 1
 
     # S2 tool understanding from documentation -> tool_profile
     profile = profile_mod.make_profile(intake, seat, created)
@@ -453,8 +545,12 @@ def run(intake, seat, build_id="0001", now=None, root=ROOT):
     goal_sig = goal_mod.signature_of(goal)
     case_refs, case_gaps = search_cases(goal_sig, root, "a prior case for this goal's signature")
     kb_refs = [{"id": e["id"], "version": e["version"], "hash": e["hash"]} for e in brief["entries"]]
-    goal2 = goal_mod.attach_recall(goal, kb_refs, brief["gaps"], case_refs, case_gaps, seat, created)
-    put(os.path.join(req_dir, "v2_agent_goal.json"), goal2)
+    if goal_path and (goal.get("kb_refs"), goal.get("kb_gaps"), goal.get("case_refs"), goal.get("case_gaps")) == (
+            kb_refs, brief["gaps"], case_refs, case_gaps):
+        goal2 = goal        # the goal that exists carries S3's result already
+    else:
+        goal2 = goal_mod.attach_recall(goal, kb_refs, brief["gaps"], case_refs, case_gaps, seat, created)
+        put(os.path.join(req_dir, "v%d_agent_goal.json" % (goal_rev + 1)), goal2)
 
     # S4 specify -> six axes, synthesis, agent_spec
     bundle_rel = rel_repo(os.path.join(root, "builds", agent, build_id, "bundle"), root)
@@ -486,6 +582,15 @@ def run(intake, seat, build_id="0001", now=None, root=ROOT):
 
 
 def main(argv=None):
+    try:
+        return dispatch(argv)
+    except Stopped as e:
+        print("stopped  %s" % e)
+        print("nothing was written")
+        return 1
+
+
+def dispatch(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--intake")
     ap.add_argument("--rebuild", metavar="REQUEST_DIR", help="build an existing request again from its specification and the latest template")
@@ -545,7 +650,10 @@ def main(argv=None):
         out = rebuild(os.path.abspath(args.rebuild), args.seat, args.build_id, args.now, os.path.abspath(args.root))
         print("parent   %s" % out["parent_build"])
     else:
-        out = run(cards.load_json(args.intake), args.seat, args.build_id or "0001", args.now, os.path.abspath(args.root))
+        out = run(cards.load_json(args.intake), args.seat, args.build_id or "0001", args.now, os.path.abspath(args.root),
+                  intake_path=args.intake)
+    for f in out.get("kept", []):
+        print("kept   %s (it exists and is not written again)" % f)
     for f in out["files"]:
         print("wrote  %s" % f)
     print("template %s" % out["template"])
