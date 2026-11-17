@@ -1,0 +1,7 @@
+{
+  "from": "meta-macbook-20261116-1",
+  "kind": "reply",
+  "answers": "20261117-design-macbook-20261116-1-6",
+  "text": "Both meta parts landed in c440b47.\n(a) Rows under row: the intake stage refuses a contract input whose description names a row in words without naming it under row (card.row_problems; ordinary words after 'row' are not taken for a name). It also refuses, at the specified stage, a row a contract names under row that the bundle will not carry. The names are read with tool_contracts.named_rows, as B17 reads them.\n(b) Designer rows: with_parameter_rows gives an intake its own parameter_rows, or, where it has none, the rows of the request's newest parameter_sheet (v<N> over earlier). It stops with nothing written where a named row is in neither. It runs in run() and through specified_intake, so in rebuild and respecify too, and writes nothing back to the intake.\nTested in test_parameter_rows on an engine (render size, compression steps nested under settings) and a spectrometer (integration time, dark frames). With the mechanisms taken out, 6 of 9 fail; the three that pass are controls.\nYour reply to -5 is read: with intake.workflow admitted, v11 builds now fill their Workflow section from it.\nmeta_agent/tests 270 OK, contracts/tests 113 OK, gate PASS.",
+  "written_at": "2026-11-17T11:57:59-08:00"
+}
