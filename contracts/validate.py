@@ -1297,6 +1297,9 @@ def checkB8(bundle, label, report):
                     report.fail("B8", "CAPABILITIES.json", "%s[%d] is an inferred claim" % (key, i))
 
 
+PERMISSION_OPENS = ("runs_process", "writes_files")   # never controls_instrument or network (MP4)
+
+
 def checkB9(bundle, label, report):
     runner = os.path.join(bundle, "src", "run_tool.py")
     runner_text = open(runner, encoding="utf-8").read() if os.path.isfile(runner) else ""
@@ -1324,6 +1327,15 @@ def checkB9(bundle, label, report):
                 report.fail("B9", relpath, "safety_gate.place names %s, which does not exist" % script)
         if "check_before" not in runner_text:
             report.fail("B9", "src/run_tool.py", "the runner does not consult the gate (no check_before) while %s needs one" % name)
+        # What opens the gate (the person, 2026-11-16): safety values a person wrote, or, for a tool that starts an
+        # engine or writes the agent's own files and touches no instrument, the lab's confirmed execution permission.
+        if gate.get("opens_by") == "execution_permission":
+            if tc.get("side_effects") not in PERMISSION_OPENS:
+                report.fail("B9", relpath, "a tool with side effects %r opens only by safety values a person wrote; the "
+                            "execution permission opens only %s" % (tc.get("side_effects"), " and ".join(PERMISSION_OPENS)))
+            elif not os.path.isfile(os.path.join(bundle, "envelope", "execution_permission.json")):
+                report.fail("B9", relpath, "the gate opens by the execution permission and the bundle carries no "
+                            "envelope/execution_permission.json for it to read")
 
 
 SKILL_TOKEN_RE = re.compile(r"`([a-z][a-z0-9_]*@v[1-9][0-9]*)`")

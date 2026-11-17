@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/execution_permission.schema.json",
+  "title": "execution_permission",
+  "description": "A bundle's envelope/execution_permission.json: what the lab's confirmed policy lets the built agent run on its own, copied by the Designer from the lab profile the build names, never inferred. The gate reads `reaches`, a value, and no sentence. Levels, each including the one before: none, mock, sandbox, engine, instrument. A tool whose gate opens_by execution_permission runs where `reaches` is engine or instrument; instrument opens no tool that changes an instrument, which stays behind safety values (MP4).",
+  "type": "object",
+  "properties": {
+    "artifact": {
+      "const": "execution_permission"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "reaches": {
+      "enum": [
+        "none",
+        "mock",
+        "sandbox",
+        "engine",
+        "instrument"
+      ]
+    },
+    "words": {
+      "type": "string",
+      "minLength": 1,
+      "description": "the confirmed value of the profile, as it stands there"
+    },
+    "confirmed_by": {
+      "const": "human"
+    },
+    "date": {
+      "$ref": "common.schema.json#/$defs/date"
+    },
+    "lab_profile_ref": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "profile_revision": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "artifact",
+    "schema_version",
+    "reaches",
+    "words",
+    "confirmed_by",
+    "date",
+    "lab_profile_ref",
+    "profile_revision"
+  ]
+}

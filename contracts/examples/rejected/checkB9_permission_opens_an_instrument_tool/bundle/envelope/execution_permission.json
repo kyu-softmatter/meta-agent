@@ -1,0 +1,10 @@
+{
+  "artifact": "execution_permission",
+  "schema_version": "0.1",
+  "reaches": "engine",
+  "words": "as far as a simulation engine on this computer; no instrument",
+  "confirmed_by": "human",
+  "date": "2026-11-16",
+  "lab_profile_ref": "lab-fixture-01",
+  "profile_revision": 2
+}

@@ -66,6 +66,13 @@
         },
         "place": {
           "type": "string"
+        },
+        "opens_by": {
+          "enum": [
+            "safety_values",
+            "execution_permission"
+          ],
+          "description": "what opens the gate for this tool; absent means safety_values. execution_permission is for a tool that starts an engine or writes the agent's own files and touches no instrument: it opens where the bundle's envelope/execution_permission.json, a copy of the lab's confirmed permission, reaches an engine (the person, 2026-11-16, docs/ideas/20261116.md). A tool that changes an instrument opens only by safety values a person wrote (MP4)."
         }
       },
       "additionalProperties": false,

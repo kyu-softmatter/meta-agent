@@ -152,7 +152,49 @@
           "$ref": "common.schema.json#/$defs/stated"
         },
         "execution_permission": {
-          "$ref": "common.schema.json#/$defs/stated"
+          "allOf": [
+            {
+              "$ref": "common.schema.json#/$defs/stated"
+            },
+            {
+              "properties": {
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "reaches": {
+                          "enum": [
+                            "none",
+                            "mock",
+                            "sandbox",
+                            "engine",
+                            "instrument"
+                          ]
+                        },
+                        "words": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "additionalProperties": false,
+                      "required": [
+                        "reaches",
+                        "words"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "description": "a string in the profiles written before 2026-11-16; from then the option the person chose as a level (reaches) beside the words shown, so that a gate reads a value. A string opens no gate."
         },
         "external_transfer_of_private_code": {
           "$ref": "common.schema.json#/$defs/stated"
