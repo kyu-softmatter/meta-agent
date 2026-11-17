@@ -590,12 +590,14 @@ class ExecutionPermission(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.tmp, True)
         shutil.copytree(os.path.join(META, "profiles", self.LAB), os.path.join(self.root, "profiles", self.LAB))
 
-    def intake(self, lab, effects="runs_process", expect=None):
+    def intake(self, lab, effects="runs_process", expect=None, installs=None):
         i = copy.deepcopy(load_intake())
         i["lab_profile_ref"] = lab
         i["tool_contract"].update(side_effects=effects, errors=["invalid_input", "refused_by_safety"],
                                   safety_gate={"required": True, "place": "src/gate.py, consulted by src/run_tool.py before the call",
                                                "opens_by": "execution_permission"})
+        if installs:
+            i["tool_contract"]["installs_from"] = installs
         if expect:
             for item in i["interface_tasks"] + i["replay_items"] + i["scientific_tasks"]:
                 item["expected"] = {"error": {"category": "refused_by_safety", "code": expect}}
@@ -606,7 +608,9 @@ class ExecutionPermission(unittest.TestCase):
     def test_the_level_is_copied_from_the_profile_and_words_give_none(self):
         p = designer.execution_permission(META, self.LAB)
         self.assertEqual((p["reaches"], p["confirmed_by"], p["lab_profile_ref"]), ("engine", "human", self.LAB))
-        self.assertEqual(p["profile_revision"], cards.load_json(os.path.join(META, "profiles", self.LAB, "v3_lab_profile.json"))["revision"])
+        latest = designer.latest_file(os.path.join(META, "profiles", self.LAB), "lab_profile.json")[1]
+        self.assertEqual(p["profile_revision"], cards.load_json(latest)["revision"])
+        self.assertEqual(p["package_sources"], [{"installer": "pixi", "channel": "conda-forge"}])
         self.assertIsNone(designer.execution_permission(META, "lab-fixture-rich"))     # its profile has words only
         # an earlier revision with words only gives none either: the level is never read off the sentence
         words_only = os.path.join(self.tmp, "words")
@@ -616,11 +620,12 @@ class ExecutionPermission(unittest.TestCase):
         self.assertIsNone(designer.execution_permission(words_only, self.LAB))
 
     def test_an_engine_tool_is_built_open_on_the_lab_s_permission_and_the_tree_passes(self):
-        for effects in ("runs_process", "writes_files"):
+        for effects, installs in (("runs_process", None), ("writes_files", None),
+                                  ("network", {"installer": "pixi", "channel": "conda-forge"})):
             tmp, root = scratch_root()
             try:
                 shutil.copytree(os.path.join(META, "profiles", self.LAB), os.path.join(root, "profiles", self.LAB))
-                out = designer.run(self.intake(self.LAB, effects), SEAT, "0001", NOW, root)
+                out = designer.run(self.intake(self.LAB, effects, installs=installs), SEAT, "0001", NOW, root)
                 bundle = os.path.join(root, "builds", "echo", "0001", "bundle")
                 perm = cards.load_json(os.path.join(bundle, "envelope", "execution_permission.json"))
                 self.assertEqual(perm, designer.execution_permission(root, self.LAB))
@@ -634,6 +639,26 @@ class ExecutionPermission(unittest.TestCase):
             finally:
                 shutil.rmtree(tmp, ignore_errors=True)
 
+    def test_an_install_from_a_source_the_lab_did_not_allow_stops_the_designer(self):
+        for installs in ({"installer": "pip", "channel": "pypi"}, None):
+            with self.assertRaises(designer.Stopped) as e:
+                designer.run(self.intake(self.LAB, "network", installs=installs), SEAT, "0001", NOW, self.root)
+            self.assertIn("pip/pypi, which the lab's permission does not list" if installs else "names no installs_from",
+                          str(e.exception))
+            self.assertFalse(os.path.exists(os.path.join(self.root, "requests")))
+
+    def test_what_an_intake_holds_is_held_by_the_specification(self):
+        """Round three of the clone test: a request held a capability (a step the person had not allowed) that the
+        Designer had no place to carry."""
+        i = self.intake(self.LAB)
+        i["held"] = [{"item": "tool engine_gpu", "reason": "no GPU on this computer; the person has not said"}, "a second engine"]
+        out = designer.run(i, SEAT, "0001", NOW, self.root)
+        spec = cards.load_json(os.path.join(self.root, "requests", "req-echo-001", "agent_spec.json"))
+        for item in i["held"]:
+            self.assertIn(item, spec["held"])
+            self.assertIn(item, out["held"])
+        self.assertEqual(spec["status"], "held")
+
     def test_a_lab_with_words_only_stops_the_designer_and_nothing_is_written(self):
         with self.assertRaises(designer.Stopped) as e:
             designer.run(self.intake("lab-fixture-rich"), SEAT, "0001", NOW, self.root)
@@ -643,10 +668,11 @@ class ExecutionPermission(unittest.TestCase):
 
     def test_a_level_below_an_engine_is_held_and_the_gate_refuses_naming_it(self):
         folder = os.path.join(self.root, "profiles", self.LAB)
-        lower = cards.load_json(os.path.join(folder, "v3_lab_profile.json"))
-        lower.update(revision=4, supersedes=lower["id"])
+        rev, path = designer.latest_file(folder, "lab_profile.json")
+        lower = cards.load_json(path)
+        lower.update(revision=rev + 1, supersedes=lower["id"])
         lower["policy"]["execution_permission"]["value"] = {"reaches": "sandbox", "words": "mock and sandbox"}
-        cards.write_json(os.path.join(folder, "v4_lab_profile.json"), lower)
+        cards.write_json(os.path.join(folder, "v%d_lab_profile.json" % (rev + 1)), lower)
         out = designer.run(self.intake(self.LAB, expect="GATE-PERMISSION-001"), SEAT, "0001", NOW, self.root)
         self.assertEqual(len(out["held"]), 1)
         self.assertIn("the level sandbox, which opens no engine", str(out["held"][0]))

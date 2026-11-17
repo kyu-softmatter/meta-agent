@@ -20,12 +20,14 @@ TITLES = {"A1": "Boundary", "A2": "Interface", "A3": "Knowledge", "A4": "Paramet
 
 def make_axes(goal, profile, brief, lab_profile_ref, bundle_dir, tool_contract, interface_tasks,
               scientific_tasks, seat, now=None, parameter_rows=None, safety_rows=None, case_recall=None,
-              skills=None, subagents=None, permission_reaches=None):
+              skills=None, subagents=None, permission_reaches=None, request_held=None):
     """`skills` are the library's rows (src/skills/catalogue.take) for the skills the request names, in its
     order; `subagents` is the request's drawing, [{name, description, skills, side_effects}].
     `permission_reaches` is the level of the lab's confirmed execution permission (envelope/execution_permission.json
     as the Designer would write it), None where the profile carries only words: a tool whose gate opens_by the
-    permission needs no safety row and is held where the level opens no engine."""
+    permission needs no safety row and is held where the level opens no engine. `request_held` is the intake's held[]:
+    what the request itself holds out of the bundle until a person releases it, carried into the specification's
+    held[] as it is."""
     created = cards.now_iso(now)
     rid = goal["rid"]
     base = "spec-" + rid.replace("req-", "")
@@ -97,6 +99,11 @@ def make_axes(goal, profile, brief, lab_profile_ref, bundle_dir, tool_contract, 
         content["A5"]["gate"] += ("; %s open%s by the lab's execution permission instead, read from "
                                   "envelope/execution_permission.json, where its level reaches an engine" % (
                                       ", ".join(by_permission), "s" if len(by_permission) == 1 else ""))
+        installs = [c for c in contracts if c["name"] in by_permission and isinstance(c.get("installs_from"), dict)]
+        if installs:
+            content["A5"]["gate"] += "; %s reach%s the network only to install, from %s, a source the permission lists" % (
+                ", ".join(c["name"] for c in installs), "es" if len(installs) == 1 else "",
+                ", ".join(sorted({"%s/%s" % (c["installs_from"]["installer"], c["installs_from"]["channel"]) for c in installs})))
         content["A5"]["human_only"].append("the lab's execution permission")
     if skills or subagents:
         content["A2"]["skills"] = [{"ref": r["ref"], "kind": r["kind"], "side_effect": r["side_effect"], "status": r["status"],
@@ -126,6 +133,7 @@ def make_axes(goal, profile, brief, lab_profile_ref, bundle_dir, tool_contract, 
         held.append("%s: the gate opens by the lab's execution permission, and the lab's profile carries %s" % (
             ", ".join(by_permission), "no level, only words" if permission_reaches is None else
             "the level %s, which opens no engine" % permission_reaches))
+    held.extend(request_held or [])
     for ref in held_skills:
         held.append({"item": "skill %s" % ref, "reason": "it changes a device (write_device): held in the library until a person "
                                                          "releases it, and left out of the bundle"})
