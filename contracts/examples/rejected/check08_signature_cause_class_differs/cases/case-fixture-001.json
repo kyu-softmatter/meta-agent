@@ -17,7 +17,7 @@
   "signature": {
     "science_task": "tracer diffusivity",
     "executes": "instrument",
-    "instrument": "widefield microscope",
+    "instrument": "sma_microscope",
     "observables": [
       "tracer_diffusivity"
     ],

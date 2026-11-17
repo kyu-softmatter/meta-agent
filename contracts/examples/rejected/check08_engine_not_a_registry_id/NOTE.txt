@@ -1,0 +1,1 @@
+A case names its engine by the registry's id (hoomd_blue), not by a word (hoomd): recall meets by equality, and a word meets nothing.

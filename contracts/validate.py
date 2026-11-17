@@ -157,6 +157,10 @@ class Contracts:
         self.skill_kinds = load_json(os.path.join(HERE, "skill_kinds.json"))
         classes = load_json(os.path.join(HERE, "case_classes.json")).get("classes", {})
         self.case_classes = set(classes) if isinstance(classes, dict) else {x.get("id") for x in classes if isinstance(x, dict)}
+        self.registry = {}
+        for kind in ("engines", "instruments", "methods"):
+            listed = load_json(os.path.join(HERE, "registry", kind + ".json")).get(kind, [])
+            self.registry[kind] = {x.get("id") for x in listed if isinstance(x, dict)}
         self._validators = {}
         self.grade_table = {}
         for rule in self.grades["rules"]:
@@ -418,10 +422,28 @@ CAPPED_GRADES = ("E3", "E4", "E5")
 
 
 def check8(cards, c, report, tree):
+    # The newest revision of each case in its store: an earlier one is a record and is judged as it was written.
+    newest = {}
+    for path, data in cards:
+        if card_name(data) == "case":
+            key = (os.path.dirname(path), data.get("id"))
+            rev = data.get("revision") if isinstance(data.get("revision"), int) else 1
+            newest[key] = max(newest.get(key, rev), rev)
     for path, data in cards:
         if card_name(data) != "case":
             continue
         r = rel(path, tree)
+        this_sig = data.get("signature") if isinstance(data.get("signature"), dict) else {}
+        this_rev = data.get("revision") if isinstance(data.get("revision"), int) else 1
+        if this_rev == newest[(os.path.dirname(path), data.get("id"))]:
+            # recall meets an engine, an instrument and a method by equality, so a case names each by its registry id
+            for field, kind in (("engine", "engines"), ("instrument", "instruments")):
+                v = this_sig.get(field)
+                if isinstance(v, str) and v and v not in c.registry[kind]:
+                    report.fail(8, r, "signature.%s %r is not an id of contracts/registry/%s.json" % (field, v, kind))
+            for v in this_sig.get("methods") or []:
+                if v not in c.registry["methods"]:
+                    report.fail(8, r, "signature.methods names %r, which is not an id of contracts/registry/methods.json" % (v,))
         for key in ("falsification", "cue", "lesson"):
             if not (isinstance(data.get(key), str) and data[key].strip()):
                 report.fail(8, r, "%s is empty" % key)
