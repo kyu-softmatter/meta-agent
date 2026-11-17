@@ -7,6 +7,8 @@ description: Read how a laboratory's materials, data, code and software are laid
 
 Analyse first, ask later. What you can read you do not ask; what you infer is a recommendation; only the person confirms.
 
+Load `classify-knowledge` before the first value, statement or data file of this part enters a card, a sheet or a skill's inputs, if it is not loaded in this session yet: it binds at every stage (`meta_agent/CLAUDE.md`), and a value that entered before it was loaded has been placed from memory of it.
+
 ## The environment
 
 1. **Discover.** Read the repositories, folders, documents and existing agent cards the person gave:

@@ -7,11 +7,13 @@ description: Turn one relation or one procedure into a library skill, as source 
 
 Every calculation of a quantity is a library skill, the approximate ones as much as the exact ones. A library skill is not a session skill: it is source code that the runner runs, and no session loads it when it starts.
 
+Load `classify-knowledge` before the first value, statement or data file of this part enters a card, a sheet or a skill's inputs, if it is not loaded in this session yet: it binds at every stage (`meta_agent/CLAUDE.md`), and a value that entered before it was loaded has been placed from memory of it.
+
 ## The folder
 
 `meta_agent/skills/<kind>/<id>@v<n>/` holds four things:
 
-- `SKILL.md`: what a model reads to choose it. Front matter `name` and `description`; then what it gives, what it needs, when it applies, and what it never does.
+- `SKILL.md`: what a model reads to choose it. Front matter `name` and `description`; then what it gives, what it needs, when it applies, and what it never does. The description says in words what the skill gives and when to choose it, with no formula and no value: a bundle prints it in its `CLAUDE.md`, whose every number its gate looks for in the bundle's snapshot. A formula belongs in the source, a value in the manifest or the worked cases; `python contracts/tools/skills.py check <skill folder>` notes a number it finds in a description.
 - `skill.json`: the manifest code reads (`contracts/schemas/skill.schema.json`).
 - `scripts`, a folder: the source. The manifest's `entry` names one function.
 - `cases.json`: worked cases with their inputs and the expected output.

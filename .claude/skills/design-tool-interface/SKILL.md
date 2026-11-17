@@ -7,6 +7,8 @@ description: Design how a built agent calls its instrument or engine, as one con
 
 An agent reaches its tool only through contracts. Each callable tool has one, and every call goes through the bundle's runner, which asks the gate, checks the input, calls the adapter, checks the output and returns the output or a structured error.
 
+Load `classify-knowledge` before the first value, statement or data file of this part enters a card, a sheet or a skill's inputs, if it is not loaded in this session yet: it binds at every stage (`meta_agent/CLAUDE.md`), and a value that entered before it was loaded has been placed from memory of it.
+
 ## Do this
 
 1. **Start from the claims.** Only `observed` and `derived` claims of the `tool_profile` become capabilities. An `inferred` one is listed as unverified and an `unknown` one as a gap.

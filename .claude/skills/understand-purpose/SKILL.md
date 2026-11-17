@@ -7,6 +7,8 @@ description: Turn what the person wants an agent for into a written goal that ev
 
 A loose purpose gives every later step a different question. Write one goal, have the person confirm it, and everything after reads that card.
 
+Load `classify-knowledge` before the first value, statement or data file of this part enters a card, a sheet or a skill's inputs, if it is not loaded in this session yet: it binds at every stage (`meta_agent/CLAUDE.md`), and a value that entered before it was loaded has been placed from memory of it.
+
 ## Do this
 
 1. **Start the request's intake card** (`contracts/schemas/intake.schema.json`). Write a draft, a file of your own with what you know and no stage in it, and let the stage write the card from it; never write `meta_agent/requests/<rid>/intake.json` by hand or by a script of your own:

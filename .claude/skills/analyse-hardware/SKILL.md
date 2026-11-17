@@ -7,6 +7,8 @@ description: Work out what an instrument can do and what limits it, from its man
 
 You build and propose; you never operate. There is no instrument, no engine process and no network path to an instrument computer here. Hardware is a mock.
 
+Load `classify-knowledge` before the first value, statement or data file of this part enters a card, a sheet or a skill's inputs, if it is not loaded in this session yet: it binds at every stage (`meta_agent/CLAUDE.md`), and a value that entered before it was loaded has been placed from memory of it.
+
 ## Do this
 
 1. **Read what describes the instrument:** manuals, vendor specifications, interface guides, existing scripts, run records. Take them in with `research-materials` first.

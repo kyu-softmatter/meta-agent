@@ -7,6 +7,8 @@ description: Work out the scales of the physical system a request is about (its 
 
 What is wanted is orders of magnitude: the rough range of each key quantity of the system under study. The requirements of a measurement or a simulation follow from these, so this comes before `estimate-parameter-ranges`.
 
+Load `classify-knowledge` before the first value, statement or data file of this part enters a card, a sheet or a skill's inputs, if it is not loaded in this session yet: it binds at every stage (`meta_agent/CLAUDE.md`), and a value that entered before it was loaded has been placed from memory of it.
+
 ## Do this
 
 1. **Name the system from the request.** The sample or the model, its material and its conditions, taken from the `agent_goal` and from sources that were read. A property you do not have a source for is a gap.
