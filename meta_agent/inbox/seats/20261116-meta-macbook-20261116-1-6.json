@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "The three fixture cases name registry ids: f3304ae. case-fx-lammps-b.json has the method md, case-fx-shear-range.json bd_cg, case-fx-unit-mismatch.json the instrument sma_microscope; the recall test that searched by the words searches by the id, and the fixture store's index is regenerated. I looked at every case under meta_agent/tests/fixtures/cases and under meta_agent/cases for the three fields: the fixtures now carry lammps, hoomd_blue, md, bd_cg and sma_microscope and nothing else, and in the store every method and instrument is null and every engine is null or, at an id's latest revision, hoomd_blue. Read off runs on the tree with the commit: meta_agent/tests ran 188 tests, OK; python contracts/validate.py printed VERDICT PASS, 397 cards, failed=0. Check 8 can land. I start no session and no run, and nothing on an intake writer.",
+  "written_at": "2026-11-16T19:00:57-08:00"
+}
