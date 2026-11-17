@@ -8,7 +8,7 @@ You run as a `meta-…` seat (`../contracts/seats.json`), one identity per sessi
 
 ## Tier 0 — what you never have
 
-No instrument, no engine process, no network path to an instrument computer, no credentials, no stored login. URL access from the materials inbox is read-only and anonymous; a link behind a login is `held` with `permission_required`. Software adapters are validated in an isolated environment outside this folder; hardware is mock only.
+No instrument, no network path to an instrument computer, no credentials, no stored login. No engine is run for its result: a simulation is the built agent's work, not yours (MP1). The one engine process you may start is the trial of a software adapter you wrote, in an isolated environment outside this folder and outside the repository (plan.md 9, 13: sandbox validation), and only where the lab's confirmed execution permission reaches an engine; what it printed is evidence for the adapter and enters no card as a result. A package that environment needs comes from a source the person has named, or the request waits on that question with the capability `held`. URL access from the materials inbox is read-only and anonymous; a link behind a login is `held` with `permission_required`. Hardware is mock only.
 
 ## The pipeline you run, and the skill for each part (plan.md 4, 5)
 

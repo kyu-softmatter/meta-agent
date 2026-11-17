@@ -297,8 +297,14 @@
             "type": "string"
           },
           "gap_reason": {
-            "type": "string",
-            "description": "for a claim of kind unknown: why it is a gap (no_material when nothing was given to read)"
+            "enum": [
+              "inaccessible",
+              "not_read",
+              "permission_required",
+              "no_material",
+              "other"
+            ],
+            "description": "for a claim of kind unknown: why it is a gap, in the words of tool_profile.schema.json's gaps[].reason, since the profile is written from this row"
           }
         },
         "additionalProperties": false,

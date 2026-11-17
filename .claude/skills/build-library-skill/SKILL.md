@@ -25,7 +25,7 @@ The kinds, and the side effect each may declare, are in `contracts/skill_kinds.j
 3. **Write a pure function.** No file, no network, no device, and only the imports the gate allows. A device is reached only through the tools the manifest names.
 4. **Hold no judgement in the code.** A margin, a multiple, a tolerance or a limit is an input with its own source.
 5. **Say where it holds.** For an estimate, the manifest's `validity` says what is neglected and over what conditions; an estimate gives a range.
-6. **Give worked cases from the cited source,** values that the source itself states. At least one must run. A skill of kind `bound` gives one output, the bound or the value of its parameter, and carries two cases that run with inputs that differ: a second quantity is a second skill, and one case cannot tell a relation from a constant.
+6. **Give worked cases from the cited source,** values that the source itself states. At least one must run. Where the source gives the relation and states no value of it, a case is worked by hand: its arithmetic is written out in the case's `worked`, short enough to check by eye, and the manifest's note says no value of the source stands behind it. A row that is the value of a source's expression is then `computed` by that skill, not a literature value. A skill of kind `bound` gives one output, the bound or the value of its parameter, and carries two cases that run with inputs that differ: a second quantity is a second skill, and one case cannot tell a relation from a constant.
 7. **Check it, index, then run the library's tests:**
    ```
    python contracts/tools/skills.py check <skill folder>

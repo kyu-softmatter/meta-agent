@@ -32,6 +32,8 @@ python -m meta_agent.src.designer --intake meta_agent/requests/<rid>/intake.json
 
 It runs intake through validation and writes the bundle under `meta_agent/builds/<agent>/<build_id>/` with its `build` card.
 
+**Rehearse first.** A build is a record and a card is never edited, so a run that the gate then fails leaves files to clear away. Run the Designer once with `--root <a scratch copy of meta_agent outside the repository>`, run `python contracts/validate.py` on that copy and `python contracts/validate.py --bundle` on its bundle, correct the intake by its next revision until both pass, and only then run it in the repository.
+
 - The bundle comes from a versioned template; the `build` card carries the difference from the template and the hash.
 - Safety values are `null`. Only the person writes them, at the destination.
 - Only `observed` and `derived` claims become capabilities.

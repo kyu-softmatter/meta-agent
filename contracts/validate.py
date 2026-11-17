@@ -327,6 +327,24 @@ def json_numbers(obj, out):
             json_numbers(v, out)
 
 
+def locus_numbers(obj, out, inside=False):
+    """The numerals in a card's `locus` and `loci`: a section, a page or a cell of a source. A page that shows
+    where a claim was read shows them, and a place is not a quantity."""
+    if isinstance(obj, str):
+        if inside:
+            for m in NUM_RE.finditer(obj):
+                try:
+                    out.add(float(m.group(0)))
+                except ValueError:
+                    pass
+    elif isinstance(obj, dict):
+        for k, v in obj.items():
+            locus_numbers(v, out, inside or k in ("locus", "loci"))
+    elif isinstance(obj, list):
+        for v in obj:
+            locus_numbers(v, out, inside)
+
+
 def check3(cards, md_by_dir, report, tree):
     by_dir = {}
     for path, data in cards:
@@ -337,6 +355,7 @@ def check3(cards, md_by_dir, report, tree):
         available = set()
         for data in by_dir[d]:
             json_numbers(data, available)
+            locus_numbers(data, available)
         for md in mds:
             text = open(md, "r", encoding="utf-8").read()
             for s in STRIP_RES:
@@ -1134,7 +1153,7 @@ def checkB5(bundle, label, report):
             report.fail("B5", label, "%s/ has no task with an expected verdict" % sub)
 
 
-FIELD_UNIT_ONE_RE = re.compile(r"\((?:number|integer)\s*,\s*1\)")   # a field's type and unit, the unit being `1`
+FIELD_UNIT_ONE_RE = re.compile(r"\((?:number|integer)\s*,\s*1(?=\s*[,;)])")   # a field's type and unit, the unit being `1`
 
 
 def unit_res(units):

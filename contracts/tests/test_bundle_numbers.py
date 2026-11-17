@@ -42,5 +42,30 @@ class B6(unittest.TestCase):
         self.assertEqual(self.judge("A box of 2 m^2.\n", numbers=(2,)), [])
 
 
+    def test_the_unit_one_is_passed_whatever_follows_it_in_the_brackets(self):
+        self.assertEqual(self.judge("- input: `fraction` (number, 1, required; the volume fraction), `n` (integer, 1; a count)\n"), [])
+        self.assertEqual(len(self.judge("- input: `fraction` (number, 12, required)\n")), 1)
+
+
+class Check3(unittest.TestCase):
+    """A page shows where a claim was read; a numeral of a locus is the card's."""
+
+    def judge(self, card, text):
+        d = tempfile.mkdtemp(prefix="c3-")
+        self.addCleanup(shutil.rmtree, d, True)
+        with open(os.path.join(d, "page.md"), "w", encoding="utf-8") as f:
+            f.write(text)
+        report = validate.Report(quiet=True)
+        validate.check3([(os.path.join(d, "card.json"), card)], {d: [os.path.join(d, "page.md")]}, report, d)
+        return [m for _, _, m in report.fails]
+
+    def test_a_numeral_of_a_locus_may_stand_on_the_page_and_no_other_text_of_a_card(self):
+        # two unrelated kinds of source: a notebook's cells and a manual's page
+        card = {"claims": [{"claim": "the stage ends after 13000 moves", "loci": ["section 5, cells [4] to [8]"]},
+                           {"claim": "the cone is truncated", "locus": "manual, page 212"}], "numbers": [{"value": 7.5}]}
+        self.assertEqual(self.judge(card, "Read in section 5, cells [4] to [8], and on page 212; the value is 7.5.\n"), [])
+        self.assertEqual(len(self.judge(card, "The stage ends after 13000 moves.\n")), 1)      # a claim's text gives the page no number
+
+
 if __name__ == "__main__":
     unittest.main()
