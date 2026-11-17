@@ -1,0 +1,28 @@
+[
+  {
+    "name": "from 10 to 50 at 2 s a scan",
+    "inputs": {
+      "single_scan_snr": 10.0,
+      "single_scan_time": 2.0,
+      "target_snr": 50.0
+    },
+    "expect": {
+      "scan_count": 25,
+      "acquisition_time": 50.0
+    },
+    "worked": "(50/10)^2 = 25 scans; 25 * 2 s = 50 s"
+  },
+  {
+    "name": "from 4 to 10 at 0.5 s a scan",
+    "inputs": {
+      "single_scan_snr": 4.0,
+      "single_scan_time": 0.5,
+      "target_snr": 10.0
+    },
+    "expect": {
+      "scan_count": 7,
+      "acquisition_time": 3.5
+    },
+    "worked": "(10/4)^2 = 6.25, so 7 scans; 7 * 0.5 s = 3.5 s"
+  }
+]

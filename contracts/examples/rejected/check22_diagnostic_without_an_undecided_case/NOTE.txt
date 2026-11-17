@@ -1,0 +1,1 @@
+A diagnostic of a series settling whose worked cases all judge by a tolerance handed in and none shows what it says without one: a diagnostic holds no criterion of its own, and a case expecting undecided shows it (the person, 2026-11-17; tasks/016).

@@ -32,6 +32,8 @@ REASONS = {
     "check22_uses_a_skill_that_is_not_there": ("bring_to_ready@v1", "which is not in this library"),
     "check22_bound_one_worked_case": ("gap_min_from_particle_size@v1", "two worked cases that run, with inputs that differ"),
     "check22_bound_two_outputs": ("box_edge_from_volume@v1", "a bound skill gives one output"),
+    "check22_estimate_one_worked_case": ("scans_for_signal_to_noise@v1", "an estimate skill carries two worked cases"),
+    "check22_diagnostic_without_an_undecided_case": ("series_settled@v1", "a worked case that expects state undecided"),
 }
 
 
@@ -46,7 +48,8 @@ class Examples(unittest.TestCase):
     def test_every_example_skill_is_clean_and_its_cases_pass(self):
         found = skills.find_skill_dirs(EXAMPLES)
         self.assertEqual(sorted(os.path.basename(d) for d in found),
-                         ["arrhenius_viscosity@v1", "bring_to_ready@v1", "read_status@v1", "shear_rate_max_from_max_speed@v1",
+                         ["arrhenius_viscosity@v1", "box_length_for_volume_fraction@v1", "bring_to_ready@v1", "read_status@v1",
+                          "scans_for_signal_to_noise@v1", "series_settled@v1", "shear_rate_max_from_max_speed@v1",
                           "timestep_max_from_courant@v1", "timestep_max_from_relaxation_time@v1",
                           "timestep_min_from_step_budget@v1", "weissenberg_number@v1"])
         for d in found:

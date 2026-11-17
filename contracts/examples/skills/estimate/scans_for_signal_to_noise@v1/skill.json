@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "id": "scans_for_signal_to_noise",
+  "version": 1,
+  "kind": "estimate",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the scans an averaged measurement needs to reach a signal-to-noise ratio, and their time",
+  "applies_to": {
+    "parameters": [
+      "scan_count",
+      "acquisition_time"
+    ],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "single_scan_snr",
+      "unit": "1",
+      "meaning": "the signal-to-noise ratio of one scan, above zero"
+    },
+    {
+      "name": "single_scan_time",
+      "unit": "s",
+      "meaning": "the time one scan takes"
+    },
+    {
+      "name": "target_snr",
+      "unit": "1",
+      "meaning": "the signal-to-noise ratio the measurement is to reach"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "scan_count",
+      "unit": "count",
+      "meaning": "the smallest whole number of scans whose average reaches the target"
+    },
+    {
+      "name": "acquisition_time",
+      "unit": "s",
+      "meaning": "scan_count times single_scan_time"
+    }
+  ],
+  "entry": {
+    "script": "scripts/estimate.py",
+    "function": "estimate"
+  },
+  "validity": "noise independent from scan to scan; at least one scan",
+  "source": {
+    "citation": "averaging n independent scans divides the noise by the square root of n while the signal stays",
+    "locus": "the square-root law of signal averaging"
+  },
+  "cases": "cases.json"
+}

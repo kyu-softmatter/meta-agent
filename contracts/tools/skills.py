@@ -406,19 +406,29 @@ def find_in_library(root, ref):
     return None
 
 
-def bound_problems(skill_dir, manifest):
-    """What a skill of kind `bound` is beyond any skill: it gives one quantity, and its relation is shown twice.
+RELATION_KINDS = ("bound", "estimate", "diagnostic")   # a relation or a judgement, shown on two cases
 
-    A parameter sheet reads one output of a bound skill, so a second would be dropped in silence; and one
-    worked case cannot tell a relation from a constant, so two that run are asked, with inputs that differ.
+
+def bound_problems(skill_dir, manifest):
+    """What a skill of kind `bound`, `estimate` or `diagnostic` is beyond any skill.
+
+    A bound gives one quantity: a parameter sheet reads one output of it, so a second would be dropped in
+    silence. Each of the three shows its relation twice: one worked case cannot tell a relation from a
+    constant, so two that run are asked, with inputs that differ. A diagnostic says its judgement as `state`
+    and holds no criterion of its own, so one of its cases expects `undecided` (the person, 2026-11-17).
     """
-    if manifest.get("kind") != "bound":
+    kind = manifest.get("kind")
+    if kind not in RELATION_KINDS:
         return []
     out = []
     outputs = manifest.get("outputs")
-    if isinstance(outputs, list) and len(outputs) != 1:
+    if kind == "bound" and isinstance(outputs, list) and len(outputs) != 1:
         out.append("a bound skill gives one output, the bound or the value of its parameter: %d are declared and a "
                    "sheet reads one; a second quantity is a second skill" % len(outputs))
+    names = [o.get("name") for o in outputs if isinstance(o, dict)] if isinstance(outputs, list) else []
+    if kind == "diagnostic" and "state" not in names:
+        out.append("a diagnostic skill says its judgement as an output named state (settled, not_settled, undecided "
+                   "or the words of its kind)")
     try:
         with open(os.path.join(skill_dir, "cases.json"), "r", encoding="utf-8") as f:
             cases = json.load(f)
@@ -427,8 +437,12 @@ def bound_problems(skill_dir, manifest):
     ran = [c for c in cases if isinstance(c, dict) and not c.get("not_run")] if isinstance(cases, list) else []
     distinct = {json.dumps(c.get("inputs"), sort_keys=True) for c in ran}
     if ran and len(distinct) < 2:
-        out.append("a bound skill carries two worked cases that run, with inputs that differ: one case cannot tell a "
-                   "relation from a constant")
+        out.append("%s %s skill carries two worked cases that run, with inputs that differ: one case cannot tell a "
+                   "relation from a constant" % ("an" if kind[0] in "aeiou" else "a", kind))
+    if kind == "diagnostic" and ran and not any(isinstance(c.get("expect"), dict) and c["expect"].get("state") == "undecided"
+                                                for c in ran):
+        out.append("a diagnostic skill carries a worked case that expects state undecided, as it says without a "
+                   "criterion handed to it: it holds none of its own")
     return out
 
 

@@ -5,7 +5,15 @@ description: Turn one relation or one procedure into a library skill, as source 
 
 # Build a library skill
 
-Every calculation of a quantity is a library skill, the approximate ones as much as the exact ones. A library skill is not a session skill: it is source code that the runner runs, and no session loads it when it starts.
+A quantity that enters a card or a decision of the agent is computed by a library skill, the approximate ones as much as the exact ones; a value the engine itself reports is read from the engine and not computed again (root `CLAUDE.md`). A library skill is not a session skill: it is source code that the runner runs, and no session loads it when it starts.
+
+## Which skill to make
+
+- **Start from what the built agent decides while it runs** and from the failure lines of its tests: whether a run has settled, whether an acceptance stays in its window, how long a run of a given size takes, how a count moves from frame to frame. A skill only the builder runs, once, to fill a row is the weaker kind; a value the request's own source prints is a row citing it.
+- **Name the relation, not the request's object.** The quantity and what it is computed from (`box_length_for_volume_fraction`, which takes the particle's volume), not the tutorial's shape or lattice; the shape is another skill's output or a row. A skill that serves one request only is a sign the relation was not found.
+- **Choose the kind by what it gives** (`contracts/skill_kinds.json`): `bound` a limit or the value of one parameter; `estimate` a setup value or a run's cost from a relation, which may give the quantities one relation ties together, so that a relation and its inverse are one skill; `diagnostic` the state of a run or a measurement judged by a criterion it is handed, `undecided` without one; `data_analysis` numbers computed from data it is handed.
+- **A diagnostic holds no criterion.** The window, the tolerance and any threshold are inputs, rows the person or the request gives; one of its worked cases shows `undecided` when none is handed.
+- **Read what a skill is used for.** A test's collection shows which skills a bundle's session ran; a skill no session runs is reconsidered at the next version.
 
 Load `classify-knowledge` before the first value, statement or data file of this part enters a card, a sheet or a skill's inputs, if it is not loaded in this session yet: it binds at every stage (`meta_agent/CLAUDE.md`), and a value that entered before it was loaded has been placed from memory of it.
 

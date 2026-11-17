@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "note": "The kinds of skill (plan.md 14-30, 14-31; the person, 2026-11-09). A skill is source code a model takes when it needs it. The list is open: a new kind is one entry here, landed by the design seat on the person's word (meta_agent/tasks/011 adds scale and capability). side_effects are the ones a skill of the kind may declare; none touches no device, read_device reads one, write_device changes its state. A device is reached only through the tools a skill names (calls_tools), never from the skill's own code.",
+  "note": "The kinds of skill (plan.md 14-30, 14-31; the person, 2026-11-09). A skill is source code a model takes when it needs it. The list is open: a new kind is one entry here, landed by the design seat on the person's word (meta_agent/tasks/011 adds scale and capability). side_effects are the ones a skill of the kind may declare; none touches no device, read_device reads one, write_device changes its state. A device is reached only through the tools a skill names (calls_tools), never from the skill's own code. estimate and diagnostic added on the person's word of 2026-11-17 (docs/ideas/20261117.md, tasks/016).",
   "side_effects": [
     "none",
     "read_device",
@@ -18,6 +18,18 @@
         "none"
       ],
       "what": "turns data it is handed into computed numbers with their basis"
+    },
+    "estimate": {
+      "side_effects": [
+        "none"
+      ],
+      "what": "gives a setup value or the cost of a run or a measurement from a relation and the quantities it is handed (a box for a volume fraction, the scans a signal needs, a run's duration); not a limit, which is a bound; it may give the quantities one relation ties together"
+    },
+    "diagnostic": {
+      "side_effects": [
+        "none"
+      ],
+      "what": "judges the state of a run or a measurement from data it is handed (settled, equilibrated, a trend), by a criterion it is handed as an input; it holds no criterion of its own, and without one it says undecided, since a criterion is the person's"
     },
     "hardware_connection": {
       "side_effects": [

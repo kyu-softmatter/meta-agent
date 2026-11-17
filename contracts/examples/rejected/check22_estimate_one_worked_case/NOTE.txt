@@ -1,0 +1,1 @@
+An estimate of an instrument's acquisition with one worked case: one case cannot tell a relation from a constant, so an estimate, like a bound, shows its relation on two cases whose inputs differ (tasks/016, 2026-11-17).
