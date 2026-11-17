@@ -62,6 +62,27 @@ def make_profile(intake, seat, now=None):
     return card
 
 
+def markdown(profile):
+    """tool_profile.md, the page of a tool profile for people. The Designer writes it beside the card; the intake
+    stage renders it from a draft to refuse a number check 3 would refuse on it, before anything is written."""
+    lines = ["# tool_profile %s" % profile["id"], "",
+             "Tool `%s` (%s), read from %s. Analysis permission: %s." % (
+                 profile["tool"]["name"], profile["tool"]["kind"], profile["tool"].get("source", "no document"),
+                 "none; binaries and runtime were not analysed" if not profile.get("analysis_permission") else "granted"),
+             "", "## Claims", ""]
+    for c in profile["claims"]:
+        loci = ", ".join(e["locus"] for e in c.get("evidence", [])) or "no locus"
+        lines.append("- **%s** (%s): %s; at %s%s" % (c["kind"], c["basis"], c["claim"], loci,
+                                                     ("; requires: " + c["requires"]) if c.get("requires") else ""))
+    lines += ["", "## Gaps", ""]
+    for g in profile["gaps"]:
+        lines.append("- %s (%s)%s" % (g["what"], g["reason"], ("; requires: " + g["requires"]) if g.get("requires") else ""))
+    if not profile["gaps"]:
+        lines.append("- none")
+    lines += ["", "Parameter candidates: %s." % (", ".join("`%s`" % p for p in profile["parameter_candidates"]) or "none"), ""]
+    return "\n".join(lines)
+
+
 def names_in(text, names):
     """The names that stand in a text as words of their own (not inside another word or a hyphenated one)."""
     return sorted(n for n in set(names) if re.search(r"(?<![A-Za-z0-9_-])%s(?![A-Za-z0-9_-])" % re.escape(n), text or ""))

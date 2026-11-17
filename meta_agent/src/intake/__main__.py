@@ -50,7 +50,7 @@ def main(argv=None):
         if not card_mod.is_card(intake):
             print("not a card: this intake is of before the card (contracts/schemas/intake.schema.json) and is read as it is")
             return 0
-        found = card_mod.problems(intake)
+        found = card_mod.problems(intake, os.path.dirname(os.path.abspath(args.file)))
         for line in found:
             print(line)
         print("stage %s, revision %s; %s" % (intake.get("stage"), intake.get("revision"), "%d problem(s)" % len(found) if found else "nothing to say"))

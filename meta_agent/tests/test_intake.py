@@ -192,5 +192,95 @@ class Signature(unittest.TestCase):
             self.assertFalse([h for h in by_name["hits"] if kind in h["matched"]], (kind, "a display name meets no case on its tool"))
 
 
+class TheGatesOwnRules(unittest.TestCase):
+    """What the gate refuses after a build, the stage refuses before it writes (test run 20261116-7, collect-1):
+    a tolerance the validation report's schema refuses, a number check 3 refuses on tool_profile.md and a number
+    check B6 refuses in the Tools section of the bundle's CLAUDE.md. On the two unrelated kinds of the examples:
+    an engine whose request waits (req-fixture-002) and an echo tool that is specified (req-fixture-003)."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="ma-intake-rules-")
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+
+    def refused(self, rid, draft, *words):
+        req = os.path.join(self.tmp, rid)
+        with self.assertRaises(card_mod.Refused) as e:
+            card_mod.write(req, rid, draft, SEAT, NOW)
+        for w in words:
+            self.assertIn(w, str(e.exception))
+        self.assertFalse(os.path.exists(req), "nothing is written")
+        return str(e.exception)
+
+    def written(self, rid, draft):
+        path, card = card_mod.write(os.path.join(self.tmp, rid), rid, draft, SEAT, NOW)
+        self.assertTrue(os.path.isfile(path))
+        return card
+
+    def echo(self, **contract):
+        d = draft_of(example("req-fixture-003"))
+        d["tool_contract"] = dict(d["tool_contract"], **contract)
+        return d
+
+    def test_a_tolerance_or_a_reference_the_report_refuses_is_refused(self):
+        d = self.echo()
+        task = {"id": "sci-1", "name": "the length of a known text",
+                "tolerance": {"value": 0, "unit": "1", "chosen_by": "human", "words": "정확히", "gloss": "exactly"}}
+        msg = self.refused("req-fixture-003", dict(d, scientific_tasks=[task]), "scientific_tasks/0/tolerance",
+                           "validation report's tolerance")
+        self.assertIn("words", msg)
+        bad_ref = dict(task, tolerance={"value": 0, "unit": "1", "chosen_by": "human"},
+                       reference_spec={"kind": "analytic", "ref": "len", "page": "the first"})
+        self.refused("req-fixture-003", dict(d, scientific_tasks=[bad_ref]), "scientific_tasks/0/reference_spec")
+        good = dict(bad_ref, reference_spec={"kind": "analytic", "ref": "len"})
+        self.assertEqual(self.written("req-fixture-003", dict(d, scientific_tasks=[good, dict(good, id="sci-2", tolerance=None)]))
+                         ["stage"], "specified")
+
+    def test_a_number_in_the_tool_s_reading_is_refused_unless_a_card_carries_it(self):
+        for rid in ("req-fixture-002", "req-fixture-003"):
+            d = draft_of(example(rid))
+            claim = dict(d["tool_reading"][0], claim="the tool reads at most 7.2 items at a time")
+            self.refused(rid, dict(d, tool_reading=[claim]), "tool_profile.md would carry the number 7.2", "check 3")
+            # the same number, read from a source and carried as a value read, is a number a card of the folder holds
+            read = {"name": "items_at_a_time", "value": 7.2, "unit": "count", "locus": "a fixture: no source was read",
+                    "role": "a setting the source chooses"}
+            card = self.written(rid, dict(d, tool_reading=[claim], values_read=(d.get("values_read") or []) + [read]))
+            self.assertEqual(card["revision"], 1)
+
+    def test_a_place_with_numerals_is_a_place_and_passes(self):
+        d = draft_of(example("req-fixture-002"))
+        claim = dict(d["tool_reading"][0], loci=["page 04, cell 6"])
+        self.assertEqual(self.written("req-fixture-002", dict(d, tool_reading=[claim]))["revision"], 1)
+
+    def test_a_number_in_a_contract_s_words_is_refused_as_check_b6_would(self):
+        self.refused("req-fixture-003", self.echo(description="returns the text and its length; frame -1 is the last"),
+                     "the number -1 from the contract of echo", "B6")
+        inputs = {"type": "object", "required": ["text"], "properties": {
+            "text": {"type": "string", "description": "the text, at most 03 lines"}}}
+        self.refused("req-fixture-003", self.echo(inputs=inputs), "the number 03")
+        # what the Tools section does not print as a number passes: a unit of one beside a type, a digit in an
+        # enumerated word (named as the contract's), a unit with a digit
+        inputs = {"type": "object", "required": ["text", "mode", "size"], "properties": {
+            "text": {"type": "string", "description": "the text"},
+            "mode": {"type": "string", "enum": ["utf8", "latin1"]},
+            "size": {"type": "number", "unit": "1"},
+            "volume": {"type": "number", "unit": "m^3"}}}
+        self.assertEqual(self.written("req-fixture-003", self.echo(inputs=inputs))["stage"], "specified")
+
+    def test_the_designer_and_the_check_command_read_the_same_rules(self):
+        d = self.echo(description="returns the text; frame -1 is the last")
+        req = os.path.join(self.tmp, "req-fixture-003")
+        os.makedirs(req)
+        bad = dict(example("req-fixture-003"), tool_contract=d["tool_contract"])
+        cards.write_json(os.path.join(req, "intake.json"), bad)
+        p = subprocess.run([sys.executable, "-m", "meta_agent.src.intake", "check", os.path.join(req, "intake.json")],
+                           capture_output=True, text=True, cwd=REPO, env=ENV)
+        self.assertEqual(p.returncode, 1, p.stdout + p.stderr)
+        self.assertIn("B6", p.stdout)
+        from meta_agent.src import designer
+        with self.assertRaises(designer.Stopped) as e:      # the Designer reads the card with the stage's rules
+            designer.may_start(bad, os.path.join(req, "intake.json"), req, self.tmp)
+        self.assertIn("B6", str(e.exception))
+
+
 if __name__ == "__main__":
     unittest.main()

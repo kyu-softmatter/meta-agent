@@ -197,23 +197,7 @@ def write_sheet(req_dir, seat, now=None, root=ROOT):
     return path, sheet
 
 
-def profile_markdown(profile):
-    lines = ["# tool_profile %s" % profile["id"], "",
-             "Tool `%s` (%s), read from %s. Analysis permission: %s." % (
-                 profile["tool"]["name"], profile["tool"]["kind"], profile["tool"].get("source", "no document"),
-                 "none; binaries and runtime were not analysed" if not profile.get("analysis_permission") else "granted"),
-             "", "## Claims", ""]
-    for c in profile["claims"]:
-        loci = ", ".join(e["locus"] for e in c.get("evidence", [])) or "no locus"
-        lines.append("- **%s** (%s): %s; at %s%s" % (c["kind"], c["basis"], c["claim"], loci,
-                                                     ("; requires: " + c["requires"]) if c.get("requires") else ""))
-    lines += ["", "## Gaps", ""]
-    for g in profile["gaps"]:
-        lines.append("- %s (%s)%s" % (g["what"], g["reason"], ("; requires: " + g["requires"]) if g.get("requires") else ""))
-    if not profile["gaps"]:
-        lines.append("- none")
-    lines += ["", "Parameter candidates: %s." % (", ".join("`%s`" % p for p in profile["parameter_candidates"]) or "none"), ""]
-    return "\n".join(lines)
+profile_markdown = profile_mod.markdown      # tool_profile.md; the intake stage renders it too, to judge its numbers
 
 
 class Stopped(Exception):
@@ -332,7 +316,7 @@ def may_start(intake, intake_path, req_dir, root):
         raise Stopped("%s is not the latest intake of %s; that is %s" % (
             os.path.basename(intake_path), rid, os.path.basename(path)))
     if intake_mod.is_card(intake):
-        found = intake_mod.problems(intake)
+        found = intake_mod.problems(intake, req_dir)
         if found:
             raise Stopped("the intake is not a card the stage would write: " + "; ".join(found))
         if intake["stage"] != "specified":
@@ -440,8 +424,24 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
     # where the gates ran: an adapter of a tool whose contract names an external program calls that program,
     # so the gates of a bundle with such a tool ran in a sandbox; every other adapter here is a mock
     environment = "sandbox" if any(c.get("calls_external") for c in contracts) else "mock"
+    # a bundle that makes its own environment has none here: its gates are read again off an isolated copy outside the
+    # repository whose own install tools made it, through its own gate, or the report says why not (test run 20261116-7)
+    in_env, made, not_made = gate_mod.in_its_environment(bundle_path)
+    where = None
+    if in_env is not None:
+        in_tree = report["validate"]
+        report, environment = in_env, "sandbox"
+        where = ("read off an isolated copy of the bundle outside the repository, whose environment its own %s made through "
+                 "its runner and gate, by the lab's execution permission; the copy was removed. In the repository, with no "
+                 "environment, the gates gave interface %s, scientific %s" % (
+                     " and ".join("%s (%s)" % (m["tool"], m["installs_from"]) for m in made),
+                     in_tree["interface"]["verdict"], in_tree["scientific"]["verdict"]))
+    elif not_made:
+        where = "the bundle's environment was not made, so a task that needs it is not_run: " + not_made
     vr, iface_v, sci_v = gate_mod.make_validation_report(report, build_id_full, rid, bundle_rel, seat, created,
-                                                         environment=environment)
+                                                         environment=environment, not_made=not_made)
+    if where:
+        vr["note"] += "; " + where
     put(os.path.join(build_dir, "validation_report.json"), vr)
     build = bundle_mod.make_build_card(build_id_full, rid, spec, goal["lab_profile_ref"], template_name,
                                        "diff_from_template.txt", bundle_rel, sha, seat, created, parent_build=parent_build)

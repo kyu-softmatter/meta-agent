@@ -724,5 +724,103 @@ class WhatTheBundleSaysItLacks(unittest.TestCase):
         self.assertNotIn("one of", bundle_mod.field("gap", {"type": "number", "unit": "m"}))
 
 
+ENV_HEAD = ("import os, subprocess, sys\n"
+            "BUNDLE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))\n"
+            "READY = os.path.join(BUNDLE, 'runs', 'env', 'ready')\n"
+            "def err(code, category, message):\n"
+            "    return {'artifact': 'error_contract', 'schema_version': '0.1', 'code': code, 'category': category,\n"
+            "            'message': message, 'retryable': False, 'remediation': {'action': 'see the message'}}\n")
+INSTALLS = ENV_HEAD + ("def run(payload):\n"
+                       "    os.makedirs(os.path.dirname(READY), exist_ok=True)\n"
+                       "    open(READY, 'w').write('made')\n"
+                       "    return {'installed': True}\n")
+INSTALL_FAILS = ENV_HEAD + ("def run(payload):\n"
+                            "    return err('ENV-PIXI-001', 'unavailable', 'pixi is not on this computer')\n")
+NEEDS_ENV = ENV_HEAD + ("def run(payload):\n"
+                        "    m = payload.get('message') if isinstance(payload, dict) else None\n"
+                        "    if not isinstance(m, str) or m == '':\n"
+                        "        return err('ECHO-INPUT-001', 'invalid_input', 'message is missing, not a string, or empty')\n"
+                        "    if not os.path.isfile(READY):\n"
+                        "        return err('ECHO-ENV-001', 'unavailable', 'this agent has no environment yet')\n"
+                        "    %s\n")
+ENGINE_BODY = ("out = subprocess.run([sys.executable, '-c', 'import sys; print(len(sys.argv[1]))', m], capture_output=True, "
+               "text=True, check=True)\n    return {'message': m, 'length': int(out.stdout)}")
+WRITER_BODY = ("open(os.path.join(BUNDLE, 'runs', 'written.txt'), 'w').write(m)\n    return {'message': m, 'length': len(m)}")
+
+
+class ValidatedInItsEnvironment(unittest.TestCase):
+    """Round four of the clone test (test run 20261116-7): a bundle that makes its own environment has none in the
+    builder's tree, so its science is not_run there, and a session wrote the report off a copy by hand. S6 now reads
+    the gates off an isolated copy outside the repository whose own install tool made the environment, through the
+    copy's runner and gate, or says why not. On two unrelated kinds: an engine that starts a process and an analysis
+    tool that writes files; neither is rheology, and nothing reaches the network."""
+
+    LAB = "lab-kyu-softmatter"
+
+    def build(self, kind, effects, body, installer):
+        tmp, root = scratch_root()
+        self.addCleanup(shutil.rmtree, tmp, True)
+        shutil.copytree(os.path.join(META, "profiles", self.LAB), os.path.join(root, "profiles", self.LAB))
+        cards.write_text(os.path.join(root, "tests", "fixtures", "env", "install.py"), installer)
+        cards.write_text(os.path.join(root, "tests", "fixtures", "env", "echo.py"), NEEDS_ENV % body)
+        i = copy.deepcopy(load_intake())
+        i["lab_profile_ref"] = self.LAB
+        i["tool"]["kind"] = kind
+        gate = {"required": True, "place": "src/gate.py, consulted by src/run_tool.py before the call", "opens_by": "execution_permission"}
+        echo = dict(i.pop("tool_contract"), side_effects=effects, errors=["invalid_input", "unavailable", "refused_by_safety"],
+                    safety_gate=gate)
+        install = {"artifact": "tool_contract", "schema_version": "0.1", "name": "install_environment",
+                   "description": "make this agent's own environment from the listed source, once, before the first run",
+                   "inputs": {"type": "object", "properties": {}, "required": []},
+                   "outputs": {"type": "object", "properties": {"installed": {"type": "boolean"}}, "required": ["installed"]},
+                   "errors": ["unavailable", "refused_by_safety"], "side_effects": "network",
+                   "installs_from": {"installer": "pixi", "channel": "conda-forge"}, "safety_gate": gate,
+                   "idempotent": True, "timeout_s": None}
+        i["tools"] = [{"contract": install, "adapter_source": "tests/fixtures/env/install.py", "error_contracts": []},
+                      {"contract": echo, "adapter_source": "tests/fixtures/env/echo.py", "error_contracts": i.pop("error_contracts")}]
+        i["interface_tasks"] = [t for t in i["interface_tasks"] if t["id"] != "if-1"]      # the calls that need no environment
+        i["replay_items"] = [t for t in i["replay_items"] if t["id"] != "rp-001"]
+        i["scientific_tasks"][0].update(tolerance={"value": 0, "unit": "1", "chosen_by": "human"}, expected_verdict="pass")
+        out = designer.run(i, SEAT, "0001", NOW, root)
+        build = os.path.join(root, "builds", "echo", "0001")
+        return tmp, root, out, cards.load_json(os.path.join(build, "validation_report.json")), os.path.join(build, "bundle")
+
+    def test_the_science_is_judged_in_a_copy_whose_own_install_made_its_environment(self):
+        for kind, effects, body in (("engine", "runs_process", ENGINE_BODY), ("analysis_software", "writes_files", WRITER_BODY)):
+            tmp, root, out, vr, bundle = self.build(kind, effects, body, INSTALLS)
+            self.assertEqual(vr["environment"], "sandbox", kind)
+            self.assertEqual([(t["id"], t["verdict"]) for t in vr["scientific"]["tasks"]], [("sci-1", "pass")], kind)
+            self.assertEqual((vr["overall"], out["gates"]["scientific"]), ("pass", "pass"), kind)
+            self.assertIn("isolated copy of the bundle outside the repository", vr["note"])
+            self.assertIn("install_environment (pixi/conda-forge)", vr["note"])
+            self.assertIn("scientific not_run", vr["note"])                 # what the tree gave is said beside it
+            self.assertFalse(os.path.exists(os.path.join(bundle, "runs", "env")), "the bundle in the tree is unchanged")
+            leftover = [n for n in os.listdir(tempfile.gettempdir()) if n.startswith("ma-s6-environment-")]
+            self.assertEqual(leftover, [], "the copy is removed")
+            p = subprocess.run([sys.executable, VALIDATE, tmp, "--strict"], capture_output=True, text=True,
+                               env=dict(os.environ, PYTHONUTF8="1"))
+            self.assertIn("0 failed, 0 pending", p.stdout, p.stdout + p.stderr)
+
+    def test_when_the_install_fails_the_report_says_not_run_and_why(self):
+        for kind, effects, body in (("engine", "runs_process", ENGINE_BODY), ("analysis_software", "writes_files", WRITER_BODY)):
+            _, _, out, vr, _ = self.build(kind, effects, body, INSTALL_FAILS)
+            sci = vr["scientific"]["tasks"][0]
+            self.assertEqual((vr["environment"], sci["verdict"]), ("mock", "not_run"), kind)   # the tree's run stands
+            self.assertIn("the bundle's environment was not made: install_environment returned ENV-PIXI-001 (unavailable)",
+                          sci["reason"])
+            self.assertIn("ECHO-ENV-001", sci["reason"])                    # what the bundle's own call said stays
+            self.assertNotEqual(vr["overall"], "pass")
+            self.assertIn("the bundle's environment was not made", vr["note"])
+
+    def test_a_bundle_that_makes_no_environment_is_judged_in_the_tree_alone(self):
+        from meta_agent.src.validate import gate as gate_mod
+        tmp, root = scratch_root()
+        self.addCleanup(shutil.rmtree, tmp, True)
+        designer.run(load_intake(), SEAT, "0001", NOW, root)
+        self.assertEqual(gate_mod.in_its_environment(os.path.join(root, "builds", "echo", "0001", "bundle")), (None, [], None))
+        self.assertFalse(gate_mod.outside(os.path.join(REPO, "meta_agent")))
+        self.assertTrue(gate_mod.outside(tempfile.gettempdir()))
+
+
 if __name__ == "__main__":
     unittest.main()
