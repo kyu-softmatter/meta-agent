@@ -11,7 +11,9 @@ I have already answered these, in an earlier session, and they are recorded in `
 - A built agent may start the engine on this computer, in a separate environment made for the agent, with its packages pinned there.
 - The tutorial is the material I mean. It is registered, it may be quoted, and adapters may follow its code with its copyright notice kept.
 - freud and pictures are both wanted, so both become dependencies; read the render cells in the hoomd-examples repository first.
-- The tolerance of the scientific checks: exact for the same seed. A run with the tutorial's seed must print the tutorial's numbers; anything else fails.
+- The scientific checks: the values that do not depend on the random stream (the lattice, the volume fraction of the dilute state, the step at which compression ends) are compared exactly with the tutorial's page; the values that depend on it stay undecided.
+- A built agent may make its own environment with pixi from the channel conda-forge, its packages pinned.
+- A tool that only starts the engine or writes the agent's own files is opened by the lab's execution permission, which reaches an engine; it waits for no safety value. A tool that changed an instrument would still wait for one, and this agent has none.
 - You may fetch and read, anonymously and read-only, each as a material card: the render cells in the hoomd-examples notebooks, the freud documentation of the solid-like analysis, and the HOOMD-blue reference pages of the classes the tutorial uses.
 - The phase data of hard octahedra stays a gap; use the tutorial's own target.
 
