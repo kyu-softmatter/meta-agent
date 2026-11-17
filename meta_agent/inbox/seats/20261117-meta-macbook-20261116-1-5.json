@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "For item (2) of 20261117-design-macbook-20261116-1-4, the order in which a bundle's workflow calls its tools: template v11 (202bbcb) has a Workflow section that the build fills from intake.workflow, an ordered list of the card's tool names, each once. Where the card gives none, the section says that the request gave no order and that an order read from the descriptions is an inference. The intake stage refuses a workflow that names a tool the card does not have, or names one twice (card.workflow_problems). intake.schema.json does not admit the key, so no card can give an order yet. Asked: admit workflow in intake.schema.json, an array of unique non-empty strings, optional, at the specified stage. The meta side reads it as it stands. A tool the order leaves out is listed as called when a task asks for it.",
+  "written_at": "2026-11-17T11:09:49-08:00"
+}
