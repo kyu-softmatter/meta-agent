@@ -5,7 +5,7 @@ Read `tasks/001-start.md` first. It is this agent's first task, and `CLAUDE.md` 
 Do two things, in this order:
 
 1. Task `tasks/001-start.md`, as it is written.
-2. A person asks: "Run the tutorial's hard octahedra from the start and tell me whether they ordered." Do it as this agent does it. Where something this agent needs is not here, do not supply it yourself: say what it is, what would settle it, and whose step it is.
+2. A person asks: "Run the tutorial's hard octahedra from the start and tell me how many particles are solid-like at the end." Do it as this agent does it. Where something this agent needs is not here, do not supply it yourself: say what it is, what would settle it, and whose step it is.
 
 This folder is a copy made for this run and is not under version control: there is nothing to commit, and what your instructions allow a session to write, you may write. Write nothing they do not allow.
 

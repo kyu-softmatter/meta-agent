@@ -16,6 +16,7 @@ I have already answered these, in an earlier session, and they are recorded in `
 - A tool that only starts the engine or writes the agent's own files is opened by the lab's execution permission, which reaches an engine; it waits for no safety value. A tool that changed an instrument would still wait for one, and this agent has none.
 - You may fetch and read, anonymously and read-only, each as a material card: the render cells in the hoomd-examples notebooks, the freud documentation of the solid-like analysis, and the HOOMD-blue reference pages of the classes the tutorial uses.
 - The phase data of hard octahedra stays a gap; use the tutorial's own target.
+- Whether the octahedra ordered is mine to judge: the agent reports the number of solid-like particles in each frame and gives no verdict on it.
 
 Not decided, and not to wait for: where the bundle lands, whether an interface is wanted, and which documentation version the agent follows. Leave each undecided on the card it belongs to and carry on.
 
