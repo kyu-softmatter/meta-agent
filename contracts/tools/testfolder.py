@@ -37,7 +37,9 @@ is made, which is what keeps the name taken. In a run:
 
 `collect` writes `<log folder>/<run>/collect-<n>/`, a new folder each time. For every session whose
 transcript says it was opened inside the run: the transcript as the application wrote it, one line per tool
-call beside it (`<session>.calls.jsonl`), and in `collection.json` what was read off it: the model, the first
+call beside it (`<session>.calls.jsonl`, a call that ended in an error with the error's text), what the
+session itself wrote to its reader in order (`<session>.said.md`, its report last), and in `collection.json`
+what was read off it: the model, the first
 and last time, what it was asked, the skills it loaded, the files it wrote and which of them lie outside the
 folder it was opened in. For a bundle: the files added, changed and removed against the hashes of `make`,
 and the files themselves. For the clone: the commits made, the difference from the head it was cloned at,
@@ -374,9 +376,9 @@ def _short(tool, given):
 
 
 def read_transcript(path):
-    """What one transcript says: (summary, calls). Every value is read off the file; none is judged."""
+    """What one transcript says: (summary, calls, said). Every value is read off the file; none is judged."""
     s = {"cwd": None, "models": [], "first": None, "last": None, "asked": [], "lines": 0, "unread_lines": 0}
-    calls, results, usage = [], {}, {}
+    calls, results, usage, said = [], {}, {}, []
     with open(path, "r", encoding="utf-8", errors="replace") as f:
         for line in f:
             if not line.strip():
@@ -405,6 +407,9 @@ def read_transcript(path):
                 if isinstance(m.get("usage"), dict):
                     usage[m.get("id") or o.get("uuid")] = m["usage"]     # the last usage of a message stands
                 for b in content if isinstance(content, list) else []:
+                    if isinstance(b, dict) and b.get("type") == "text" and isinstance(b.get("text"), str) \
+                            and b["text"].strip() and not o.get("isSidechain"):
+                        said.append((ts, b["text"]))
                     if isinstance(b, dict) and b.get("type") == "tool_use":
                         call = {"n": len(calls) + 1, "at": ts, "tool": b.get("name"), "id": b.get("id")}
                         call.update(_short(b.get("name"), b.get("input")))
@@ -415,7 +420,7 @@ def read_transcript(path):
                 blocks = content if isinstance(content, list) else []
                 for b in blocks:
                     if isinstance(b, dict) and b.get("type") == "tool_result":
-                        results[b.get("tool_use_id")] = bool(b.get("is_error"))
+                        results[b.get("tool_use_id")] = _result_text(b.get("content")) if b.get("is_error") else None
                 if o.get("isMeta") or o.get("isSidechain") or any(isinstance(b, dict) and b.get("type") == "tool_result" for b in blocks):
                     continue
                 text = content if isinstance(content, str) else "\n".join(
@@ -424,7 +429,9 @@ def read_transcript(path):
                     s["asked"].append(text)
     for c in calls:
         c["answered"] = c["id"] in results
-        c["error"] = results.get(c["id"], False)
+        c["error"] = results.get(c["id"]) is not None
+        if c["error"]:
+            c["error_text"] = results[c["id"]]
     cwd = s["cwd"]
     by_tool = {}
     for c in calls:
@@ -446,7 +453,16 @@ def read_transcript(path):
         "written_outside": [p for p in written if cwd and not inside(p if os.path.isabs(p) else os.path.join(cwd, p), cwd)],
         "tokens": tokens, "tokens_read_as": "the last usage of each message id in the transcript, summed",
     })
-    return s, calls
+    return s, calls, said
+
+
+def _result_text(content):
+    """The text of a tool's result, whichever of the application's two shapes it has."""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        return "\n".join(b.get("text", "") if isinstance(b, dict) else str(b) for b in content)
+    return "" if content is None else json.dumps(content, ensure_ascii=False)
 
 
 def collect_sessions(projects, run_path, items, dest):
@@ -464,12 +480,16 @@ def collect_sessions(projects, run_path, items, dest):
         kept = sorted(os.listdir(memory)) if os.path.isdir(memory) else []
         if kept:                                        # what the application keeps for this path between sessions
             shutil.copytree(memory, os.path.join(sdir, "memory"), dirs_exist_ok=True)
-        summary, calls = read_transcript(os.path.join(pdir, name))
+        summary, calls, said = read_transcript(os.path.join(pdir, name))
         with open(os.path.join(sdir, sid + ".calls.jsonl"), "w", encoding="utf-8") as f:
             for c in calls:
                 f.write(json.dumps(c, ensure_ascii=False) + "\n")
+        with open(os.path.join(sdir, sid + ".said.md"), "w", encoding="utf-8") as f:
+            for at, text in said:
+                f.write("<!-- %s -->\n\n%s\n\n" % (at, text.strip()))
         summary.update({"session": sid, "item": item, "transcript": "sessions/%s/%s" % (item, name),
-                        "calls_file": "sessions/%s/%s.calls.jsonl" % (item, sid), "memory_files": kept})
+                        "calls_file": "sessions/%s/%s.calls.jsonl" % (item, sid),
+                        "said_file": "sessions/%s/%s.said.md" % (item, sid), "said": len(said), "memory_files": kept})
         out.append(summary)
     return out
 

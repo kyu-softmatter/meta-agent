@@ -26,7 +26,8 @@ A test is a *run*: a folder made from the committed head, in which sessions are 
 `python contracts/tools/testfolder.py collect <run>` writes a new collection in the log folder and prints one line per session and per item. In it:
 
 - `collection.json` — for each session what it was asked, the model, the skills it loaded, the files it wrote and which of them lie outside the folder it was opened in; for each bundle the files added, changed and removed; for the clone the commits, what is uncommitted and the gate's verdict line; and what the collection cannot show.
-- `sessions/<item>/<session>.calls.jsonl` — every tool call in order, with the command, the file or the skill, and whether it ended in an error. Read this before you rerun anything: it is the text of what the session ran.
+- `sessions/<item>/<session>.said.md` — what the session itself wrote to its reader, in order; its report is the last part. Start here: a session says what it could not find and what was unclear.
+- `sessions/<item>/<session>.calls.jsonl` — every tool call in order, with the command, the file or the skill, and for a call that ended in an error the error's text. Read this before you rerun anything: it is the text of what the session ran.
 - `sessions/<item>/<session>.jsonl` — the transcript as the application wrote it.
 - `items/<item>/` — the changed files themselves, and for the clone the difference from the head it was made at.
 

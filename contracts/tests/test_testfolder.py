@@ -161,6 +161,8 @@ class TestFolder(unittest.TestCase):
             {"type": "assistant", "timestamp": "2026-11-16T00:00:09Z", "message": {"id": "m2", "model": "model-a", "usage": {"input_tokens": 4, "output_tokens": 6}, "content": [
                 {"type": "tool_use", "id": "t3", "name": "Write", "input": {"file_path": inside_file, "content": "{}"}},
                 {"type": "tool_use", "id": "t4", "name": "Write", "input": {"file_path": outside_file, "content": "a note"}}]}},
+            {"type": "assistant", "timestamp": "2026-11-16T00:00:09Z", "message": {"id": "m3", "model": "model-a", "content": [
+                {"type": "text", "text": "task 001: the runner refused, exit 2."}]}},
         ])
         self.session(os.path.join(self.top, "another-project"), "bbbb", [])
         code, out, err = self.run_tool("collect", run)
@@ -175,7 +177,11 @@ class TestFolder(unittest.TestCase):
         self.assertEqual(s["tokens"], {"input_tokens": 7, "output_tokens": 11})
         with open(os.path.join(self.collection(run), "sessions", "echo-0002", "aaaa.calls.jsonl"), encoding="utf-8") as f:
             calls = [json.loads(l) for l in f]
-        self.assertEqual([(c["tool"], c.get("command"), c["error"]) for c in calls][1], ("Bash", "python src/run.py", True))
+        self.assertEqual([(c["tool"], c.get("command"), c["error"], c.get("error_text")) for c in calls][1],
+                         ("Bash", "python src/run.py", True, "exit 2"))
+        self.assertNotIn("error_text", calls[0])
+        with open(os.path.join(self.collection(run), "sessions", "echo-0002", "aaaa.said.md"), encoding="utf-8") as f:
+            self.assertIn("task 001: the runner refused, exit 2.", f.read())
         self.assertTrue(os.path.isfile(os.path.join(self.collection(run), "sessions", "echo-0002", "aaaa.jsonl")))
 
     def test_a_collection_says_what_changed_in_a_bundle_and_in_the_clone(self):
