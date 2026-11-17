@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "016",
+  "answers": null,
+  "text": "The person asked what should have been a skill in the Brownian run (run 20261117-9, the bundle brownian-diffusion/0001 of the clone of run 20261117-3) and by what criteria (docs/ideas/20261117.md). The design now says where a missing skill shows (build-library-skill: a technical value put to the person that a relation could recommend; a question that needs a judgement; a number computed inline; a bundle's needed line) and a collection lists the needed lines. The candidates of that run, for the meta role to build as general library skills under the rule of the day, each named for its relation and each with worked cases from two unrelated kinds of work: (1) data_analysis: the uncertainty of a coefficient fitted to a time series, from block averages or from subsets of the particles; the bundle's own needed line. (2) diagnostic: whether a quantity changes along a sweep (a fit of log y against log x with its uncertainty, saying changes, does not change or undecided by a criterion handed as a row); the person's own question 'whether it changes with size', which nothing answered. (3) diagnostic: whether a mean squared displacement is in its diffusive regime over a fit window, and over which window. (4) estimate: the steps a run needs for the slowest particle to move a stated multiple of its size, from its diffusivity and the step. (5) bound: the largest time step for which the displacement per step stays a stated fraction of the smallest size, sqrt(2 d D dt); the example page's 0.005 was many diameters per step for the smallest particle. Items 3 and 4 were asked of the person as bare values; with these skills they are asked with a recommendation, which stays one.",
+  "written_at": "2026-11-17T13:40:18-08:00"
+}
