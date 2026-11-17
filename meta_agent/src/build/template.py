@@ -45,6 +45,15 @@ v7  changes one script and no text, after a session of a test run built
     not made (the gate refused it, a permission was missing, what the
     tool needs was not there). One tolerance judges one stated field;
     several are judged together only by an exact tolerance.
+v8  changes the gate, after the person's word that an engine tool opens
+    by the lab's execution permission (tasks/016): src/gate.py opens a
+    tool whose contract says safety_gate.opens_by execution_permission,
+    and that starts a process or writes files, where the bundle's
+    envelope/execution_permission.json is a level a person confirmed that
+    reaches an engine or an instrument, and refuses it otherwise naming
+    the level found; every other gated tool still waits for safety
+    values. The Designer writes that file from the lab profile a build
+    names, and none where the profile carries only words.
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -59,8 +68,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "template_v2"),
            "v3": os.path.join(HERE, "template_v3"), "v4": os.path.join(HERE, "template_v4"),
            "v5": os.path.join(HERE, "template_v5"), "v6": os.path.join(HERE, "template_v6"),
-           "v7": os.path.join(HERE, "template_v7")}
-LATEST = "v7"
+           "v7": os.path.join(HERE, "template_v7"), "v8": os.path.join(HERE, "template_v8")}
+LATEST = "v8"
 SOURCE = SOURCES[LATEST]
 
 

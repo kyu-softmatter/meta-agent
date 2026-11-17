@@ -127,7 +127,7 @@ class AgainstWhatASourceStates(unittest.TestCase):
         self.assertEqual(cards.tree_files(v6), cards.tree_files(v7))
         changed = sorted(r for r in cards.tree_files(v6) if cards.sha256_file(os.path.join(v6, r)) != cards.sha256_file(os.path.join(v7, r)))
         self.assertEqual(changed, ["TEMPLATE.json", "src/validate_tasks.py"])
-        self.assertEqual(template_mod.LATEST, "v7")
+        self.assertIn("v7", template_mod.SOURCES)
 
 
 class TheReport(unittest.TestCase):
