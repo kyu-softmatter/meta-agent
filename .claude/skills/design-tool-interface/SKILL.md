@@ -11,11 +11,12 @@ An agent reaches its tool only through contracts. Each callable tool has one, an
 
 1. **Start from the claims.** Only `observed` and `derived` claims of the `tool_profile` become capabilities. An `inferred` one is listed as unverified and an `unknown` one as a gap.
 2. **One contract per tool** (`contracts/schemas/tool_contract.schema.json`): its name and description, each input with its unit and range, each output with its unit, and its side effects.
-3. **Say the side effect truthfully.** A tool that only reads an instrument says so. A tool that changes anything asks for the gate, and its contract names the script where the deterministic rule runs.
-4. **Errors are structured** (`contracts/schemas/error_contract.schema.json`): a code, a category, a message, whether a retry may help, and what to do. A refusal by the safety rule and a missing permission each have their own category.
-5. **Give fixture calls** for each tool: one that succeeds and one for each error it can return. The gate runs them.
-6. **Units are registered** in `contracts/units.json`. A number in a contract carries its source.
-7. **What is unresolved goes to `held`:** a scope, a permission, a side effect or a validation that is not settled keeps the tool out of the bundle.
+3. **Say the side effect truthfully.** A tool that only reads an instrument says so. A tool that changes anything asks for the gate, and its contract names the script where the deterministic rule runs. Say what opens its gate (`opens_by`): a tool that changes an instrument opens only by safety values a person wrote; one that starts an engine or writes the agent's own files may open by the lab's confirmed execution permission; one that reaches the network may open by it only to install the agent's packages, from a source its contract names (`installs_from`) and the lab's permission lists.
+4. **Every setting a tool takes has a row.** A value the source states for a call (a run's settings, an analysis's settings) is a row of the request's parameter sheet citing where it was read, and the bundle's tasks, its replay items and a person's run all take it from that row. A value that stands only in a validation item is one a session cannot use. An input with a closed set of values lists them in its contract.
+5. **Errors are structured** (`contracts/schemas/error_contract.schema.json`): a code, a category, a message, whether a retry may help, and what to do. A refusal by the safety rule and a missing permission each have their own category.
+6. **Give fixture calls** for each tool: one that succeeds and one for each error it can return. The gate runs them.
+7. **Units are registered** in `contracts/units.json`. A number in a contract carries its source.
+8. **What is unresolved goes to `held`:** a scope, a permission, a side effect or a validation that is not settled keeps the tool out of the bundle, and the intake's `held` names it with its reason, so that the bundle says what it lacks.
 
 ## Never
 
