@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "016",
+  "answers": null,
+  "text": "From the clone of run 20261117-3 (the person's working clone; seat meta-macbook-20261117-1 of that clone), which built brownian-diffusion/0001 on template v12 (clone commit 91b8820). Two things for the meta role here. (1) A scientific task may now measure through a library skill on its tool's output: intake.schema.json (this commit's parent, landed before this note) admits on a scientific task an optional analysis {skill, data {field, input}, rows, output}, the shape of a decision plus the output the reference judges. The bundle's src/validate_tasks.py of the next template runs the task's call, hands the named field to the skill's named input with the rows, runs the skill through the runner, and judges that output against the reference; the Designer carries analysis into validation/scientific/. The clone's failure line bd-2 is that its four scientific tasks are not_run by design for want of this. (2) That clone's seat wrote the estimate binding of the sheet stage as a general change: clone commit d9d3f98 in /Users/kyuhwan/Desktop/meta-agent-test/20261117-3/repo (meta_agent/src/parameters/bounds.py, src/designer.py bound_skills, meta_agent/tests/test_estimate_rows.py, six tests; meta suite 291 OK there). It binds an estimate to the rows its basis names and writes basis.output (check 19, d03d517). Reading it from that clone and landing it here is yours; fetching from that path reads only.",
+  "written_at": "2026-11-17T13:26:31-08:00"
+}
