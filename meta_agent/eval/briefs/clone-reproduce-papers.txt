@@ -1,0 +1,5 @@
+Your role is `meta`.
+
+논문을 몇개 찾아보고 해당 논문들을 시뮬레이션 해보면서 필요한 스킬을 익히는것도 좋아보여
+
+Carry the request through as far as it goes without me. Report when you stop: what you did, what the gate printed, what is open, and what you ran on.

@@ -484,6 +484,7 @@ def read_transcript(path):
         "skills_loaded": [c.get("skill") for c in calls if c["tool"] == "Skill" and c.get("skill")],
         "library_skills_run": library_skills_run(calls),
         "asked_the_person": by_tool.get("AskUserQuestion", 0),
+        "looked_for_sources": sources_looked_for(calls, by_tool),
         "files_written": written,
         "written_outside": [p for p in written if cwd and not inside(p if os.path.isabs(p) else os.path.join(cwd, p), cwd)],
         "tokens": tokens, "tokens_read_as": "the last usage of each message id in the transcript, summed",
@@ -492,6 +493,33 @@ def read_transcript(path):
 
 
 SKILL_RUN_RE = re.compile(r"run_skill\.py\s+([a-z][a-z0-9_]*@v[1-9][0-9]*)")
+
+
+SHELL_FETCH_RE = re.compile(r"\b(?:curl|wget)\b|\bgit\s+clone\b")
+
+
+def sources_looked_for(calls, by_tool):
+    """How a session looked for sources: web searches, web fetches and shell fetches (the person, 2026-11-17:
+    the Meta-Agent searches for what it was not given)."""
+    shell = sum(len(SHELL_FETCH_RE.findall(c.get("command") or "")) for c in calls)
+    return {"web_search": by_tool.get("WebSearch", 0), "web_fetch": by_tool.get("WebFetch", 0), "shell_fetch": shell}
+
+
+def materials_added(path, head):
+    """The material cards a clone's commits added since the head it was made at: {state: n}, and how many a
+    seat found itself (added_by not human)."""
+    names = git(path, "diff", "--name-only", "--diff-filter=A", head, "HEAD", "--", "meta_agent/inbox/materials", check=False)
+    by_state, found = {}, 0
+    for rel_path in names.splitlines():
+        if not rel_path.endswith("MATERIAL.json"):
+            continue
+        try:
+            d = read_json(os.path.join(path, rel_path))
+        except (OSError, ValueError):
+            continue
+        by_state[d.get("state")] = by_state.get(d.get("state"), 0) + 1
+        found += d.get("added_by") != "human"
+    return {"by_state": by_state, "found_by_a_seat": found}
 
 
 def library_skills_run(calls):
@@ -630,6 +658,7 @@ def clone_changes(item, path, dest, gate=True):
     left = _copy_into(path, untracked, os.path.join(dest, "files"))
     out = {"name": item["name"], "kind": "clone", "head_made": head, "head_now": git(path, "rev-parse", "HEAD").strip(),
            "commits": commits, "uncommitted": status, "untracked": untracked, "not_copied": left,
+           "materials_added": materials_added(path, head),
            "patch": "changes.patch" if patch else None,
            "verdict": None}
     if gate and os.path.isfile(os.path.join(path, "contracts", "validate.py")):
@@ -683,9 +712,11 @@ def report_collection(run, dest, sessions, items):
               % (s["item"], s["session"][:8], "/".join(s["models"]) or "-", "/".join(s["efforts"]) or "?", s["calls"],
                  s["calls_in_error"], ", ".join(s["skills_loaded"]) or "none", len(s["files_written"]), len(s["written_outside"])))
         ran = s.get("library_skills_run") or {}
-        print("  %s  %s  library skills run: %s; asked the person %d time(s)"
+        look = s.get("looked_for_sources") or {}
+        print("  %s  %s  library skills run: %s; asked the person %d time(s); web searches %d, web fetches %d, "
+              "shell fetches %d"
               % (s["item"], s["session"][:8], ", ".join("%s x%d" % kv for kv in sorted(ran.items())) or "none",
-                 s.get("asked_the_person", 0)))
+                 s.get("asked_the_person", 0), look.get("web_search", 0), look.get("web_fetch", 0), look.get("shell_fetch", 0)))
     for it in items:
         if it.get("gone"):
             print("%-11s %s  its folder is gone; transcripts only" % (it["name"], it["kind"]))
@@ -698,6 +729,10 @@ def report_collection(run, dest, sessions, items):
         else:
             print("%-11s clone   %d commit(s), %d uncommitted path(s); %s"
                   % (it["name"], len(it["commits"]), len(it["uncommitted"]), it["verdict"] or "the gate was not run"))
+            mat = it.get("materials_added") or {}
+            if mat.get("by_state"):
+                print("%-11s         materials added: %s; found by a seat %d"
+                      % ("", ", ".join("%s %d" % kv for kv in sorted(mat["by_state"].items(), key=str)), mat.get("found_by_a_seat", 0)))
 
 
 def collect(args, repo=REPO):

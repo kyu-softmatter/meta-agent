@@ -5,7 +5,7 @@ description: Take in the materials the person gives (a link, a manual, a paper, 
 
 # Research the materials
 
-The person gives the location. You fill the rest and the person confirms. Access is read-only and anonymous.
+The person gives a location, or you find one. You fill the rest and the person confirms. Access is read-only and anonymous.
 
 Load `classify-knowledge` before the first value, statement or data file of this part enters a card, a sheet or a skill's inputs, if it is not loaded in this session yet: it binds at every stage (`meta_agent/CLAUDE.md`), and a value that entered before it was loaded has been placed from memory of it.
 
@@ -17,6 +17,14 @@ Load `classify-knowledge` before the first value, statement or data file of this
 4. Fetch a URL and record `retrieved_at` and `content_hash`. Behind a login or a credential it is not fetched: the card is `held` with `permission_required`.
 5. Keep a raw copy only when `may_quote` is `true`. Otherwise keep the hash and the place in the source.
 6. Write the card's id back into the row. Show the person what you filled and ask one or a few questions. `registered` is their word, never yours.
+
+## Finding what was not given
+
+- **Search when a request or a skill needs a source it was not given:** the relation a library skill implements, a value a row needs, a published measurement to compare a result with, the reference page of a tool's class. Search by the quantity, the method or the tool alone; a query carries no lab data and no private code (`meta_agent/CLAUDE.md`).
+- **Prefer the source closest to the claim:** the original paper or a textbook that derives it, then a review, then the tool's own documentation, then a curated database. An encyclopedia page or a forum answer is a way to find those, never the source a skill or a row cites.
+- **A relation needs no citation only where it is a definition,** and then the definition is named with where it is defined.
+- **Every source you read and use is a material card** you write (`added_by` your seat), `queued`, with what it was found for and how it was found. Design and build do not wait for the person to register it.
+- **Look for something published to compare with** before a request ends at theory alone: a measurement, a figure or a table of a paper that ran the same system, as a scientific task's reference.
 
 ## Searching the literature
 

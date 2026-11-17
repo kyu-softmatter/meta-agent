@@ -225,7 +225,9 @@ class TestFolder(unittest.TestCase):
         put(path, "bundles/balance-0001/CLAUDE.md", "# balance, edited\n")
         os.remove(os.path.join(path, "bundles", "balance-0001", "envelope", "safety.json"))
         put(path, "repo/meta_agent/failures.jsonl", "{}\n")
-        sh(os.path.join(path, "repo"), "add", "meta_agent/failures.jsonl")
+        put(path, "repo/meta_agent/inbox/materials/20261117-a-paper/MATERIAL.json",
+            '{"card": "material", "id": "mat-20261117-001", "state": "queued", "added_by": "meta-x-1"}\n')
+        sh(os.path.join(path, "repo"), "add", "meta_agent/failures.jsonl", "meta_agent/inbox/materials")
         sh(os.path.join(path, "repo"), "commit", "--quiet", "-m", "a line of the test")
         put(path, "repo/untracked.txt", "left behind\n")
         self.assertEqual(self.run_tool("collect")[0], 0)                                # the one run that stands
@@ -244,6 +246,7 @@ class TestFolder(unittest.TestCase):
         self.assertEqual((e["added"], e["changed"], e["removed"], e["digest_now"]), ([], [], [], e["digest_made"]))
         r = items["repo"]
         self.assertEqual([c["subject"] for c in r["commits"]], ["a line of the test"])
+        self.assertEqual(r["materials_added"], {"by_state": {"queued": 1}, "found_by_a_seat": 1})
         self.assertEqual((r["untracked"], r["verdict"], r["verdict_exit"]), (["untracked.txt"], "VERDICT PASS tree=fixture", 0))
         self.assertTrue(os.path.isfile(os.path.join(self.collection(run), "items", "repo", "changes.patch")))
         self.assertEqual(self.run_tool("collect", run)[0], 0)                           # a second collection overwrites nothing
@@ -355,3 +358,13 @@ class LibrarySkillsRun(unittest.TestCase):
                  {"command": "python src/run_tool.py equilibrate < e.json"}, {"tool": "Read"}]
         self.assertEqual(tf.library_skills_run(calls), {"shear_rate_max_from_max_speed@v1": 1, "series_settled@v1": 2})
         self.assertEqual(tf.library_skills_run([{"command": "python src/run_tool.py render"}]), {})
+
+
+class SourcesLookedFor(unittest.TestCase):
+    def test_searches_and_fetches_are_counted_from_a_sessions_calls(self):
+        # a paper searched for and read, and a repository cloned (the person, 2026-11-17)
+        calls = [{"tool": "WebSearch"}, {"tool": "WebFetch"}, {"tool": "WebFetch"},
+                 {"tool": "Bash", "command": "curl -sL https://example.invalid/a.pdf -o a.pdf && git clone -q https://example.invalid/r"},
+                 {"tool": "Bash", "command": "python src/run_tool.py x"}]
+        by_tool = {"WebSearch": 1, "WebFetch": 2, "Bash": 2}
+        self.assertEqual(tf.sources_looked_for(calls, by_tool), {"web_search": 1, "web_fetch": 2, "shell_fetch": 2})
