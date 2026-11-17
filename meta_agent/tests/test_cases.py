@@ -90,7 +90,7 @@ class Recall(unittest.TestCase):
         self.assertEqual(gaps[0]["reason"], "no cases store to search")
 
     def test_two_runs_give_the_same_bytes(self):
-        sig = {"engine": "lammps", "executes": "engine", "methods": ["molecular dynamics"]}
+        sig = {"engine": "lammps", "executes": "engine", "methods": ["md"]}
         a = json.dumps(self.search(sig), sort_keys=True)
         b = json.dumps(self.search(sig), sort_keys=True)
         self.assertEqual(a, b)

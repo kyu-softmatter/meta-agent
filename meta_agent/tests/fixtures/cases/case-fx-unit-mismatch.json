@@ -17,7 +17,7 @@
   "signature": {
     "science_task": "particle tracking of tracer beads",
     "executes": "instrument",
-    "instrument": "widefield microscope",
+    "instrument": "sma_microscope",
     "observables": [
       "msd"
     ],

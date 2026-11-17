@@ -19,7 +19,7 @@
     "executes": "engine",
     "engine": "hoomd_blue",
     "methods": [
-      "brownian dynamics"
+      "bd_cg"
     ],
     "observables": [
       "shear_viscosity"

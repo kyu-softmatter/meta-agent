@@ -18,19 +18,19 @@
       "id": "case-fx-lammps-b",
       "revision": 1,
       "path": "cases/case-fx-lammps-b.json",
-      "hash": "sha256:9f9926a995b4cd9a608ae9c5b9f19d121c64cedf68ca79362121170e311975bf"
+      "hash": "sha256:01e844f26816376e44ebc1f551376cc50be4dd4a5872a7ddab27552ce240aa45"
     },
     {
       "id": "case-fx-shear-range",
       "revision": 1,
       "path": "cases/case-fx-shear-range.json",
-      "hash": "sha256:e426c5817e94f20fa3851942088f36b8b2910951d99871c940c4d88ab1ac588c"
+      "hash": "sha256:72429fabea91c34c1cabf7dcece39d0756bbe086c8334a20f62ec8eb2de211da"
     },
     {
       "id": "case-fx-unit-mismatch",
       "revision": 1,
       "path": "cases/case-fx-unit-mismatch.json",
-      "hash": "sha256:5c1074801276c910f20457eb3ea8b97762e639f8bea218dc04b11db538d6073e"
+      "hash": "sha256:6ebfcd1a7042887062ee95e135e6a72991de41025b05440eca12ee0d626636bd"
     }
   ]
 }

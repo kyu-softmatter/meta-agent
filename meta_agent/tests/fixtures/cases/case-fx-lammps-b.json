@@ -19,7 +19,7 @@
     "executes": "engine",
     "engine": "lammps",
     "methods": [
-      "molecular dynamics"
+      "md"
     ],
     "observables": [
       "stress_relaxation_modulus"
