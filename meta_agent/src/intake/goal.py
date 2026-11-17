@@ -61,13 +61,19 @@ def signature_of(goal):
     A goal states its science task, what the agent executes, its methods and its parameter scope; the
     tool is the instrument or the engine when its kind says so. A goal names no observable, cause class
     or condition, so those are left empty and not guessed.
+
+    The tool is named by its id in contracts/registry/ where the goal gives one, and by its name only where
+    it gives none. Check 8 holds a case's engine and instrument to registry ids and recall meets them by
+    equality, so a goal that named its engine by the name a page gives it met none of the cases that carry
+    the engine's id (test run 20261116-5, collect-1: the HOOMD-blue request).
     """
     tool = goal.get("tool") or {}
     sig = {"science_task": goal.get("science_task") or "", "executes": goal.get("executes") or "none",
            "methods": list(goal.get("methods") or []), "observables": [],
            "parameter_names": list(goal.get("parameter_scope") or []), "condition_tags": []}
-    if tool.get("kind") in ("instrument", "engine") and tool.get("name"):
-        sig[tool["kind"]] = tool["name"]
+    named = tool.get("registry_id") or tool.get("name")
+    if tool.get("kind") in ("instrument", "engine") and named:
+        sig[tool["kind"]] = named
     return sig
 
 

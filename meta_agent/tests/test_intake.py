@@ -160,5 +160,37 @@ class Write(unittest.TestCase):
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
 
 
+
+class Signature(unittest.TestCase):
+    """The goal's recall signature names its tool as the case store does: check 8 holds a case's engine and
+    instrument to registry ids, and recall meets them by equality (test run 20261116-5, collect-1)."""
+
+    def goal(self, name, kind, registry_id, science_task="t", parameters=()):
+        return {"science_task": science_task, "executes": kind if kind in ("engine", "instrument") else "none",
+                "methods": [], "parameter_scope": list(parameters),
+                "tool": {"name": name, "kind": kind, "registry_id": registry_id, "material_refs": []}}
+
+    def test_the_tool_is_named_by_its_registry_id_and_by_its_name_only_without_one(self):
+        from meta_agent.src.intake import goal as goal_mod
+        self.assertEqual(goal_mod.signature_of(self.goal("HOOMD-blue", "engine", "hoomd_blue"))["engine"], "hoomd_blue")
+        self.assertEqual(goal_mod.signature_of(self.goal("the SMA microscope", "instrument", "sma_microscope"))["instrument"],
+                         "sma_microscope")
+        self.assertEqual(goal_mod.signature_of(self.goal("Fixture Rheometer", "instrument", None))["instrument"], "Fixture Rheometer")
+        self.assertNotIn("engine", goal_mod.signature_of(self.goal("echo", "analysis_software", "echo")))
+
+    def test_a_goal_meets_the_cases_that_carry_its_tool_s_id_and_not_by_a_display_name(self):
+        """On two unrelated kinds: an engine in the repository's store, an instrument in the fixtures' store."""
+        from meta_agent.src.cases import recall as recall_mod
+        from meta_agent.src.intake import goal as goal_mod
+        for store, name, kind, rid, task, params in (
+                (os.path.join(META, "cases"), "HOOMD-blue", "engine", "hoomd_blue", "t", ()),
+                (os.path.join(HERE, "fixtures", "cases"), "the SMA microscope", "instrument", "sma_microscope",
+                 "particle tracking of tracer beads", ("pixel_size",))):
+            by_id = recall_mod.recall(goal_mod.signature_of(self.goal(name, kind, rid, task, params)), store)
+            by_name = recall_mod.recall(goal_mod.signature_of(self.goal(name, kind, None, task, params)), store)
+            self.assertTrue([h for h in by_id["hits"] if kind in h["matched"]], (kind, by_id))
+            self.assertFalse([h for h in by_name["hits"] if kind in h["matched"]], (kind, "a display name meets no case on its tool"))
+
+
 if __name__ == "__main__":
     unittest.main()
