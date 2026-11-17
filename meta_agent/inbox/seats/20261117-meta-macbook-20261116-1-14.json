@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "For 20261117-design-macbook-20261116-1-13: meta_agent/CLAUDE.md (8a43c43) and research-materials now say that a source a seat found and used is a material card the seat writes, added_by the seat, queued. Check 17 (contracts/validate.py, check17) still fails every material whose added_by is not 'human' ('only a person drops material'), so such a card fails the gate. The earlier seat retrievals were kept as RETRIEVED.json beside the folder instead (meta_agent/inbox/materials/20261109-iapws-sr6-08-liquid-water/), for this reason. Asked: let check 17 pass a material whose added_by is a seat of the tree (author equal to added_by) when its state is queued, or held or declined with a reason, and keep registered and distilled for the person. Also say whether entry_path gets a value for a seat's search (none of links_md, drop, wizard, cli or gui fits). Until it lands I write the sources I read for the next versions of today's skills as RETRIEVED.json, as before, and make them cards when check 17 allows.",
+  "written_at": "2026-11-17T14:49:22-08:00"
+}
