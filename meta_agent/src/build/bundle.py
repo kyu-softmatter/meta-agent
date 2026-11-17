@@ -41,8 +41,9 @@ def render(text, fill):
 
 
 def field(name, prop, required=False):
-    """`name` (type, unit, required; what the contract says of it): one input or output of a tool contract. The
-    unit is the one the contract names; a field with none is printed with none, never with a guessed one."""
+    """`name` (type, unit, required; what the contract says of it; the values it enumerates): one input or output
+    of a tool contract. The unit is the one the contract names; a field with none is printed with none, never with
+    a guessed one."""
     parts = [str(prop.get("type", "any"))]
     if prop.get("unit"):
         parts.append(str(prop["unit"]))
@@ -51,6 +52,16 @@ def field(name, prop, required=False):
     text = ", ".join(parts)
     if prop.get("description"):
         text += "; " + str(prop["description"]).rstrip(".")
+    values = prop.get("enum") or (prop.get("items") or {}).get("enum")
+    if values:
+        # the values a contract enumerates, so that a session need not guess them (test run 20261116-6); a number, or
+        # a word with a digit, is not printed, since CLAUDE.md carries no number its snapshot does not (B6), and the
+        # contract is named instead
+        words = [v for v in values if isinstance(v, str) and not any(ch.isdigit() for ch in v)]
+        if len(words) == len(values):
+            text += "; one of %s" % ", ".join("`%s`" % v for v in words)
+        else:
+            text += "; one of the values its contract lists"
     return "`%s` (%s)" % (name, text)
 
 

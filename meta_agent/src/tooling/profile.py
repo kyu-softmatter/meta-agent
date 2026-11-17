@@ -67,7 +67,7 @@ def names_in(text, names):
     return sorted(n for n in set(names) if re.search(r"(?<![A-Za-z0-9_-])%s(?![A-Za-z0-9_-])" % re.escape(n), text or ""))
 
 
-def capabilities(profile, agent_name, tools_here=None, held=None):
+def capabilities(profile, agent_name, tools_here=None, held=None, held_items=None):
     """CAPABILITIES.json: observed and derived claims only; inferred to unverified, unknown to gaps.
 
     A bundle stands alone (MP2), so what the builder hands in decides what the file may name. `tools_here`
@@ -75,6 +75,9 @@ def capabilities(profile, agent_name, tools_here=None, held=None):
     [{skill, calls_tools}]. When `tools_here` is given, `source` is the name of the document the builder
     read and not its path in the builder's tree; `held` lists each held skill with the tools it would call;
     and a claim whose words name one of those tools, the bundle not carrying it, says so under `not_here`.
+    `held_items` are the other items the specification holds (a request's own held[], a tool held for want
+    of a safety row or a permission), each a string or {item, reason}; `held` lists them too, so that the
+    file never says nothing is held while the specification holds something (test run 20261116-6).
     Without `tools_here` the file is written as before template v6 wrote it."""
     source = profile["tool"].get("source")
     held = list(held or [])
@@ -88,6 +91,10 @@ def capabilities(profile, agent_name, tools_here=None, held=None):
         cap["held"] = [{"skill": h["skill"], "calls_tools": sorted(h.get("calls_tools") or []),
                         "reason": "held by the builder until a person releases it; neither the skill nor the tools it "
                                   "would call are in this directory"} for h in held]
+        for h in held_items or []:
+            item = h if isinstance(h, dict) else {"item": h}
+            cap["held"].append({"item": item["item"], "reason": item.get("reason") or
+                                "held by the builder until a person releases it; it is not in this directory"})
     for c in profile["claims"]:
         item = {"claim": c["claim"], "capability": c.get("capability"),
                 "evidence": [e.get("locus") for e in c.get("evidence", [])]}

@@ -681,5 +681,48 @@ class ExecutionPermission(unittest.TestCase):
         self.assertEqual(cards.load_json(os.path.join(bundle, "envelope", "execution_permission.json"))["reaches"], "sandbox")
 
 
+
+class WhatTheBundleSaysItLacks(unittest.TestCase):
+    """Test run 20261116-6, a copy of the HOOMD-blue bundle standing alone: its CAPABILITIES.json said nothing was held
+    while the install was, and its CLAUDE.md gave no value an input enumerated."""
+
+    HELD = [{"item": "tool install", "reason": "the environment is the person's to allow"}, "the GPU run"]
+
+    def test_capabilities_list_what_the_specification_holds_and_the_tools_section_its_values(self):
+        i = copy.deepcopy(load_intake())
+        i["held"] = list(self.HELD)
+        props = i["tool_contract"]["inputs"]["properties"]
+        props["style"] = {"type": "string", "enum": ["plain", "quoted"], "description": "how the text comes back"}
+        props["copies"] = {"type": "integer", "enum": [1, 2], "description": "how many times"}
+        props["frame"] = {"type": "string", "enum": ["f1", "f2"], "description": "a word with a digit"}
+        tmp, root = scratch_root()
+        try:
+            designer.run(i, SEAT, "0001", NOW, root)
+            bundle = os.path.join(root, "builds", "echo", "0001", "bundle")
+            held = cards.load_json(os.path.join(bundle, "CAPABILITIES.json"))["held"]
+            self.assertIn({"item": "tool install", "reason": "the environment is the person's to allow"}, held)
+            self.assertIn("the GPU run", [h.get("item") for h in held])
+            text = cards.read_text(os.path.join(bundle, "CLAUDE.md"))
+            self.assertIn("one of `plain`, `quoted`", text)
+            self.assertEqual(text.count("one of the values its contract lists"), 2)   # a number, a word with a digit
+            p = subprocess.run([sys.executable, VALIDATE, tmp, "--strict"], capture_output=True, text=True,
+                               env=dict(os.environ, PYTHONUTF8="1"))
+            self.assertIn("0 failed, 0 pending", p.stdout, p.stdout + p.stderr)       # B6 among them
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_on_the_rheometer_too(self):
+        from meta_agent.src.build import bundle as bundle_mod
+        from meta_agent.src.tooling import profile as profile_mod
+        req = os.path.join(META, "requests", "req-rheo-fixture-001")
+        tool_profile = cards.load_json(os.path.join(req, "tool_profile.json"))
+        cap = profile_mod.capabilities(tool_profile, "rheo-fixture", tools_here=["status"], held=[], held_items=self.HELD)
+        self.assertEqual([h["item"] for h in cap["held"]], ["tool install", "the GPU run"])
+        self.assertEqual(profile_mod.capabilities(tool_profile, "rheo-fixture", tools_here=["status"])["held"], [])
+        mode = {"type": "string", "enum": ["rotation", "oscillation"]}
+        self.assertTrue(bundle_mod.field("mode", mode, True).endswith("; one of `rotation`, `oscillation`)"))
+        self.assertNotIn("one of", bundle_mod.field("gap", {"type": "number", "unit": "m"}))
+
+
 if __name__ == "__main__":
     unittest.main()

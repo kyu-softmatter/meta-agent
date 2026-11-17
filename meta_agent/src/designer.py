@@ -413,7 +413,12 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
         "skills_section": bundle_mod.skills_section([]),
         "seat_form": "%s-<machine>-<YYYYMMDD>-<n>" % agent,
     }
-    capabilities = profile_mod.capabilities(profile, agent, tools_here=[t["name"] for t in tools], held=held_skills or [])
+    # what the specification holds besides the skills (listed with their tools): the request's own held[] and a tool held
+    # for want of a safety row or a permission, so that CAPABILITIES.json never says nothing is held while something is
+    others = [h for h in spec.get("held") or []
+              if not (isinstance(h, dict) and str(h.get("item", "")).startswith("skill "))]
+    capabilities = profile_mod.capabilities(profile, agent, tools_here=[t["name"] for t in tools], held=held_skills or [],
+                                            held_items=others)
     envelope = {
         "safety": {row["name"]: None for row in (intake.get("safety_rows") or [])},
         "snapshot": {"kb_version": brief["kb_version"], "entries": brief["entries"], "numbers": []},
