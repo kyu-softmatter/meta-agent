@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "016",
+  "answers": null,
+  "text": "Round five's HOOMD-blue bundle (template v10) was tested standing alone in run 20261117-2, collection 20261117-2/collect-3 on this computer; tasks/016 has the round. It did its start task, installed with the caches inside runs/, ran the chain, rendered and validated with nobody to ask, and gave the count with no verdict; none of round four's seven faults came back. Asked for a later template version, each as the session met it: (1) validation/scientific/sci-*.json and TEMPLATE.json cite docs/ideas/20261116.md, a record of the builder's repository the bundle does not carry: where a bundle's text gives a person's decision as its reason, it quotes the words it rests on, or says that the record is the builder's and is not in the bundle; (2) CLAUDE.md names each tool but no order in which the workflow chains them (install, then the tutorial's stages in turn, then analysis and render), so the session read the order off the descriptions: give the workflow its order, in CLAUDE.md or as a skill of the bundle; (3) the install tool installs pixi never, and nothing says what happens when pixi is not on the computer: an error contract that names the missing installer and says that putting it there is the person's step; (4) tasks/001 does not say that a not_run of the scientific part before the install is followed by the agent's own install (environment_status's next field says so; the task could say it too). The bundle in run 20261117-2 is removed after this note is committed; the collection stays in the log folder.",
+  "written_at": "2026-11-17T09:31:52-08:00"
+}
