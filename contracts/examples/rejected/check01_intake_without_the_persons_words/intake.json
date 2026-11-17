@@ -1,0 +1,97 @@
+{
+ "card": "intake",
+ "schema_version": "0.1",
+ "id": "intake-fixture-002",
+ "rid": "req-fixture-002",
+ "revision": 1,
+ "author": "meta-office-20261029-1",
+ "created_at": "2026-11-16T18:00:00Z",
+ "numbers": [],
+ "assumptions": [],
+ "degraded": [],
+ "status": "draft",
+ "stage": "reading",
+ "agent_name": "hard-particle",
+ "requested_by": "human",
+ "request_source": "a conversation with the person, who gave one link and one sentence",
+ "paragraph": "an agent that carries out the tutorial's sequence of simulation stages on the engine without a person stepping through it, the tutorial's own system first",
+ "reading": {
+  "taken": "run the tutorial's workflow end to end on the engine",
+  "why": "the link is to the whole tutorial, which is a sequence of runs",
+  "other_readings": [
+   "write the scripts and leave the running to the person"
+  ],
+  "asked": "question 2"
+ },
+ "science_task": "whether a system of hard particles orders when it is compressed to a target volume fraction",
+ "tool": {
+  "name": "HOOMD-blue",
+  "kind": "engine",
+  "registry_id": "hoomd_blue",
+  "material_refs": [],
+  "documentation": "the tutorial the person linked",
+  "license": "to be read by the person"
+ },
+ "methods": [
+  "hpmc"
+ ],
+ "executes": "engine",
+ "must_not": [
+  "invent a number",
+  "choose a tolerance",
+  "run the engine where the person has not said it may run",
+  "write a safety value"
+ ],
+ "knowledge_needs": [
+  "the relation between particle volume, box volume and volume fraction"
+ ],
+ "parameter_scope": [
+  "volume_fraction",
+  "particle_count"
+ ],
+ "destination": "undecided; the person says where the bundle lands",
+ "priorities": [
+  "scientific validity",
+  "reproducibility",
+  "small bundle"
+ ],
+ "lab_profile_ref": "lab-fixture-01",
+ "gui_choice": "undecided",
+ "analysis_permission": null,
+ "tool_reading": [
+  {
+   "claim": "a simulation object holds one state and the operations that act on it",
+   "kind": "observed",
+   "basis": "documentation",
+   "loci": [
+    "the tutorial's first section"
+   ],
+   "capability": "io_format"
+  }
+ ],
+ "values_read": [
+  {
+   "name": "target_volume_fraction",
+   "value": 0.5,
+   "unit": "1",
+   "locus": "a fixture: no source was read for this example",
+   "role": "a setting the source chooses"
+  }
+ ],
+ "notes": {
+  "methods": "the registry lists the method without verification"
+ },
+ "questions_for_the_person": [
+  {
+   "n": 1,
+   "needed_before": "the goal",
+   "question": "May a built agent run the engine itself, and where?",
+   "how": "an answer to the lab's policy questions"
+  },
+  {
+   "n": 2,
+   "needed_before": "the goal",
+   "question": "Is the reading right, or are scripts wanted that the person runs?"
+  }
+ ]
+}

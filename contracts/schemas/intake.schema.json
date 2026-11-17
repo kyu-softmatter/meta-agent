@@ -1,0 +1,636 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/intake.schema.json",
+  "title": "intake",
+  "description": "The first card of a request (plan.md 5.1 S1 and S2, 14-39): the person's words as they were given, the reading taken, the tool as its documentation was read, what only the person can answer, and, once it is specified, what the Designer reads to write every later card. It has two stages. `reading`: the request is understood and waits, for the person's answers or for the contracts and tasks to be written; the Designer is not run on it. `specified`: it carries the tool contracts, the tasks and the replay items, and the Designer is run on it. A request that waits for the person is this card and not a file no check reads. The model makes no numbers: numbers is empty, and a value read from a source is a row of values_read with the place it was read.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "intake"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "rid": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "revision_note": {
+      "type": "string",
+      "description": "what changed from the revision before, and on whose word"
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      },
+      "maxItems": 0
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "stage": {
+      "enum": [
+        "reading",
+        "specified"
+      ]
+    },
+    "agent_name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,40}$"
+    },
+    "requested_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "request_source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "where the request came from: a conversation, a task card, a note"
+    },
+    "persons_words": {
+      "type": "object",
+      "description": "what the person said, unchanged, in the language they used",
+      "properties": {
+        "verbatim": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gloss": {
+          "type": "string",
+          "description": "an English rendering when the words are not English"
+        },
+        "with": {
+          "type": "string",
+          "description": "what the words came with: a link, a file, a folder"
+        },
+        "date": {
+          "$ref": "common.schema.json#/$defs/date"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "verbatim",
+        "date"
+      ]
+    },
+    "paragraph": {
+      "type": "string",
+      "minLength": 1,
+      "description": "the request restated as what the agent is for"
+    },
+    "reading": {
+      "type": "object",
+      "description": "which reading of loose words was taken, and the others",
+      "properties": {
+        "taken": {
+          "type": "string",
+          "minLength": 1
+        },
+        "why": {
+          "type": "string"
+        },
+        "other_readings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "asked": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "taken"
+      ]
+    },
+    "science_task": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "instrument",
+            "engine",
+            "analysis_software",
+            "none"
+          ]
+        },
+        "registry_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "material_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "documentation": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "license": {
+          "type": "string"
+        },
+        "adapter_source": {
+          "type": "string",
+          "description": "with one tool: the path of its adapter's source"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "kind",
+        "registry_id",
+        "material_refs"
+      ]
+    },
+    "methods": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "executes": {
+      "enum": [
+        "instrument",
+        "engine",
+        "analysis",
+        "none"
+      ]
+    },
+    "must_not": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "knowledge_needs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "parameter_scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "destination": {
+      "type": "string",
+      "minLength": 1
+    },
+    "priorities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "lab_profile_ref": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "gui_choice": {
+      "enum": [
+        "none",
+        "parameter_form",
+        "visual_editor",
+        "reuse_existing",
+        "undecided"
+      ]
+    },
+    "analysis_permission": {
+      "$ref": "common.schema.json#/$defs/analysis_permission"
+    },
+    "tool_reading": {
+      "type": "array",
+      "description": "the tool as its documentation, source or record was read: one claim each, with where it was read",
+      "items": {
+        "type": "object",
+        "properties": {
+          "claim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "$ref": "common.schema.json#/$defs/claim_kind"
+          },
+          "basis": {
+            "$ref": "common.schema.json#/$defs/claim_basis"
+          },
+          "loci": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "capability": {
+            "type": "string"
+          },
+          "requires": {
+            "type": "string"
+          },
+          "limitations": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "claim",
+          "kind",
+          "basis",
+          "loci"
+        ]
+      }
+    },
+    "values_read": {
+      "type": "array",
+      "description": "values a source states, each with the place it was read; none is the model's",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {},
+          "unit": {
+            "$ref": "common.schema.json#/$defs/unit"
+          },
+          "locus": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "description": "a setting the source chooses, or a result it prints"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "value",
+          "unit",
+          "locus"
+        ]
+      }
+    },
+    "scales_run": {
+      "type": "array",
+      "description": "library skills run on the values read, as the runner recorded them",
+      "items": {
+        "type": "object"
+      }
+    },
+    "recall": {
+      "type": "object",
+      "description": "what was searched in the case store and what met"
+    },
+    "environment_read": {
+      "type": "object",
+      "description": "what this computer was found to hold, read and not run"
+    },
+    "proposed_design": {
+      "type": "object",
+      "description": "the tools, skills, subagents and validation in words, before any contract is written"
+    },
+    "notes": {
+      "type": "object",
+      "description": "a remark on a field, keyed by the field's name",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "questions_for_the_person": {
+      "type": "array",
+      "description": "what only the person can answer, each with what it is needed before",
+      "items": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "needed_before": {
+            "type": "string",
+            "minLength": 1
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "how": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "object",
+            "properties": {
+              "verbatim": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gloss": {
+                "type": "string"
+              },
+              "date": {
+                "$ref": "common.schema.json#/$defs/date"
+              },
+              "recorded_in": {
+                "type": "string",
+                "description": "the docs/ideas file that carries the words"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "verbatim",
+              "date"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "n",
+          "needed_before",
+          "question"
+        ]
+      }
+    },
+    "tool_contract": {
+      "type": "object",
+      "description": "with one tool: its contract (tool_contract.schema.json)"
+    },
+    "tools": {
+      "type": "array",
+      "description": "with several tools",
+      "items": {
+        "type": "object",
+        "properties": {
+          "contract": {
+            "type": "object"
+          },
+          "adapter_source": {
+            "type": "string",
+            "minLength": 1
+          },
+          "error_contracts": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "contract",
+          "adapter_source"
+        ]
+      },
+      "minItems": 1
+    },
+    "error_contracts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "subagents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "side_effects": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "description",
+          "skills",
+          "side_effects"
+        ]
+      }
+    },
+    "parameter_rows": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "safety_rows": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "interface_tasks": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "scientific_tasks": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "replay_items": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "rid",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "stage",
+    "agent_name",
+    "requested_by",
+    "request_source",
+    "persons_words",
+    "paragraph",
+    "science_task",
+    "tool",
+    "methods",
+    "executes",
+    "must_not",
+    "knowledge_needs",
+    "parameter_scope",
+    "destination",
+    "priorities",
+    "lab_profile_ref",
+    "gui_choice",
+    "analysis_permission",
+    "tool_reading",
+    "questions_for_the_person"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "stage": {
+            "const": "specified"
+          }
+        },
+        "required": [
+          "stage"
+        ]
+      },
+      "then": {
+        "required": [
+          "interface_tasks",
+          "scientific_tasks",
+          "replay_items"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "tool_contract"
+            ]
+          },
+          {
+            "required": [
+              "tools"
+            ]
+          }
+        ],
+        "properties": {
+          "interface_tasks": {
+            "minItems": 1
+          },
+          "replay_items": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "stage": {
+            "const": "reading"
+          }
+        },
+        "required": [
+          "stage"
+        ]
+      },
+      "then": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "tool_contract"
+              ]
+            },
+            {
+              "required": [
+                "tools"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
