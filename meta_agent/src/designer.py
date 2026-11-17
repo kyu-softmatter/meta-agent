@@ -351,13 +351,34 @@ def latest_intake(req_dir):
 
 
 def specified_intake(req_dir):
-    """latest_intake, stopped when the latest is a card at the stage reading: nothing is specified or built from it."""
+    """latest_intake, stopped when the latest is a card at the stage reading: nothing is specified or built from it.
+    The intake comes back with the parameter rows the bundle will carry (with_parameter_rows)."""
     rev, intake = latest_intake(req_dir)
     if intake_mod.is_card(intake) and intake.get("stage") != "specified":
         raise Stopped("the latest intake of %s (revision %d) is at the stage reading: it carries no tool contract and no task. "
                       "%d question(s) wait for the person (python -m meta_agent.src.intake waiting --rid %s)" % (
                           intake.get("rid"), rev, len(intake_mod.waiting(intake)), intake.get("rid")))
-    return rev, intake
+    return rev, with_parameter_rows(intake, req_dir)
+
+
+def with_parameter_rows(intake, req_dir):
+    """The intake, in memory, with the parameter rows the bundle's envelope/parameters.json is made from: its own
+    parameter_rows, or where it gives none the request's newest parameter_sheet's rows (tasks/016, run 20261117-3: an
+    intake without rows built a bundle with none beside contracts that take them). Stopped, with nothing written, where
+    a contract names under `row` a row that neither gives. Nothing is written back to the intake."""
+    where, rows = intake_mod.rows_given(intake, req_dir)
+    named = {row for pairs in intake_mod.named_rows(intake).values() for _, row in pairs}
+    missing = sorted(named - set(names_of(rows)))
+    if missing:
+        raise Stopped("the contracts of %s name the parameter row(s) %s, which %s. The bundle's parameter file is made "
+                      "from the intake's parameter_rows, or where it gives none from the request's newest parameter sheet "
+                      "(python -m meta_agent.src.designer --sheet %s)" % (
+                          intake.get("rid"), ", ".join(missing),
+                          ("%s does not hold" % where) if where else
+                          "neither the intake's parameter_rows nor a parameter sheet of the request gives", req_dir))
+    if where and not intake.get("parameter_rows"):
+        intake = dict(intake, parameter_rows=rows)
+    return intake
 
 
 def held_of(skill_rows):
@@ -602,6 +623,7 @@ def run(intake, seat, build_id="0001", now=None, root=ROOT, intake_path=None):
     created = cards.now_iso(now)
     out = {"rid": rid, "files": [], "kept": []}
     may_start(intake, intake_path, req_dir, root)
+    intake = with_parameter_rows(intake, req_dir)
 
     # read before anything is written: the tools, the skills of the library and the drawing of the subagents
     tools = tools_of(intake, root)

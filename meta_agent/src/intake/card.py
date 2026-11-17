@@ -307,6 +307,83 @@ def problems(card, req_dir=None):
         out.append("stage: the card says %r and carries what a card at %r carries" % (card.get("stage"), stage_of(card)))
     out += adapter_problems(card, req_dir)
     out += workflow_problems(card)
+    out += row_problems(card, req_dir)
+    return out
+
+
+ROW_IN_WORDS_RE = re.compile(
+    r"\brow\s+(?!(?:of|in|from|that|which|a|an|the|for|is|it|its|given|named|per|by|with|to|and|or|as|at|on|whose|this|each)\b)"
+    r"`?([a-z][a-z0-9_]*)`?", re.I)
+
+
+def input_properties(schema, at="inputs"):
+    """(place, property) for every property of a contract's input schema, at any depth."""
+    out = []
+    if isinstance(schema, dict):
+        for key, prop in sorted((schema.get("properties") or {}).items()):
+            if isinstance(prop, dict):
+                here = "%s.%s" % (at, key)
+                out.append((here, prop))
+                out += input_properties(prop, here)
+        if isinstance(schema.get("items"), dict):
+            out += input_properties(schema["items"], at + "[]")
+    return out
+
+
+def named_rows(card):
+    """{tool: [(place, row)]}: the parameter rows the card's contracts name under `row`, read as bundle check B17
+    reads them."""
+    rules = gate_rules().tool_contract_rules
+    return {c.get("name"): rules.named_rows(c.get("inputs")) for c in contracts_of(card) if isinstance(c, dict)}
+
+
+def newest_sheet(req_dir):
+    """(file name, rows) of the request's newest parameter_sheet, or (None, None)."""
+    if not req_dir or not os.path.isdir(req_dir):
+        return None, None
+    best, name = 0, None
+    for f in os.listdir(req_dir):
+        m = re.match(r"^(?:v(\d+)_)?parameter_sheet\.json$", f)
+        if m and int(m.group(1) or 1) > best:
+            best, name = int(m.group(1) or 1), f
+    if name is None:
+        return None, None
+    return name, list(cards.load_json(os.path.join(req_dir, name)).get("rows") or [])
+
+
+def rows_given(card, req_dir=None):
+    """(where, rows) the bundle's parameter file is made from: the card's parameter_rows, or where it gives none
+    the request's newest parameter_sheet (tasks/016, run 20261117-3), or (None, [])."""
+    if card.get("parameter_rows"):
+        return "the intake's parameter_rows", list(card["parameter_rows"])
+    name, rows = newest_sheet(req_dir)
+    if name:
+        return "the request's newest parameter sheet %s" % name, rows
+    return None, []
+
+
+def row_problems(card, req_dir=None):
+    """A contract input a row gives names it under `row`, where B17 reads it, and not in its description alone; and
+    every row a contract names is one the bundle will carry (tasks/016, run 20261117-3)."""
+    out = []
+    for c in contracts_of(card):
+        if not isinstance(c, dict):
+            continue
+        for place, prop in input_properties(c.get("inputs")):
+            m = ROW_IN_WORDS_RE.search(str(prop.get("description") or ""))
+            if m and not isinstance(prop.get("row"), str):
+                out.append("tools[%s].%s: its description names the row %s in words; a contract names it under row, "
+                           "where the bundle's gate reads it" % (c.get("name"), place, m.group(1)))
+    named = {row for pairs in named_rows(card).values() for _, row in pairs}
+    if named and card.get("stage", "specified") == "specified":
+        where, rows = rows_given(card, req_dir)
+        have = {r.get("name") for r in rows if isinstance(r, dict)}
+        missing = sorted(named - have)
+        if missing:
+            out.append("parameter rows: the contracts name %s, which %s; the bundle's parameter file is made from the "
+                       "intake's parameter_rows, or where it gives none from the request's newest parameter sheet"
+                       % (", ".join(missing), ("%s does not hold" % where) if where else
+                          "neither the intake's parameter_rows nor a parameter sheet of the request gives"))
     return out
 
 
