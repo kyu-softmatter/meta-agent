@@ -136,9 +136,9 @@ class EchoRequest(unittest.TestCase):
         self.assertEqual([t["verdict"] for t in vr["interface"]["tasks"]], ["pass", "pass", "pass"])
         sci = vr["scientific"]["tasks"]
         self.assertEqual(len(sci), 1)
-        self.assertEqual(sci[0]["verdict"], "not_run")
+        self.assertEqual(sci[0]["verdict"], "undecided")       # it ran and measured; only a person's tolerance is missing
         self.assertIsNone(sci[0]["tolerance"])
-        self.assertIn("undecided", sci[0]["reason"])
+        self.assertIn("no tolerance chosen by a person yet: undecided; it ran and measured 11", sci[0]["reason"])
         self.assertEqual(vr["overall"], "undecided")
         self.assertEqual(sorted(n["name"] for n in vr["numbers"]), ["sci1_agreement", "sci1_reference_count"])
 

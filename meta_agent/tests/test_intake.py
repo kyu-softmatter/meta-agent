@@ -32,13 +32,9 @@ def example(rid):
 
 
 def specified_example():
-    """req-fixture-003 with a contract the gate's tool_contract schema accepts: the example's own contract names a tool
-    and what it does and nothing more, so the echo request's full contract and its error contract stand in for it."""
-    ex = example("req-fixture-003")
-    echo = cards.load_json(os.path.join(META, "requests", "req-echo-001", "intake.json"))
-    ex["tool_contract"] = copy.deepcopy(echo["tool_contract"])
-    ex["error_contracts"] = copy.deepcopy(echo["error_contracts"])
-    return ex
+    """req-fixture-003, the specified example, whose contract and error contract are the echo request's in full
+    (contracts, 2bde495)."""
+    return example("req-fixture-003")
 
 
 def draft_of(card):
@@ -58,11 +54,8 @@ class Write(unittest.TestCase):
         return card_mod.write(self.req, "req-fixture-002", draft_of(example("req-fixture-002")), SEAT, NOW)
 
     def test_the_two_examples_are_what_their_drafts_give(self):
-        # the example's own contract is not one the gate's tool_contract schema accepts, and the stage says so
-        self.assertTrue(card_mod.problems(example("req-fixture-003")))
-        self.assertTrue(all("tool_contract" in line for line in card_mod.problems(example("req-fixture-003"))))
         for rid, stage in (("req-fixture-002", "reading"), ("req-fixture-003", "specified")):
-            ex = example(rid) if stage == "reading" else specified_example()
+            ex = example(rid)
             self.assertEqual(card_mod.problems(ex), [], rid)
             card = card_mod.make(rid, draft_of(ex), ex["author"], ex["created_at"])
             self.assertEqual(card["stage"], stage)
