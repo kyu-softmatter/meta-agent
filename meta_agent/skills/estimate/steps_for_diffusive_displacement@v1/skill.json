@@ -1,0 +1,63 @@
+{
+  "schema_version": "0.1",
+  "id": "steps_for_diffusive_displacement",
+  "version": 1,
+  "kind": "estimate",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the time and the number of steps a run needs for a particle of a given diffusivity to move a stated multiple of a size, by its mean squared displacement",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "diffusivity",
+      "unit": "engine_diffusivity",
+      "meaning": "the diffusivity of the slowest particle the run must follow"
+    },
+    {
+      "name": "size",
+      "unit": "engine_length",
+      "meaning": "the size the displacement is counted in, a particle's diameter for one"
+    },
+    {
+      "name": "multiple",
+      "unit": "1",
+      "meaning": "how many sizes the root mean squared displacement is to reach"
+    },
+    {
+      "name": "dimensions",
+      "unit": "count",
+      "meaning": "how many dimensions the particle moves in"
+    },
+    {
+      "name": "time_step",
+      "unit": "engine_time",
+      "meaning": "the run's time step"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "run_time",
+      "unit": "engine_time",
+      "meaning": "(multiple x size)^2 over 2 x dimensions x diffusivity"
+    },
+    {
+      "name": "steps",
+      "unit": "count",
+      "meaning": "the run time over the time step, rounded up"
+    }
+  ],
+  "entry": {
+    "script": "scripts/estimate.py",
+    "function": "estimate"
+  },
+  "validity": "normal diffusion at the lags the run reaches; the root mean squared displacement, which a single particle may fall short of or exceed",
+  "source": {
+    "citation": "Mean squared displacement, Wikipedia (read 2026-11-17, https://en.wikipedia.org/wiki/Mean_squared_displacement)",
+    "locus": "Derivation for n dimensions: MSD = 2nDt, n the number of dimensions"
+  },
+  "note": "No value of the source stands behind the worked cases: each is worked by hand in its worked field.",
+  "cases": "cases.json"
+}

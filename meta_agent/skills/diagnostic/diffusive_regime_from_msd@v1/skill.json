@@ -1,0 +1,68 @@
+{
+  "schema_version": "0.1",
+  "id": "diffusive_regime_from_msd",
+  "version": 1,
+  "kind": "diagnostic",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "whether a mean squared displacement is in its diffusive regime, by the exponent of its power law over windows of consecutive lags against a tolerance it is handed, and from which lag on",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "lags",
+      "unit": "1",
+      "meaning": "the lag times, positive and rising, in one unit"
+    },
+    {
+      "name": "msd",
+      "unit": "1",
+      "meaning": "the mean squared displacement at each lag, positive, in one unit"
+    },
+    {
+      "name": "window",
+      "unit": "count",
+      "meaning": "how many consecutive lags each exponent is fitted over, two or more"
+    },
+    {
+      "name": "tolerance",
+      "unit": "1",
+      "meaning": "the largest distance of the exponent from one that counts as diffusive; null when none is chosen"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "state",
+      "unit": "1",
+      "meaning": "diffusive | not_diffusive | undecided, over the last window"
+    },
+    {
+      "name": "exponent",
+      "unit": "1",
+      "meaning": "the exponent fitted over the last window"
+    },
+    {
+      "name": "diffusive_from",
+      "unit": "1",
+      "meaning": "the first lag of the earliest window from which every window is diffusive, in the lags' unit; null when none is, or without a tolerance"
+    },
+    {
+      "name": "windows",
+      "unit": "count",
+      "meaning": "how many windows were fitted"
+    }
+  ],
+  "entry": {
+    "script": "scripts/diagnostic.py",
+    "function": "diagnostic"
+  },
+  "validity": "a mean squared displacement averaged well enough that its windows are not dominated by noise; the long lags of one run carry fewer independent samples",
+  "source": {
+    "citation": "Anomalous diffusion, Wikipedia (read 2026-11-17, https://en.wikipedia.org/wiki/Anomalous_diffusion); Mean squared displacement, Wikipedia (read 2026-11-17, https://en.wikipedia.org/wiki/Mean_squared_displacement); Simple linear regression, Wikipedia (read 2026-11-17, https://en.wikipedia.org/wiki/Simple_linear_regression)",
+    "locus": "Classes of anomalous diffusion: the mean squared displacement goes as a power alpha of the lag; alpha = 1 is normal diffusion, below it subdiffusion, above it superdiffusion; Derivation for n dimensions: MSD = 2nDt, n the number of dimensions; the exponent of each window is the least-squares slope of the logarithm of the msd on the logarithm of the lag"
+  },
+  "note": "No value of the sources stands behind the worked cases: each is worked by hand in its worked field, on lags that double so that each exponent is a logarithm of base two.",
+  "cases": "cases.json"
+}

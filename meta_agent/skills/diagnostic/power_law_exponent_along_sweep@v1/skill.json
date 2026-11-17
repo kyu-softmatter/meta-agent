@@ -1,0 +1,68 @@
+{
+  "schema_version": "0.1",
+  "id": "power_law_exponent_along_sweep",
+  "version": 1,
+  "kind": "diagnostic",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "whether a quantity changes along a sweep, by the exponent of a power law fitted to it and that exponent's standard error, against a tolerance and a multiple it is handed",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "sweep",
+      "unit": "1",
+      "meaning": "the values the sweep took, all positive, in one unit"
+    },
+    {
+      "name": "values",
+      "unit": "1",
+      "meaning": "the quantity at each value of the sweep, all positive, in one unit"
+    },
+    {
+      "name": "tolerance",
+      "unit": "1",
+      "meaning": "the largest size of the exponent that counts as not changing; null when none is chosen"
+    },
+    {
+      "name": "multiple",
+      "unit": "1",
+      "meaning": "how many standard errors the exponent must clear the tolerance by, on either side; null when none is chosen"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "state",
+      "unit": "1",
+      "meaning": "changes | does_not_change | undecided"
+    },
+    {
+      "name": "exponent",
+      "unit": "1",
+      "meaning": "the least-squares slope of the logarithm of the values on the logarithm of the sweep; null below three points"
+    },
+    {
+      "name": "exponent_standard_error",
+      "unit": "1",
+      "meaning": "the slope's standard error, the residual sum over n - 2 over the sum of squared deviations, rooted; null below three points"
+    },
+    {
+      "name": "points",
+      "unit": "count",
+      "meaning": "how many points were fitted"
+    }
+  ],
+  "entry": {
+    "script": "scripts/diagnostic.py",
+    "function": "diagnostic"
+  },
+  "validity": "a quantity that goes as a power of the swept value over the sweep, with errors alike on every point; three points or more",
+  "source": {
+    "citation": "Simple linear regression, Wikipedia (read 2026-11-17, https://en.wikipedia.org/wiki/Simple_linear_regression)",
+    "locus": "Formulation and computation (the least-squares slope); Variance of regressor coefficients (its variance, the residual sum over n - 2 over the sum of squared deviations of x; the standard error its square root)"
+  },
+  "note": "No value of the source stands behind the worked cases: each is worked in its worked field, the slope by hand and its standard error by the source's expression.",
+  "cases": "cases.json"
+}

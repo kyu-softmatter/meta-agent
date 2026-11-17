@@ -1,0 +1,53 @@
+{
+  "schema_version": "0.1",
+  "id": "standard_error_of_independent_estimates",
+  "version": 1,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the mean of independent estimates of one quantity, their standard deviation and the standard error of the mean",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "estimates",
+      "unit": "1",
+      "meaning": "independent estimates of one quantity, all in one unit: one per block of a run, per subset of particles, per replicate or per scan subset"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "mean",
+      "unit": "1",
+      "meaning": "the mean of the estimates, in their unit"
+    },
+    {
+      "name": "standard_deviation",
+      "unit": "1",
+      "meaning": "the sample standard deviation, with n - 1"
+    },
+    {
+      "name": "standard_error",
+      "unit": "1",
+      "meaning": "the standard deviation over the square root of the number of estimates"
+    },
+    {
+      "name": "count",
+      "unit": "count",
+      "meaning": "how many estimates were handed"
+    }
+  ],
+  "entry": {
+    "script": "scripts/analysis.py",
+    "function": "analysis"
+  },
+  "validity": "estimates that are independent of one another: blocks long beside the correlation time, or replicates from independent starts; with correlated estimates the standard error is too small",
+  "source": {
+    "citation": "A. Grossfield et al., Best Practices for Quantification of Uncertainty and Sampling Quality in Molecular Simulations, Living J. Comput. Mol. Sci. 1 (2018) 5067 (read 2026-11-17, https://pmc.ncbi.nlm.nih.gov/articles/PMC6286151/)",
+    "locus": "Sec. 1.2.1, Eqs. 6 and 8: the sample standard deviation over n - 1 and the experimental standard deviation of the mean s(x)/sqrt(n), for estimates that are uncorrelated"
+  },
+  "note": "The block-averaging section of the source (7.3.2) was read through a summary only; the relation used here is Eqs. 6 and 8, read verbatim. No value of the source stands behind the worked cases: each is worked by hand in its worked field.",
+  "cases": "cases.json"
+}

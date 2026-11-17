@@ -392,6 +392,57 @@
       "side": "max"
     },
     {
+      "ref": "timestep_max_from_diffusive_displacement@v1",
+      "id": "timestep_max_from_diffusive_displacement",
+      "version": 1,
+      "kind": "bound",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the largest time step for which a particle's root mean squared displacement in one step stays a stated fraction of the smallest size",
+      "description": "The largest time step for which a particle's root mean squared displacement in one step stays a stated fraction of the smallest size in the system. Take it when time_step is a parameter of a stochastic run of diffusing particles, a colloid in a Brownian dynamics engine or a tracer molecule in a molecular dynamics engine alike.",
+      "applies_to": {
+        "parameters": [
+          "time_step"
+        ],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "fraction",
+          "unit": "1",
+          "meaning": "the largest root mean squared displacement in one step, as a fraction of the size"
+        },
+        {
+          "name": "size",
+          "unit": "engine_length",
+          "meaning": "the smallest size in the system, the smallest particle's diameter for one"
+        },
+        {
+          "name": "diffusivity",
+          "unit": "engine_diffusivity",
+          "meaning": "the largest diffusivity in the system, that of the smallest particle for one"
+        },
+        {
+          "name": "dimensions",
+          "unit": "count",
+          "meaning": "how many dimensions the particles move in"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "time_step_max",
+          "unit": "engine_time",
+          "meaning": "(fraction x size)^2 over 2 x dimensions x diffusivity"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "bound/timestep_max_from_diffusive_displacement@v1",
+      "sha256": "sha256:1aff6524195f2177ab6c533952fe30c409ccf09b779a2d56ec8fd0d4ce3100bc",
+      "parameter": "time_step",
+      "side": "max"
+    },
+    {
       "ref": "timestep_max_from_relaxation_time@v1",
       "id": "timestep_max_from_relaxation_time",
       "version": 1,
@@ -715,6 +766,177 @@
       "sha256": "sha256:328f7b2f9b9f30a036f4b85cf91156ea3ccc38faec48822b9f271b3b2b2e88a3"
     },
     {
+      "ref": "standard_error_of_independent_estimates@v1",
+      "id": "standard_error_of_independent_estimates",
+      "version": 1,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the mean of independent estimates of one quantity, their standard deviation and the standard error of the mean",
+      "description": "The mean of several independent estimates of one quantity, with their standard deviation and the standard error of the mean. Take it when a coefficient was fitted once per block of a run, per subset of particles, per replicate or per subset of scans, and its uncertainty is wanted.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "estimates",
+          "unit": "1",
+          "meaning": "independent estimates of one quantity, all in one unit: one per block of a run, per subset of particles, per replicate or per scan subset"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mean",
+          "unit": "1",
+          "meaning": "the mean of the estimates, in their unit"
+        },
+        {
+          "name": "standard_deviation",
+          "unit": "1",
+          "meaning": "the sample standard deviation, with n - 1"
+        },
+        {
+          "name": "standard_error",
+          "unit": "1",
+          "meaning": "the standard deviation over the square root of the number of estimates"
+        },
+        {
+          "name": "count",
+          "unit": "count",
+          "meaning": "how many estimates were handed"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/standard_error_of_independent_estimates@v1",
+      "sha256": "sha256:9e83e9becb8b0763b5dfe60df8a48c0871b08f9fe042ee50bd805b0e296c80e2"
+    },
+    {
+      "ref": "diffusive_regime_from_msd@v1",
+      "id": "diffusive_regime_from_msd",
+      "version": 1,
+      "kind": "diagnostic",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "whether a mean squared displacement is in its diffusive regime, by the exponent of its power law over windows of consecutive lags against a tolerance it is handed, and from which lag on",
+      "description": "Whether a mean squared displacement is in its diffusive regime, where it grows in proportion to the lag, by the exponent fitted over windows of consecutive lags against a tolerance it is handed, and from which lag on it stays so. A particle in a simulation engine or a bead tracked under a microscope alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "lags",
+          "unit": "1",
+          "meaning": "the lag times, positive and rising, in one unit"
+        },
+        {
+          "name": "msd",
+          "unit": "1",
+          "meaning": "the mean squared displacement at each lag, positive, in one unit"
+        },
+        {
+          "name": "window",
+          "unit": "count",
+          "meaning": "how many consecutive lags each exponent is fitted over, two or more"
+        },
+        {
+          "name": "tolerance",
+          "unit": "1",
+          "meaning": "the largest distance of the exponent from one that counts as diffusive; null when none is chosen"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "diffusive | not_diffusive | undecided, over the last window"
+        },
+        {
+          "name": "exponent",
+          "unit": "1",
+          "meaning": "the exponent fitted over the last window"
+        },
+        {
+          "name": "diffusive_from",
+          "unit": "1",
+          "meaning": "the first lag of the earliest window from which every window is diffusive, in the lags' unit; null when none is, or without a tolerance"
+        },
+        {
+          "name": "windows",
+          "unit": "count",
+          "meaning": "how many windows were fitted"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "diagnostic/diffusive_regime_from_msd@v1",
+      "sha256": "sha256:0766df181c85555cff2c2db912e27459987dbd59b326e1f9f03328fcbb639d36"
+    },
+    {
+      "ref": "power_law_exponent_along_sweep@v1",
+      "id": "power_law_exponent_along_sweep",
+      "version": 1,
+      "kind": "diagnostic",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "whether a quantity changes along a sweep, by the exponent of a power law fitted to it and that exponent's standard error, against a tolerance and a multiple it is handed",
+      "description": "Whether a quantity changes along a sweep of another, by the exponent of a power law fitted through it and that exponent's standard error, judged against a tolerance and a multiple it is handed. Take it when a person asks whether something changes with size, with a setting or with time, a diffusivity along the particles' diameters or a peak's width along the integration time alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "sweep",
+          "unit": "1",
+          "meaning": "the values the sweep took, all positive, in one unit"
+        },
+        {
+          "name": "values",
+          "unit": "1",
+          "meaning": "the quantity at each value of the sweep, all positive, in one unit"
+        },
+        {
+          "name": "tolerance",
+          "unit": "1",
+          "meaning": "the largest size of the exponent that counts as not changing; null when none is chosen"
+        },
+        {
+          "name": "multiple",
+          "unit": "1",
+          "meaning": "how many standard errors the exponent must clear the tolerance by, on either side; null when none is chosen"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "changes | does_not_change | undecided"
+        },
+        {
+          "name": "exponent",
+          "unit": "1",
+          "meaning": "the least-squares slope of the logarithm of the values on the logarithm of the sweep; null below three points"
+        },
+        {
+          "name": "exponent_standard_error",
+          "unit": "1",
+          "meaning": "the slope's standard error, the residual sum over n - 2 over the sum of squared deviations, rooted; null below three points"
+        },
+        {
+          "name": "points",
+          "unit": "count",
+          "meaning": "how many points were fitted"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "diagnostic/power_law_exponent_along_sweep@v1",
+      "sha256": "sha256:9a3bc5d8c6a75c20a88dd07640fb9d6d589333ecb94390dec481291cd7e3af5d"
+    },
+    {
       "ref": "series_settled@v1",
       "id": "series_settled",
       "version": 1,
@@ -867,6 +1089,63 @@
       "uses_skills": [],
       "path": "estimate/box_length_for_volume_fraction@v1",
       "sha256": "sha256:753b7c0ae891d89da91adf15bfa2ee4d0671aafe08cbfbdff52e8d43821e54b3"
+    },
+    {
+      "ref": "steps_for_diffusive_displacement@v1",
+      "id": "steps_for_diffusive_displacement",
+      "version": 1,
+      "kind": "estimate",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the time and the number of steps a run needs for a particle of a given diffusivity to move a stated multiple of a size, by its mean squared displacement",
+      "description": "The time, and the number of steps, a run needs for a particle of a given diffusivity to move a stated multiple of a size by its root mean squared displacement. Take it to choose how long a run must last for its slowest particle to sample its surroundings, a colloid in a Brownian dynamics engine or a tracer molecule in a molecular dynamics engine alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "diffusivity",
+          "unit": "engine_diffusivity",
+          "meaning": "the diffusivity of the slowest particle the run must follow"
+        },
+        {
+          "name": "size",
+          "unit": "engine_length",
+          "meaning": "the size the displacement is counted in, a particle's diameter for one"
+        },
+        {
+          "name": "multiple",
+          "unit": "1",
+          "meaning": "how many sizes the root mean squared displacement is to reach"
+        },
+        {
+          "name": "dimensions",
+          "unit": "count",
+          "meaning": "how many dimensions the particle moves in"
+        },
+        {
+          "name": "time_step",
+          "unit": "engine_time",
+          "meaning": "the run's time step"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "run_time",
+          "unit": "engine_time",
+          "meaning": "(multiple x size)^2 over 2 x dimensions x diffusivity"
+        },
+        {
+          "name": "steps",
+          "unit": "count",
+          "meaning": "the run time over the time step, rounded up"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "estimate/steps_for_diffusive_displacement@v1",
+      "sha256": "sha256:f09fb01b0bb5a690014f51b36c8e337df6b2f6f41f500daff5f2658d3be24c0f"
     },
     {
       "ref": "bring_to_ready@v1",

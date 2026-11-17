@@ -1,0 +1,39 @@
+[
+  {
+    "name": "a diffusion coefficient fitted on each of four blocks of a Brownian run",
+    "inputs": {
+      "estimates": [
+        0.098,
+        0.102,
+        0.1,
+        0.104
+      ]
+    },
+    "expect": {
+      "mean": 0.101,
+      "standard_deviation": 0.0025819888974716065,
+      "standard_error": 0.0012909944487358032,
+      "count": 4
+    },
+    "worked": "mean 0.404 / 4 = 0.101; deviations -0.003, 0.001, -0.001, 0.003; squares sum 2.0e-5; over 3 is 6.667e-6, root 0.002582; over sqrt 4 = 2 is 0.001291"
+  },
+  {
+    "name": "a peak position fitted on each of five subsets of a spectrometer's scans, in nm",
+    "inputs": {
+      "estimates": [
+        512.3,
+        512.5,
+        512.1,
+        512.4,
+        512.2
+      ]
+    },
+    "expect": {
+      "mean": 512.3,
+      "standard_deviation": 0.15811388300840098,
+      "standard_error": 0.0707106781186467,
+      "count": 5
+    },
+    "worked": "mean 2561.5 / 5 = 512.3; deviations 0, 0.2, -0.2, 0.1, -0.1; squares sum 0.10; over 4 is 0.025, root 0.1581; over sqrt 5 is 0.07071"
+  }
+]

@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1",
+  "id": "timestep_max_from_diffusive_displacement",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the largest time step for which a particle's root mean squared displacement in one step stays a stated fraction of the smallest size",
+  "parameter": "time_step",
+  "side": "max",
+  "applies_to": {
+    "parameters": [
+      "time_step"
+    ],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "fraction",
+      "unit": "1",
+      "meaning": "the largest root mean squared displacement in one step, as a fraction of the size"
+    },
+    {
+      "name": "size",
+      "unit": "engine_length",
+      "meaning": "the smallest size in the system, the smallest particle's diameter for one"
+    },
+    {
+      "name": "diffusivity",
+      "unit": "engine_diffusivity",
+      "meaning": "the largest diffusivity in the system, that of the smallest particle for one"
+    },
+    {
+      "name": "dimensions",
+      "unit": "count",
+      "meaning": "how many dimensions the particles move in"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "time_step_max",
+      "unit": "engine_time",
+      "meaning": "(fraction x size)^2 over 2 x dimensions x diffusivity"
+    }
+  ],
+  "entry": {
+    "script": "scripts/bound.py",
+    "function": "bound"
+  },
+  "validity": "a stochastic integration of diffusion, Brownian or Langevin, whose accuracy is set by the displacement per step; it is not the stability limit of a grid",
+  "source": {
+    "citation": "Mean squared displacement, Wikipedia (read 2026-11-17, https://en.wikipedia.org/wiki/Mean_squared_displacement)",
+    "locus": "Derivation for n dimensions: MSD = 2nDt, n the number of dimensions"
+  },
+  "note": "No value of the source stands behind the worked cases: each is worked by hand in its worked field. The fraction is a margin and an input with its own source, never this skill's.",
+  "cases": "cases.json"
+}

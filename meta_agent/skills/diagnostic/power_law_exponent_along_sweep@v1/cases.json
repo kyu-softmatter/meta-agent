@@ -1,0 +1,100 @@
+[
+  {
+    "name": "a diffusivity along the particles' diameters, in an engine's units",
+    "inputs": {
+      "sweep": [
+        1.0,
+        2.0,
+        4.0
+      ],
+      "values": [
+        1.0,
+        0.5,
+        0.25
+      ],
+      "tolerance": 0.1,
+      "multiple": 2.0
+    },
+    "expect": {
+      "state": "changes",
+      "exponent": -1.0,
+      "exponent_standard_error": 0.0,
+      "points": 3
+    },
+    "worked": "each doubling of the diameter halves the diffusivity: the logarithms fall on a line of slope -1 with no residual, so the standard error is 0; |-1| - 2 x 0 = 1 is above 0.1: changes"
+  },
+  {
+    "name": "a peak's width along the integration time, in nm against s",
+    "inputs": {
+      "sweep": [
+        1.0,
+        2.0,
+        4.0,
+        8.0
+      ],
+      "values": [
+        3.0,
+        3.0,
+        3.0,
+        3.0
+      ],
+      "tolerance": 0.05,
+      "multiple": 2.0
+    },
+    "expect": {
+      "state": "does_not_change",
+      "exponent": 0.0,
+      "exponent_standard_error": 0.0,
+      "points": 4
+    },
+    "worked": "the width is the same at every time: slope 0, no residual, standard error 0; 0 + 2 x 0 = 0 is within 0.05: does_not_change"
+  },
+  {
+    "name": "a margin that straddles the tolerance",
+    "inputs": {
+      "sweep": [
+        1.0,
+        2.0,
+        4.0
+      ],
+      "values": [
+        1.0,
+        0.5,
+        0.3535533905932738
+      ],
+      "tolerance": 0.8,
+      "multiple": 2.0
+    },
+    "expect": {
+      "state": "undecided",
+      "exponent": -0.7499999999999999,
+      "exponent_standard_error": 0.14433756729740646,
+      "points": 3
+    },
+    "worked": "in base-two logarithms the points are (0, 0), (1, -1), (2, -1.5): slope -1.5 / 2 = -0.75; residuals 0.0833, -0.1667, 0.0833, squares 0.041667, over n - 2 = 1, over 2 is 0.020833, root 0.1443; 0.75 + 2 x 0.1443 = 1.039 is above 0.8 and 0.75 - 2 x 0.1443 = 0.461 is not: undecided"
+  },
+  {
+    "name": "no criterion chosen",
+    "inputs": {
+      "sweep": [
+        1.0,
+        2.0,
+        4.0
+      ],
+      "values": [
+        1.0,
+        0.5,
+        0.25
+      ],
+      "tolerance": null,
+      "multiple": 2.0
+    },
+    "expect": {
+      "state": "undecided",
+      "exponent": -1.0,
+      "exponent_standard_error": 0.0,
+      "points": 3
+    },
+    "worked": "the exponent is -1 as in the first case; with no tolerance the state is undecided"
+  }
+]
