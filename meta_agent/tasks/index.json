@@ -220,6 +220,56 @@
       "depends_on": [],
       "opened": "2026-11-16",
       "design_part": "landed"
+    },
+    {
+      "id": "017",
+      "file": "017-the-meta-agent-on-gromacs.md",
+      "status": "open",
+      "roles": [
+        "design"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-17"
+    },
+    {
+      "id": "018",
+      "file": "018-the-meta-agent-on-quantum-espresso.md",
+      "status": "open",
+      "roles": [
+        "design"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-17"
+    },
+    {
+      "id": "019",
+      "file": "019-the-meta-agent-on-fenicsx.md",
+      "status": "open",
+      "roles": [
+        "design"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-17"
+    },
+    {
+      "id": "020",
+      "file": "020-the-meta-agent-on-cantera.md",
+      "status": "open",
+      "roles": [
+        "design"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-17"
+    },
+    {
+      "id": "021",
+      "file": "021-the-meta-agent-on-meep.md",
+      "status": "open",
+      "roles": [
+        "design"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-17"
     }
   ]
 }
