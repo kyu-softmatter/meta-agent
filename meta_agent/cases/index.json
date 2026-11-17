@@ -1429,6 +1429,96 @@
       "revision": 1,
       "path": "cases/sma/simulation-069.json",
       "hash": "sha256:74daef23621aba9c32827df2d21e37902819949dbcadaf4916204ed7f6ad3893"
+    },
+    {
+      "id": "case-sma-simulation-014",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-014.json",
+      "hash": "sha256:87c8820ff4dbd0494d595fc367a3c7261ca6630c37530b0cc135644f3ada9a73"
+    },
+    {
+      "id": "case-sma-simulation-020",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-020.json",
+      "hash": "sha256:c87ae699da8bb55cf910dacd2698a405ef3474899f0e7ef8e9ca7bf46857740a"
+    },
+    {
+      "id": "case-sma-simulation-025",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-025.json",
+      "hash": "sha256:9bf89cd5ea2b60f25517ea43004894682f114afaa5989fed1616180a7336ee46"
+    },
+    {
+      "id": "case-sma-simulation-032",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-032.json",
+      "hash": "sha256:414501636d01559034ffdaf4a506403f59f6fc7e0696a85ec5e53d4a1abc4b0c"
+    },
+    {
+      "id": "case-sma-simulation-033",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-033.json",
+      "hash": "sha256:8701e76fbfbffc3f96707ba2d2fb5300da4e222b8475b815d67276c902c94fd2"
+    },
+    {
+      "id": "case-sma-simulation-034",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-034.json",
+      "hash": "sha256:b98a9e07a417ae151bb40d8bef8d392c3660b29c4373d6de1fcf5bca5739f00f"
+    },
+    {
+      "id": "case-sma-simulation-035",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-035.json",
+      "hash": "sha256:e1f68dab406ce7c1d31406d2aec0c8fae5468e272cae380c426b81a0eb037093"
+    },
+    {
+      "id": "case-sma-simulation-044",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-044.json",
+      "hash": "sha256:cbca5a4d650e5415e6a401bad78eb199abf2c746d8f4ab6c0b4c0af391c5864a"
+    },
+    {
+      "id": "case-sma-simulation-045",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-045.json",
+      "hash": "sha256:73b0393fcf2642498c60265424bd7981879788b9717d59e6affebda3b1713c85"
+    },
+    {
+      "id": "case-sma-simulation-046",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-046.json",
+      "hash": "sha256:6819a63963c692e0c43a426b2fff28e64b689121dd09db5478217fb82a4ac818"
+    },
+    {
+      "id": "case-sma-simulation-048",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-048.json",
+      "hash": "sha256:84171024b6735c97ee2977e3caeca2eb38ce0093dd2b40e08396cf3e65223d87"
+    },
+    {
+      "id": "case-sma-simulation-053",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-053.json",
+      "hash": "sha256:63813c0ab1b83eeed2d702a3ce645824ea17c0860dd8737b002b63b589dd87c2"
+    },
+    {
+      "id": "case-sma-simulation-054",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-054.json",
+      "hash": "sha256:2e87639437e2d9f1f676d6f99047856ecd2b1628c1ac29095a739d328a42cba2"
+    },
+    {
+      "id": "case-sma-simulation-055",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-055.json",
+      "hash": "sha256:6dd4b187e05b9f392ad5d18c10dbc0178d9aee92c493013d656557ed201180df"
+    },
+    {
+      "id": "case-sma-simulation-060",
+      "revision": 2,
+      "path": "cases/sma/v2_simulation-060.json",
+      "hash": "sha256:2b80f80150062dd0cbcdd0b6936983354e152e3924d5926447129e384c099ec0"
     }
   ]
 }
