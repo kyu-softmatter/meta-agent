@@ -1,0 +1,1 @@
+An intake at the stage reading that gives a workflow: an order of tools belongs to the stage specified, as the tools' contracts do (tasks/016, run 20261117-2).

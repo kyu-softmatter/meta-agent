@@ -546,6 +546,16 @@
         "$ref": "common.schema.json#/$defs/held_item"
       },
       "description": "capabilities of the request that stay out of the bundle until a person releases them, whatever they are (a tool, a step, a source), each with its reason; the specification's held[] carries them"
+    },
+    "workflow": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "minItems": 1,
+      "description": "with the stage specified: the order in which the agent's workflow calls the card's tools, each named once; a tool it leaves out is called when a task asks for it. Without it the bundle says the request gave no order."
     }
   },
   "additionalProperties": false,
@@ -643,6 +653,11 @@
             {
               "required": [
                 "tools"
+              ]
+            },
+            {
+              "required": [
+                "workflow"
               ]
             }
           ]
