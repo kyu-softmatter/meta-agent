@@ -1,0 +1,24 @@
+This folder is a bundle: a scientific agent built by a separate builder, the Meta-Agent, as a self-contained folder. It is the `hoomd-hpmc` agent, which carries out the workflow of the HOOMD-blue tutorial "Introducing HOOMD-blue" (hard particle Monte Carlo of hard octahedra) on the engine HOOMD-blue. The folder was copied out of the builder's repository into a place with no other project around it, and the builder is not here. The purpose of this run is to see whether the bundle stands alone: whether a session that has only this folder can do its first task and then do what a person who wants the tutorial automated would ask, with nobody to ask. So the account of what was in your context, what you loaded, what you could not find and what was unclear matters as much as the commands' output; say what you met as you met it, and do not assume the text is right because it is there.
+
+Read `tasks/001-start.md` first. It is this agent's first task, and `CLAUDE.md` in this folder says who you are and what binds you. Work only from what this folder carries, and only inside it.
+
+Do two things, in this order:
+
+1. Task `tasks/001-start.md`, as it is written.
+2. A person asks: "Run the tutorial's hard octahedra from the start and tell me whether they ordered." Do it as this agent does it. Where something this agent needs is not here, do not supply it yourself: say what it is, what would settle it, and whose step it is.
+
+This folder is a copy made for this run and is not under version control: there is nothing to commit, and what your instructions allow a session to write, you may write. Write nothing they do not allow.
+
+Done when: the three commands of task 001 have printed their lines and you have reported them verbatim, and you have answered the person as this agent answers.
+
+Your final message is your report, ten lines or fewer plus the verbatim lines:
+
+```
+task     <the task and the person's request>
+landed   <every file you wrote or changed, or nothing>
+verdict  <the last line each command printed, verbatim>
+asks     <what you would ask a person, or nothing>
+next     <what comes next, and whose it is>
+```
+
+Then say, plainly and separately: every instruction file and every skill that was in your context when you started, by name, including any that is not from this folder; which session skills you loaded and at what point, and which section of each you used; what you looked for and did not find in this folder; anything in `CLAUDE.md`, in the task or in a skill that was unclear, contradicted another line, or named something that is not here; the exit status of each command and whether the task told you what to make of it; and whether the folder was enough to do the work with nobody to ask. Name the model and the effort you ran on.
