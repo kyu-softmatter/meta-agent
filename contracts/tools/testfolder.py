@@ -138,6 +138,10 @@ def read_json(path):
 
 def sha256_file(path):
     h = hashlib.sha256()
+    if os.path.islink(path) and not os.path.exists(path):
+        # a link whose target is not there (a package cache makes them): its own text is what it is
+        h.update(b"symlink\0" + os.readlink(path).encode("utf-8", "surrogateescape"))
+        return h.hexdigest()
     with open(path, "rb") as f:
         for chunk in iter(lambda: f.read(65536), b""):
             h.update(chunk)
@@ -151,7 +155,10 @@ def tree_hashes(root):
         dirnames[:] = sorted(d for d in dirnames if d not in HASH_SKIP)
         for fn in sorted(filenames):
             full = os.path.join(dirpath, fn)
-            out[os.path.relpath(full, root).replace(os.sep, "/")] = sha256_file(full)
+            try:
+                out[os.path.relpath(full, root).replace(os.sep, "/")] = sha256_file(full)
+            except FileNotFoundError:   # removed between the listing and the reading
+                continue
     return out
 
 
@@ -521,13 +528,43 @@ def collect_sessions(projects, run_path, items, dest):
 
 
 # ---------------------------------------------------------------------------- collect: what changed
+ENV_MARKERS = ("conda-meta", "pyvenv.cfg", "CACHEDIR.TAG")   # a package environment (conda, pixi, a venv) or a tagged cache
+
+
+def _not_kept(src_root, rel, seen):
+    """The folder of rel that is a package environment or a cache, or None. Such a folder is listed and
+    counted in a collection, not copied: it is what an install made, not what a session did (run 20261117-2)."""
+    parts = rel.split("/")[:-1]
+    for i in range(1, len(parts) + 1):
+        d = "/".join(parts[:i])
+        if d not in seen:
+            full = os.path.join(src_root, *parts[:i])
+            ignore = os.path.join(full, ".gitignore")
+            star = False
+            if os.path.isfile(ignore):
+                with open(ignore, "r", encoding="utf-8", errors="replace") as f:
+                    star = f.read().strip() == "*"
+            seen[d] = ("cache" in parts[i - 1].lower() or star
+                       or any(os.path.exists(os.path.join(full, m)) for m in ENV_MARKERS))
+        if seen[d]:
+            return d
+    return None
+
+
 def _copy_into(src_root, rels, dest_root):
+    """Copy rels; return {folder: number of files} of what was left as an environment or a cache."""
+    seen, left = {}, {}
     for rel in rels:
+        d = _not_kept(src_root, rel, seen)
+        if d is not None:
+            left[d] = left.get(d, 0) + 1
+            continue
         src = os.path.join(src_root, *rel.split("/"))
         if os.path.isfile(src):
             dst = os.path.join(dest_root, *rel.split("/"))
             os.makedirs(os.path.dirname(dst), exist_ok=True)
             shutil.copy2(src, dst)
+    return left
 
 
 def bundle_changes(item, path, dest):
@@ -535,9 +572,9 @@ def bundle_changes(item, path, dest):
     added = sorted(set(cur) - set(made))
     removed = sorted(set(made) - set(cur))
     changed = sorted(r for r in cur if r in made and cur[r] != made[r])
-    _copy_into(path, added + changed, os.path.join(dest, "files"))
+    left = _copy_into(path, added + changed, os.path.join(dest, "files"))
     return {"name": item["name"], "kind": "bundle", "added": added, "changed": changed, "removed": removed,
-            "digest_made": item["bundle_sha256"], "digest_now": tree_digest(cur)}
+            "not_copied": left, "digest_made": item["bundle_sha256"], "digest_now": tree_digest(cur)}
 
 
 def clone_changes(item, path, dest, gate=True):
@@ -551,9 +588,10 @@ def clone_changes(item, path, dest, gate=True):
         with open(os.path.join(dest, "changes.patch"), "wb") as f:
             f.write(patch)
     untracked = [l for l in git(path, "ls-files", "--others", "--exclude-standard").splitlines() if l.strip()]
-    _copy_into(path, untracked, os.path.join(dest, "files"))
+    left = _copy_into(path, untracked, os.path.join(dest, "files"))
     out = {"name": item["name"], "kind": "clone", "head_made": head, "head_now": git(path, "rev-parse", "HEAD").strip(),
-           "commits": commits, "uncommitted": status, "untracked": untracked, "patch": "changes.patch" if patch else None,
+           "commits": commits, "uncommitted": status, "untracked": untracked, "not_copied": left,
+           "patch": "changes.patch" if patch else None,
            "verdict": None}
     if gate and os.path.isfile(os.path.join(path, "contracts", "validate.py")):
         env = dict({k: v for k, v in os.environ.items() if not k.startswith("GIT_")}, PYTHONUTF8="1", PYTHONDONTWRITEBYTECODE="1")
@@ -610,6 +648,8 @@ def report_collection(run, dest, sessions, items):
             print("%-11s %s  its folder is gone; transcripts only" % (it["name"], it["kind"]))
         elif it["kind"] == "bundle":
             print("%-11s bundle  %d added, %d changed, %d removed" % (it["name"], len(it["added"]), len(it["changed"]), len(it["removed"])))
+            for d, n in sorted(it.get("not_copied", {}).items()):
+                print("%-11s         %s: %d file(s) of an environment or a cache, listed and not copied" % ("", d, n))
         else:
             print("%-11s clone   %d commit(s), %d uncommitted path(s); %s"
                   % (it["name"], len(it["commits"]), len(it["uncommitted"]), it["verdict"] or "the gate was not run"))

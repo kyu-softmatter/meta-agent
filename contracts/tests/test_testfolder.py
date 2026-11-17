@@ -214,6 +214,11 @@ class TestFolder(unittest.TestCase):
         run = self.make()
         path = os.path.join(self.root, run)
         put(path, "bundles/balance-0001/runs/out.json", "{}\n")
+        if sys.platform != "win32":     # a package cache leaves links whose target is not there (run 20261117-2)
+            os.symlink("libomp.dylib", os.path.join(path, "bundles", "balance-0001", "runs", "libgomp.dylib"))
+        put(path, "bundles/balance-0001/runs/env/conda-meta/history", "made by an install\n")    # an environment
+        put(path, "bundles/balance-0001/runs/env/lib/a.py", "\n")
+        put(path, "bundles/balance-0001/runs/pip_cache_dir/wheel", "\n")                         # a cache by its name
         put(path, "bundles/balance-0001/CLAUDE.md", "# balance, edited\n")
         os.remove(os.path.join(path, "bundles", "balance-0001", "envelope", "safety.json"))
         put(path, "repo/meta_agent/failures.jsonl", "{}\n")
@@ -224,7 +229,11 @@ class TestFolder(unittest.TestCase):
         col = tf.read_json(os.path.join(self.collection(run), "collection.json"))
         items = {it["name"]: it for it in col["items"]}
         b = items["balance-0001"]
-        self.assertEqual((b["added"], b["changed"], b["removed"]), (["runs/out.json"], ["CLAUDE.md"], ["envelope/safety.json"]))
+        added = (["runs/env/conda-meta/history", "runs/env/lib/a.py"] + (["runs/libgomp.dylib"] if sys.platform != "win32" else [])
+                 + ["runs/out.json", "runs/pip_cache_dir/wheel"])
+        self.assertEqual((b["added"], b["changed"], b["removed"]), (added, ["CLAUDE.md"], ["envelope/safety.json"]))
+        self.assertEqual(b["not_copied"], {"runs/env": 2, "runs/pip_cache_dir": 1})
+        self.assertFalse(os.path.exists(os.path.join(self.collection(run), "items", "balance-0001", "files", "runs", "env")))
         self.assertNotEqual(b["digest_now"], b["digest_made"])
         self.assertTrue(os.path.isfile(os.path.join(self.collection(run), "items", "balance-0001", "files", "runs", "out.json")))
         e = items["echo-0002"]
