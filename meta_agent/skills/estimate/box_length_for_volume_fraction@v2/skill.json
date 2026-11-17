@@ -1,0 +1,56 @@
+{
+  "schema_version": "0.1",
+  "id": "box_length_for_volume_fraction",
+  "version": 2,
+  "kind": "estimate",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the side of a cubic box for a number of particles of a given volume at a given volume fraction",
+  "applies_to": {
+    "parameters": [
+      "box_length",
+      "box_volume"
+    ],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "particle_count",
+      "unit": "count",
+      "meaning": "how many particles the box holds"
+    },
+    {
+      "name": "particle_volume",
+      "unit": "engine_length^3",
+      "meaning": "the volume of one particle, in the engine's own units"
+    },
+    {
+      "name": "volume_fraction",
+      "unit": "1",
+      "meaning": "the fraction of the box the particles fill, above zero and below one"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "box_length",
+      "unit": "engine_length",
+      "meaning": "the side of the cubic box"
+    },
+    {
+      "name": "box_volume",
+      "unit": "engine_length^3",
+      "meaning": "the box's volume, particle_count times particle_volume over volume_fraction"
+    }
+  ],
+  "entry": {
+    "script": "scripts/estimate.py",
+    "function": "estimate"
+  },
+  "validity": "identical particles in a cubic box; the volume fraction above zero and below one",
+  "source": {
+    "citation": "a definition: the volume fraction; E. R. Cohen et al., Quantities, Units and Symbols in Physical Chemistry, IUPAC Green Book, 3rd ed. (RSC Publishing, 2007; 2nd printing 2008) (read 2026-11-17, https://iupac.org/wp-content/uploads/2019/05/IUPAC-GB3-2012-2ndPrinting-PDFsearchable.pdf; meta_agent/inbox/materials/20261117-iupac-green-book-2007)",
+    "locus": "Section 2.10, p. 48: phi_B = V_B / sum_i V_i; note 9 asks that the definition be spelled out in accurate work: here the particles' total volume over the box's volume, the box's volume including the space between the particles"
+  },
+  "cases": "cases.json",
+  "note": "v1 with the definition it rests on named where it is defined, found by search, and spelled out as the source asks; the code and the cases are v1's."
+}

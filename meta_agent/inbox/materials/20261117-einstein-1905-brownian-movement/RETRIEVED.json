@@ -1,0 +1,30 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human, though meta_agent/CLAUDE.md (8a43c43) now asks for one. Asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json; this file becomes a queued card when check 17 allows it.",
+  "kind": "paper",
+  "citation": "A. Einstein, On the movement of small particles suspended in stationary liquids required by the molecular-kinetic theory of heat, Ann. Phys. 17 (1905) 549; read in the English translation of A. D. Cowper, in Investigations on the Theory of the Brownian Movement, ed. R. Fürth (Dover, 1956)",
+  "location": {
+    "url": "https://archive.org/stream/brownian-motion-einstein/Brownian-Motion-Einstein_djvu.txt"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-17T22:54:26Z",
+    "content_hash": "sha256:473df9c0e15fdf417c3c2b1df7f6c64ac10fcd9688031b2384be8c37fc24123b",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261116-1",
+  "access": "anonymous, read-only, no login",
+  "how_found": "searched for the original paper of the mean squared displacement of a Brownian particle; the text is an OCR copy, its equation numbers not legible",
+  "licence": "not read for a licence; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "skills": [
+        "steps_for_diffusive_displacement@v2",
+        "timestep_max_from_diffusive_displacement@v2",
+        "diffusive_regime_from_msd@v2"
+      ],
+      "locus": "Sections 4 and 5: the mean displacement along one coordinate is the square root of 2Dt, for intervals long beside the time over which motions are independent"
+    }
+  ],
+  "state": "queued",
+  "registered": "the person's word, not given"
+}

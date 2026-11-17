@@ -1,0 +1,29 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human, though meta_agent/CLAUDE.md (8a43c43) now asks for one. Asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json; this file becomes a queued card when check 17 allows it.",
+  "kind": "manual",
+  "citation": "NIST/SEMATECH e-Handbook of Statistical Methods, Section 4.4.3.1 Least Squares",
+  "location": {
+    "url": "https://www.itl.nist.gov/div898/handbook/pmd/section4/pmd431.htm"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-17T22:54:31Z",
+    "content_hash": "sha256:04b75d2279eb3b48d2a65e5b8f5f0c9c2fd1f6ddd85e358c8ce5db696f982fa9",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261116-1",
+  "access": "anonymous, read-only, no login",
+  "how_found": "searched for a statistics handbook that gives the least-squares slope",
+  "licence": "not read for a licence; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "skills": [
+        "power_law_exponent_along_sweep@v2",
+        "diffusive_regime_from_msd@v2"
+      ],
+      "locus": "Section 4.4.3.1: the slope is the sum of (x - xbar)(y - ybar) over the sum of (x - xbar)^2, the intercept ybar minus the slope times xbar, and the residual standard deviation the root of the residual sum over n - p"
+    }
+  ],
+  "state": "queued",
+  "registered": "the person's word, not given"
+}

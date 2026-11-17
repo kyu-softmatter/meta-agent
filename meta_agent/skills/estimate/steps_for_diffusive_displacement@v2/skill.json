@@ -1,0 +1,63 @@
+{
+  "schema_version": "0.1",
+  "id": "steps_for_diffusive_displacement",
+  "version": 2,
+  "kind": "estimate",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the time and the number of steps a run needs for a particle of a given diffusivity to move a stated multiple of a size, by its mean squared displacement",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "diffusivity",
+      "unit": "engine_diffusivity",
+      "meaning": "the diffusivity of the slowest particle the run must follow"
+    },
+    {
+      "name": "size",
+      "unit": "engine_length",
+      "meaning": "the size the displacement is counted in, a particle's diameter for one"
+    },
+    {
+      "name": "multiple",
+      "unit": "1",
+      "meaning": "how many sizes the root mean squared displacement is to reach"
+    },
+    {
+      "name": "dimensions",
+      "unit": "count",
+      "meaning": "how many dimensions the particle moves in"
+    },
+    {
+      "name": "time_step",
+      "unit": "engine_time",
+      "meaning": "the run's time step"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "run_time",
+      "unit": "engine_time",
+      "meaning": "(multiple x size)^2 over 2 x dimensions x diffusivity"
+    },
+    {
+      "name": "steps",
+      "unit": "count",
+      "meaning": "the run time over the time step, rounded up"
+    }
+  ],
+  "entry": {
+    "script": "scripts/estimate.py",
+    "function": "estimate"
+  },
+  "validity": "normal diffusion at the lags the run reaches; the root mean squared displacement, which a single particle may fall short of or exceed",
+  "source": {
+    "citation": "F. A. Oliveira, R. M. S. Ferreira, L. C. Lapas, M. H. Vainstein, Anomalous Diffusion: A Basic Mechanism for the Evolution of Inhomogeneous Systems, Front. Phys. 7 (2019) 18, doi:10.3389/fphy.2019.00018 (a review, open access) (read 2026-11-17, https://www.frontiersin.org/articles/10.3389/fphy.2019.00018/pdf; meta_agent/inbox/materials/20261117-oliveira-2019-anomalous-diffusion); A. Einstein, On the movement of small particles suspended in stationary liquids required by the molecular-kinetic theory of heat, Ann. Phys. 17 (1905) 549; read in the English translation of A. D. Cowper, in Investigations on the Theory of the Brownian Movement, ed. R. Fürth (Dover, 1956) (read 2026-11-17, https://archive.org/stream/brownian-motion-einstein/Brownian-Motion-Einstein_djvu.txt; meta_agent/inbox/materials/20261117-einstein-1905-brownian-movement)",
+    "locus": "Sec. 1.1, Eq. (1): the mean square displacement is 2dDt, d the spatial dimension, after Einstein; Secs. 4 and 5: the root of the mean squared displacement along one coordinate is sqrt(2Dt), for intervals long beside the time over which motions are independent"
+  },
+  "note": "v1 with its source changed from an encyclopedia page to the review that states the relation in d dimensions and the original paper, found by search; the code and the cases are v1's. No value of the sources stands behind the worked cases: each is worked by hand in its worked field.",
+  "cases": "cases.json"
+}

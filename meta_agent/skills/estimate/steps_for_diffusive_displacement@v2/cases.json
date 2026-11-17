@@ -1,0 +1,32 @@
+[
+  {
+    "name": "a colloid in a Brownian dynamics engine",
+    "inputs": {
+      "diffusivity": 0.1,
+      "size": 1.0,
+      "multiple": 2.0,
+      "dimensions": 3,
+      "time_step": 0.001
+    },
+    "expect": {
+      "run_time": 6.666666666666666,
+      "steps": 6667
+    },
+    "worked": "(2 x 1)^2 = 4; 2 x 3 x 0.1 = 0.6; 4 / 0.6 = 6.6667; 6.6667 / 0.001 = 6666.7, rounded up 6667"
+  },
+  {
+    "name": "a tracer molecule in a molecular dynamics engine",
+    "inputs": {
+      "diffusivity": 0.05,
+      "size": 0.5,
+      "multiple": 10.0,
+      "dimensions": 3,
+      "time_step": 0.005
+    },
+    "expect": {
+      "run_time": 83.33333333333331,
+      "steps": 16667
+    },
+    "worked": "(10 x 0.5)^2 = 25; 2 x 3 x 0.05 = 0.3; 25 / 0.3 = 83.333; 83.333 / 0.005 = 16666.7, rounded up 16667"
+  }
+]

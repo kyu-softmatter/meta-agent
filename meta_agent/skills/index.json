@@ -443,6 +443,57 @@
       "side": "max"
     },
     {
+      "ref": "timestep_max_from_diffusive_displacement@v2",
+      "id": "timestep_max_from_diffusive_displacement",
+      "version": 2,
+      "kind": "bound",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the largest time step for which a particle's root mean squared displacement in one step stays a stated fraction of the smallest size",
+      "description": "The largest time step for which a particle's root mean squared displacement in one step stays a stated fraction of the smallest size in the system. Take it when time_step is a parameter of a stochastic run of diffusing particles, a colloid in a Brownian dynamics engine or a tracer molecule in a molecular dynamics engine alike.",
+      "applies_to": {
+        "parameters": [
+          "time_step"
+        ],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "fraction",
+          "unit": "1",
+          "meaning": "the largest root mean squared displacement in one step, as a fraction of the size"
+        },
+        {
+          "name": "size",
+          "unit": "engine_length",
+          "meaning": "the smallest size in the system, the smallest particle's diameter for one"
+        },
+        {
+          "name": "diffusivity",
+          "unit": "engine_diffusivity",
+          "meaning": "the largest diffusivity in the system, that of the smallest particle for one"
+        },
+        {
+          "name": "dimensions",
+          "unit": "count",
+          "meaning": "how many dimensions the particles move in"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "time_step_max",
+          "unit": "engine_time",
+          "meaning": "(fraction x size)^2 over 2 x dimensions x diffusivity"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "bound/timestep_max_from_diffusive_displacement@v2",
+      "sha256": "sha256:b280ef888343c2ef0389b98aec17ad68d0ebad0b9f0b1fd81b550473dfa8b51f",
+      "parameter": "time_step",
+      "side": "max"
+    },
+    {
       "ref": "timestep_max_from_relaxation_time@v1",
       "id": "timestep_max_from_relaxation_time",
       "version": 1,
@@ -875,6 +926,68 @@
       "sha256": "sha256:0766df181c85555cff2c2db912e27459987dbd59b326e1f9f03328fcbb639d36"
     },
     {
+      "ref": "diffusive_regime_from_msd@v2",
+      "id": "diffusive_regime_from_msd",
+      "version": 2,
+      "kind": "diagnostic",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "whether a mean squared displacement is in its diffusive regime, by the exponent of its power law over windows of consecutive lags against a tolerance it is handed, and from which lag on",
+      "description": "Whether a mean squared displacement is in its diffusive regime, where it grows in proportion to the lag, by the exponent fitted over windows of consecutive lags against a tolerance it is handed, and from which lag on it stays so. A particle in a simulation engine or a bead tracked under a microscope alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "lags",
+          "unit": "1",
+          "meaning": "the lag times, positive and rising, in one unit"
+        },
+        {
+          "name": "msd",
+          "unit": "1",
+          "meaning": "the mean squared displacement at each lag, positive, in one unit"
+        },
+        {
+          "name": "window",
+          "unit": "count",
+          "meaning": "how many consecutive lags each exponent is fitted over, two or more"
+        },
+        {
+          "name": "tolerance",
+          "unit": "1",
+          "meaning": "the largest distance of the exponent from one that counts as diffusive; null when none is chosen"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "diffusive | not_diffusive | undecided, over the last window"
+        },
+        {
+          "name": "exponent",
+          "unit": "1",
+          "meaning": "the exponent fitted over the last window"
+        },
+        {
+          "name": "diffusive_from",
+          "unit": "1",
+          "meaning": "the first lag of the earliest window from which every window is diffusive, in the lags' unit; null when none is, or without a tolerance"
+        },
+        {
+          "name": "windows",
+          "unit": "count",
+          "meaning": "how many windows were fitted"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "diagnostic/diffusive_regime_from_msd@v2",
+      "sha256": "sha256:3ca6fcc618d568eba22dcc0171e1ff6f48ff1beba0d35e69821b87c822fd6e88"
+    },
+    {
       "ref": "power_law_exponent_along_sweep@v1",
       "id": "power_law_exponent_along_sweep",
       "version": 1,
@@ -937,6 +1050,68 @@
       "sha256": "sha256:9a3bc5d8c6a75c20a88dd07640fb9d6d589333ecb94390dec481291cd7e3af5d"
     },
     {
+      "ref": "power_law_exponent_along_sweep@v2",
+      "id": "power_law_exponent_along_sweep",
+      "version": 2,
+      "kind": "diagnostic",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "whether a quantity changes along a sweep, by the exponent of a power law fitted to it and that exponent's standard error, against a tolerance and a multiple it is handed",
+      "description": "Whether a quantity changes along a sweep of another, by the exponent of a power law fitted through it and that exponent's standard error, judged against a tolerance and a multiple it is handed. Take it when a person asks whether something changes with size, with a setting or with time, a diffusivity along the particles' diameters or a peak's width along the integration time alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "sweep",
+          "unit": "1",
+          "meaning": "the values the sweep took, all positive, in one unit"
+        },
+        {
+          "name": "values",
+          "unit": "1",
+          "meaning": "the quantity at each value of the sweep, all positive, in one unit"
+        },
+        {
+          "name": "tolerance",
+          "unit": "1",
+          "meaning": "the largest size of the exponent that counts as not changing; null when none is chosen"
+        },
+        {
+          "name": "multiple",
+          "unit": "1",
+          "meaning": "how many standard errors the exponent must clear the tolerance by, on either side; null when none is chosen"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "changes | does_not_change | undecided"
+        },
+        {
+          "name": "exponent",
+          "unit": "1",
+          "meaning": "the least-squares slope of the logarithm of the values on the logarithm of the sweep; null below three points"
+        },
+        {
+          "name": "exponent_standard_error",
+          "unit": "1",
+          "meaning": "the slope's standard error, the residual sum over n - 2 over the sum of squared deviations, rooted; null below three points"
+        },
+        {
+          "name": "points",
+          "unit": "count",
+          "meaning": "how many points were fitted"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "diagnostic/power_law_exponent_along_sweep@v2",
+      "sha256": "sha256:954a2b74cb33f074f6394b02f8e228a696d3e89a4dc76775286bdf9503633ba6"
+    },
+    {
       "ref": "series_settled@v1",
       "id": "series_settled",
       "version": 1,
@@ -987,6 +1162,58 @@
       "uses_skills": [],
       "path": "diagnostic/series_settled@v1",
       "sha256": "sha256:4fa5e7f56cdb767dff1184b8edae641eb3b26aee4bf86edc0f3c34024769f315"
+    },
+    {
+      "ref": "series_settled@v2",
+      "id": "series_settled",
+      "version": 2,
+      "kind": "diagnostic",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "whether a series of readings has settled, by the change between the means of its last two windows",
+      "description": "Whether a series of readings has settled, by comparing the means of its last two windows against a relative tolerance it is handed. Any run or measurement that reports a quantity over time, an engine's acceptance ratio or an instrument's sample temperature alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "series",
+          "unit": "1",
+          "meaning": "the readings in the order they were taken, all in one unit"
+        },
+        {
+          "name": "window",
+          "unit": "count",
+          "meaning": "how many readings each mean takes"
+        },
+        {
+          "name": "tolerance",
+          "unit": "1",
+          "meaning": "the largest relative change of the mean between the last two windows that counts as settled; null when none is chosen"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "settled | not_settled | undecided"
+        },
+        {
+          "name": "last_mean",
+          "unit": "1",
+          "meaning": "the mean of the last window, in the readings' unit; null when there are fewer than two windows"
+        },
+        {
+          "name": "relative_change",
+          "unit": "1",
+          "meaning": "the change between the last two windows' means over the last mean; null when it cannot be computed"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "diagnostic/series_settled@v2",
+      "sha256": "sha256:abc1eb727cbf1af42e7419df793b1bc1cf4075d9330d2357481e9b2c8b11d190"
     },
     {
       "ref": "series_within_window@v1",
@@ -1041,6 +1268,58 @@
       "sha256": "sha256:634a549486b76930aa22f84b8aa0bdecdd7c1a1d996b1613b3d9bd7409f8071a"
     },
     {
+      "ref": "series_within_window@v2",
+      "id": "series_within_window",
+      "version": 2,
+      "kind": "diagnostic",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "whether the mean of a series' last readings lies inside a band, between a lowest and a highest value it is handed",
+      "description": "Whether the recent readings of a series lie inside a window, a lowest and a highest value it is handed, by the mean of its last readings. Any run or measurement that must keep a quantity in a band, an engine's acceptance ratio or an instrument's sample temperature alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "series",
+          "unit": "1",
+          "meaning": "the readings in the order they were taken, all in one unit"
+        },
+        {
+          "name": "window",
+          "unit": "count",
+          "meaning": "how many of the last readings the mean takes"
+        },
+        {
+          "name": "low",
+          "unit": "1",
+          "meaning": "the lowest value inside the band, in the readings' unit; null when none is chosen"
+        },
+        {
+          "name": "high",
+          "unit": "1",
+          "meaning": "the highest value inside the band, in the readings' unit; null when none is chosen"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "within | below | above | undecided"
+        },
+        {
+          "name": "last_mean",
+          "unit": "1",
+          "meaning": "the mean of the last window, in the readings' unit; null when there are fewer readings than the window"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "diagnostic/series_within_window@v2",
+      "sha256": "sha256:2d0c348aa6c684b605d87fca82929fdc9e01f6dec6e92e12741261135b8fb388"
+    },
+    {
       "ref": "box_length_for_volume_fraction@v1",
       "id": "box_length_for_volume_fraction",
       "version": 1,
@@ -1089,6 +1368,56 @@
       "uses_skills": [],
       "path": "estimate/box_length_for_volume_fraction@v1",
       "sha256": "sha256:753b7c0ae891d89da91adf15bfa2ee4d0671aafe08cbfbdff52e8d43821e54b3"
+    },
+    {
+      "ref": "box_length_for_volume_fraction@v2",
+      "id": "box_length_for_volume_fraction",
+      "version": 2,
+      "kind": "estimate",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the side of a cubic box for a number of particles of a given volume at a given volume fraction",
+      "description": "The side of a cubic box that holds a number of particles of a given volume at a given volume fraction. Any simulation set up by its volume fraction, whatever the particle's shape.",
+      "applies_to": {
+        "parameters": [
+          "box_length",
+          "box_volume"
+        ],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "particle_count",
+          "unit": "count",
+          "meaning": "how many particles the box holds"
+        },
+        {
+          "name": "particle_volume",
+          "unit": "engine_length^3",
+          "meaning": "the volume of one particle, in the engine's own units"
+        },
+        {
+          "name": "volume_fraction",
+          "unit": "1",
+          "meaning": "the fraction of the box the particles fill, above zero and below one"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "box_length",
+          "unit": "engine_length",
+          "meaning": "the side of the cubic box"
+        },
+        {
+          "name": "box_volume",
+          "unit": "engine_length^3",
+          "meaning": "the box's volume, particle_count times particle_volume over volume_fraction"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "estimate/box_length_for_volume_fraction@v2",
+      "sha256": "sha256:c2357b5879a7f381e766521ccddff5f1dd8ffc1a7966ba592a4592a4ec953552"
     },
     {
       "ref": "steps_for_diffusive_displacement@v1",
@@ -1146,6 +1475,63 @@
       "uses_skills": [],
       "path": "estimate/steps_for_diffusive_displacement@v1",
       "sha256": "sha256:f09fb01b0bb5a690014f51b36c8e337df6b2f6f41f500daff5f2658d3be24c0f"
+    },
+    {
+      "ref": "steps_for_diffusive_displacement@v2",
+      "id": "steps_for_diffusive_displacement",
+      "version": 2,
+      "kind": "estimate",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the time and the number of steps a run needs for a particle of a given diffusivity to move a stated multiple of a size, by its mean squared displacement",
+      "description": "The time, and the number of steps, a run needs for a particle of a given diffusivity to move a stated multiple of a size by its root mean squared displacement. Take it to choose how long a run must last for its slowest particle to sample its surroundings, a colloid in a Brownian dynamics engine or a tracer molecule in a molecular dynamics engine alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "diffusivity",
+          "unit": "engine_diffusivity",
+          "meaning": "the diffusivity of the slowest particle the run must follow"
+        },
+        {
+          "name": "size",
+          "unit": "engine_length",
+          "meaning": "the size the displacement is counted in, a particle's diameter for one"
+        },
+        {
+          "name": "multiple",
+          "unit": "1",
+          "meaning": "how many sizes the root mean squared displacement is to reach"
+        },
+        {
+          "name": "dimensions",
+          "unit": "count",
+          "meaning": "how many dimensions the particle moves in"
+        },
+        {
+          "name": "time_step",
+          "unit": "engine_time",
+          "meaning": "the run's time step"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "run_time",
+          "unit": "engine_time",
+          "meaning": "(multiple x size)^2 over 2 x dimensions x diffusivity"
+        },
+        {
+          "name": "steps",
+          "unit": "count",
+          "meaning": "the run time over the time step, rounded up"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "estimate/steps_for_diffusive_displacement@v2",
+      "sha256": "sha256:4b97a1aadf82a3a64f66d413ba9f8d0fbdf82dbe10904319082eaea9ea97a4d8"
     },
     {
       "ref": "bring_to_ready@v1",

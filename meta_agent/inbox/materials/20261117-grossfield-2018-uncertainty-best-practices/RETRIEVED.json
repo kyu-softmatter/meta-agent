@@ -1,0 +1,34 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human, though meta_agent/CLAUDE.md (8a43c43) now asks for one. Asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json; this file becomes a queued card when check 17 allows it.",
+  "kind": "paper",
+  "citation": "A. Grossfield, P. N. Patrone, D. R. Roe, A. J. Schultz, D. W. Siderius, D. M. Zuckerman, Best Practices for Quantification of Uncertainty and Sampling Quality in Molecular Simulations [Article v1.0], Living J. Comput. Mol. Sci. 1 (2019) 5067, doi:10.33011/livecoms.1.1.5067 (version dated January 3, 2019)",
+  "location": {
+    "url": "https://livecomsjournal.org/index.php/livecoms/article/download/v1i1e5067/913/2595"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-17T22:54:30Z",
+    "content_hash": "sha256:9e11c8c6908411ef7d67c9f93e4a7eab7de26c660400283c8a148fd2f75c61a9",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261116-1",
+  "access": "anonymous, read-only, no login",
+  "how_found": "searched for a review of uncertainty and equilibration in molecular simulation; read from the publisher's PDF, pages 9 to 16",
+  "licence": "not read for a licence; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "skills": [
+        "series_settled@v2"
+      ],
+      "locus": "Sec. 7.3.2, Eq. (13): a block average is the arithmetic mean of n sequential measurements; Sec. 5: observables estimated from the production region that depend sensitively on the choice of the equilibration time call for further sampling; Sec. 4.4: the overlap of independent estimates is a proxy for convergence"
+    },
+    {
+      "skills": [
+        "standard_error_of_independent_estimates@v1"
+      ],
+      "locus": "Sec. 1.2.1, Eqs. (6) and (8); Sec. 7.2: s(x)/sqrt(n) over n independent simulations; Sec. 7.3.2, Eq. (14): the standard uncertainty from M block averages"
+    }
+  ],
+  "state": "queued",
+  "registered": "the person's word, not given"
+}

@@ -1,0 +1,36 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human, though meta_agent/CLAUDE.md (8a43c43) now asks for one. Asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json; this file becomes a queued card when check 17 allows it.",
+  "kind": "paper",
+  "citation": "F. A. Oliveira, R. M. S. Ferreira, L. C. Lapas, M. H. Vainstein, Anomalous Diffusion: A Basic Mechanism for the Evolution of Inhomogeneous Systems, Front. Phys. 7 (2019) 18, doi:10.3389/fphy.2019.00018 (a review, open access)",
+  "location": {
+    "url": "https://www.frontiersin.org/articles/10.3389/fphy.2019.00018/pdf"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-17T22:55:46Z",
+    "content_hash": "sha256:f53a08af8cb28b641720aa7bb2db7d44eb52bca39342ca3bbc077c002048c641",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261116-1",
+  "access": "anonymous, read-only, no login",
+  "how_found": "searched for a review of anomalous diffusion that states the power law of the mean squared displacement, after the publisher page of Metzler et al. (2014) refused anonymous access",
+  "licence": "not read for a licence; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "skills": [
+        "steps_for_diffusive_displacement@v2",
+        "timestep_max_from_diffusive_displacement@v2",
+        "diffusive_regime_from_msd@v2"
+      ],
+      "locus": "Section 1.1, Eq. (1): the mean square displacement is 2dDt, d the spatial dimension (Einstein's relation); Section 1.2, Eqs. (3) and (15): its long-time limit"
+    },
+    {
+      "skills": [
+        "diffusive_regime_from_msd@v2"
+      ],
+      "locus": "Section 2.1, Eq. (18): at long times the mean square displacement goes as t^alpha, alpha not 1 being anomalous; alpha = 1 normal diffusion, below it subdiffusion, above it superdiffusion; Section 3.1: alpha = 2 ballistic"
+    }
+  ],
+  "state": "queued",
+  "registered": "the person's word, not given"
+}

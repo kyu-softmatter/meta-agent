@@ -1,0 +1,33 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human, though meta_agent/CLAUDE.md (8a43c43) now asks for one. Asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json; this file becomes a queued card when check 17 allows it.",
+  "kind": "manual",
+  "citation": "D. M. Lane et al., Online Statistics Education: A Multimedia Course of Study, Rice University, chapter Regression: Inferential Statistics for b and r; Standard Error of the Estimate (an open textbook)",
+  "location": {
+    "url": "https://onlinestatbook.com/2/regression/inferential.html"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-17T22:57:17Z",
+    "content_hash": "sha256:10bf5e0d660006f6b816b8f302213b805e8f589f337981d03f8654e3f026b88a",
+    "archived": null
+  },
+  "also_read": {
+    "url": "https://onlinestatbook.com/2/regression/accuracy.html",
+    "hash": "sha256:ed88fbce260027702e20c60057c7ced231b5214353adef8f95b28e6e40bc360c",
+    "at": "2026-11-17T22:57:17Z"
+  },
+  "retrieved_by": "meta-macbook-20261116-1",
+  "access": "anonymous, read-only, no login",
+  "how_found": "searched for a textbook that gives the standard error of a fitted slope, after the NIST handbook pages read gave the slope and the residual deviation but not the slope's standard error; the formulas are images on the page, viewed one by one",
+  "licence": "not read for a licence; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "skills": [
+        "power_law_exponent_along_sweep@v2"
+      ],
+      "locus": "Inferential Statistics for b and r: s_b = s_est / sqrt(SSX), SSX the sum of squared deviations of X from its mean, df = N - 2; Standard Error of the Estimate: for a sample s_est = sqrt(sum (Y - Y')^2 / (N - 2))"
+    }
+  ],
+  "state": "queued",
+  "registered": "the person's word, not given"
+}

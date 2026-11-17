@@ -1,0 +1,82 @@
+[
+  {
+    "name": "a particle in a simulation engine, ballistic at short lags and diffusive after",
+    "inputs": {
+      "lags": [
+        1.0,
+        2.0,
+        4.0,
+        8.0,
+        16.0,
+        32.0
+      ],
+      "msd": [
+        1.0,
+        4.0,
+        16.0,
+        32.0,
+        64.0,
+        128.0
+      ],
+      "window": 2,
+      "tolerance": 0.1
+    },
+    "expect": {
+      "state": "diffusive",
+      "exponent": 1.0,
+      "diffusive_from": 4.0,
+      "windows": 5
+    },
+    "worked": "each lag doubles; the msd quadruples twice (exponent log2 4 = 2) and then doubles three times (exponent log2 2 = 1); the windows from lag 4 on are all within 0.1 of one: diffusive, from 4, over 5 windows"
+  },
+  {
+    "name": "a bead in a gel tracked under a microscope, subdiffusive, in um^2 against s",
+    "inputs": {
+      "lags": [
+        0.1,
+        0.2,
+        0.4,
+        0.8
+      ],
+      "msd": [
+        0.01,
+        0.02,
+        0.04,
+        0.05656854249492381
+      ],
+      "window": 2,
+      "tolerance": 0.1
+    },
+    "expect": {
+      "state": "not_diffusive",
+      "exponent": 0.5000000000000001,
+      "diffusive_from": null,
+      "windows": 3
+    },
+    "worked": "the msd doubles twice (exponent 1) and then grows by the square root of two (exponent log2 1.41421 = 0.5); the last window is 0.5 from one: not_diffusive, and no window from which all after are diffusive"
+  },
+  {
+    "name": "no tolerance chosen",
+    "inputs": {
+      "lags": [
+        1.0,
+        2.0,
+        4.0
+      ],
+      "msd": [
+        2.0,
+        4.0,
+        8.0
+      ],
+      "window": 2,
+      "tolerance": null
+    },
+    "expect": {
+      "state": "undecided",
+      "exponent": 0.9999999999999999,
+      "diffusive_from": null,
+      "windows": 2
+    },
+    "worked": "exponent 1 in both windows; with no tolerance the state is undecided"
+  }
+]
