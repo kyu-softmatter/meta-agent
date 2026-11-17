@@ -25,7 +25,7 @@ It is deterministic: the same signature against the same store gives the same re
 
 ## Record
 
-- **A failure** is one line in `meta_agent/failures.jsonl`, append only.
+- **A failure** is one line in `meta_agent/failures.jsonl`, append only. A bundle session's line that says what it needed (an uncertainty, a criterion, a judgement) is a candidate skill of the next build: the task card names it, and `build-library-skill` says which kind it is.
 - **A case** (`contracts/schemas/case.schema.json`) carries its cue, its condition tags, what would falsify it, and its counts. Its cause is `observed`, `suspected` or `confirmed`; `confirmed` needs a run or a commit as evidence.
 - **Index the store** after adding a case: `python contracts/tools/cases.py index meta_agent/cases`.
 - **A case is re-ranked, never deleted.** A superseded one stays and names what replaced it.

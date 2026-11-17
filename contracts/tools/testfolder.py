@@ -483,6 +483,7 @@ def read_transcript(path):
         "calls": len(calls), "calls_by_tool": by_tool, "calls_in_error": sum(1 for c in calls if c["error"]),
         "skills_loaded": [c.get("skill") for c in calls if c["tool"] == "Skill" and c.get("skill")],
         "library_skills_run": library_skills_run(calls),
+        "asked_the_person": by_tool.get("AskUserQuestion", 0),
         "files_written": written,
         "written_outside": [p for p in written if cwd and not inside(p if os.path.isabs(p) else os.path.join(cwd, p), cwd)],
         "tokens": tokens, "tokens_read_as": "the last usage of each message id in the transcript, summed",
@@ -588,7 +589,31 @@ def bundle_changes(item, path, dest):
     changed = sorted(r for r in cur if r in made and cur[r] != made[r])
     left = _copy_into(path, added + changed, os.path.join(dest, "files"))
     return {"name": item["name"], "kind": "bundle", "added": added, "changed": changed, "removed": removed,
-            "not_copied": left, "digest_made": item["bundle_sha256"], "digest_now": tree_digest(cur)}
+            "not_copied": left, "needed": needed_lines(path) if "failures.jsonl" in added + changed else [],
+            "digest_made": item["bundle_sha256"], "digest_now": tree_digest(cur)}
+
+
+def needed_lines(bundle):
+    """What a bundle session wrote it needed, line by line of its failures.jsonl: where a missing skill shows
+    (the person, 2026-11-17). A line names it under `needed`, at its top or in its `detail`."""
+    out = []
+    try:
+        with open(os.path.join(bundle, "failures.jsonl"), "r", encoding="utf-8") as f:
+            lines = f.read().splitlines()
+    except OSError:
+        return out
+    for line in lines:
+        try:
+            d = json.loads(line)
+        except ValueError:
+            continue
+        if not isinstance(d, dict):
+            continue
+        detail = d.get("detail") if isinstance(d.get("detail"), dict) else {}
+        need = d.get("needed", detail.get("needed"))
+        if isinstance(need, (str, list)) and need:
+            out.append(need if isinstance(need, str) else "; ".join(str(x) for x in need))
+    return out
 
 
 def clone_changes(item, path, dest, gate=True):
@@ -657,15 +682,17 @@ def report_collection(run, dest, sessions, items):
               "folder (what a shell command wrote is under the item)"
               % (s["item"], s["session"][:8], "/".join(s["models"]) or "-", "/".join(s["efforts"]) or "?", s["calls"],
                  s["calls_in_error"], ", ".join(s["skills_loaded"]) or "none", len(s["files_written"]), len(s["written_outside"])))
-        if s.get("item") != "repo":
-            ran = s.get("library_skills_run") or {}
-            print("  %s  %s  library skills run: %s" % (s["item"], s["session"][:8],
-                                                       ", ".join("%s x%d" % kv for kv in sorted(ran.items())) or "none"))
+        ran = s.get("library_skills_run") or {}
+        print("  %s  %s  library skills run: %s; asked the person %d time(s)"
+              % (s["item"], s["session"][:8], ", ".join("%s x%d" % kv for kv in sorted(ran.items())) or "none",
+                 s.get("asked_the_person", 0)))
     for it in items:
         if it.get("gone"):
             print("%-11s %s  its folder is gone; transcripts only" % (it["name"], it["kind"]))
         elif it["kind"] == "bundle":
             print("%-11s bundle  %d added, %d changed, %d removed" % (it["name"], len(it["added"]), len(it["changed"]), len(it["removed"])))
+            for need in it.get("needed") or []:
+                print("%-11s         needed: %s" % ("", need[:160]))
             for d, n in sorted(it.get("not_copied", {}).items()):
                 print("%-11s         %s: %d file(s) of an environment or a cache, listed and not copied" % ("", d, n))
         else:

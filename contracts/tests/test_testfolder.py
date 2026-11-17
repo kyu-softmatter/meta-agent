@@ -219,6 +219,9 @@ class TestFolder(unittest.TestCase):
         put(path, "bundles/balance-0001/runs/env/conda-meta/history", "made by an install\n")    # an environment
         put(path, "bundles/balance-0001/runs/env/lib/a.py", "\n")
         put(path, "bundles/balance-0001/runs/pip_cache_dir/wheel", "\n")                         # a cache by its name
+        put(path, "bundles/balance-0001/failures.jsonl",
+            '{"kind": "deviation", "needed": "an uncertainty of each measured coefficient"}\n'
+            '{"kind": "deviation", "detail": {"needed": ["a criterion", "a window"]}}\n{"kind": "deviation"}\n')
         put(path, "bundles/balance-0001/CLAUDE.md", "# balance, edited\n")
         os.remove(os.path.join(path, "bundles", "balance-0001", "envelope", "safety.json"))
         put(path, "repo/meta_agent/failures.jsonl", "{}\n")
@@ -229,10 +232,11 @@ class TestFolder(unittest.TestCase):
         col = tf.read_json(os.path.join(self.collection(run), "collection.json"))
         items = {it["name"]: it for it in col["items"]}
         b = items["balance-0001"]
-        added = (["runs/env/conda-meta/history", "runs/env/lib/a.py"] + (["runs/libgomp.dylib"] if sys.platform != "win32" else [])
+        added = (["failures.jsonl", "runs/env/conda-meta/history", "runs/env/lib/a.py"] + (["runs/libgomp.dylib"] if sys.platform != "win32" else [])
                  + ["runs/out.json", "runs/pip_cache_dir/wheel"])
         self.assertEqual((b["added"], b["changed"], b["removed"]), (added, ["CLAUDE.md"], ["envelope/safety.json"]))
         self.assertEqual(b["not_copied"], {"runs/env": 2, "runs/pip_cache_dir": 1})
+        self.assertEqual(b["needed"], ["an uncertainty of each measured coefficient", "a criterion; a window"])
         self.assertFalse(os.path.exists(os.path.join(self.collection(run), "items", "balance-0001", "files", "runs", "env")))
         self.assertNotEqual(b["digest_now"], b["digest_made"])
         self.assertTrue(os.path.isfile(os.path.join(self.collection(run), "items", "balance-0001", "files", "runs", "out.json")))
