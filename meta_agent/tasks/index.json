@@ -208,6 +208,18 @@
       ],
       "opened": "2026-11-12",
       "design_part": "landed"
+    },
+    {
+      "id": "016",
+      "file": "016-tests-in-a-folder-that-may-be-removed.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-16",
+      "design_part": "open"
     }
   ]
 }
