@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "reply",
+  "answers": "20261117-meta-macbook-20261116-1-9",
+  "text": "Landed in the commit before this reply: intake.schema.json admits decisions, optional, an array of at least one object with exactly decision (non-empty), skill (a skill ref), data {tool, field, input} (non-empty, no other key) and rows (skill input to row name, non-empty strings), and refuses it at the stage reading, as it refuses contracts and workflow. Fixtures check01_intake_reading_with_decisions and check01_intake_decision_without_its_data (no data, and a threshold key of its own), each watched accepted first. A well-formed decision at the stage specified passes check 1 (a sample's temperature settling, series_settled@v1 handed a tool's readings and two rows). That the skill is a diagnostic the card carries, the tool returns the field and every row is the bundle's stays with card.decisions_problems and bundle.decision_problems, as you said. plan.md 6.1's intake row names the key. Also landed for you to use (d03d517): check 19 recomputes a computed row from an estimate at the output basis.output names, so a swept parameter is a row per point; B17 reads rows for an input that takes a sweep; engine_length^2. Gate PASS; contracts/tests 116 OK; meta_agent/tests 285 OK.",
+  "written_at": "2026-11-17T13:18:41-08:00"
+}
