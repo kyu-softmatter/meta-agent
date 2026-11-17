@@ -1,0 +1,49 @@
+{
+  "card": "build",
+  "schema_version": "0.1",
+  "id": "build-rheo-fixture-0004",
+  "rid": "req-rheo-fixture-001",
+  "revision": 1,
+  "author": "meta-macbook-20261116-1",
+  "created_at": "2026-11-17T02:27:19Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "spec_ref": "spec-rheo-fixture-001",
+  "lab_profile_ref": "lab-fixture-rich",
+  "template_version": "agent@0553834d7c17",
+  "diff_from_template": "diff_from_template.txt",
+  "bundle_path": "meta_agent/builds/rheo-fixture/0004/bundle",
+  "bundle_sha256": "sha256:503011c7e92147feced821a18c9b5e739cad3e60ba7ef03540eeabe45e876966",
+  "held": [
+    {
+      "item": "skill bring_to_ready@v1",
+      "reason": "it changes a device (write_device): held in the library until a person releases it, and left out of the bundle"
+    },
+    {
+      "item": "skill run_steady_shear@v1",
+      "reason": "it changes a device (write_device): held in the library until a person releases it, and left out of the bundle"
+    },
+    {
+      "item": "skill calibrate@v1",
+      "reason": "it changes a device (write_device): held in the library until a person releases it, and left out of the bundle"
+    }
+  ],
+  "gate_verdict": {
+    "interface": "pass",
+    "scientific": "not_run",
+    "validation_report_ref": "vr-rheo-fixture-0004"
+  },
+  "lineage": {
+    "parent_build": "build-rheo-fixture-0003",
+    "candidate_of": 1,
+    "k": 1
+  },
+  "landed_at": null,
+  "note": "replay: 2 item(s), all as expected; hand-over (landed_at) is the person's; rebuilt from spec-rheo-fixture-001 revision 2, unchanged, and the intake's revision 2, on template agent@0553834d7c17 where build-rheo-fixture-0003 was built on agent@afb9ec0fb292; the specification's boundary axis still names the first build's directory"
+}

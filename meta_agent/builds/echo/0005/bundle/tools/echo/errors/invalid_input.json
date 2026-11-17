@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "ECHO-INPUT-001",
+  "category": "invalid_input",
+  "message": "message is missing, not a string, or empty",
+  "retryable": false,
+  "remediation": {
+    "action": "send a JSON object with a non-empty string field message"
+  }
+}

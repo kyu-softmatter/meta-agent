@@ -1,0 +1,15 @@
+{
+  "id": "if-3",
+  "name": "a missing message returns the documented error",
+  "call": {
+    "tool": "echo",
+    "input": {}
+  },
+  "expected": {
+    "error": {
+      "category": "invalid_input",
+      "code": "ECHO-INPUT-001"
+    }
+  },
+  "expected_verdict": "pass"
+}

@@ -1,0 +1,40 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "open_session",
+  "description": "open a session to the instrument at an address; the mock adapter in this bundle stands in for the instrument",
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "address": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required": [
+      "address"
+    ]
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "session": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "session"
+    ]
+  },
+  "errors": [
+    "invalid_input",
+    "unavailable"
+  ],
+  "side_effects": "reads_instrument",
+  "safety_gate": {
+    "required": false,
+    "place": "the tool reads the instrument and changes nothing; src/gate.py is consulted by the runner and finds no gate required"
+  },
+  "idempotent": true,
+  "timeout_s": null
+}

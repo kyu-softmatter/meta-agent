@@ -1,0 +1,17 @@
+{
+  "id": "if-2",
+  "name": "an address that does not answer returns the documented error, not a crash",
+  "call": {
+    "tool": "open_session",
+    "input": {
+      "address": "mock:rheo-9"
+    }
+  },
+  "expected": {
+    "error": {
+      "category": "unavailable",
+      "code": "RHEO-UNAVAILABLE-001"
+    }
+  },
+  "expected_verdict": "pass"
+}
