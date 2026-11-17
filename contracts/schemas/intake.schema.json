@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://meta-agent.invalid/schemas/intake.schema.json",
   "title": "intake",
-  "description": "The first card of a request (plan.md 5.1 S1 and S2, 14-39): the person's words as they were given, the reading taken, the tool as its documentation was read, what only the person can answer, and, once it is specified, what the Designer reads to write every later card. It has two stages. `reading`: the request is understood and waits, for the person's answers or for the contracts and tasks to be written; the Designer is not run on it. `specified`: it carries the tool contracts, the tasks and the replay items, and the Designer is run on it. A request that waits for the person is this card and not a file no check reads. The model makes no numbers: numbers is empty, and a value read from a source is a row of values_read with the place it was read.",
+  "description": "The first card of a request (plan.md 5.1 S1 and S2, 14-39): the person's words as they were given, the reading taken, the tool as its documentation was read, what only the person can answer, and, once it is specified, what the Designer reads to write every later card. It has two stages. `reading`: the request is understood and waits, for the person's answers or for the contracts and tasks to be written; the Designer is not run on it. `specified`: it carries the tool contracts, the tasks and the replay items, and the Designer is run on it. A request that waits for the person is this card and not a file no check reads. The model makes no numbers: numbers is empty, and a value read from a source is a row of values_read with the place it was read. The paragraph, the science task, the destination and the lists a goal is made from carry no bare number, as the goal does not; the stage that writes the card refuses one.",
   "type": "object",
   "properties": {
     "card": {
@@ -295,6 +295,10 @@
           },
           "limitations": {
             "type": "string"
+          },
+          "gap_reason": {
+            "type": "string",
+            "description": "for a claim of kind unknown: why it is a gap (no_material when nothing was given to read)"
           }
         },
         "additionalProperties": false,
