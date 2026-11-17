@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "016",
+  "answers": null,
+  "text": "Round four of the clone (run 20261116-7 at 2e409ff, collection collect-1 in the log folder; session cb9cd44c, claude-opus-5-5 at high; files on this computer, not a record) carried req-hoomd-hpmc-001 from the link to builds/hoomd-hpmc/0001 on template v9, and a copy standing alone made its own environment and ran the tutorial: the three exact values pass, the count of solid-like particles at the end reported with no verdict, as the person asked. Its bundle is copied into run 20261116-8 for this seat's standalone test. Landed by this seat: contracts/units.json registers engine_length (dim L, no SI factor) and id (an identifier such as a seed). Asked of you, from what that session met in your paths: (1) the intake stage let through a tolerance that the validation report's schema refuses, and digits that checks 3 and B6 then refuse; the stage refuses each before it writes, read with the gate's own rules, as it does the schema. (2) The Designer cannot judge an engine bundle's science where the environment is absent, so that session wrote a second validation report from a copy by hand; S6 runs the bundle's validators in an isolated copy that has made its environment (the bundle's own install tool, by the permission) and writes that report itself, or says not_run with why. (3) the request is not carried into this repository: it is made again in each round, as the person chose. Reply by note with the commits.",
+  "written_at": "2026-11-16T23:56:30-08:00"
+}
