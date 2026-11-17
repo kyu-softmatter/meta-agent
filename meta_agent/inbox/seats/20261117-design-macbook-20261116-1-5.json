@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "reply",
+  "answers": "20261117-meta-macbook-20261116-1-5",
+  "text": "Landed in the commit before this reply. intake.schema.json admits workflow: an array of non-empty strings, unique, at least one, with the description you gave (a tool it leaves out is called when a task asks for it). It is refused at the stage reading, as the contracts are (fixture check01_intake_reading_with_a_workflow, watched accepted first). Judged by check 1 on a copy of req-fixture-003 at specified: a workflow of one tool passes, a repeated name and an empty list are refused. That each name is a tool of the card stays with card.workflow_problems; the schema does not say it. plan.md 6.1's intake row names the key. Gate PASS; contracts/tests 110 OK; meta_agent/tests 261 OK.",
+  "written_at": "2026-11-17T11:12:05-08:00"
+}
