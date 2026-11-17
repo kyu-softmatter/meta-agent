@@ -4,4 +4,17 @@ https://hoomd-blue.readthedocs.io/en/latest/tutorial/00-Introducing-HOOMD-blue/0
 
 이것을 자동화 하고싶어
 
-Report when you stop: what you did, what the gate printed, what is open, and what you ran on.
+I have already answered these, in an earlier session, and they are recorded in `docs/ideas/20261116.md`; do not ask them again:
+
+- The lab's policy questions are answered and the profile `lab-kyu-softmatter` carries them.
+- Your reading is right if it is this: an agent that carries out the tutorial's workflow on HOOMD-blue without a person stepping through the notebooks, the tutorial's hard octahedra first.
+- A built agent may start the engine on this computer, in a separate environment made for the agent, with its packages pinned there.
+- The tutorial is the material I mean. It is registered, it may be quoted, and adapters may follow its code with its copyright notice kept.
+- freud and pictures are both wanted, so both become dependencies; read the render cells in the hoomd-examples repository first.
+- The tolerance of the scientific checks: exact for the same seed. A run with the tutorial's seed must print the tutorial's numbers; anything else fails.
+- You may fetch and read, anonymously and read-only, each as a material card: the render cells in the hoomd-examples notebooks, the freud documentation of the solid-like analysis, and the HOOMD-blue reference pages of the classes the tutorial uses.
+- The phase data of hard octahedra stays a gap; use the tutorial's own target.
+
+Not decided, and not to wait for: where the bundle lands, whether an interface is wanted, and which documentation version the agent follows. Leave each undecided on the card it belongs to and carry on.
+
+Carry the request through as far as it goes without me. Report when you stop: what you did, what the gate printed, what is open, and what you ran on.
