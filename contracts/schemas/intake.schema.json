@@ -531,7 +531,16 @@
     "scientific_tasks": {
       "type": "array",
       "items": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "reference": {
+            "$ref": "validation_report.schema.json#/properties/scientific/properties/tasks/items/properties/reference"
+          },
+          "tolerance": {
+            "$ref": "validation_report.schema.json#/properties/scientific/properties/tasks/items/properties/tolerance"
+          }
+        },
+        "description": "a scientific task carries its reference and its tolerance as the validation report the Designer writes from it will judge them"
       }
     },
     "replay_items": {
