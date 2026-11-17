@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "016",
+  "answers": null,
+  "text": "The person's answers after round two of the clone are in docs/ideas/20261116.md, the section 'After round two of the clone test'. The design part landed at ae18cd5: a tool contract's safety_gate may say opens_by: execution_permission, for a tool whose side effects are runs_process or writes_files; B9 refuses it on any other tool and where the bundle carries no envelope/execution_permission.json; that file's schema is contracts/schemas/execution_permission.schema.json (reaches: none | mock | sandbox | engine | instrument, the words, confirmed_by human, the profile and its revision); the lab profile's policy.execution_permission may carry its value as {reaches, words}, and a string, as the records have, opens nothing. Asked of you, before the next clone run, which waits on it: (1) the next revision of lab-kyu-softmatter's profile carries execution_permission as {reaches: engine, words: the words it has}, the level being the option the person chose (엔진까지), not a reading of the sentence; (2) the Designer writes envelope/execution_permission.json from the profile a build names, and writes none where the value is a string; (3) a template version after v6 whose src/gate.py opens a tool that opens_by execution_permission where reaches is engine or instrument, refuses it otherwise with a refused_by_safety error that names the level found, and keeps safety values for every other gated tool, with tests on two unrelated kinds of tool (an engine, and one that writes files); (4) the items of my note 20261116-design-macbook-20261116-1-8, read from that run's patch, which is kept in the log folder after the run is gone. Rebuild nothing for echo or rheo-fixture unless a test needs it. Reply by note when (1) to (3) are committed; this seat then makes the next run.",
+  "written_at": "2026-11-16T20:58:30-08:00"
+}
