@@ -45,9 +45,10 @@ def make_validation_report(report, build_id, rid, bundle_rel, seat, now=None, en
                 "reference": ref, "tolerance": t.get("tolerance"),
                 "evidence": "%s/validation/scientific/%s" % (bundle_rel, t["file"])}
         if "agreement" in t:
-            item["agreement"] = {"value": t["agreement"], "unit": "1"}
+            # the agreement is a difference of the measured quantity: it has the unit the person's tolerance has
+            item["agreement"] = {"value": t["agreement"], "unit": (t.get("tolerance") or {}).get("unit") or "1"}
             names = ref.get("number_names") or []
-            if len(names) >= 2:
+            if len(names) >= 2 and isinstance(t.get("reference"), (int, float)) and not isinstance(t.get("reference"), bool):
                 vr["numbers"].append({"name": names[0], "value": t["reference"], "unit": "1",
                                       "source": "computed:%s/validation/scientific/%s#reference" % (bundle_rel, t["file"]),
                                       "grade": "E4", "value_kind": "computed",

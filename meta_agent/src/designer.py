@@ -347,7 +347,11 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
     # S6 validate -> the bundle's own gates, read off a fresh process; validation_report
     build_id_full = "build-%s-%s" % (agent, build_id)
     report = gate_mod.run_bundle(bundle_path)
-    vr, iface_v, sci_v = gate_mod.make_validation_report(report, build_id_full, rid, bundle_rel, seat, created)
+    # where the gates ran: an adapter of a tool whose contract names an external program calls that program,
+    # so the gates of a bundle with such a tool ran in a sandbox; every other adapter here is a mock
+    environment = "sandbox" if any(c.get("calls_external") for c in contracts) else "mock"
+    vr, iface_v, sci_v = gate_mod.make_validation_report(report, build_id_full, rid, bundle_rel, seat, created,
+                                                         environment=environment)
     put(os.path.join(build_dir, "validation_report.json"), vr)
     build = bundle_mod.make_build_card(build_id_full, rid, spec, goal["lab_profile_ref"], template_name,
                                        "diff_from_template.txt", bundle_rel, sha, seat, created, parent_build=parent_build)
@@ -478,6 +482,7 @@ def respecify(req_dir, seat, now=None, root=ROOT):
                                          loaded["spec_a1.json"]["content"]["directory"],
                                          contracts if intake.get("tools") else contracts[0],
                                          intake["interface_tasks"], intake["scientific_tasks"], seat, created,
+                                         parameter_rows=intake.get("parameter_rows"), safety_rows=intake.get("safety_rows"),
                                          case_recall=case_recall, skills=skill_rows, subagents=subagents)
     written, names = [], {}
     for a in axes:
@@ -560,6 +565,7 @@ def run(intake, seat, build_id="0001", now=None, root=ROOT, intake_path=None):
     axes, syn, spec = axes_mod.make_axes(goal2, profile, brief, goal["lab_profile_ref"], bundle_rel,
                                          contracts if intake.get("tools") else contracts[0],
                                          intake["interface_tasks"], intake["scientific_tasks"], seat, created,
+                                         parameter_rows=intake.get("parameter_rows"), safety_rows=intake.get("safety_rows"),
                                          case_recall=case_recall, skills=skill_rows, subagents=subagents)
     for a in axes:
         put(os.path.join(req_dir, "spec_%s.json" % a["axis"].lower()), a)

@@ -171,6 +171,52 @@ class EchoRequest(unittest.TestCase):
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
 
+    def test_the_rows_an_intake_names_reach_the_axes_and_the_report_says_where_the_gates_ran(self):
+        """Test run 20261116-4: the Designer handed neither the parameter rows nor the safety rows of an intake to
+        the A4 and A5 axes, so a tool that needs the gate was held for want of a safety row the intake had named."""
+        gated = copy.deepcopy(self.intake)
+        gated["tool_contract"].update(side_effects="runs_process", errors=["invalid_input", "refused_by_safety"],
+                                      safety_gate={"required": True, "place": "src/gate.py reads envelope/safety.json before the call"})
+        gated["safety_rows"] = [{"name": "longest_message", "unit": "count"}]
+        gated["parameter_rows"] = [{"name": "message_length", "value": None, "unit": "count"}]
+        for item in gated["interface_tasks"] + gated["replay_items"]:
+            item["expected"] = {"error": {"category": "refused_by_safety", "code": "GATE-SAFETY-001"}}
+        tmp, root = scratch_root()
+        try:
+            out = designer.run(gated, SEAT, "0001", NOW, root)
+            req = os.path.join(root, "requests", "req-echo-001")
+            self.assertEqual(cards.load_json(os.path.join(req, "spec_a5.json"))["content"]["rows"], gated["safety_rows"])
+            self.assertEqual(cards.load_json(os.path.join(req, "spec_a4.json"))["content"]["rows"], gated["parameter_rows"])
+            self.assertEqual(out["held"], [])          # a safety row is named, so nothing is held for want of one
+            bundle = os.path.join(root, "builds", "echo", "0001", "bundle")
+            self.assertEqual(cards.load_json(os.path.join(bundle, "envelope", "safety.json")), {"longest_message": None})
+            self.assertEqual(out["gates"]["interface"], "pass")     # the refusal the tasks expect is the refusal they got
+            report = cards.load_json(os.path.join(root, "builds", "echo", "0001", "validation_report.json"))
+            self.assertEqual(report["environment"], "mock")         # no contract names an external program
+            # the same request specified again from the same intake keeps the rows: nothing differs
+            cards.write_json(os.path.join(req, "intake.json"), gated)
+            self.assertEqual(designer.respecify(req, SEAT, NOW, root), [])
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+        without = copy.deepcopy(gated)
+        del without["safety_rows"]
+        tmp, root = scratch_root()
+        try:
+            out = designer.run(without, SEAT, "0001", NOW, root)
+            self.assertEqual(len(out["held"]), 1)      # as before: a gate with no safety row named is held
+            self.assertIn("no safety row is named", str(out["held"][0]))
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+        external = copy.deepcopy(self.intake)
+        external["tool_contract"]["calls_external"] = {"program": "echo", "license": "none stated", "bundled": False}
+        tmp, root = scratch_root()
+        try:
+            designer.run(external, SEAT, "0001", NOW, root)
+            report = cards.load_json(os.path.join(root, "builds", "echo", "0001", "validation_report.json"))
+            self.assertEqual(report["environment"], "sandbox")
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
     def test_validator_accepts_the_scratch_tree(self):
         p = subprocess.run([sys.executable, VALIDATE, self.tmp, "--strict"], capture_output=True, text=True,
                            env=dict(os.environ, PYTHONUTF8="1"))
