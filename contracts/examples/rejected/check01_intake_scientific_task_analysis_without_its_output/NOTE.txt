@@ -1,0 +1,1 @@
+A scientific task measured by a skill run on its tool's output that does not say which of the skill's outputs is judged: a task's analysis names the skill, the tool's field handed to which input, the rows of its other inputs and the output the reference judges (tasks/016, run 20261117-3).

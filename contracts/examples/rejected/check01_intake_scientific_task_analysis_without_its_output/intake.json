@@ -1,0 +1,155 @@
+{
+ "card": "intake",
+ "schema_version": "0.1",
+ "id": "intake-fixture-003",
+ "rid": "req-fixture-003",
+ "revision": 1,
+ "author": "meta-office-20261029-1",
+ "created_at": "2026-11-16T18:00:00Z",
+ "numbers": [],
+ "assumptions": [],
+ "degraded": [],
+ "status": "draft",
+ "stage": "specified",
+ "agent_name": "echo",
+ "requested_by": "human",
+ "request_source": "a conversation with the person, who gave one link and one sentence",
+ "persons_words": {
+  "verbatim": "An agent that returns what it is given, to try the pipeline on.",
+  "date": "2026-10-29"
+ },
+ "paragraph": "an agent with one mock tool that returns the text it is given and its length, so that a bundle can be built and judged end to end",
+ "science_task": "none; the request exercises the interface",
+ "tool": {
+  "name": "echo",
+  "kind": "analysis_software",
+  "registry_id": null,
+  "material_refs": [],
+  "adapter_source": "tools/echo/adapter.py"
+ },
+ "methods": [],
+ "executes": "analysis",
+ "must_not": [
+  "reach a network",
+  "invent a number"
+ ],
+ "knowledge_needs": [],
+ "parameter_scope": [],
+ "destination": "a fixture; nowhere",
+ "priorities": [
+  "scientific validity",
+  "reproducibility",
+  "small bundle"
+ ],
+ "lab_profile_ref": "lab-fixture-01",
+ "gui_choice": "none",
+ "analysis_permission": null,
+ "tool_reading": [
+  {
+   "claim": "the tool returns its input text and the text's length",
+   "kind": "observed",
+   "basis": "source",
+   "loci": [
+    "tools/echo/adapter.py"
+   ]
+  }
+ ],
+ "questions_for_the_person": [],
+ "tool_contract": {
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "echo",
+  "description": "return the given text and its character count; the mock adapter in this bundle stands in for the command",
+  "inputs": {
+   "type": "object",
+   "properties": {
+    "message": {
+     "type": "string",
+     "minLength": 1
+    }
+   },
+   "required": [
+    "message"
+   ]
+  },
+  "outputs": {
+   "type": "object",
+   "properties": {
+    "message": {
+     "type": "string"
+    },
+    "length": {
+     "type": "integer",
+     "minimum": 0
+    }
+   },
+   "required": [
+    "message",
+    "length"
+   ]
+  },
+  "errors": [
+   "invalid_input"
+  ],
+  "side_effects": "none",
+  "safety_gate": {
+   "required": false,
+   "place": "no side effects; src/gate.py is consulted by the runner and finds no gate required"
+  },
+  "idempotent": true,
+  "timeout_s": null
+ },
+ "error_contracts": [
+  {
+   "artifact": "error_contract",
+   "schema_version": "0.1",
+   "code": "ECHO-INPUT-001",
+   "category": "invalid_input",
+   "message": "message is missing, not a string, or empty",
+   "retryable": false,
+   "remediation": {
+    "action": "send a JSON object with a non-empty string field message"
+   }
+  }
+ ],
+ "interface_tasks": [
+  {
+   "id": "if-1",
+   "name": "a text comes back",
+   "expected_verdict": "pass"
+  }
+ ],
+ "scientific_tasks": [
+  {
+   "id": "sci-1",
+   "name": "the length of the text the tool returns, against the text's own length",
+   "call": {
+    "tool": "echo",
+    "input": {
+     "message": "abc"
+    }
+   },
+   "analysis": {
+    "skill": "text_length@v1",
+    "data": {
+     "field": "echo",
+     "input": "text"
+    },
+    "rows": {}
+   },
+   "reference": {
+    "kind": "analytic",
+    "ref": "the number of characters of abc"
+   },
+   "tolerance": null,
+   "expected_verdict": "undecided"
+  }
+ ],
+ "replay_items": [
+  {
+   "id": "rp-1",
+   "name": "the same call again",
+   "expected_verdict": "pass"
+  }
+ ]
+}

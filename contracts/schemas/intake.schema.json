@@ -538,6 +538,52 @@
           },
           "tolerance": {
             "$ref": "validation_report.schema.json#/properties/scientific/properties/tasks/items/properties/tolerance"
+          },
+          "analysis": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "skill",
+              "data",
+              "rows",
+              "output"
+            ],
+            "description": "when the measured quantity is a library skill's output on the task's tool output: the skill, which field of the tool's output is handed to which input, the rows that hand its other inputs, and the output the reference judges (2026-11-17)",
+            "properties": {
+              "skill": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+              },
+              "data": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "field",
+                  "input"
+                ],
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "input": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "rows": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "output": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
           }
         },
         "description": "a scientific task carries its reference and its tolerance as the validation report the Designer writes from it will judge them"
