@@ -308,10 +308,26 @@ def problems(card, req_dir=None):
     out += adapter_problems(card, req_dir)
     out += workflow_problems(card)
     out += row_problems(card, req_dir)
+    out += decisions_problems(card, req_dir)
     for item, phrase in held_named(card.get("science_task"), card.get("held")):
         out.append("science_task: it names %s, which held[] holds (%s); a science task names what the bundle computes: "
                    "narrow it in this revision, or a person releases the item" % (phrase, item))
     return out
+
+
+def decisions_problems(card, req_dir=None, library=None):
+    """The decisions a card names, judged as the build judges them (bundle.decision_problems): each a diagnostic skill
+    of the card's skills, on a field one of its tools returns, every criterion handed by a row the bundle will carry."""
+    if not card.get("decisions"):
+        return []
+    from ..skills import catalogue as catalogue_mod
+    try:
+        rows = catalogue_mod.take(card.get("skills") or [], *([library] if library else []))
+    except ValueError as e:
+        return ["decisions: %s" % e]
+    _, params = rows_given(card, req_dir)
+    return bundle_mod.decision_problems(card["decisions"], contracts_of(card), rows,
+                                        {r.get("name") for r in params if isinstance(r, dict)})
 
 
 LEADING = ("the", "a", "an", "its", "their", "other", "all", "any")

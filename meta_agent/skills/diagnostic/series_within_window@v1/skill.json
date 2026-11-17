@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1",
+  "id": "series_within_window",
+  "version": 1,
+  "kind": "diagnostic",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "whether the mean of a series' last readings lies inside a band, between a lowest and a highest value it is handed",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "series",
+      "unit": "1",
+      "meaning": "the readings in the order they were taken, all in one unit"
+    },
+    {
+      "name": "window",
+      "unit": "count",
+      "meaning": "how many of the last readings the mean takes"
+    },
+    {
+      "name": "low",
+      "unit": "1",
+      "meaning": "the lowest value inside the band, in the readings' unit; null when none is chosen"
+    },
+    {
+      "name": "high",
+      "unit": "1",
+      "meaning": "the highest value inside the band, in the readings' unit; null when none is chosen"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "state",
+      "unit": "1",
+      "meaning": "within | below | above | undecided"
+    },
+    {
+      "name": "last_mean",
+      "unit": "1",
+      "meaning": "the mean of the last window, in the readings' unit; null when there are fewer readings than the window"
+    }
+  ],
+  "entry": {
+    "script": "scripts/diagnostic.py",
+    "function": "diagnostic"
+  },
+  "validity": "readings in one unit, the band in the same unit; the edges belong to the band",
+  "source": {
+    "citation": "by definition: a quantity is inside a band when it lies between the band's lowest and highest values, the edges included",
+    "locus": "the comparison of a mean with the two edges of a band"
+  },
+  "note": "No value of a source stands behind the worked cases: each is worked by hand in its worked field, on readings made up to show the comparison.",
+  "cases": "cases.json"
+}

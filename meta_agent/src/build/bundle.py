@@ -121,7 +121,68 @@ def workflow_section(order, tool_names):
     return text
 
 
-BUILDER_PATH_RE = re.compile(r"(?<![\w/.-])(?:(?:docs|meta_agent|contracts)/[\w./@-]*[\w/]|plan\.md)")
+def decision_problems(decisions, tool_contracts, skill_rows, row_names):
+    """Every reason a request's decisions cannot be written into a bundle. A decision is {decision, skill, data: {tool,
+    field, input}, rows: {skill input: row}}: a diagnostic skill the bundle carries, judging one output field of one of
+    its tools, every other input of the skill handed by a parameter row the bundle carries (design ask
+    20261117-design-macbook-20261116-1-8; the person, 2026-11-17)."""
+    tools = {tc.get("name"): tc for tc in tool_contracts}
+    skills = {r["ref"]: r for r in skill_rows}
+    out = []
+    for i, d in enumerate(decisions or []):
+        where = "decisions[%d] (%s)" % (i, d.get("decision"))
+        if not str(d.get("decision") or "").strip():
+            out.append("%s: no words say what is decided" % where)
+        elif any(ch.isdigit() for ch in str(d["decision"])):
+            out.append("%s: the words carry a digit, and CLAUDE.md carries no number its snapshot does not" % where)
+        skill = skills.get(d.get("skill"))
+        if skill is None:
+            out.append("%s: the skill %s is not one this bundle carries" % (where, d.get("skill")))
+            continue
+        if skill.get("kind") != "diagnostic":
+            out.append("%s: %s is of kind %s; a decision is taken by a diagnostic" % (where, d.get("skill"), skill.get("kind")))
+        inputs = [x["name"] for x in skill.get("inputs") or []]
+        data, rows = d.get("data") or {}, d.get("rows") or {}
+        tc = tools.get(data.get("tool"))
+        if tc is None:
+            out.append("%s: the data's tool %s is not a tool of this bundle" % (where, data.get("tool")))
+        elif data.get("field") not in ((tc.get("outputs") or {}).get("properties") or {}):
+            out.append("%s: %s returns no field %s" % (where, data.get("tool"), data.get("field")))
+        if data.get("input") not in inputs:
+            out.append("%s: %s has no input %s for the data" % (where, d.get("skill"), data.get("input")))
+        for name in inputs:
+            if name != data.get("input") and name not in rows:
+                out.append("%s: the input %s of %s is handed by no row; a criterion is a row" % (where, name, d.get("skill")))
+        for name, row in sorted(rows.items()):
+            if name not in inputs:
+                out.append("%s: %s has no input %s" % (where, d.get("skill"), name))
+            if row not in row_names:
+                out.append("%s: the row %s is not a row of envelope/parameters.json" % (where, row))
+    return out
+
+
+def decisions_section(decisions, tool_contracts, skill_rows, row_names):
+    """The decisions the request names, each with the diagnostic skill that takes it, the tool output it judges and the
+    row that hands each criterion; or a sentence that the request named none. Refused before anything is written where
+    decision_problems finds a reason."""
+    if not decisions:
+        return ("The request this agent was built for named no decision of this kind. Where a run calls for one, and no "
+                "diagnostic skill here takes it on a row's criterion, you report the data and say that the decision is the "
+                "person's.")
+    faults = decision_problems(decisions, tool_contracts, skill_rows, row_names)
+    if faults:
+        raise ValueError("the decisions of this request cannot be built: " + "; ".join(faults))
+    lines = []
+    for d in decisions:
+        data = d["data"]
+        handed = ", ".join("`%s` from the row `%s`" % (k, v) for k, v in sorted(d.get("rows", {}).items()))
+        lines.append("- %s: run `%s` on the field `%s` that `%s` returns, as its `%s`%s." % (
+            str(d["decision"]).rstrip(".")[:1].upper() + str(d["decision"]).rstrip(".")[1:], d["skill"], data["field"],
+            data["tool"], data["input"], (", with " + handed) if handed else ""))
+    return "\n".join(lines)
+
+
+BUILDER_PATH_RE =re.compile(r"(?<![\w/.-])(?:(?:docs|meta_agent|contracts)/[\w./@-]*[\w/]|plan\.md)")
 
 
 def builder_paths(value, bundle_path):
@@ -380,7 +441,7 @@ def add_skills(bundle_path, rows, subagents):
 
 
 def compose(template_path, bundle_path, fill, tools, capabilities, envelope, interface_tasks,
-            scientific_tasks, replay_items, skills=None, subagents=None, workflow=None, words=None):
+            scientific_tasks, replay_items, skills=None, subagents=None, workflow=None, words=None, decisions=None):
     """Write the bundle. `tools` is a list of {name, contract, adapter_source, errors:[contract]}.
 
     `workflow` is the request's order of tool names, or None, and fills the Workflow section of a template that has
@@ -403,6 +464,9 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
               + (" Used by %s." % ", ".join("`%s`" % u for u in users[r["ref"]]) if users[r["ref"]] else "")) for r in skills])
     fill.setdefault("subagents_section", subagents_section(subagents))
     fill.setdefault("workflow_section", workflow_section(workflow, [t["name"] for t in tools]))
+    fill.setdefault("decisions_section", decisions_section(
+        decisions, [t["contract"] for t in tools], skills,
+        {r.get("name") for r in (envelope.get("parameters") or {}).get("rows") or [] if isinstance(r, dict)}))
     shutil.copytree(template_path, bundle_path, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     add_skills(bundle_path, rows, subagents)
     add_pages(bundle_path, [r["ref"] for r in skills])

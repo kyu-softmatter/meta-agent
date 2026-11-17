@@ -223,7 +223,7 @@ class TheVersion(unittest.TestCase):
         self.assertEqual(cards.tree_files(v10), cards.tree_files(v11))
         changed = sorted(r for r in cards.tree_files(v10) if cards.sha256_file(os.path.join(v10, r)) != cards.sha256_file(os.path.join(v11, r)))
         self.assertEqual(changed, ["CLAUDE.md", "TEMPLATE.json", "src/run_tool.py", "tasks/001-start.md"])
-        self.assertEqual(template_mod.LATEST, "v11")
+        self.assertIn("v11", template_mod.SOURCES)
         meta = cards.load_json(os.path.join(v11, "TEMPLATE.json"))
         self.assertEqual(meta["version"], "v11")
         self.assertIn("workflow_section", meta["placeholders"])

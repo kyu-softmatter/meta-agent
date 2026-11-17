@@ -715,6 +715,160 @@
       "sha256": "sha256:328f7b2f9b9f30a036f4b85cf91156ea3ccc38faec48822b9f271b3b2b2e88a3"
     },
     {
+      "ref": "series_settled@v1",
+      "id": "series_settled",
+      "version": 1,
+      "kind": "diagnostic",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "whether a series of readings has settled, by the change between the means of its last two windows",
+      "description": "Whether a series of readings has settled, by comparing the means of its last two windows against a relative tolerance it is handed. Any run or measurement that reports a quantity over time, an engine's acceptance ratio or an instrument's sample temperature alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "series",
+          "unit": "1",
+          "meaning": "the readings in the order they were taken, all in one unit"
+        },
+        {
+          "name": "window",
+          "unit": "count",
+          "meaning": "how many readings each mean takes"
+        },
+        {
+          "name": "tolerance",
+          "unit": "1",
+          "meaning": "the largest relative change of the mean between the last two windows that counts as settled; null when none is chosen"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "settled | not_settled | undecided"
+        },
+        {
+          "name": "last_mean",
+          "unit": "1",
+          "meaning": "the mean of the last window, in the readings' unit; null when there are fewer than two windows"
+        },
+        {
+          "name": "relative_change",
+          "unit": "1",
+          "meaning": "the change between the last two windows' means over the last mean; null when it cannot be computed"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "diagnostic/series_settled@v1",
+      "sha256": "sha256:4fa5e7f56cdb767dff1184b8edae641eb3b26aee4bf86edc0f3c34024769f315"
+    },
+    {
+      "ref": "series_within_window@v1",
+      "id": "series_within_window",
+      "version": 1,
+      "kind": "diagnostic",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "whether the mean of a series' last readings lies inside a band, between a lowest and a highest value it is handed",
+      "description": "Whether the recent readings of a series lie inside a window, a lowest and a highest value it is handed, by the mean of its last readings. Any run or measurement that must keep a quantity in a band, an engine's acceptance ratio or an instrument's sample temperature alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "series",
+          "unit": "1",
+          "meaning": "the readings in the order they were taken, all in one unit"
+        },
+        {
+          "name": "window",
+          "unit": "count",
+          "meaning": "how many of the last readings the mean takes"
+        },
+        {
+          "name": "low",
+          "unit": "1",
+          "meaning": "the lowest value inside the band, in the readings' unit; null when none is chosen"
+        },
+        {
+          "name": "high",
+          "unit": "1",
+          "meaning": "the highest value inside the band, in the readings' unit; null when none is chosen"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "within | below | above | undecided"
+        },
+        {
+          "name": "last_mean",
+          "unit": "1",
+          "meaning": "the mean of the last window, in the readings' unit; null when there are fewer readings than the window"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "diagnostic/series_within_window@v1",
+      "sha256": "sha256:634a549486b76930aa22f84b8aa0bdecdd7c1a1d996b1613b3d9bd7409f8071a"
+    },
+    {
+      "ref": "box_length_for_volume_fraction@v1",
+      "id": "box_length_for_volume_fraction",
+      "version": 1,
+      "kind": "estimate",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the side of a cubic box for a number of particles of a given volume at a given volume fraction",
+      "description": "The side of a cubic box that holds a number of particles of a given volume at a given volume fraction. Any simulation set up by its volume fraction, whatever the particle's shape.",
+      "applies_to": {
+        "parameters": [
+          "box_length",
+          "box_volume"
+        ],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "particle_count",
+          "unit": "count",
+          "meaning": "how many particles the box holds"
+        },
+        {
+          "name": "particle_volume",
+          "unit": "engine_length^3",
+          "meaning": "the volume of one particle, in the engine's own units"
+        },
+        {
+          "name": "volume_fraction",
+          "unit": "1",
+          "meaning": "the fraction of the box the particles fill, above zero and below one"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "box_length",
+          "unit": "engine_length",
+          "meaning": "the side of the cubic box"
+        },
+        {
+          "name": "box_volume",
+          "unit": "engine_length^3",
+          "meaning": "the box's volume, particle_count times particle_volume over volume_fraction"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "estimate/box_length_for_volume_fraction@v1",
+      "sha256": "sha256:753b7c0ae891d89da91adf15bfa2ee4d0671aafe08cbfbdff52e8d43821e54b3"
+    },
+    {
       "ref": "bring_to_ready@v1",
       "id": "bring_to_ready",
       "version": 1,

@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "id": "box_length_for_volume_fraction",
+  "version": 1,
+  "kind": "estimate",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the side of a cubic box for a number of particles of a given volume at a given volume fraction",
+  "applies_to": {
+    "parameters": [
+      "box_length",
+      "box_volume"
+    ],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "particle_count",
+      "unit": "count",
+      "meaning": "how many particles the box holds"
+    },
+    {
+      "name": "particle_volume",
+      "unit": "engine_length^3",
+      "meaning": "the volume of one particle, in the engine's own units"
+    },
+    {
+      "name": "volume_fraction",
+      "unit": "1",
+      "meaning": "the fraction of the box the particles fill, above zero and below one"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "box_length",
+      "unit": "engine_length",
+      "meaning": "the side of the cubic box"
+    },
+    {
+      "name": "box_volume",
+      "unit": "engine_length^3",
+      "meaning": "the box's volume, particle_count times particle_volume over volume_fraction"
+    }
+  ],
+  "entry": {
+    "script": "scripts/estimate.py",
+    "function": "estimate"
+  },
+  "validity": "identical particles in a cubic box; the volume fraction above zero and below one",
+  "source": {
+    "citation": "by definition: the volume fraction is the particles' total volume over the box's volume",
+    "locus": "the definition of the volume fraction of a suspension or a packing"
+  },
+  "cases": "cases.json"
+}
