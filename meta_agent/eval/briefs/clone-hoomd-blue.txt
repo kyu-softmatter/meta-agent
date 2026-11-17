@@ -1,0 +1,7 @@
+Your role is `meta`.
+
+https://hoomd-blue.readthedocs.io/en/latest/tutorial/00-Introducing-HOOMD-blue/00-index.html
+
+이것을 자동화 하고싶어
+
+Report when you stop: what you did, what the gate printed, what is open, and what you ran on.

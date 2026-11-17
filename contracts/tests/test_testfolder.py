@@ -99,15 +99,22 @@ class TestFolder(unittest.TestCase):
         self.assertEqual(tf.git(clone, "config", "--get", "meta-agent.machine").strip(), "bench")
         self.assertEqual(tf.git(clone, "config", "--get", "core.hooksPath").strip(), "contracts/hooks")
 
-    def test_the_clone_fetches_and_pushes_nowhere(self):
+    def test_the_clones_origin_is_inside_the_run_and_never_moves(self):
         run = self.make("--no-bundles")
-        clone = os.path.join(self.root, run, "repo")
+        path = os.path.join(self.root, run)
+        clone, origin = os.path.join(path, "repo"), os.path.join(path, "origin.git")
+        self.assertTrue(tf.inside(tf.git(clone, "remote", "get-url", "origin").strip(), path))
+        self.assertEqual(tf.git(origin, "remote").strip(), "")                         # nothing points at the working copy
+        put(self.repo, "later.txt", "the working copy moves on\n")
+        sh(self.repo, "add", "later.txt")
+        sh(self.repo, "commit", "--quiet", "-m", "after the run was made")
+        tf.git(clone, "fetch", "origin")
+        self.assertEqual(tf.git(clone, "rev-list", "--count", "HEAD..origin/main").strip(), "0")   # never behind
         put(clone, "note.txt", "x\n")
         sh(clone, "add", "note.txt")
         sh(clone, "commit", "--quiet", "-m", "in the test")
-        tf.git(clone, "fetch", "origin")
-        p = subprocess.run(["git", "push", "origin", "HEAD:refs/heads/from-test"], cwd=clone, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        self.assertNotEqual(p.returncode, 0)
+        tf.git(clone, "push", "origin", "HEAD:refs/heads/from-test")                   # a push ends inside the run
+        self.assertIn("from-test", tf.git(origin, "branch", "--list"))
         self.assertNotIn("from-test", tf.git(self.repo, "branch", "--list"))
 
     def test_uncommitted_work_is_not_in_a_run(self):
@@ -153,7 +160,7 @@ class TestFolder(unittest.TestCase):
         bundle = os.path.join(self.root, run, "bundles", "echo-0002")
         inside_file, outside_file = os.path.join(bundle, "runs", "in.json"), os.path.join(self.top, "elsewhere", "note.md")
         self.session(bundle, "aaaa", [
-            {"type": "assistant", "timestamp": "2026-11-16T00:00:01Z", "message": {"id": "m1", "model": "model-a", "usage": {"input_tokens": 3, "output_tokens": 5}, "content": [
+            {"type": "assistant", "timestamp": "2026-11-16T00:00:01Z", "effort": "medium", "message": {"id": "m1", "model": "model-a", "usage": {"input_tokens": 3, "output_tokens": 5}, "content": [
                 {"type": "tool_use", "id": "t1", "name": "Skill", "input": {"skill": "run-skill"}},
                 {"type": "tool_use", "id": "t2", "name": "Bash", "input": {"command": "python src/run.py"}}]}},
             {"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "t1", "content": "ok"},
@@ -171,6 +178,7 @@ class TestFolder(unittest.TestCase):
         self.assertEqual([s["session"] for s in col["sessions"]], ["aaaa"])
         s = col["sessions"][0]
         self.assertEqual((s["item"], s["models"], s["asked"], s["skills_loaded"]), ("echo-0002", ["model-a"], ["Do task 001."], ["run-skill"]))
+        self.assertEqual(s["efforts"], ["medium"])
         self.assertEqual((s["calls"], s["calls_in_error"], s["first"], s["last"]), (4, 1, "2026-11-16T00:00:00Z", "2026-11-16T00:00:09Z"))
         self.assertEqual(s["files_written"], [inside_file, outside_file])
         self.assertEqual(s["written_outside"], [outside_file])
@@ -210,7 +218,54 @@ class TestFolder(unittest.TestCase):
         self.assertEqual(self.run_tool("collect", run)[0], 0)                           # a second collection overwrites nothing
         self.assertTrue(os.path.isdir(self.collection(run, 2)))
 
+    # ------------------------------------------------------------------ session
+    @unittest.skipIf(sys.platform == "win32", "the stand-in for the command-line claude is a shell script")
+    def test_a_session_is_run_in_the_item_from_a_brief_and_what_it_was_asked_is_kept(self):
+        run = self.make("--no-clone")
+        seen = os.path.join(self.top, "seen.json")
+        fake = put(self.top, "claude", "#!/bin/sh\nexec %s %s \"$@\"\n" % (sys.executable, os.path.join(self.top, "fake.py")))
+        os.chmod(fake, 0o755)
+        put(self.top, "fake.py", "import json, os, sys\n"
+            "json.dump({'argv': sys.argv[1:], 'cwd': os.getcwd(), 'stdin': sys.stdin.read(), "
+            "'passed_on': sorted(k for k in os.environ if k.startswith('CLAUDE'))}, open(%r, 'w'))\n"
+            "print(json.dumps({'session_id': 'abcd', 'is_error': os.environ.get('FAKE_FAILS') == '1', 'result': 'task done'}))\n" % seen)
+        brief = put(self.top, "brief.txt", "Read tasks/001-start.md first.\n")
+        os.environ["CLAUDE_CODE_SOMETHING_OF_THE_OPENER"] = "1"
+        self.addCleanup(os.environ.pop, "CLAUDE_CODE_SOMETHING_OF_THE_OPENER", None)
+        code, out, err = self.run_tool("session", run, "balance-0001", "--brief", brief, "--model", "model-a", "--effort", "medium", "--claude", fake)
+        self.assertEqual(code, 0, err)
+        got = tf.read_json(seen)
+        self.assertEqual(got["argv"], ["-p", "--output-format", "json", "--permission-mode", "auto", "--model", "model-a", "--effort", "medium"])
+        self.assertEqual((got["cwd"], got["stdin"], got["passed_on"]),
+                         (os.path.join(self.root, run, "bundles", "balance-0001"), "Read tasks/001-start.md first.\n", []))
+        rec = tf.read_json(os.path.join(self.logs, run, "sessions", "balance-0001-1.json"))
+        self.assertEqual((rec["brief"], rec["permission_mode"], rec["result"]["session_id"]), ("Read tasks/001-start.md first.\n", "auto", "abcd"))
+        code, _, err = self.run_tool("session", run, "balance-0001", "--brief", brief, "--claude", fake, "--permission-mode", "bypassPermissions")
+        self.assertEqual(code, 1)
+        self.assertIn("the permission mode is one of", err)
+        os.environ["FAKE_FAILS"] = "1"
+        self.addCleanup(os.environ.pop, "FAKE_FAILS", None)
+        self.assertEqual(self.run_tool("session", run, "balance-0001", "--brief", brief, "--claude", fake)[0], 1)   # a session that could not run
+        self.assertTrue(os.path.isfile(os.path.join(self.logs, run, "sessions", "balance-0001-2.json")))
+
     # ------------------------------------------------------------------ wipe
+    def test_wipe_removes_the_collected_transcripts_only_when_asked(self):
+        run = self.make("--no-clone")
+        bundle = os.path.join(self.root, run, "bundles", "echo-0002")
+        mine = self.session(bundle, "dddd", [])
+        other = self.session(os.path.join(self.top, "another-project"), "eeee", [])
+        code, out, err = self.run_tool("wipe", run, "--sessions")
+        self.assertEqual(code, 0, err)
+        self.assertFalse(os.path.exists(mine))
+        self.assertTrue(os.path.isfile(os.path.join(other, "eeee.jsonl")))
+        self.assertTrue(os.path.isfile(os.path.join(self.collection(run), "sessions", "echo-0002", "dddd.jsonl")))
+        self.assertEqual(tf.read_json(os.path.join(self.logs, run, "wiped.json"))["sessions_removed"], ["dddd"])
+        again = self.make("--no-clone")
+        kept = self.session(os.path.join(self.root, again, "bundles", "echo-0002"), "ffff", [])
+        self.assertEqual(self.run_tool("wipe", again)[0], 0)
+        self.assertTrue(os.path.isfile(os.path.join(kept, "ffff.jsonl")))               # without --sessions nothing of the application goes
+        self.assertEqual(self.run_tool("wipe", again, "--sessions", "--no-collect")[0], 1)
+
     def test_wipe_collects_first_and_the_logs_stay(self):
         run = self.make()
         self.session(os.path.join(self.root, run, "repo"), "cccc", [])

@@ -1,0 +1,24 @@
+This folder is a bundle: a scientific agent built by a separate builder, the Meta-Agent, as a self-contained folder. It is the `echo` agent. Its only tool is `echo`, a mock that returns the text it is given and its length; it has no library skill and no instrument. The folder was copied out of the builder's repository into a place with no other project around it, and the builder is not here. The purpose of this run is to see whether the bundle stands alone: whether a session that has only this folder can do its first task and one replay item with nobody to ask. So the account of what was in your context, what you loaded, what you could not find and what was unclear matters as much as the commands' output; say what you met as you met it, and do not assume the text is right because it is there. A scientific task here prints `undecided` because no person has chosen a tolerance; that is not yours to decide. Nothing in this folder reaches a network or a device.
+
+Read `tasks/001-start.md` first. It is this agent's first task, and `CLAUDE.md` in this folder says who you are and what binds you. Work only from what this folder carries, and only inside it.
+
+Do two things, in this order:
+
+1. Task `tasks/001-start.md`, as it is written.
+2. Replay item `replay/rp-001.json`: make its call yourself, as this agent makes any call a task needs, and compare what came back with what the item expects. Before you make it, do what this agent's `CLAUDE.md` says a session does when a task needs something computed, read or run.
+
+This folder is a copy made for this run and is not under version control: there is nothing to commit, and what your instructions allow a session to write, you may write. Write nothing they do not allow.
+
+Done when: the three commands of task 001 have printed their lines and you have reported them verbatim, and the call of `rp-001` has returned and you have said whether it is what the item expects.
+
+Your final message is your report, ten lines or fewer plus the verbatim lines:
+
+```
+task     <the task and the replay item>
+landed   <every file you wrote or changed, or nothing>
+verdict  <the last line each command printed, verbatim>
+asks     <what you would ask a person, or nothing>
+next     <what comes next, and whose it is>
+```
+
+Then say, plainly and separately: every instruction file and every skill that was in your context when you started, by name, including any that is not from this folder; which session skills you loaded and at what point, and which section of each you used; what you looked for and did not find in this folder; anything in `CLAUDE.md`, in the task or in a skill that was unclear, contradicted another line, or named something that is not here; the exit status of each command and whether the task told you what to make of it; and whether the folder was enough to do the work with nobody to ask. Name the model and the effort you ran on.

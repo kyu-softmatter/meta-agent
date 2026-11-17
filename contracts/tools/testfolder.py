@@ -8,9 +8,11 @@
                                                               a new run: a clean clone of this repository and a
                                                               copy of each bundle (default: every agent's newest build)
   python contracts/tools/testfolder.py status                 every run: what it holds, what was collected, removed or not
+  python contracts/tools/testfolder.py session RUN ITEM --brief FILE [--model M] [--effort E]
+                                                              run one unattended session in an item of a run
   python contracts/tools/testfolder.py collect [RUN] [--no-gate]
                                                               what the sessions of a run did and what they changed
-  python contracts/tools/testfolder.py wipe (RUN | --all) [--no-collect]
+  python contracts/tools/testfolder.py wipe (RUN | --all) [--no-collect] [--sessions]
                                                               collect, then remove the run's folder
 
 The Meta-Agent and the bundles it builds are tested outside this repository, so that a session in a bundle
@@ -31,9 +33,17 @@ again would hand a later test what an earlier one left. The log folder gets the 
 is made, which is what keeps the name taken. In a run:
 
   TESTFOLDER.json           the mark of a folder this tool made; wipe removes no folder without it
-  repo/                     a clone of this repository at its head, set up as begin-session asks of a clone;
-                            it fetches from the working copy and pushes nowhere
+  origin.git/               a bare copy of this repository at its head, with no remote of its own
+  repo/                     a clone of that copy, set up as begin-session asks of a clone. Its origin is the
+                            copy beside it: it never moves while the test runs, and a push ends inside the run
   bundles/<agent>-<build>/  the bundle alone, as committed, its digest equal to its build card's
+
+`session` runs one session with nobody present, as a person at a terminal would start it: the command-line
+`claude -p` in the item's folder, the brief on its standard input, in the permission mode `auto` (the
+person, 2026-11-16) and never in one that asks nothing. The variables an application gives its own sessions
+are not passed on, so the session is given what the folder gives and the user's own settings, and nothing of
+the session that started it. What it was asked and what the command printed are kept in the log folder
+(`<run>/sessions/<item>-<n>.json`); its transcript is taken by `collect` like any other.
 
 `collect` writes `<log folder>/<run>/collect-<n>/`, a new folder each time. For every session whose
 transcript says it was opened inside the run: the transcript as the application wrote it, one line per tool
@@ -47,8 +57,11 @@ the untracked files, and the gate's verdict line. What a collection cannot show 
 session removed from the application before the collection has no transcript left, and a file a shell
 command wrote outside the folder is seen only as the command's text.
 
-`wipe` collects, then removes the run's folder. It removes nothing of this repository, of the log folder or
-of the application. Standard library only, Python 3.9 or later.
+`wipe` collects, then removes the run's folder. It removes nothing of this repository or of the log folder.
+With `--sessions` it also removes, from the application's own folder, the transcripts it has just collected
+of the sessions opened in the run (the person, 2026-11-16: the folder and the sessions are removed); a
+session the application lists is removed there first, and this is for the ones run from the command line.
+Standard library only, Python 3.9 or later.
 """
 import argparse
 import datetime
@@ -72,7 +85,8 @@ KEY_ROOT, KEY_LOGS = "meta-agent.testfolder", "meta-agent.testlogs"
 ABOVE = ("CLAUDE.md", ".claude", ".git")          # what must not stand above a run (MP2)
 HASH_SKIP = (".git", "__pycache__")               # as the build card's digest skips them
 WRITERS = ("Write", "Edit", "NotebookEdit")       # the application's tools that write a file by its path
-NO_PUSH = "a-test-folder-pushes-nowhere"
+PERMISSION_MODES = ("auto", "acceptEdits", "dontAsk", "manual", "plan")   # never one that asks nothing
+NOT_PASSED_ON = ("CLAUDE", "ANTHROPIC", "USE_STAGING_OAUTH", "USE_LOCAL_OAUTH")   # an application's own, by prefix
 NOT_SEEN = [
     "a session removed from the application before this collection: its transcript is gone with it",
     "a file a shell command wrote outside the folder the session was opened in: only the command's text is here",
@@ -260,10 +274,11 @@ def make_bundle(repo, rel, run_path):
 
 
 def make_clone(repo, run_path):
-    dest = os.path.join(run_path, "repo")
-    git(repo, "clone", "--quiet", "--no-hardlinks", repo, dest)
-    git(dest, "remote", "set-url", "--push", "origin", NO_PUSH)
-    setup = {"remote.origin.pushurl": NO_PUSH}
+    origin, dest = os.path.join(run_path, "origin.git"), os.path.join(run_path, "repo")
+    git(repo, "clone", "--quiet", "--bare", "--no-hardlinks", repo, origin)
+    git(origin, "remote", "remove", "origin")        # nothing in a run points at the working copy
+    git(run_path, "clone", "--quiet", "--no-hardlinks", origin, dest)
+    setup = {"remote.origin.url": "origin.git, a bare copy inside the run"}
     if os.path.isdir(os.path.join(dest, "contracts", "hooks")):
         git(dest, "config", "core.hooksPath", "contracts/hooks")
         setup["core.hooksPath"] = "contracts/hooks"
@@ -306,7 +321,7 @@ def make(args, repo=REPO):
     print("logs    %s" % os.path.join(logs, run))
     for it in items:
         if it["kind"] == "clone":
-            print("clone   %s  at %s on %s; fetches from the working copy, pushes nowhere" % (it["path"], it["head"][:7], it["branch"]))
+            print("clone   %s  at %s on %s; its origin is a copy inside the run" % (it["path"], it["head"][:7], it["branch"]))
         else:
             print("bundle  %s  %d file(s), digest equal to %s's" % (it["path"], len(it["files"]), it["build_id"]))
     if made["source"]["uncommitted"]:
@@ -377,7 +392,7 @@ def _short(tool, given):
 
 def read_transcript(path):
     """What one transcript says: (summary, calls, said). Every value is read off the file; none is judged."""
-    s = {"cwd": None, "models": [], "first": None, "last": None, "asked": [], "lines": 0, "unread_lines": 0}
+    s = {"cwd": None, "models": [], "efforts": [], "first": None, "last": None, "asked": [], "lines": 0, "unread_lines": 0}
     calls, results, usage, said = [], {}, {}, []
     with open(path, "r", encoding="utf-8", errors="replace") as f:
         for line in f:
@@ -404,6 +419,8 @@ def read_transcript(path):
             if o.get("type") == "assistant":
                 if isinstance(m.get("model"), str) and m["model"] not in s["models"]:
                     s["models"].append(m["model"])
+                if isinstance(o.get("effort"), str) and o["effort"] not in s["efforts"]:
+                    s["efforts"].append(o["effort"])
                 if isinstance(m.get("usage"), dict):
                     usage[m.get("id") or o.get("uuid")] = m["usage"]     # the last usage of a message stands
                 for b in content if isinstance(content, list) else []:
@@ -575,9 +592,10 @@ def report_collection(run, dest, sessions, items):
         per[s["item"]] = per.get(s["item"], 0) + 1
     print("sessions    %d%s" % (len(sessions), "  (%s)" % ", ".join("%s: %d" % kv for kv in sorted(per.items())) if per else ""))
     for s in sessions:
-        print("  %s  %s  %s  %d call(s), %d in error; skills %s; wrote %d file(s), %d outside its folder"
-              % (s["item"], s["session"][:8], "/".join(s["models"]) or "-", s["calls"], s["calls_in_error"],
-                 ", ".join(s["skills_loaded"]) or "none", len(s["files_written"]), len(s["written_outside"])))
+        print("  %s  %s  %s at %s  %d call(s), %d in error; skills %s; %d file(s) by a writing tool, %d outside its "
+              "folder (what a shell command wrote is under the item)"
+              % (s["item"], s["session"][:8], "/".join(s["models"]) or "-", "/".join(s["efforts"]) or "?", s["calls"],
+                 s["calls_in_error"], ", ".join(s["skills_loaded"]) or "none", len(s["files_written"]), len(s["written_outside"])))
     for it in items:
         if it.get("gone"):
             print("%-11s %s  its folder is gone; transcripts only" % (it["name"], it["kind"]))
@@ -601,7 +619,74 @@ def collect(args, repo=REPO):
     return 0
 
 
+# ---------------------------------------------------------------------------- session: one unattended session
+def session(args, repo=REPO):
+    root, logs = folders(args, repo)
+    run_path = marked(root, args.run)
+    if run_path is None:
+        raise Refused("%s is not a run that stands in %s" % (args.run, root))
+    made = read_json(os.path.join(logs, args.run, "made.json"))
+    item = next((it for it in made["items"] if it["name"] == args.item), None)
+    if item is None:
+        raise Refused("%s has no item %s; it has %s" % (args.run, args.item, ", ".join(it["name"] for it in made["items"])))
+    if args.permission_mode not in PERMISSION_MODES:
+        raise Refused("the permission mode is one of %s" % ", ".join(PERMISSION_MODES))
+    exe = args.claude or os.environ.get("TESTFOLDER_CLAUDE") or shutil.which("claude")
+    if not exe:
+        raise Refused("no command-line claude on this computer's PATH; --claude names one")
+    with open(args.brief, "r", encoding="utf-8") as f:
+        brief = f.read()
+    cmd = [exe, "-p", "--output-format", "json", "--permission-mode", args.permission_mode]
+    cmd += (["--model", args.model] if args.model else []) + (["--effort", args.effort] if args.effort else [])
+    env = {k: v for k, v in os.environ.items() if not k.startswith(NOT_PASSED_ON) and not k.startswith("GIT_")}
+    cwd = os.path.join(run_path, *item["path"].split("/"))
+    started = now()
+    p = subprocess.run(cmd, cwd=cwd, env=env, input=brief.encode("utf-8"), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out = p.stdout.decode("utf-8", "replace")
+    try:
+        result = json.loads(out)
+    except ValueError:
+        result = None
+    sdir = os.path.join(logs, args.run, "sessions")
+    os.makedirs(sdir, exist_ok=True)
+    n = 1
+    while os.path.exists(os.path.join(sdir, "%s-%d.json" % (args.item, n))):
+        n += 1
+    record = {"testfolder": VERSION, "run": args.run, "item": args.item, "started_at": started, "ended_at": now(),
+              "command": [os.path.basename(exe)] + cmd[1:], "cwd": cwd, "model": args.model, "effort": args.effort,
+              "permission_mode": args.permission_mode, "brief_file": os.path.abspath(args.brief), "brief": brief,
+              "exit": p.returncode, "result": result if result is not None else out[-4000:],
+              "stderr": p.stderr.decode("utf-8", "replace")[-4000:]}
+    path = os.path.join(sdir, "%s-%d.json" % (args.item, n))
+    write_json(path, record)
+    failed = p.returncode != 0 or result is None or bool(result.get("is_error"))
+    said = (result.get("result") if isinstance(result, dict) else out) or ""
+    print("session  %s in %s  %s" % ((result or {}).get("session_id", "?"), args.item, "FAILED TO RUN" if failed else "ended"))
+    print("record   %s" % path)
+    print("said     %s" % (said.strip().splitlines()[0][:200] if said.strip() else "(nothing)"))
+    return 1 if failed else 0
+
+
 # ---------------------------------------------------------------------------- wipe, status, where
+def remove_transcripts(projects, run_path, collection):
+    """Remove from the application's folder the transcripts of the run's sessions, each only when its copy is
+    in the collection; a project folder left holding nothing goes too."""
+    gone = []
+    copied = set()
+    for dirpath, _, filenames in os.walk(os.path.join(collection, "sessions")):
+        copied.update(fn for fn in filenames if fn.endswith(".jsonl") and not fn.endswith(".calls.jsonl"))
+    for pdir, name, _ in find_sessions(projects, run_path):
+        if name not in copied:
+            continue
+        os.remove(os.path.join(pdir, name))
+        shutil.rmtree(os.path.join(pdir, name[:-len(".jsonl")]), ignore_errors=True)
+        gone.append(name[:-len(".jsonl")])
+        left = [n for n in os.listdir(pdir) if not (n == "memory" and not os.listdir(os.path.join(pdir, n)))]
+        if not left:
+            shutil.rmtree(pdir, ignore_errors=True)
+    return gone
+
+
 def wipe(args, repo=REPO):
     root, logs = folders(args, repo)
     if bool(args.run) == bool(args.all):
@@ -616,16 +701,24 @@ def wipe(args, repo=REPO):
             raise Refused("%s is not a run this tool made (no %s in it); nothing is removed" % (os.path.join(root, run), MARK))
         if not inside(path, root) or inside(path, repo) or inside(path, logs):
             raise Refused("%s does not lie in the test folder alone; nothing is removed" % path)
-        collection = None
+        collection, gone = None, []
+        if args.sessions and args.no_collect:
+            raise Refused("a session's transcript is removed only after it has been collected; drop --no-collect")
+        projects = transcripts_dir(args.transcripts)
         if not args.no_collect:
-            dest, sessions, items = collect_run(root, logs, run, transcripts_dir(args.transcripts), not args.no_gate)
+            dest, sessions, items = collect_run(root, logs, run, projects, not args.no_gate)
             report_collection(run, dest, sessions, items)
             collection = os.path.basename(dest)
+        if args.sessions:
+            gone = remove_transcripts(projects, path, os.path.join(logs, run, collection))
         shutil.rmtree(path)
         if os.path.lexists(path):
             raise Refused("%s could not be removed whole" % path)
-        write_json(os.path.join(logs, run, "wiped.json"), {"run": run, "wiped_at": now(), "collected_first": collection})
+        write_json(os.path.join(logs, run, "wiped.json"),
+                   {"run": run, "wiped_at": now(), "collected_first": collection, "sessions_removed": gone})
         print("removed     %s%s" % (path, "" if collection else "  (not collected first)"))
+        if args.sessions:
+            print("removed     %d session transcript(s) from %s" % (len(gone), projects))
     return 0
 
 
@@ -674,6 +767,14 @@ def main(argv=None, repo=REPO):
     m.add_argument("--no-clone", action="store_true")
     m.add_argument("--no-bundles", action="store_true")
     sub.add_parser("status")
+    r = sub.add_parser("session")
+    r.add_argument("run")
+    r.add_argument("item")
+    r.add_argument("--brief", required=True, help="a file holding what the session is asked")
+    r.add_argument("--model")
+    r.add_argument("--effort")
+    r.add_argument("--permission-mode", default="auto")
+    r.add_argument("--claude", help="the command-line claude to run, when it is not the one on PATH")
     c = sub.add_parser("collect")
     c.add_argument("run", nargs="?")
     c.add_argument("--no-gate", action="store_true", help="do not run the clone's gate")
@@ -682,9 +783,10 @@ def main(argv=None, repo=REPO):
     w.add_argument("--all", action="store_true")
     w.add_argument("--no-collect", action="store_true")
     w.add_argument("--no-gate", action="store_true")
+    w.add_argument("--sessions", action="store_true", help="also remove the collected transcripts from the application's folder")
     args = ap.parse_args(argv)
     try:
-        return {"where": where, "make": make, "status": status, "collect": collect, "wipe": wipe}[args.cmd](args, repo)
+        return {"where": where, "make": make, "status": status, "session": session, "collect": collect, "wipe": wipe}[args.cmd](args, repo)
     except Refused as e:
         sys.stderr.write("testfolder: refused: %s\n" % e)
         return 1

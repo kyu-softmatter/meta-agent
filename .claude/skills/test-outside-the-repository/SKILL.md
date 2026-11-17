@@ -11,14 +11,16 @@ A test is a *run*: a folder made from the committed head, in which sessions are 
 
 1. **Know where.** `python contracts/tools/testfolder.py where` prints the test folder and the log folder of this computer. If one has not been said, ask the person; never choose a folder.
 2. **Commit what is to be tested.** A run is the committed head and nothing else; the tool says how many uncommitted paths it left out.
-3. **Make it.** `python contracts/tools/testfolder.py make` writes a clone of the repository and a copy of the newest build of every agent. `--bundle <build folder>` names builds instead, `--no-clone` and `--no-bundles` leave a part out. It prints the folder to open a session in for each. A run's name is never used again.
+3. **Make it.** `python contracts/tools/testfolder.py make` writes a clone of the repository, whose origin is a copy inside the run that never moves, and a copy of the newest build of every agent. `--bundle <build folder>` names builds instead, `--no-clone` and `--no-bundles` leave a part out. It prints the folder to open a session in for each. A run's name is never used again.
 
-## Open the sessions
+## Run the sessions
 
-- **Who opens.** The person, or you on the person's word. A session that another session opened is also given the application's instructions for such a session, so say in your report which way each was opened.
+- **From the command line, with nobody present.** `python contracts/tools/testfolder.py session <run> <item> --brief <file> --model <model> --effort <effort>` runs one session in an item and waits for it; start it in the background when several run at once. It is given what the folder gives and nothing of the session that started it, and it runs in the permission mode the person chose for tests. What it was asked and what the command printed are kept in the log folder.
+- **If the command says it could not log in,** the person signs the command-line `claude` in once at a terminal. A session never types a credential.
+- **Through the application** only when the person wants to watch a session there, and only on a turn the person started. Such a session is also given the application's instructions for a session another one opened; say in your report which way each was run.
 - **Fresh, always.** A fork carries this repository's conversation into the folder, and the test is of what the folder alone gives.
-- **The brief** is what a user of the agent would say, and nothing of how. In a bundle: its start task and a question of the kind it was built for. In the clone: the role, and a purpose in words with where the materials are. Name no rule, skill or file of this repository to a bundle's session; a bundle stands alone.
-- **The level** of each session comes from the `choose-session-level` skill, and the person's word holds over it. Write down what each ran on.
+- **The brief** is what a user of the agent would say, and nothing of how. The briefs in use are files under `meta_agent/eval/briefs/`, one per kind of item, so that a later run is asked in the same words; a new one is added there. In a bundle: its start task and a question of the kind it was built for. In the clone: the role, and the person's request as the person gave it. Name no rule, skill or file of this repository to a bundle's session; a bundle stands alone.
+- **The level** of each session comes from the `choose-session-level` skill, and the person's word holds over it. The collection says what each ran on.
 - Leave the run alone while a session works in it.
 
 ## Collect, then read
@@ -46,4 +48,4 @@ Write a finding in your own words, and name the run, the collection and the sess
 
 ## Remove
 
-`python contracts/tools/testfolder.py wipe <run>` collects once more and removes the run's folder; `--all` does it for every run that stands. `python contracts/tools/testfolder.py status` lists every run, standing or removed, with its collections. The tool removes nothing but a run it made. Nothing is pushed from a run.
+Remove a run when both roles have read its collection, not before. `python contracts/tools/testfolder.py wipe <run> --sessions` collects once more, removes the run's folder, and removes from the application's own folder the transcripts it has just collected of the sessions run in it; `--all` does it for every run that stands. A session the application lists is removed there, by the person's approval, before the run is. `python contracts/tools/testfolder.py status` lists every run, standing or removed, with its collections. The tool removes no folder but a run it made. A push from the clone ends in the run's own origin and goes with the run.
