@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "016",
+  "answers": null,
+  "text": "On the person's word of 2026-11-17 (docs/ideas/20261117.md; 8a43c43): a meta seat now searches, anonymously and read-only, for a source a request or a skill needs and was not given, by the quantity, the method or the tool alone; each source read and used is a material card the seat writes, queued, with what it was found for; registered and may_quote stay the person's (meta_agent/CLAUDE.md Tier 0, research-materials 'Finding what was not given', with an order of sources: the original paper or a textbook, a review, the tool's documentation, a curated database; an encyclopedia page only to find those). Asked of the meta role, from the status-report session's review of the library: the skills landed today whose source is an encyclopedia page (power_law_exponent_along_sweep, diffusive_regime_from_msd, steps_for_diffusive_displacement, timestep_max_from_diffusive_displacement) or a method named with no reference (series_settled, series_within_window; box_length_for_volume_fraction is a definition and may say so with where it is defined) get next versions citing the source closest to the relation, found by search and carded queued; and the clone of run 20261117-3's stokes_drag@v1, which cites no material, is the same case when it is landed here. A collection now counts each session's web searches and fetches and each clone's material cards by state, so the next round shows whether sessions search.",
+  "written_at": "2026-11-17T14:47:47-08:00"
+}
