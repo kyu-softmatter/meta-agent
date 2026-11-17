@@ -308,7 +308,7 @@ STRIP_RES = [
     re.compile(r"https?://\S+"),
     re.compile(r"^\s{0,3}#+\s+[\d.]+\s", re.M),                 # numbered headings
     re.compile(r"^\s*\d+\.\s", re.M),                           # ordered list markers
-    re.compile(r"\b(?:check|checks|step|steps|group|question|rule|rules|section|rev|revision|item|k|N)\s*=?\s*\d+(?:\.\d+)*", re.I),
+    re.compile(r"\b(?:check|checks|step|steps|group|question|rule|rules|section|rev|revision|version|versions|item|k|N)\s*=?\s*\d+(?:\.\d+)*", re.I),
     re.compile(r"[§#]\s*\d+(?:\.\d+)*"),
     re.compile(r"\bv\d+(?:\.\d+)*"),
 ]
@@ -391,6 +391,29 @@ def check19(cards, c, report, tree):
 # ----------------------------------------------------------------------------
 # check 5: references resolve in the store's index; a gap names where it looked
 # ----------------------------------------------------------------------------
+MATERIAL_ID_RE = re.compile(r"\bmat-\d{8}-\d{3}\b")
+
+
+def material_ids(obj):
+    """Every material id (mat-YYYYMMDD-NNN) a card names, at any depth (tasks/016, run 20261117-3)."""
+    if isinstance(obj, dict):
+        for v in obj.values():
+            yield from material_ids(v)
+    elif isinstance(obj, list):
+        for v in obj:
+            yield from material_ids(v)
+    elif isinstance(obj, str):
+        yield from MATERIAL_ID_RE.findall(obj)
+
+
+def superseded(path, c):
+    """A card file is superseded when the next revision of its name stands beside it (v<N+1>_<name>)."""
+    base = os.path.basename(path)
+    m = re.match(c.records["revision_prefix_regex"], base)
+    n, stem = (int(m.group(1)), m.group(2)) if m else (1, base)
+    return os.path.exists(os.path.join(os.path.dirname(path), "v%d_%s" % (n + 1, stem)))
+
+
 def check5(cards, c, report, tree):
     judged = {}
 
@@ -422,6 +445,14 @@ def check5(cards, c, report, tree):
                 searched = gap.get("searched") if isinstance(gap, dict) else None
                 if not (isinstance(searched, list) and any(isinstance(x, str) and x.strip() for x in searched)):
                     report.fail(5, r, "%s[%d] names nowhere it searched" % (key, i))
+    # a material id is a reference too: in the newest revision of a card it names a material card of the tree
+    materials = {data.get("id") for _, data in cards if card_name(data) == "material"}
+    for path, data in cards:
+        if card_name(data) == "material" or superseded(path, c):
+            continue
+        for mid in sorted(set(material_ids(data))):
+            if mid not in materials:
+                report.fail(5, rel(path, tree), "names the material %s, which no material card of the tree carries" % mid)
     # an index that exists is what its cards give, cited or not
     for path, data in cards:
         for spec in case_rules.STORES.values():
@@ -976,7 +1007,7 @@ def check17(cards, c, report, tree):
 # B checks: one built bundle (plan.md 5.1 S5, 8). Run with --bundle PATH, on every
 # bundle a build card points at, and on <fixture>/bundle/ under --expect-fail.
 # ----------------------------------------------------------------------------
-B_IMPLEMENTED = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B11", "B15", "B16"]  # a plain list literal: a test of the meta role reads it from this source
+B_IMPLEMENTED = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B11", "B15", "B16", "B17"]  # a plain list literal: a test of the meta role reads it from this source
 BUNDLE_FILES = ["CLAUDE.md", ".claude/settings.json", "CAPABILITIES.json", "envelope/safety.json",
                 "envelope/snapshot.json", "envelope/parameters.json", "failures.jsonl",
                 "src/gate.py", "src/run_tool.py", "src/replay.py", "src/validate_tasks.py"]
@@ -1432,6 +1463,13 @@ def checkB16(bundle, label, report):
         report.fail("B16", relpath, msg)
 
 
+def checkB17(bundle, label, report):
+    """Every parameter row a tool contract's input names under `row` is a row of envelope/parameters.json
+    (tasks/016, run 20261117-3: a bundle shipped no rows beside contracts that take them)."""
+    for relpath, msg in tool_contract_rules.row_problems(bundle):
+        report.fail("B17", relpath, msg)
+
+
 def run_bundle_checks(bundle, c, report, checks, knowledge_root, label=None):
     bundle = os.path.abspath(bundle)
     label = label or rel(bundle, REPO)
@@ -1463,6 +1501,8 @@ def run_bundle_checks(bundle, c, report, checks, knowledge_root, label=None):
         checkB15(bundle, label, report)
     if "B16" in checks:
         checkB16(bundle, label, report)
+    if "B17" in checks:
+        checkB17(bundle, label, report)
     report.ran.update(ch for ch in checks if isinstance(ch, str))
 
 

@@ -145,3 +145,33 @@ class Bundle(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Rows(unittest.TestCase):
+    """B17: a row a tool contract's input names under `row` is a row of envelope/parameters.json (tasks/016)."""
+
+    def bundle(self, tools, rows):
+        import shutil
+        import tempfile
+        d = tempfile.mkdtemp(prefix="b17-")
+        self.addCleanup(shutil.rmtree, d, True)
+        os.makedirs(os.path.join(d, "envelope"))
+        with open(os.path.join(d, "envelope", "parameters.json"), "w", encoding="utf-8") as f:
+            json.dump({"rows": [{"name": n} for n in rows]}, f)
+        for name, inputs in tools.items():
+            os.makedirs(os.path.join(d, "tools", name))
+            with open(os.path.join(d, "tools", name, "tool.json"), "w", encoding="utf-8") as f:
+                json.dump({"name": name, "inputs": inputs}, f)
+        return tc.row_problems(d)
+
+    def test_an_engine_and_an_instrument_find_their_rows_and_a_missing_row_is_named(self):
+        engine = {"type": "object", "properties": {"steps": {"type": "integer", "row": "equilibrate_steps"},
+                                                   "run": {"type": "string"}}}
+        instrument = {"type": "object", "properties": {"sweep": {"type": "array", "items": {
+            "type": "object", "properties": {"rate": {"type": "number", "row": "shear_rate"}}}}}}
+        tools = {"equilibrate": engine, "set_sweep": instrument}
+        self.assertEqual(self.bundle(tools, ["equilibrate_steps", "shear_rate"]), [])
+        found = self.bundle(tools, [])
+        self.assertEqual([p for p, _ in found], ["tools/equilibrate/tool.json", "tools/set_sweep/tool.json"])
+        self.assertIn("inputs.sweep[].rate", found[1][1])
+        self.assertEqual(self.bundle({"echo": {"type": "object", "properties": {"message": {"type": "string"}}}}, []), [])

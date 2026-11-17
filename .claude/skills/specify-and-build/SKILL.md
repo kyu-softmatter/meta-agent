@@ -16,7 +16,7 @@ Each axis is its own card and may be written in parallel with the others.
 - **Boundary:** directories, the paths it may write, read and never touch, its seat, its tier.
 - **Interface:** the cards it reads and writes, and its callable tools with their contracts (`design-tool-interface`).
 - **Knowledge:** the entries copied into its envelope with their version pinned, and the gaps that remain.
-- **Parameters:** the rows of the sheet this agent handles (`estimate-parameter-ranges`).
+- **Parameters:** the rows of the sheet this agent handles (`estimate-parameter-ranges`). They reach the bundle's parameter file through the intake's `parameter_rows`; an intake without them builds a bundle with none, and a contract input that names a row then fails the bundle's gate.
 - **Safety:** the safety rows with empty values, the place of the deterministic rule, and what only a person does.
 - **Validation:** interface tasks and scientific tasks with their reference results, and when it is complete or refused.
 

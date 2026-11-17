@@ -53,6 +53,12 @@ class B6(unittest.TestCase):
         self.assertEqual(len(self.judge("Version 7.2. The volume fraction is 0.57.\n", numbers=(7.2,))), 1)
         self.assertEqual(len(self.judge("hoomd 7.2.2 on 4 cores\n")), 1)
 
+    def test_a_version_of_two_parts_is_an_identifier_where_the_word_version_or_v_stands_before_it(self):
+        # a package of an engine's environment and a controller's firmware (tasks/016, run 20261117-3)
+        self.assertEqual(self.judge("packaging version 26.3, pillow v13.0\n"), [])
+        self.assertEqual(self.judge("The firmware is at version 2.14 (versions 2.1 and before are refused).\n"), [])
+        self.assertEqual(len(self.judge("packaging 26.3\n")), 1)      # beside a name alone it is read
+
 
 class Check3(unittest.TestCase):
     """A page shows where a claim was read; a numeral of a locus is the card's."""
@@ -112,3 +118,33 @@ class B9Permission(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Check5Materials(unittest.TestCase):
+    """A material id is a reference: in the newest revision of a card it names a material card (tasks/016, run 20261117-3)."""
+
+    def judge(self, files):
+        d = tempfile.mkdtemp(prefix="c5-")
+        self.addCleanup(shutil.rmtree, d, True)
+        for rel_path, data in files.items():
+            p = os.path.join(d, *rel_path.split("/"))
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            with open(p, "w", encoding="utf-8") as f:
+                json.dump(data, f)
+        report = validate.Report(quiet=True)
+        cards, _ = validate.scan(d, report)
+        validate.check5(cards, validate.Contracts(), report, d)
+        return [m for _, _, m in report.fails]
+
+    def test_two_kinds_of_card_resolve_and_a_wrong_id_fails_only_in_the_newest_revision(self):
+        material = {"inbox/materials/one/MATERIAL.json": {"card": "material", "id": "mat-20261117-004"}}
+        # a parameter sheet's row of a simulation engine, and a tool profile's claims of an instrument
+        sheet = {"card": "parameter_sheet", "id": "s", "rows": [{"source": "literature:mat-20261117-004"}]}
+        profile = {"card": "tool_profile", "id": "p", "material_refs": ["mat-20261117-004"]}
+        self.assertEqual(self.judge(dict(material, **{"requests/r/sheet.json": sheet, "requests/r/tool_profile.json": profile})), [])
+        wrong = {"card": "parameter_sheet", "id": "s", "rows": [{"source": "literature:mat-20261117-009"}]}
+        fails = self.judge(dict(material, **{"requests/r/sheet.json": wrong}))
+        self.assertEqual(len(fails), 1)
+        self.assertIn("mat-20261117-009", fails[0])
+        # the same wrong revision, once a later one stands beside it, is a record and is judged as it was written
+        self.assertEqual(self.judge(dict(material, **{"requests/r/sheet.json": wrong, "requests/r/v2_sheet.json": sheet})), [])

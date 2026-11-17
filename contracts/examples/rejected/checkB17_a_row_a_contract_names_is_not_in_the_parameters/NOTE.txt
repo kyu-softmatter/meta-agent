@@ -1,0 +1,1 @@
+The echo tool's input names the parameter row echo_greeting under row, and envelope/parameters.json holds no row of that name (it holds none): an input that a row gives finds its row in the bundle (tasks/016, run 20261117-3).

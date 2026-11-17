@@ -98,6 +98,44 @@ def bundle_problems(bundle):
     return out
 
 
+def named_rows(schema, at="inputs"):
+    """(place, row name) for every property of a contract's input schema, at any depth, that names under
+    `row` the parameter row that gives it (B17; tasks/016, run 20261117-3)."""
+    out = []
+    if isinstance(schema, dict):
+        for key, prop in sorted((schema.get("properties") or {}).items()):
+            if isinstance(prop, dict):
+                here = "%s.%s" % (at, key)
+                if isinstance(prop.get("row"), str):
+                    out.append((here, prop["row"]))
+                out.extend(named_rows(prop, here))
+        if isinstance(schema.get("items"), dict):
+            out.extend(named_rows(schema["items"], at + "[]"))
+    return out
+
+
+def row_problems(bundle):
+    """B17 over one bundle: every row a tool contract's input names is a row of envelope/parameters.json."""
+    try:
+        with open(os.path.join(bundle, "envelope", "parameters.json"), encoding="utf-8") as f:
+            rows = json.load(f).get("rows") or []
+    except (OSError, ValueError, AttributeError):
+        rows = []
+    have = {r.get("name") for r in rows if isinstance(r, dict)}
+    out = []
+    for name in tool_names(bundle):
+        relpath = "tools/%s/tool.json" % name
+        try:
+            with open(os.path.join(bundle, "tools", name, "tool.json"), encoding="utf-8") as f:
+                contract = json.load(f)
+        except (OSError, ValueError):
+            continue
+        for place, row in named_rows(contract.get("inputs")):
+            if row not in have:
+                out.append((relpath, "%s names the row %r, which envelope/parameters.json does not hold" % (place, row)))
+    return out
+
+
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
     if len(argv) != 2 or argv[0] != "check":
