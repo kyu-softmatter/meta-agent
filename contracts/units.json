@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "note": "Authoritative unit registry, in soft-matter-agents' shape: multiplicative, si_factor converts to SI base units, dim is the dimension vector (L length, T time, M mass, Th temperature, A angle, N count, I electric current). Offset units (Celsius, Fahrenheit) are not registered: temperature is carried in kelvin and a reading given in Celsius is noted on the number. Rheology units (Pa, Pa.s, 1/s, N.m, rad/s) are here from the start because the first testbed is the rheometer and a rheology engine (plan.md 10). kDa is 1000 g/mol, so its si_factor is 1.0 kg/mol. Added 2026-11-16 (tasks/016), asked twice by sessions that built an engine agent: engine_length, for an engine's own lengths, and id, for a number that names and does not measure; neither has an si_factor. Added 2026-11-17 (tasks/016, run 20261117-4): engine_length^3, a volume in the engine's own units.",
+  "note": "Authoritative unit registry, in soft-matter-agents' shape: multiplicative, si_factor converts to SI base units, dim is the dimension vector (L length, T time, M mass, Th temperature, A angle, N count, I electric current). Offset units (Celsius, Fahrenheit) are not registered: temperature is carried in kelvin and a reading given in Celsius is noted on the number. Rheology units (Pa, Pa.s, 1/s, N.m, rad/s) are here from the start because the first testbed is the rheometer and a rheology engine (plan.md 10). kDa is 1000 g/mol, so its si_factor is 1.0 kg/mol. Added 2026-11-16 (tasks/016), asked twice by sessions that built an engine agent: engine_length, for an engine's own lengths, and id, for a number that names and does not measure; neither has an si_factor. Added 2026-11-17 (tasks/016, run 20261117-4): engine_length^3, a volume in the engine's own units. Added 2026-11-17 (tasks/016, the person's word relayed from the clone of run 20261117-3): engine_energy, engine_time, engine_mass, engine_drag, engine_viscosity and engine_diffusivity, an engine's own units of each, none with an si_factor.",
   "dimensions": {
     "L": "length",
     "T": "time",
@@ -412,6 +412,54 @@
         "L": 3
       },
       "note": "a volume in an engine's own self-consistent units, the cube of engine_length (a particle's volume in HOOMD-blue's units); like engine_length it has no factor to cubic metres until a request names the length scale"
+    },
+    "engine_energy": {
+      "si_factor": null,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2
+      },
+      "note": "an energy in an engine's own self-consistent units (HOOMD-blue's kT, a Lennard-Jones epsilon); no factor to joules until a request names the energy scale"
+    },
+    "engine_time": {
+      "si_factor": null,
+      "dim": {
+        "T": 1
+      },
+      "note": "a time in an engine's own units (a step's dt, a lag); no factor to seconds until a request names the time scale"
+    },
+    "engine_mass": {
+      "si_factor": null,
+      "dim": {
+        "M": 1
+      },
+      "note": "a mass in an engine's own units (a particle's mass); no factor to kilograms until a request names the mass scale"
+    },
+    "engine_drag": {
+      "si_factor": null,
+      "dim": {
+        "M": 1,
+        "T": -1
+      },
+      "note": "a drag coefficient in an engine's own units, mass over time (HOOMD-blue's gamma of Brownian and Langevin dynamics)"
+    },
+    "engine_viscosity": {
+      "si_factor": null,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -1
+      },
+      "note": "a viscosity in an engine's own units, mass over length and time (the eta of a Stokes drag 3 pi eta d)"
+    },
+    "engine_diffusivity": {
+      "si_factor": null,
+      "dim": {
+        "L": 2,
+        "T": -1
+      },
+      "note": "a diffusion coefficient in an engine's own units, length squared over time"
     },
     "id": {
       "si_factor": null,
