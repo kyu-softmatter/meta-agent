@@ -34,6 +34,24 @@ def scratch_root():
     return tmp, root
 
 
+def stand_in_installers(test, *names):
+    """Put an executable stand-in for each installer named first on the PATH, for the length of the test (CI since
+    b3b90dd: from template v11 the bundle's runner looks for the installer a contract names before an install, and a
+    computer without one failed these tests, whose install adapters need none). The stand-in does nothing; an adapter
+    here never calls it."""
+    folder = tempfile.mkdtemp(prefix="ma-installers-")
+    test.addCleanup(shutil.rmtree, folder, True)
+    for name in names:
+        exe = os.path.join(folder, name)
+        with open(exe, "w") as f:
+            f.write("#!/bin/sh\nexit 0\n")
+        os.chmod(exe, 0o755)
+    old = os.environ.get("PATH", "")
+    os.environ["PATH"] = folder + (os.pathsep + old if old else "")
+    test.addCleanup(os.environ.__setitem__, "PATH", old)
+    return folder
+
+
 def load_intake():
     return cards.load_json(os.path.join(META, "requests", "req-echo-001", "intake.json"))
 
@@ -589,6 +607,7 @@ class ExecutionPermission(unittest.TestCase):
         self.tmp, self.root = scratch_root()
         self.addCleanup(shutil.rmtree, self.tmp, True)
         shutil.copytree(os.path.join(META, "profiles", self.LAB), os.path.join(self.root, "profiles", self.LAB))
+        stand_in_installers(self, "pixi")
 
     def intake(self, lab, effects="runs_process", expect=None, installs=None):
         i = copy.deepcopy(load_intake())
@@ -756,6 +775,9 @@ class ValidatedInItsEnvironment(unittest.TestCase):
     tool that writes files; neither is rheology, and nothing reaches the network."""
 
     LAB = "lab-kyu-softmatter"
+
+    def setUp(self):
+        stand_in_installers(self, "pixi")
 
     def build(self, kind, effects, body, installer):
         tmp, root = scratch_root()
