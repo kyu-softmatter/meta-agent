@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://meta-agent.invalid/schemas/execution_permission.schema.json",
   "title": "execution_permission",
-  "description": "A bundle's envelope/execution_permission.json: what the lab's confirmed policy lets the built agent run on its own, copied by the Designer from the lab profile the build names, never inferred. The gate reads `reaches`, a value, and no sentence. Levels, each including the one before: none, mock, sandbox, engine, instrument. A tool whose gate opens_by execution_permission runs where `reaches` is engine or instrument; instrument opens no tool that changes an instrument, which stays behind safety values (MP4).",
+  "description": "A bundle's envelope/execution_permission.json: what the lab's confirmed policy lets the built agent run on its own, copied by the Designer from the lab profile the build names, never inferred. The gate reads `reaches`, a value, and no sentence. Levels, each including the one before: none, mock, sandbox, engine, instrument. A tool whose gate opens_by execution_permission runs where `reaches` is engine or instrument; instrument opens no tool that changes an instrument, which stays behind safety values (MP4). A tool that reaches the network opens by the permission only to install packages from a source listed under package_sources.",
   "type": "object",
   "properties": {
     "artifact": {
@@ -38,6 +38,28 @@
     "profile_revision": {
       "type": "integer",
       "minimum": 1
+    },
+    "package_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "installer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "channel": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "installer",
+          "channel"
+        ]
+      },
+      "description": "the installers and channels a person allowed a built agent to fetch its own packages from (the person, 2026-11-16: pixi from conda-forge). A tool that reaches the network opens by the permission only to install from one of these."
     }
   },
   "additionalProperties": false,

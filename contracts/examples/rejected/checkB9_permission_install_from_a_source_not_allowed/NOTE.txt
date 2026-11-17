@@ -1,0 +1,1 @@
+The tool installs from a source the permission does not list: a person allowed pixi from conda-forge, not pip from the package index.

@@ -181,6 +181,27 @@
                         "words": {
                           "type": "string",
                           "minLength": 1
+                        },
+                        "package_sources": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "installer": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "channel": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "installer",
+                              "channel"
+                            ]
+                          }
                         }
                       },
                       "additionalProperties": false,

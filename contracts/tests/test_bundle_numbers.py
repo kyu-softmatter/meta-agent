@@ -67,5 +67,41 @@ class Check3(unittest.TestCase):
         self.assertEqual(len(self.judge(card, "The stage ends after 13000 moves.\n")), 1)      # a claim's text gives the page no number
 
 
+class B9Permission(unittest.TestCase):
+    """What the lab's execution permission opens (the person, 2026-11-16): an engine, the agent's own files, and an
+    install from a package source a person allowed; never an instrument."""
+
+    def bundle(self, side, installs=None, sources=None, perm=True):
+        d = tempfile.mkdtemp(prefix="b9-")
+        self.addCleanup(shutil.rmtree, d, True)
+        os.makedirs(os.path.join(d, "tools", "t"))
+        os.makedirs(os.path.join(d, "src"))
+        os.makedirs(os.path.join(d, "envelope"))
+        with open(os.path.join(d, "src", "run_tool.py"), "w") as f:
+            f.write("from gate import check_before\n")
+        with open(os.path.join(d, "src", "gate.py"), "w") as f:
+            f.write("def check_before(tool):\n    return None\n")
+        tc = {"name": "t", "side_effects": side, "safety_gate": {"required": True, "place": "src/gate.py", "opens_by": "execution_permission"}}
+        if installs:
+            tc["installs_from"] = installs
+        with open(os.path.join(d, "tools", "t", "tool.json"), "w") as f:
+            json.dump(tc, f)
+        if perm:
+            with open(os.path.join(d, "envelope", "execution_permission.json"), "w") as f:
+                json.dump({"reaches": "engine", "package_sources": sources or []}, f)
+        report = validate.Report(quiet=True)
+        validate.checkB9(d, "bundle", report)
+        return [m for _, _, m in report.fails]
+
+    def test_an_install_from_an_allowed_source_opens_and_nothing_else_on_the_network(self):
+        allowed = [{"installer": "pixi", "channel": "conda-forge"}]
+        self.assertEqual(self.bundle("network", {"installer": "pixi", "channel": "conda-forge"}, allowed), [])
+        self.assertEqual(self.bundle("runs_process"), [])
+        self.assertEqual(len(self.bundle("network", None, allowed)), 1)
+        self.assertEqual(len(self.bundle("network", {"installer": "pip", "channel": "pypi"}, allowed)), 1)
+        self.assertEqual(len(self.bundle("controls_instrument", None, allowed)), 1)
+        self.assertEqual(len(self.bundle("writes_files", perm=False)), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

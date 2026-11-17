@@ -13,6 +13,8 @@ A test is a *run*: a folder made from the committed head, in which sessions are 
 2. **Commit what is to be tested.** A run is the committed head and nothing else; the tool says how many uncommitted paths it left out.
 3. **Make it.** `python contracts/tools/testfolder.py make` writes a clone of the repository, whose origin is a copy inside the run that never moves, and a copy of the newest build of every agent. `--bundle <build folder>` names builds instead, `--no-clone` and `--no-bundles` leave a part out. It prints the folder to open a session in for each. A run's name is never used again.
 
+A bundle that a session built in the clone of an earlier run, and that is in no commit here, is tested standing alone from that clone: `python contracts/tools/testfolder.py make --no-clone --source <that run's repo folder> --bundle <its build folder>`. Make it before the earlier run is removed.
+
 ## Run the sessions
 
 - **From the command line, with nobody present.** `python contracts/tools/testfolder.py session <run> <item> --brief <file> --model <model> --effort <effort>` runs one session in an item and waits for it; start it in the background when several run at once. It is given what the folder gives and nothing of the session that started it, and it runs in the permission mode the person chose for tests. What it was asked and what the command printed are kept in the log folder.

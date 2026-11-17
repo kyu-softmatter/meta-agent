@@ -117,6 +117,24 @@ class TestFolder(unittest.TestCase):
         self.assertIn("from-test", tf.git(origin, "branch", "--list"))
         self.assertNotIn("from-test", tf.git(self.repo, "branch", "--list"))
 
+    def test_a_bundle_built_in_an_earlier_runs_clone_can_be_tested_standing_alone(self):
+        first = self.make("--no-bundles")
+        clone = os.path.join(self.root, first, "repo")
+        bdir = "meta_agent/builds/sim/0001"
+        put(clone, bdir + "/bundle/CLAUDE.md", "# sim\n")
+        digest = tf.tree_digest(tf.tree_hashes(os.path.join(clone, *bdir.split("/"), "bundle")))
+        put(clone, bdir + "/build.json", json.dumps({"card": "build", "id": "build-sim-0001", "bundle_path": bdir + "/bundle", "bundle_sha256": digest}))
+        sh(clone, "add", ".")
+        sh(clone, "commit", "--quiet", "-m", "a build made in the clone")
+        second = self.make("--no-clone", "--source", clone, "--bundle", os.path.join(clone, bdir))
+        made = tf.read_json(os.path.join(self.logs, second, "made.json"))
+        self.assertEqual([it["name"] for it in made["items"]], ["sim-0001"])
+        self.assertEqual(made["source"]["repository"], clone)
+        self.assertTrue(os.path.isfile(os.path.join(self.root, second, "bundles", "sim-0001", "CLAUDE.md")))
+        stray = os.path.join(self.root, "not-a-run")
+        sh(self.top, "init", "--quiet", stray)
+        self.assertEqual(self.run_tool("make", "--no-clone", "--source", stray)[0], 1)
+
     def test_uncommitted_work_is_not_in_a_run(self):
         put(self.repo, "meta_agent/builds/echo/0002/bundle/stray.txt", "not committed\n")
         run = self.make()

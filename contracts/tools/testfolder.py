@@ -4,9 +4,11 @@
 (plan.md 14-39, meta_agent/tasks/016; the person, 2026-11-16, docs/ideas/20261116.md).
 
   python contracts/tools/testfolder.py where                  the test folder and the log folder of this clone
-  python contracts/tools/testfolder.py make [--bundle BUILD ...] [--no-clone] [--no-bundles]
+  python contracts/tools/testfolder.py make [--bundle BUILD ...] [--no-clone] [--no-bundles] [--source REPO]
                                                               a new run: a clean clone of this repository and a
-                                                              copy of each bundle (default: every agent's newest build)
+                                                              copy of each bundle (default: every agent's newest build);
+                                                              --source takes them from another repository's committed
+                                                              head instead, such as the clone of an earlier run
   python contracts/tools/testfolder.py status                 every run: what it holds, what was collected, removed or not
   python contracts/tools/testfolder.py session RUN ITEM --brief FILE [--model M] [--effort E]
                                                               run one unattended session in an item of a run
@@ -292,6 +294,13 @@ def make_clone(repo, run_path):
 
 def make(args, repo=REPO):
     root, logs = folders(args, repo)
+    if args.source:
+        source = os.path.abspath(os.path.expanduser(args.source))
+        if not os.path.isdir(os.path.join(source, ".git")) and git(source, "rev-parse", "--is-bare-repository", check=False).strip() != "true":
+            raise Refused("%s is not a git repository" % source)
+        if inside(source, root) and marked(root, os.path.relpath(source, root).split(os.sep)[0]) is None:
+            raise Refused("%s lies in the test folder but in no run this tool made" % source)
+        repo = source                                   # what is copied comes from there; the folders stay this clone's
     above = stands_above(root)
     if above:
         raise Refused("a run under %s would not stand alone; above it: %s" % (root, ", ".join(above)))
@@ -766,6 +775,7 @@ def main(argv=None, repo=REPO):
     m.add_argument("--bundle", action="append", default=[], metavar="BUILD", help="a build folder, e.g. meta_agent/builds/echo/0004")
     m.add_argument("--no-clone", action="store_true")
     m.add_argument("--no-bundles", action="store_true")
+    m.add_argument("--source", help="the repository whose committed head the run is made from (default: this one)")
     sub.add_parser("status")
     r = sub.add_parser("session")
     r.add_argument("run")

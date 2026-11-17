@@ -539,6 +539,13 @@
       "items": {
         "type": "object"
       }
+    },
+    "held": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/held_item"
+      },
+      "description": "capabilities of the request that stay out of the bundle until a person releases them, whatever they are (a tool, a step, a source), each with its reason; the specification's held[] carries them"
     }
   },
   "additionalProperties": false,

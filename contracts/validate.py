@@ -1330,12 +1330,26 @@ def checkB9(bundle, label, report):
         # What opens the gate (the person, 2026-11-16): safety values a person wrote, or, for a tool that starts an
         # engine or writes the agent's own files and touches no instrument, the lab's confirmed execution permission.
         if gate.get("opens_by") == "execution_permission":
-            if tc.get("side_effects") not in PERMISSION_OPENS:
+            ppath = os.path.join(bundle, "envelope", "execution_permission.json")
+            side = tc.get("side_effects")
+            if side not in PERMISSION_OPENS + ("network",):
                 report.fail("B9", relpath, "a tool with side effects %r opens only by safety values a person wrote; the "
-                            "execution permission opens only %s" % (tc.get("side_effects"), " and ".join(PERMISSION_OPENS)))
-            elif not os.path.isfile(os.path.join(bundle, "envelope", "execution_permission.json")):
+                            "execution permission opens only %s, and network to install packages" % (side, " and ".join(PERMISSION_OPENS)))
+            elif not os.path.isfile(ppath):
                 report.fail("B9", relpath, "the gate opens by the execution permission and the bundle carries no "
                             "envelope/execution_permission.json for it to read")
+            elif side == "network":
+                src = tc.get("installs_from")
+                if not isinstance(src, dict):
+                    report.fail("B9", relpath, "a tool that reaches the network opens by the execution permission only to "
+                                "install packages, from a source its contract names under installs_from; this one names none")
+                else:
+                    perm = bundle_json(bundle, "envelope/execution_permission.json", report, "B9") or {}
+                    allowed = [(s.get("installer"), s.get("channel")) for s in perm.get("package_sources") or [] if isinstance(s, dict)]
+                    if (src.get("installer"), src.get("channel")) not in allowed:
+                        report.fail("B9", relpath, "installs from %s/%s, which the bundle's execution permission does not list "
+                                    "under package_sources (%s)" % (src.get("installer"), src.get("channel"),
+                                                                    ", ".join("%s/%s" % a for a in allowed) or "none"))
 
 
 SKILL_TOKEN_RE = re.compile(r"`([a-z][a-z0-9_]*@v[1-9][0-9]*)`")

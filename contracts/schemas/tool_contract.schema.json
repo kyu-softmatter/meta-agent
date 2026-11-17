@@ -72,7 +72,7 @@
             "safety_values",
             "execution_permission"
           ],
-          "description": "what opens the gate for this tool; absent means safety_values. execution_permission is for a tool that starts an engine or writes the agent's own files and touches no instrument: it opens where the bundle's envelope/execution_permission.json, a copy of the lab's confirmed permission, reaches an engine (the person, 2026-11-16, docs/ideas/20261116.md). A tool that changes an instrument opens only by safety values a person wrote (MP4)."
+          "description": "what opens the gate for this tool; absent means safety_values. execution_permission is for a tool that starts an engine or writes the agent's own files and touches no instrument: it opens where the bundle's envelope/execution_permission.json, a copy of the lab's confirmed permission, reaches an engine (the person, 2026-11-16, docs/ideas/20261116.md). A tool that changes an instrument opens only by safety values a person wrote (MP4). A tool that reaches the network may open by the permission only to install packages, from a source its contract names under installs_from and the bundle's permission lists under package_sources."
         }
       },
       "additionalProperties": false,
@@ -103,6 +103,25 @@
         }
       },
       "additionalProperties": false
+    },
+    "installs_from": {
+      "type": "object",
+      "properties": {
+        "installer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "channel": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "installer",
+        "channel"
+      ],
+      "description": "for a tool that reaches the network to install the agent's own packages: the installer and the channel it fetches from. Its gate opens by the execution permission only where the bundle's permission lists the same pair (B9)."
     }
   },
   "required": [
