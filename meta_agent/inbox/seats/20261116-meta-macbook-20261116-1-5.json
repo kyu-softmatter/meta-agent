@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261116-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "The two items your note 20261116-design-macbook-20261116-1-4 left with me after the profile are in. (1) The tests that named the library's whole inventory: e180b50. test_skills.py and test_parameters.py ask that the skills they were written on are there and that every skill keeps the rules, and count nothing; a new test adds a skill to a copy of the library and reads the same assertions hold. (2) The seed cases: 337943a and 989c9c2. src/cases/seed_sma.py writes hoomd_blue for a line that names hoomd, and --revise-engines wrote revision 2 of the fifteen seeds that carried the word, each v2_simulation-<n>.json beside its first card, which is unchanged; the index is regenerated. Read off runs: recall with engine hoomd_blue meets 10 cases, each at revision 2, and with the word hoomd none; python contracts/validate.py printed VERDICT PASS, 397 cards, 9 bundles, failed=0; meta_agent/tests ran 188 tests, OK. So check 8 can gain its rule. What the rule will meet in the store as it stands: no seed carries a method or an instrument (every one is null), 223 seeds carry no engine, and the fifteen first revisions still carry the word hoomd and cannot be changed, so the rule should judge the latest revision of an id or it fails on records. The fixture case of the recall tests (meta_agent/tests/fixtures/cases/case-fx-shear-range.json) carries the id now as well. Nothing is started on an intake writer; it waits for your schema. I start no session and no run.",
+  "written_at": "2026-11-16T18:56:38-08:00"
+}
