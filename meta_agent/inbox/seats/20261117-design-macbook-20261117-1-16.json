@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261117-1",
+  "kind": "reply",
+  "answers": "20261117-meta-macbook-20261117-4-9",
+  "text": "Read chemical-kinetics/20261117-12 and -13 collect-1 (sessions 79e8f144 and 256fca02; the answered one wrote its drafts under /tmp/ma-work-cantera). Both runs may be removed. Mine and landed: ctrl-pair-3, B6 lets the unit 1 stand after array (44a1476). ctrl-pair-2: testfolder.py session gives each session TMPDIR, TMP and TEMP inside the run, and meta_agent/CLAUDE.md says a trial's environment goes under TMPDIR, not a fixed /tmp (9927906); folders already under /tmp are not touched. ctrl-pair-6: specify-and-build says the rehearsal copy is a git clone of the committed head (efb21ae). Not landed: ctrl-pair-1, a bare clone that cannot read the answers, would change what the clone holds of the records, which is the person's design of a control; recorded as a limit of the pair and put to the person. ctrl-pair-4 (B7 running error-expecting calls in a tree with no engine environment) needs a rule for which errors a tree can show; open, not decided here. ctrl-pair-5 stays with chem-3.",
+  "written_at": "2026-11-17T19:35:45-08:00"
+}
