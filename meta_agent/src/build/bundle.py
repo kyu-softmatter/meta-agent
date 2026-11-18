@@ -590,6 +590,13 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     if os.path.exists(bundle_path):
         raise FileExistsError("bundle exists: %s (a rebuild is a new build id)" % bundle_path)
     skills, subagents = list(skills or []), list(subagents or [])
+    # a template that names an agreement skill (v16 on) has src/validate_tasks.py take each scientific task's agreement
+    # from it, so every bundle with a scientific task carries it (cfd-7: the agreement is a library skill's output)
+    meta = os.path.join(template_path, "TEMPLATE.json")
+    agreement = cards.load_json(meta).get("agreement_skill") if os.path.isfile(meta) else None
+    if agreement and scientific_tasks and agreement not in {r["ref"] for r in skills}:
+        from ..skills import catalogue as catalogue_mod
+        skills.append(catalogue_mod.take([agreement])[0])
     rows = check_drawing(skills, subagents, {t["name"]: t["contract"].get("side_effects") for t in tools}, template_path)
     fill = dict(fill)
     if skills:
@@ -619,8 +626,13 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
         tdir = os.path.join(bundle_path, "tools", t["name"])
         cards.write_json(os.path.join(tdir, "tool.json"), t["contract"])
         cards.write_text(os.path.join(tdir, "adapter.py"), t["adapter_source"])
+        # one file per contract: the first of a category is errors/<category>.json, which the runner returns itself,
+        # and each later one errors/<category>.<code>.json, so that no contract of the intake is lost (cfd-2, dft-2)
+        seen = set()
         for e in t.get("errors", []):
-            cards.write_json(os.path.join(tdir, "errors", e["category"] + ".json"), e)
+            name = e["category"] if e["category"] not in seen else "%s.%s" % (e["category"], e["code"])
+            seen.add(e["category"])
+            cards.write_json(os.path.join(tdir, "errors", name + ".json"), e)
     gk = os.path.join(bundle_path, "tools", ".gitkeep")
     if tools and os.path.exists(gk):
         os.remove(gk)

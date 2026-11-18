@@ -1,0 +1,26 @@
+[
+  {
+    "name": "a measured value above its reference",
+    "inputs": {
+      "measured": 2.5,
+      "reference": 2.0
+    },
+    "expect": {
+      "error": 0.5,
+      "magnitude": 0.5
+    },
+    "worked": "2.5 - 2.0 = 0.5; |0.5| = 0.5"
+  },
+  {
+    "name": "a measured value below its reference: the sign turns, the magnitude does not",
+    "inputs": {
+      "measured": -0.25,
+      "reference": 0.25
+    },
+    "expect": {
+      "error": -0.5,
+      "magnitude": 0.5
+    },
+    "worked": "-0.25 - 0.25 = -0.5; |-0.5| = 0.5"
+  }
+]

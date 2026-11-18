@@ -169,7 +169,7 @@ class TheVersion(unittest.TestCase):
         changed = sorted(r for r in cards.tree_files(v14)
                          if cards.sha256_file(os.path.join(v14, r)) != cards.sha256_file(os.path.join(v15, r)))
         self.assertEqual(changed, ["CLAUDE.md", "TEMPLATE.json", "src/gate.py", "src/run_tool.py"])
-        self.assertEqual(template_mod.LATEST, "v15")
+        self.assertIn("v15", template_mod.SOURCES)                  # v16 is the latest since tasks/019
         self.assertEqual(cards.load_json(os.path.join(v15, "TEMPLATE.json"))["version"], "v15")
         text = cards.read_text(os.path.join(v15, "CLAUDE.md"))
         self.assertIn("A read of data: its contract names `fetches_from`", text)

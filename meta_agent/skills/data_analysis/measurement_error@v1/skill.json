@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1",
+  "id": "measurement_error",
+  "version": 1,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the measurement error of a measured value against a reference value, and its magnitude",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "measured",
+      "unit": "1",
+      "meaning": "the measured quantity value, in the quantity's unit"
+    },
+    {
+      "name": "reference",
+      "unit": "1",
+      "meaning": "the reference quantity value it is compared with, in the same unit"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "error",
+      "unit": "1",
+      "meaning": "the measured value minus the reference value, in the quantity's unit; its sign says on which side of the reference the measured value lies"
+    },
+    {
+      "name": "magnitude",
+      "unit": "1",
+      "meaning": "the absolute value of the error, in the quantity's unit: what a tolerance in that unit is compared with"
+    }
+  ],
+  "entry": {
+    "script": "scripts/analysis.py",
+    "function": "analysis"
+  },
+  "validity": "two values of one quantity in one unit; it judges nothing: whether the magnitude is small enough is a tolerance a person chooses",
+  "source": {
+    "citation": "JCGM 200:2012, International vocabulary of metrology - Basic and general concepts and associated terms (VIM), 3rd edition, 2008 version with minor corrections, BIPM (read 2026-11-17, https://www.bipm.org/documents/20126/2071204/JCGM_200_2012.pdf; meta_agent/inbox/materials/20261117-jcgm-200-2012-vim)",
+    "locus": "entry 2.16 (3.10), measurement error, printed page 22: the measured quantity value minus a reference quantity value"
+  },
+  "note": "Found by search for where the difference of a measured value and a reference value is defined, for the agreement of a scientific task (meta_agent/failures.jsonl cfd-7, run cfd/20261117-14, tasks/019). The error is the entry's definition; the magnitude is its absolute value, which the entry does not name, and is given because a tolerance in the quantity's unit judges a distance, not a side. No value of the source stands behind the worked cases: each is worked by hand in its worked field.",
+  "cases": "cases.json"
+}

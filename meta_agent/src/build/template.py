@@ -106,6 +106,19 @@ v15 changes the gate, after round two of the Quantum ESPRESSO test held
     for a tool that names installs_from, and CLAUDE.md says which network
     calls the agent may make. The Designer copies data_sources from the
     lab profile into envelope/execution_permission.json.
+v16 changes one script of the checks, the runner of tools and text, after the
+    CFD test's clone and its bundle standing alone (tasks/019, cfd-2, cfd-7,
+    cfd-10, cfd-11; dft-2): src/validate_tasks.py takes a scientific task's
+    agreement from the library skill TEMPLATE.json names under
+    agreement_skill (measurement_error@v1), through src/run_skill.py, and
+    the build puts that skill into every bundle with a scientific task
+    (bundle.py). A tool keeps every error contract of a category: the first
+    is errors/<category>.json, which the runner returns itself, the others
+    errors/<category>.<code>.json (bundle.py, run_tool.py). The start task
+    says that replay, like an interface task, waits for the install and is
+    run again after it, and that its Status line is the builder's; CLAUDE.md
+    says so, that the builder's dates are in UTC, and that the agreement is
+    the skill's output.
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -124,8 +137,8 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v9": os.path.join(HERE, "template_v9"), "v10": os.path.join(HERE, "template_v10"),
            "v11": os.path.join(HERE, "template_v11"), "v12": os.path.join(HERE, "template_v12"),
            "v13": os.path.join(HERE, "template_v13"), "v14": os.path.join(HERE, "template_v14"),
-           "v15": os.path.join(HERE, "template_v15")}
-LATEST = "v15"
+           "v15": os.path.join(HERE, "template_v15"), "v16": os.path.join(HERE, "template_v16")}
+LATEST = "v16"
 SOURCE = SOURCES[LATEST]
 
 

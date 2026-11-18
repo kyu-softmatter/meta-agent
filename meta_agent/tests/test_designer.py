@@ -14,6 +14,7 @@ import tempfile
 import unittest
 
 from meta_agent.src import cards, designer
+from meta_agent.src.build import template as template_mod
 from meta_agent.src.intake import goal as goal_mod
 from meta_agent.src.intake import card as intake_card
 
@@ -758,7 +759,7 @@ class DataSources(unittest.TestCase):
                 bundle = os.path.join(root, "builds", "echo", "0001", "bundle")
                 perm = cards.load_json(os.path.join(bundle, "envelope", "execution_permission.json"))
                 self.assertEqual(perm, designer.execution_permission(root, lab))
-                self.assertEqual(cards.load_json(os.path.join(bundle, "TEMPLATE.json"))["version"], "v15")
+                self.assertEqual(cards.load_json(os.path.join(bundle, "TEMPLATE.json"))["version"], template_mod.LATEST)
                 self.assertEqual(out["held"], [], lab)
                 self.assertEqual(out["gates"]["interface"], "pass", lab)        # the calls ran: the gate opened the read
                 text = cards.read_text(os.path.join(bundle, "CLAUDE.md"))

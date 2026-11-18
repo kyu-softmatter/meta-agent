@@ -45,6 +45,8 @@ FOR_THE_RHEOMETER = ["bring_to_ready@v1", "calibrate@v1", "find_and_identify@v1"
                      "shear_stress_min_from_min_torque@v1", "viscosity_min_measurable_at_rate@v1"]
 SEED = sorted(FOR_THE_RHEOMETER + NOT_FOR_THE_RHEOMETER)
 SESSION_SKILLS = ["choose-session-level", "classify-knowledge", "run-skill"]
+# the skill template v16 puts into every bundle with a scientific task, for its agreement (tasks/019, cfd-7)
+AGREEMENT = "measurement_error@v1"
 ENV = dict({k: v for k, v in os.environ.items() if k != "PYTHONPATH"}, PYTHONUTF8="1", PYTHONDONTWRITEBYTECODE="1")
 
 
@@ -418,8 +420,8 @@ class Bundle(unittest.TestCase):
 
     def test_the_named_skills_are_in_the_bundle_unchanged_and_the_held_ones_are_not(self):
         have = sorted(os.listdir(os.path.join(self.bundle, "skills")))
-        self.assertEqual(have, sorted(self.built))
-        for ref in self.built:
+        self.assertEqual(have, sorted(self.built + [AGREEMENT]))      # v16 adds the agreement skill (cfd-7)
+        for ref in self.built + [AGREEMENT]:
             self.assertEqual(cards.sha256_tree(os.path.join(self.bundle, "skills", ref)), cards.sha256_tree(catalogue.find(ref)), ref)
 
     def test_subagents_are_written_with_their_skills_and_side_effects(self):
@@ -471,7 +473,7 @@ class Bundle(unittest.TestCase):
 
     def test_every_library_skill_has_a_page_rendered_from_its_manifest(self):
         lib = os.path.join(self.bundle, ".claude", "skills", bundle_mod.SESSION_SKILL, "library")
-        self.assertEqual(sorted(os.listdir(lib)), sorted(["index.md"] + [r + ".md" for r in self.built]))
+        self.assertEqual(sorted(os.listdir(lib)), sorted(["index.md"] + [r + ".md" for r in self.built + [AGREEMENT]]))
         index = cards.read_text(os.path.join(lib, "index.md"))
         for ref in self.built:
             manifest = cards.load_json(os.path.join(self.bundle, "skills", ref, "skill.json"))
@@ -489,7 +491,7 @@ class Bundle(unittest.TestCase):
         for ref in HELD:
             self.assertNotIn(ref, index)
         self.assertEqual(index, bundle_mod.library_index(
-            [(r, cards.load_json(os.path.join(self.bundle, "skills", r, "skill.json"))) for r in self.built]))
+            [(r, cards.load_json(os.path.join(self.bundle, "skills", r, "skill.json"))) for r in self.built + [AGREEMENT]]))
 
     def test_the_bundle_passes_every_b_check(self):
         p = subprocess.run([sys.executable, VALIDATE, "--bundle", self.bundle], capture_output=True, text=True, encoding="utf-8",
@@ -511,7 +513,7 @@ class Bundle(unittest.TestCase):
     def test_check_22_has_nothing_to_say_about_the_bundles_skills(self):
         kinds = rules.load_kinds()
         dirs = rules.find_skill_dirs(os.path.join(self.bundle, "skills"))
-        self.assertEqual(len(dirs), 5)
+        self.assertEqual(len(dirs), 6)                                 # the five named and the agreement skill
         for d in dirs:
             self.assertEqual(rules.problems(d, kinds), [], d)
 
@@ -831,11 +833,12 @@ class Template(unittest.TestCase):
             intake.update(skills=[], subagents=[])
             bundle, _ = design(root, intake)
             text = cards.read_text(os.path.join(bundle, "CLAUDE.md"))
-            self.assertIn("This agent has no library skill.", text)
+            # a build that names no skill still carries the agreement skill, since every bundle has a scientific task (v16)
+            self.assertEqual(os.listdir(os.path.join(bundle, "skills")), [AGREEMENT])
+            self.assertIn(AGREEMENT, text)
             self.assertNotIn("has no skills", text)
             lib = os.path.join(bundle, ".claude", "skills", bundle_mod.SESSION_SKILL, "library")
-            self.assertEqual(os.listdir(lib), ["index.md"])
-            self.assertIn("This agent has no library skill.", cards.read_text(os.path.join(lib, "index.md")))
+            self.assertEqual(sorted(os.listdir(lib)), ["index.md", AGREEMENT + ".md"])
             self.assertIn("This agent has no subagents.", text)
             self.assertFalse(os.path.exists(os.path.join(bundle, ".claude", "agents")))
             spec = cards.load_json(os.path.join(root, "requests", "req-rheo-fixture-001", "agent_spec.json"))

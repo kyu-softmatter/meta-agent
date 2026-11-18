@@ -863,6 +863,48 @@
       "sha256": "sha256:328f7b2f9b9f30a036f4b85cf91156ea3ccc38faec48822b9f271b3b2b2e88a3"
     },
     {
+      "ref": "measurement_error@v1",
+      "id": "measurement_error",
+      "version": 1,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the measurement error of a measured value against a reference value, and its magnitude",
+      "description": "The measurement error of a measured value against a reference value, and its magnitude. Take it whenever a measured value is compared with a reference value of the same quantity, as a scientific task's agreement is.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "measured",
+          "unit": "1",
+          "meaning": "the measured quantity value, in the quantity's unit"
+        },
+        {
+          "name": "reference",
+          "unit": "1",
+          "meaning": "the reference quantity value it is compared with, in the same unit"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "error",
+          "unit": "1",
+          "meaning": "the measured value minus the reference value, in the quantity's unit; its sign says on which side of the reference the measured value lies"
+        },
+        {
+          "name": "magnitude",
+          "unit": "1",
+          "meaning": "the absolute value of the error, in the quantity's unit: what a tolerance in that unit is compared with"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/measurement_error@v1",
+      "sha256": "sha256:9ab9b31ecfc265f9321eca10284d4d47f9d96c484b6d2eee10170a71f788f073"
+    },
+    {
       "ref": "standard_error_of_independent_estimates@v1",
       "id": "standard_error_of_independent_estimates",
       "version": 1,
