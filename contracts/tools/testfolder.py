@@ -918,6 +918,15 @@ def session(args, repo=REPO):
     with open(args.brief, "r", encoding="utf-8") as f:
         brief = f.read()
     cmd = [exe, "-p", "--output-format", "json", "--permission-mode", args.permission_mode]
+    # the session is given what the run holds and not the account's own plugins, skills or connector servers (the
+    # person, 2026-11-17; cfd-12, gmx-14): user-level settings are not read, and only the item's own servers start.
+    # Read off a trial on this computer: with these options the account's plugin skills and its connector tools were
+    # gone and a project skill still loaded; the skills built into the command-line claude stay, as no option removes
+    # them without removing the project's own.
+    cmd += ["--setting-sources", "project,local", "--strict-mcp-config"]
+    item_mcp = os.path.join(run_path, *item["path"].split("/") + [".mcp.json"])
+    if os.path.isfile(item_mcp):
+        cmd += ["--mcp-config", item_mcp]
     cmd += (["--model", args.model] if args.model else []) + (["--effort", args.effort] if args.effort else [])
     env = {k: v for k, v in os.environ.items() if not k.startswith(NOT_PASSED_ON) and not k.startswith("GIT_")}
     # the session's temporary folder is inside the run, beside its items, so that what it leaves there (a trial's

@@ -375,7 +375,11 @@ class TestFolder(unittest.TestCase):
         code, out, err = self.run_tool("session", run, "balance-0001", "--brief", brief, "--model", "model-a", "--effort", "medium", "--claude", fake)
         self.assertEqual(code, 0, err)
         got = tf.read_json(seen)
-        self.assertEqual(got["argv"], ["-p", "--output-format", "json", "--permission-mode", "auto", "--model", "model-a", "--effort", "medium"])
+        # the session is given what the run holds and not the account's own plugins, skills or connector servers
+        # (the person, 2026-11-17; cfd-12, gmx-14): user settings are not read and only the item's own servers start
+        self.assertEqual(got["argv"], ["-p", "--output-format", "json", "--permission-mode", "auto",
+                                       "--setting-sources", "project,local", "--strict-mcp-config",
+                                       "--model", "model-a", "--effort", "medium"])
         self.assertEqual((got["cwd"], got["stdin"], got["passed_on"]),
                          (os.path.join(self.root, run, "bundles", "balance-0001"), "Read tasks/001-start.md first.\n", []))
         # a session's scratch folders go inside the run and are removed with it (run chemical-kinetics/20261117-12,
@@ -383,6 +387,11 @@ class TestFolder(unittest.TestCase):
         scratch = os.path.join(self.root, run, "tmp")
         self.assertEqual(got["tmp"], [scratch] * 3)
         self.assertTrue(os.path.isdir(scratch))
+        mcp = put(os.path.join(self.root, run, "bundles", "balance-0001"), ".mcp.json", "{\"mcpServers\": {}}\n")
+        self.assertEqual(self.run_tool("session", run, "balance-0001", "--brief", brief, "--claude", fake)[0], 0)
+        got2 = tf.read_json(seen)
+        self.assertEqual(got2["argv"][-2:], ["--mcp-config", mcp])     # the item's own servers, and only those
+        os.remove(mcp)
         rec = tf.read_json(os.path.join(self.logs, run, "sessions", "balance-0001-1.json"))
         self.assertEqual((rec["brief"], rec["permission_mode"], rec["result"]["session_id"]), ("Read tasks/001-start.md first.\n", "auto", "abcd"))
         code, _, err = self.run_tool("session", run, "balance-0001", "--brief", brief, "--claude", fake, "--permission-mode", "bypassPermissions")
@@ -391,7 +400,7 @@ class TestFolder(unittest.TestCase):
         os.environ["FAKE_FAILS"] = "1"
         self.addCleanup(os.environ.pop, "FAKE_FAILS", None)
         self.assertEqual(self.run_tool("session", run, "balance-0001", "--brief", brief, "--claude", fake)[0], 1)   # a session that could not run
-        self.assertTrue(os.path.isfile(os.path.join(self.logs, run, "sessions", "balance-0001-2.json")))
+        self.assertTrue(os.path.isfile(os.path.join(self.logs, run, "sessions", "balance-0001-3.json")))
 
     # ------------------------------------------------------------------ wipe
     def test_wipe_removes_the_collected_transcripts_only_when_asked(self):
