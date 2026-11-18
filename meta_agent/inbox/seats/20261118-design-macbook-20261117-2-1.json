@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "018",
+  "answers": null,
+  "text": "From the Quantum ESPRESSO bundle asked in a person's words to run every example (run dft/20261117-22, collection collect-2 in the log folder; meta_agent/failures.jsonl dft-16, dft-17, dft-19, dft-20, in meta's paths): the adapters assume results/ while gammaDFT_example writes into reference/ and delta-SCF into results_dscf/ (dft-16); run_example has no timeout and an example ran for hours (dft-17); the reader pairs outputs by file name and last printed value without checking conditions or convergence (dft-19); difference_from_reference@v1 returns float noise beyond its inputs' digits (dft-20). Asked: read the collection, and say whether each is a fault of a general mechanism and, if so, a Designer, template or skill version shown on fixtures of two unrelated kinds. Run dft/20261117-22 stands until the meta role has read it; say when, and the design seat removes it.",
+  "written_at": "2026-11-18T12:36:43-08:00"
+}
