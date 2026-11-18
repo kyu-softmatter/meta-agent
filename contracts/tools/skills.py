@@ -476,6 +476,51 @@ def common_problems(skill_dir, manifest):
     return out
 
 
+B18_FROM = 20   # the first template version that names a common set (meta_agent/tasks/025, template v20)
+
+
+def common_set_problems(bundle):
+    """Bundle check B18 (the person, 2026-11-18, docs/ideas/20261118.md; meta_agent/tasks/025): a bundle of
+    template v20 or later that is a simulation bundle carries every skill of the common set its TEMPLATE.json
+    names, as that skill, another version of it, or a next version adapted from it (adapted_from). A bundle
+    is a simulation bundle where its CAPABILITIES.json says tool_kind engine, which the builder writes; one
+    that does not say so is not judged. Returns (relative path, message)."""
+    try:
+        with open(os.path.join(bundle, "TEMPLATE.json"), "r", encoding="utf-8") as f:
+            meta = json.load(f)
+    except (OSError, ValueError):
+        return []
+    m = re.match(r"^v(\d+)$", str(meta.get("version", ""))) if isinstance(meta, dict) else None
+    common = meta.get("common_skills") if isinstance(meta, dict) else None
+    if not m or int(m.group(1)) < B18_FROM or not isinstance(common, list) or not common:
+        return []
+    sdir = os.path.join(bundle, "skills")
+    carried, adapted = set(), set()
+    for name in (os.listdir(sdir) if os.path.isdir(sdir) else []):
+        if "@v" in name:
+            carried.add(name.split("@v")[0])
+        try:
+            with open(os.path.join(sdir, name, "skill.json"), "r", encoding="utf-8") as f:
+                man = json.load(f)
+        except (OSError, ValueError):
+            continue
+        if isinstance(man, dict) and isinstance(man.get("adapted_from"), str):
+            adapted.add(man["adapted_from"].split("@v")[0])
+    ids = [str(ref).split("@v")[0] for ref in common]
+    try:
+        with open(os.path.join(bundle, "CAPABILITIES.json"), "r", encoding="utf-8") as f:
+            cap = json.load(f)
+    except (OSError, ValueError):
+        cap = {}
+    # only a bundle that says its tool is an engine: the agreement skill of the set is carried into every bundle with a
+    # scientific task, so carrying part of the set does not mark a simulation bundle (the echo bundles carry it)
+    if not (isinstance(cap, dict) and cap.get("tool_kind") == "engine"):
+        return []
+    return [("skills/", "a simulation bundle of template v%s carries every skill of the common set; %s is missing, "
+                        "neither carried in some version nor adapted (adapted_from)" % (m.group(1), ref))
+            for ref, i in zip(common, ids) if i not in carried and i not in adapted]
+
+
 def problems(skill_dir, kinds, schema_errors=None):
     """Everything check 22 says about one skill. The source is run only when reading it found nothing."""
     manifest = read_manifest(skill_dir)

@@ -1,0 +1,7 @@
+{
+  "version": "v20",
+  "common_skills": [
+    "series_maximum@v2",
+    "measurement_error@v2"
+  ]
+}

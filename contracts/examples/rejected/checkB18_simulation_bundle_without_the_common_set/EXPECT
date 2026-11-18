@@ -1,0 +1,3 @@
+check B18
+
+A bundle of template v20 whose tool is an engine (CAPABILITIES.json tool_kind engine) carries one skill of the common set its TEMPLATE.json names and not the other: every simulation bundle carries the whole common set, each skill or a next version adapted from it (the person, 2026-11-18, docs/ideas/20261118.md; meta_agent/tasks/025).

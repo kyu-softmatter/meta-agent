@@ -1,0 +1,11 @@
+{
+  "schema_version": "0.1",
+  "agent": "fixture-agent",
+  "tool": "fixture engine",
+  "tool_kind": "engine",
+  "source": null,
+  "observed": [],
+  "derived": [],
+  "unverified": [],
+  "gaps": []
+}

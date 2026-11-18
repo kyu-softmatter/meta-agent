@@ -142,3 +142,34 @@ class DescriptionNumbers(unittest.TestCase):
         self.assertEqual(self.numbers("Viscosity of water from 265.15 K to 423.15 K."), ["265.15", "423.15"])
         self.assertEqual(self.numbers("The particle count of a body-centred cubic lattice of m cells a side."), [])
         self.assertEqual(self.numbers("As printed by hoomd 7.2.2."), [])
+
+
+class CommonSet(unittest.TestCase):
+    """Bundle check B18: a simulation bundle of template v20 or later carries the whole common set (tasks/025)."""
+
+    def bundle(self, kind, carried, adapted=()):
+        import json, tempfile
+        b = tempfile.mkdtemp()
+        with open(os.path.join(b, "TEMPLATE.json"), "w", encoding="utf-8") as f:
+            json.dump({"version": "v20", "common_skills": ["series_maximum@v2", "measurement_error@v2"]}, f)
+        with open(os.path.join(b, "CAPABILITIES.json"), "w", encoding="utf-8") as f:
+            json.dump({"tool": "x", "tool_kind": kind}, f)
+        for ref in carried:
+            os.makedirs(os.path.join(b, "skills", ref))
+        for ref, src in adapted:
+            os.makedirs(os.path.join(b, "skills", ref))
+            with open(os.path.join(b, "skills", ref, "skill.json"), "w", encoding="utf-8") as f:
+                json.dump({"id": ref.split("@v")[0], "adapted_from": src}, f)
+        return b
+
+    def test_an_engine_bundle_with_the_set_or_its_adaptation_is_clean(self):
+        self.assertEqual(skills.common_set_problems(self.bundle("engine", ["series_maximum@v2", "measurement_error@v2"])), [])
+        self.assertEqual(skills.common_set_problems(self.bundle("engine", ["series_maximum@v3", "measurement_error@v2"])), [])
+        b = self.bundle("engine", ["measurement_error@v2"], adapted=[("gromacs_series_maximum@v1", "series_maximum@v2")])
+        self.assertEqual(skills.common_set_problems(b), [])
+
+    def test_an_engine_bundle_missing_one_is_refused_and_an_instrument_bundle_is_not_judged(self):
+        found = skills.common_set_problems(self.bundle("engine", ["series_maximum@v2"]))
+        self.assertTrue(len(found) == 1 and "measurement_error@v2 is missing" in found[0][1], found)
+        self.assertEqual(skills.common_set_problems(self.bundle("instrument", [])), [])
+

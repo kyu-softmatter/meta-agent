@@ -1008,7 +1008,7 @@ def check17(cards, c, report, tree):
 # B checks: one built bundle (plan.md 5.1 S5, 8). Run with --bundle PATH, on every
 # bundle a build card points at, and on <fixture>/bundle/ under --expect-fail.
 # ----------------------------------------------------------------------------
-B_IMPLEMENTED = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B11", "B15", "B16", "B17"]  # a plain list literal: a test of the meta role reads it from this source
+B_IMPLEMENTED = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B11", "B15", "B16", "B17", "B18"]  # a plain list literal: a test of the meta role reads it from this source
 BUNDLE_FILES = ["CLAUDE.md", ".claude/settings.json", "CAPABILITIES.json", "envelope/safety.json",
                 "envelope/snapshot.json", "envelope/parameters.json", "failures.jsonl",
                 "src/gate.py", "src/run_tool.py", "src/replay.py", "src/validate_tasks.py"]
@@ -1479,6 +1479,13 @@ def checkB16(bundle, label, report):
         report.fail("B16", relpath, msg)
 
 
+def checkB18(bundle, label, report):
+    """A simulation bundle of template v20 or later carries every skill of the common set its TEMPLATE.json
+    names, in some version or adapted (the person, 2026-11-18; meta_agent/tasks/025)."""
+    for relpath, msg in skill_rules.common_set_problems(bundle):
+        report.fail("B18", relpath, msg)
+
+
 def checkB17(bundle, label, report):
     """Every parameter row a tool contract's input names under `row` is a row of envelope/parameters.json
     (tasks/016, run 20261117-3: a bundle shipped no rows beside contracts that take them)."""
@@ -1519,6 +1526,8 @@ def run_bundle_checks(bundle, c, report, checks, knowledge_root, label=None):
         checkB16(bundle, label, report)
     if "B17" in checks:
         checkB17(bundle, label, report)
+    if "B18" in checks:
+        checkB18(bundle, label, report)
     report.ran.update(ch for ch in checks if isinstance(ch, str))
 
 
