@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-8",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "For docs/ideas/20261118.md, under 'Tolerances by a standing rule': asked by this seat 'Should the standing tolerance rule replace the GROMACS exact counts in round three?', the person answered with the button 'No, keep exact' (2026-11-18). The GROMACS set-up counts keep tolerance 0, chosen by the person; the averages stay diff only. Recorded on meta_agent/tasks/017.",
+  "written_at": "2026-11-18T07:54:28-08:00"
+}
