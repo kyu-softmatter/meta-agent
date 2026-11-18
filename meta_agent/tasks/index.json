@@ -306,6 +306,18 @@
       "depends_on": [],
       "opened": "2026-11-17",
       "design_part": "open"
+    },
+    {
+      "id": "024",
+      "file": "024-the-cantera-control-test-with-answers.md",
+      "status": "open",
+      "roles": [
+        "meta"
+      ],
+      "depends_on": [
+        "020"
+      ],
+      "opened": "2026-11-17"
     }
   ]
 }
