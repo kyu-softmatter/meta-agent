@@ -250,10 +250,18 @@ def execution_permission(root, lab_id):
            "words": value["words"], "confirmed_by": "human", "date": leaf["date"],
            "lab_profile_ref": profile["id"], "profile_revision": profile["revision"]}
     if "package_sources" in value:      # the installers and channels a person allowed, as the profile lists them
-        out["package_sources"] = [{"installer": s["installer"], "channel": s["channel"]} for s in value["package_sources"]]
+        out["package_sources"] = [dict({"installer": s["installer"], "channel": s["channel"]},
+                                       **({"engines": list(s["engines"])} if s.get("engines") else {}))
+                                  for s in value["package_sources"]]     # a source for named engines alone keeps them (3a0c4ec)
     if "data_sources" in value:         # the hosts a person allowed data to be read from, as the profile lists them (tasks/023)
         out["data_sources"] = [{"host": h["host"], "access": h["access"]} for h in value["data_sources"]]
     return out
+
+
+def engine_id(intake):
+    """The registry id of the engine an agent is for (the intake's tool.registry_id), or None for any other tool."""
+    tool = intake.get("tool") or {}
+    return tool.get("registry_id") if tool.get("kind") == "engine" else None
 
 
 def reaches_of(root, lab_id):
@@ -511,7 +519,8 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
                              words=bundle_mod.words_by_record(intake, goal, spec),
                              ids=builder_ids(root, rid), questions=bundle_mod.questions_by_number(intake),
                              simulation=(intake.get("tool") or {}).get("kind") == "engine",
-                             adaptations=adapted_skills(root, rid), tool_kind=(intake.get("tool") or {}).get("kind"))
+                             adaptations=adapted_skills(root, rid), tool_kind=(intake.get("tool") or {}).get("kind"),
+                             engine=engine_id(intake))
     diff_text = bundle_mod.diff_from_template(template_path, bundle_path)
     put(os.path.join(build_dir, "diff_from_template.txt"), diff_text)
 
