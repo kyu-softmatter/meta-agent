@@ -127,3 +127,7 @@ Asked by this seat "Should the standing tolerance rule replace the GROMACS exact
 > No, keep exact
 
 So in round three and after, the set-up counts of the GROMACS agent keep tolerance 0, chosen by the person, and the standing rule does not replace it. The averages stay value, reference and difference with no verdict (the person's "Counts exact, averages: diff only"); this answer was asked of the counts alone.
+
+## Clean-up on the person's word (2026-11-18)
+
+Asked through the cleanup session (`design-macbook-20261117-3`, `2949b75`) to remove what this test built once its part is finished. Run `20261118-1` stands: its unattended session is running the full tutorial (`gmx mdrun` was working when this was written), and the design role has not read that run's second session. It is removed with `wipe --sessions` once the session ends and both roles have read it. Runs `20261117-16`, `20261117-19` and `20261117-23` were removed earlier. Outside any run, the only scratch folder this seat left (a rehearsal copy of the lab profile in its own scratch folder) is removed. Builds and records in the repository stay.
