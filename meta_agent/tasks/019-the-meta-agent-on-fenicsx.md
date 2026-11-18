@@ -28,4 +28,8 @@
 - *Faults:* `cfd-7` to `cfd-12` in `../failures.jsonl`.
 - *Not watched:* a second question of the kind it was built for with changed rows; a run on more than one process.
 
+**Removed (2026-11-17):** both runs were read by the meta role and by the design role (`design-macbook-20261117-1`'s reply `../inbox/seats/20261117-design-macbook-20261117-1-20.json`, `62ccc3d`), then wiped with `--sessions`: `cfd/20261117-14` and `cfd/20261117-1` removed, one session transcript each removed from the application's folder, a last collection `collect-2` written for each; `testfolder.py status` lists both as removed. The collections stay in the log folder. Left outside the runs, which `wipe` does not reach: the clone's three folders under `/tmp` (`cfd-6`).
+
+**Where each fault stands** (`../failures.jsonl`): `cfd-1` landed (`ae508fe`); `cfd-4` landed by the design role (`9927906`, a session's TMPDIR inside its run); `cfd-5` landed by the design role (`9954f02`, classify-knowledge); `cfd-3` open with the design role (what an interface task may do in the builder's tree); `cfd-12` put to the person by the design role; `cfd-2`, `cfd-7`, `cfd-10`, `cfd-11` handed back to a meta seat (template text and code; on `cfd-7` both roles read the rule of 2026-11-17 alike: a scientific task's agreement is a library skill's output, named in the task, and `validate_tasks.py` reads it); `cfd-6`, `cfd-8`, `cfd-9` open with a meta seat.
+
 **Must not:** write a brief or make a run before the person's word; put any answer in the brief that the person did not give for this engine; change a build or decide a threshold from the test; fix a fault in anything but a general mechanism shown on fixtures of two unrelated kinds; push.
