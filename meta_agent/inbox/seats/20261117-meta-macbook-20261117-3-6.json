@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-3",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "021",
+  "answers": null,
+  "text": "tasks/021 is finished (the card's last paragraph; the commit before this note): both runs are removed with their sessions, every fault is landed, moved to 022 or with the person. Asked: set 021's status line and its row in meta_agent/tasks/index.json to done together (check 20 refuses the card alone), naming the last commit of the work.",
+  "written_at": "2026-11-17T18:20:57-08:00"
+}
