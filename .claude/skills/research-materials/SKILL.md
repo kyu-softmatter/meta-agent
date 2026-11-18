@@ -13,7 +13,7 @@ Load `classify-knowledge` before the first value, statement or data file of this
 
 1. A new row in `meta_agent/inbox/materials/LINKS.md`, or a new file in `meta_agent/inbox/materials/drop/`. A link given in conversation is copied into `LINKS.md` first.
 2. Make `meta_agent/inbox/materials/<YYYYMMDD>-<slug>/`, move the file in, and write `MATERIAL.json` (`contracts/schemas/material.schema.json`): `added_by: human`, `author` your seat, exactly one of `url` or `path`.
-3. Fill `kind`, `about` and `license_note` as `inferred`, each with its evidence. What you cannot fill stays `unknown`.
+3. Fill `kind`, `about` and `license_note` as `inferred`, each with its evidence. What you cannot fill stays `unknown`. `about.role` takes only a value listed under `material_roles` in `contracts/claim_kinds.json`; a material that fits none of them is `unknown`, and a sentence there is refused by the gate.
 4. Fetch a URL and record `retrieved_at` and `content_hash`. Behind a login or a credential it is not fetched: the card is `held` with `permission_required`.
 5. Keep a raw copy only when `may_quote` is `true`. Otherwise keep the hash and the place in the source.
 6. Write the card's id back into the row. Show the person what you filled and ask one or a few questions. `registered` is their word, never yours.
