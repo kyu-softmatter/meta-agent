@@ -180,6 +180,7 @@ def apply(draft, binding, skills, run, seat, now=None, sheet_path=None, tree=Non
     grades = grade_table()
     for r in rows:
         if r.get("value") is None:
+            r.setdefault("grade", None)      # no value, no grade; check 1 still needs the key
             continue
         kind = str(r.get("source") or "").split(":", 1)[0]
         if kind in ("computed", "correlation"):

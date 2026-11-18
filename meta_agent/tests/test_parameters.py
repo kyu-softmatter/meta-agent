@@ -209,6 +209,23 @@ class Sheet(unittest.TestCase):
         self.assertEqual(apply(), self.sheet)
 
 
+class ValuelessRow(unittest.TestCase):
+    """A row with no value carries grade null on the sheet whether or not its draft states it (check 1 needs
+    the key; failures.jsonl rheotool-2, read from run rheology/20261117-15)."""
+
+    def test_a_valueless_row_left_without_grade_gets_grade_null(self):
+        d = draft()
+        valueless = [r["name"] for r in d["rows"] if r.get("value") is None]
+        self.assertTrue(valueless)
+        for r in d["rows"]:
+            if r.get("value") is None:
+                del r["grade"]
+        sheet = apply(d)
+        for name in valueless:
+            self.assertIn("grade", row(sheet, name), name)
+        self.assertEqual(sheet, apply())
+
+
 class EmptyInterval(unittest.TestCase):
     def test_two_bounds_that_cross_give_no_point_and_a_tradeoff_naming_both(self):
         d = draft()
