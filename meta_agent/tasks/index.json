@@ -258,10 +258,12 @@
       "file": "020-the-meta-agent-on-cantera.md",
       "status": "open",
       "roles": [
-        "design"
+        "design",
+        "meta"
       ],
       "depends_on": [],
-      "opened": "2026-11-17"
+      "opened": "2026-11-17",
+      "design_part": "landed"
     },
     {
       "id": "021",
