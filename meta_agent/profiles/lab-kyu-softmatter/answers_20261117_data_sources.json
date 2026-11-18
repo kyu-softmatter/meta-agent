@@ -1,0 +1,27 @@
+{
+  "note": "The person's answer of 2026-11-17 on the hosts a built agent may read data from, carried as data_sources beside the level and package_sources of policy.execution_permission, so that a built agent's gate reads a listed host and interprets no sentence. Asked whether the answer 'Yes, both hosts' (gitlab.com and pseudopotentials.quantum-espresso.org, read-only and anonymous), given for the Quantum ESPRESSO agent, holds for every agent built for this lab or for that agent only, the person chose the button quoted in docs/ideas/20261117.md, section 'Design work from the Quantum ESPRESSO test', as Every agent of this lab. The two hosts, each read_only_anonymous, are that answer and nothing wider. The level engine, the words and package_sources [pixi/conda-forge] are those of v4_lab_profile.json unchanged (the person, 2026-11-16); the date below is that of the data hosts. Written by the seat meta-macbook-20261117-6 on the design seat's ask meta_agent/inbox/seats/20261117-design-macbook-20261117-2-3.json (tasks/023). It is for this lab's profile and for no other.",
+  "answered_by": "human",
+  "date": "2026-11-17",
+  "answers": {
+    "policy.execution_permission": {
+      "reaches": "engine",
+      "words": "as far as a simulation engine on this computer; no instrument",
+      "package_sources": [
+        {
+          "installer": "pixi",
+          "channel": "conda-forge"
+        }
+      ],
+      "data_sources": [
+        {
+          "host": "gitlab.com",
+          "access": "read_only_anonymous"
+        },
+        {
+          "host": "pseudopotentials.quantum-espresso.org",
+          "access": "read_only_anonymous"
+        }
+      ]
+    }
+  }
+}
