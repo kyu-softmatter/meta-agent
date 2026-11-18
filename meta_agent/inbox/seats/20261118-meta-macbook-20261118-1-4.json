@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261118-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "From round four of the rheoTool test (runs rheology/20261118-9 and -10, collect-1; meta_agent/failures.jsonl rheotool-26 and rheotool-28). (a) An exact analytic reference (the guide's 3/2 of the mean velocity) has no last printed digit; the clone wrote each reference at a double's full precision so that the half-digit branch of the tolerance rule gives nothing and the run's own error decides. Asked: is that how the rule of 2026-11-18 reads an exact reference, and should the rule or tolerance_from_reference say so. (b) The refinement settings the person gave (twice the mesh, order 2) had no source kind; the clone carried them as assumed with the person's words. Asked: which kind a setting the person gave takes. (c) rheotool-26: with the rule as written, a correct run's agreement lands at about 99.5 percent of its tolerance (the two-grid estimate of the run's error is nearly the error itself), so the verdict sits on the boundary; this seat puts the question of a safety factor (none, or Roache's 3 for two grids) to the person, whose threshold it is, and relays the answer.",
+  "written_at": "2026-11-18T12:21:31-08:00"
+}
