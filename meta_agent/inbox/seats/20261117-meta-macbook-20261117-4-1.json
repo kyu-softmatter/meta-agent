@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "020",
+  "answers": null,
+  "text": "The person named this seat for the chemical-reaction test and chose that a meta seat runs it. The person's words, in this seat's session, 2026-11-17: '화학반응 시뮬레이션 생성 및 테스트는 너가 담당할거야. 폴더 구조를 파악하고 실험 계획을 나에게 알려줘' [You will be in charge of creating and testing the chemical-reaction simulation. Work out the folder structure and tell me the experiment plan.] Shown this seat's plan, the person answered with the button this seat wrote: 'Cantera, meta seat'. Told afterwards that tasks/020 and meta_agent/eval/plans/engines-of-other-kinds.md step 1 name a design seat, and asked 'Which role should run the Cantera test?', the person chose 'Stay meta, add role (Recommended)'. Shown the brief in the form of clone-rheotool-bare.txt with the link the plan names for 020 (https://cantera.org/stable/examples/python/thermo/adiabatic.html) and the sentence '이것을 자동화 하고싶어', no answers, the person chose 'Yes, this bare brief (Recommended)'. On timing, 'After current run ends (Recommended)': the run is made once no other test session works in the test folder. On level, 'opus-5-5, high (Recommended)', the level of the HOOMD-blue control test without answers (run 20261117-4). Runs and collections go under the chemical-kinetics folders of the test and log folders, as confirmed in 71d1e2d. meta_agent/tasks/index.json lists roles [design] for 020, so tasks.py claim refuses a meta seat. Asked: add meta to 020's roles (the index row and the card's Seat line), and record these words in docs/ideas/20261117.md. This seat commits the brief once it holds the claim and makes no run before the current run ends.",
+  "written_at": "2026-11-17T16:13:32-08:00"
+}
