@@ -139,7 +139,37 @@ def measured_words(t):
     return "; it ran and measured %s against the reference %s, agreement %s" % (t.get("measured"), t.get("reference"), t.get("agreement"))
 
 
-def make_validation_report(report, build_id, rid, bundle_rel, seat, now=None, environment="mock", not_made=None):
+def measured_unit(bundle_path, task_file):
+    """The unit of the quantity a scientific task measures, as the contract of the tool it calls declares it for that
+    output; None where the contract declares none, where the task's fields have different units, or where the task or
+    the contract cannot be read (failure line chem-1, test run chemical-kinetics/20261117-1)."""
+    if not bundle_path or not task_file:
+        return None
+    try:
+        item = cards.load_json(os.path.join(bundle_path, "validation", "scientific", task_file))
+        tool = (item.get("call") or {}).get("tool")
+        contract = cards.load_json(os.path.join(bundle_path, "tools", tool, "tool.json"))
+    except (OSError, ValueError, TypeError, AttributeError):
+        return None
+    measure = item.get("measure") or {}
+    stated = measure.get("stated")
+    fields = sorted(stated) if isinstance(stated, dict) and stated else [measure.get("output_field")]
+    props = ((contract.get("outputs") or {}).get("properties") or {})
+    units = {(props.get(f) or {}).get("unit") for f in fields if f}
+    unit = units.pop() if len(units) == 1 and None not in units else None
+    # a unit the registry does not hold enters no card (check 2): the report keeps its earlier unit then
+    return unit if unit in registered_units() else None
+
+
+def registered_units():
+    try:
+        return set((cards.load_json(os.path.join(REPO, "contracts", "units.json")).get("units") or {}).keys())
+    except (OSError, ValueError, AttributeError):
+        return set()
+
+
+def make_validation_report(report, build_id, rid, bundle_rel, seat, now=None, environment="mock", not_made=None,
+                           bundle_path=None):
     vr = cards.skeleton("validation_report", "vr-" + build_id.replace("build-", ""), seat, cards.now_iso(now), rid=rid)
     v = report["validate"]
     vr["build_ref"] = build_id
@@ -160,15 +190,17 @@ def make_validation_report(report, build_id, rid, bundle_rel, seat, now=None, en
                 "reference": ref, "tolerance": t.get("tolerance"),
                 "evidence": "%s/validation/scientific/%s" % (bundle_rel, t["file"])}
         if "agreement" in t:
-            # the agreement is a difference of the measured quantity: it has the unit the person's tolerance has
-            item["agreement"] = {"value": t["agreement"], "unit": (t.get("tolerance") or {}).get("unit") or "1"}
+            # the agreement is a difference of the measured quantity: it has the unit the tool's contract declares for
+            # that output; where the contract declares none, the unit the person's tolerance has, otherwise '1'
+            unit = measured_unit(bundle_path, t.get("file")) or (t.get("tolerance") or {}).get("unit") or "1"
+            item["agreement"] = {"value": t["agreement"], "unit": unit}
             names = ref.get("number_names") or []
             if len(names) >= 2 and isinstance(t.get("reference"), (int, float)) and not isinstance(t.get("reference"), bool):
-                vr["numbers"].append({"name": names[0], "value": t["reference"], "unit": "1",
+                vr["numbers"].append({"name": names[0], "value": t["reference"], "unit": unit,
                                       "source": "computed:%s/validation/scientific/%s#reference" % (bundle_rel, t["file"]),
                                       "grade": "E4", "value_kind": "computed",
                                       "note": "the reference the runner computed independently of the tool"})
-                vr["numbers"].append({"name": names[1], "value": t["agreement"], "unit": "1",
+                vr["numbers"].append({"name": names[1], "value": t["agreement"], "unit": unit,
                                       "source": "computed:%s/validation/scientific/%s#agreement" % (bundle_rel, t["file"]),
                                       "grade": "E4", "value_kind": "computed",
                                       "note": "absolute difference between the measured output and the reference"})

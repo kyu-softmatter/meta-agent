@@ -507,7 +507,8 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
     elif not_made:
         where = "the bundle's environment was not made, so a task that needs it is not_run: " + not_made
     vr, iface_v, sci_v = gate_mod.make_validation_report(report, build_id_full, rid, bundle_rel, seat, created,
-                                                         environment=environment, not_made=not_made)
+                                                         environment=environment, not_made=not_made,
+                                                         bundle_path=bundle_path)
     if where:
         vr["note"] += "; " + where
     put(os.path.join(build_dir, "validation_report.json"), vr)
