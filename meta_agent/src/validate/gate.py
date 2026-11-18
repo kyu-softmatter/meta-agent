@@ -272,6 +272,9 @@ def make_validation_report(report, build_id, rid, bundle_rel, seat, now=None, en
                 item["reason"] += "; the bundle's environment was not made: " + not_made
         elif t["verdict"] == "fail":
             item["reason"] = t.get("reason", "outside the tolerance")
+        elif t["verdict"] == "pass" and "measured" in t:
+            # a passing task keeps what it measured, as a failing one does in its reason (cfd-r3-3, run cfd/20261118-2)
+            item["reason"] = "within the tolerance" + measured_words(t)
         sci.append(item)
     vr["interface"] = {"tasks": iface}
     vr["scientific"] = {"tasks": sci}

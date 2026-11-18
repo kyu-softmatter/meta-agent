@@ -56,4 +56,10 @@
 3. the reference for the next build is John's 2004 values within those intervals rather than FEATFLOW's level-6 row, since John's sit inside the 1996 intervals and both of this test's builds took FEATFLOW's;
 4. with these, the next build's maximal drag coefficient would `fail`, which is the finding to report, not to tune away; a convergence run of the agent on finer mesh rows is the next step if the person asks for it.
 
+**Round three, a blind clone with the person's answers (run `cfd/20261118-2` at `5b1380b`, template v18, 2026-11-18):** brief `../eval/briefs/clone-fenicsx.txt` (`9f65b51`), carrying CFD-A and CFD-T; one fresh session from the command line, `claude-opus-5-5` at `high`. As read from collection `cfd/20261118-2/collect-1` (session `add70e3d`):
+- *How far it went:* the whole pipeline to `dfg-cylinder-flow/0001` in five commits of the clone, gate PASS, asking nothing the brief had answered; the reference was John 2004, the pressure difference front less back, Dokken's tutorial literature, no Courant number.
+- *The first verdicts on the person's tolerances:* maximal lift coefficient and final pressure difference pass; maximal drag coefficient fails, as in both earlier rounds; both times of the maxima fail by more than one step (`cfd-18`). It reported the fail as it was and changed nothing to make it pass.
+- *New:* an interval has no form as a tolerance, so the clone turned each into a centre and a half-width by a skill of its own (`cfd-19`); B7's fixture calls run where no environment is made (`cfd-20`); the report dropped a passing task's measured value (`cfd-21`, landed).
+- *Not watched:* this bundle standing alone.
+
 **Must not:** write a brief or make a run before the person's word; put any answer in the brief that the person did not give for this engine; change a build or decide a threshold from the test; fix a fault in anything but a general mechanism shown on fixtures of two unrelated kinds; push.

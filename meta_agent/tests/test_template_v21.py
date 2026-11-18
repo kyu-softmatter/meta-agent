@@ -79,6 +79,32 @@ class TheToolKind(unittest.TestCase):
             self.assertIn("B18", " ".join(l for l in check().splitlines() if l.startswith("FAIL")), kind)
 
 
+class APassingTaskKeepsWhatItMeasured(unittest.TestCase):
+    """The validation report keeps a passing scientific task's measured value and reference in its reason, as a failing
+    task's does (cfd-r3-3, run cfd/20261118-2): on two kinds, the reason names the measured value."""
+
+    def test_the_reason_names_the_measured_value(self):
+        import json, subprocess, sys
+        from meta_agent.src.validate import gate as gate_mod
+        tmp = tempfile.mkdtemp(prefix="ma-template-v21-")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        orig = v20.V20
+        v20.V20 = V21
+        try:
+            for kind in v13.KINDS:
+                b = v20.compose(tmp, kind + "-pass", [dict(v13.task(kind), reference={"kind": "source", "ref": "x"})])
+                out = subprocess.run([sys.executable, "-I", os.path.join(b, "src", "validate_tasks.py"), "--json"],
+                                     capture_output=True, text=True, cwd=b).stdout
+                vr, _, sci = gate_mod.make_validation_report({"validate": json.loads(out), "replay": {"items": [], "ok": True}},
+                                                             "build-x-0001", "req-x-001", "b", "meta-macbook-20261117-2", NOW, bundle_path=b)
+                self.assertEqual(sci, "pass", kind)
+                reason = vr["scientific"]["tasks"][0]["reason"]
+                self.assertTrue(reason.startswith("within the tolerance; it ran and measured"), (kind, reason))
+                self.assertIn(repr(v13.expected(kind)), reason, kind)
+        finally:
+            v20.V20 = orig
+
+
 class TheVersion(unittest.TestCase):
     def test_v21_is_the_latest_and_changes_its_template_card_alone(self):
         v20_src = template_mod.SOURCES["v20"]
