@@ -50,4 +50,10 @@
 6. *"This":* the tutorial's DFG 2D-3 case alone, as both rounds built it.
 7. *The time base of the reference's times (`cfd-8`):* compared to within one time step until the source's definition is read.
 
+**After "Take CFD-A" (the person, 2026-11-18; asked of the design role to record, `01c0a59`):** item 1's search. The 1996 paper that set the case (Schäfer and Turek) is behind a login and is `held` (`../inbox/materials/20261118-schaefer-turek-1996-dfg-benchmark/RETRIEVED.json`); its intervals were read as V. John 2004 quotes them (`../inbox/materials/20261118-john-2004-dfg-reference-values/RETRIEVED.json`, queued, printed page 783), beside John's own finer reference values. John's pressure difference is front less back, and both the 1996 interval and his value are negative, which agrees with item 2. Against the intervals the agent's maximal drag coefficient lies low in both rounds and the rest lie inside (`cfd-17`). Put to the person as one recommendation, **CFD-T**, a proposal that lands nothing until the person answers:
+1. each of the three quantities (maximal drag coefficient, maximal lift coefficient, pressure difference at the final time) is judged against the 1996 interval as John quotes it, the interval being the acceptance the benchmark's own authors set;
+2. the times of the maxima are judged against John's reference times, to within one time step of the agent's run (CFD-A item 7);
+3. the reference for the next build is John's 2004 values within those intervals rather than FEATFLOW's level-6 row, since John's sit inside the 1996 intervals and both of this test's builds took FEATFLOW's;
+4. with these, the next build's maximal drag coefficient would `fail`, which is the finding to report, not to tune away; a convergence run of the agent on finer mesh rows is the next step if the person asks for it.
+
 **Must not:** write a brief or make a run before the person's word; put any answer in the brief that the person did not give for this engine; change a build or decide a threshold from the test; fix a fault in anything but a general mechanism shown on fixtures of two unrelated kinds; push.

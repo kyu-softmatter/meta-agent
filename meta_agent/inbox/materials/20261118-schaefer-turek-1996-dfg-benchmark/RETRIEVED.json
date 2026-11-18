@@ -1,0 +1,27 @@
+{
+  "what": "a source a seat looked for and could not read",
+  "kind": "paper",
+  "citation": "M. Schaefer, S. Turek, with F. Durst, E. Krause, R. Rannacher, Benchmark computations of laminar flow around a cylinder, in E. H. Hirschel (ed.), Flow Simulation with High-Performance Computers II, Notes on Numerical Fluid Mechanics 48, Vieweg 1996, 547-566, doi:10.1007/978-3-322-89849-4_39",
+  "location": {
+    "url": "https://link.springer.com/chapter/10.1007/978-3-322-89849-4_39"
+  },
+  "tried": [
+    {
+      "url": "https://wwwold.mathematik.tu-dortmund.de/lsiii/cms/papers/SchaeferTurek1996.pdf",
+      "outcome": "HTTP 404 on 2026-11-18"
+    },
+    {
+      "url": "https://www.mathematik.tu-dortmund.de/lsiii/cms/papers/SchaeferTurek1996.pdf",
+      "outcome": "HTTP 404 on 2026-11-18"
+    },
+    {
+      "url": "https://link.springer.com/content/pdf/10.1007/978-3-322-89849-4_39.pdf",
+      "outcome": "a redirect to a sign-in at idp.springer.com, not followed"
+    }
+  ],
+  "retrieved_by": "meta-macbook-20261117-2",
+  "access": "behind a login",
+  "state": "held",
+  "state_reason": "permission_required: the publisher's copy needs a login, which a seat never uses; its intervals are read here only as V. John 2004 quotes them (meta_agent/inbox/materials/20261118-john-2004-dfg-reference-values)",
+  "registered": "the person's word, not given"
+}

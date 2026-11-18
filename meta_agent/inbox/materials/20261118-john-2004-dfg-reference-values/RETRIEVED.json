@@ -1,0 +1,34 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human (asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json); this file becomes a queued card when check 17 allows it.",
+  "kind": "paper",
+  "citation": "V. John, Reference values for drag and lift of a two-dimensional time-dependent flow around a cylinder, International Journal for Numerical Methods in Fluids 44 (2004) 777-788, doi:10.1002/fld.679",
+  "location": {
+    "url": "https://wias-berlin.de/people/john/ELECTRONIC_PAPERS/Joh04.IJNMF.pdf"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-18T15:32:25Z",
+    "content_hash": "sha256:953f4cdd9b06a2f29471af88bf5f08fdcb098eae316511dceae56ee790d412e3",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261117-2",
+  "access": "anonymous, read-only, no login; the author's own institute's page",
+  "how_found": "searched for the original definition of the DFG 2D-3 benchmark's intervals (the person's 'Take CFD-A', item 1); the 1996 paper itself was behind a login, and this paper quotes its intervals and gives finer reference values",
+  "licence": "the pages carry 'Copyright 2004 John Wiley & Sons, Ltd.'; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "task": "019, the tolerances of the CFD test's scientific tasks",
+      "locus": "section 4, printed page 783: the reference intervals of Reference [6] (Schaefer and Turek 1996) for the maximal drag coefficient, the maximal lift coefficient and the pressure difference at 8 s"
+    },
+    {
+      "task": "019",
+      "locus": "section 2, printed page 779: the pressure difference is p(t;0.15,0.2) - p(t;0.25,0.2), front less back"
+    },
+    {
+      "task": "019",
+      "locus": "section 4, equations (8) to (10), printed pages 784-785: reference values of the maximal coefficients with their times and of the pressure difference at 8 s, from the finest discretizations"
+    }
+  ],
+  "state": "queued",
+  "registered": "the person's word, not given"
+}
