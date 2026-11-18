@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "024",
+  "answers": null,
+  "text": "Task 024 is finished by its done-when: the pair of runs chemical-kinetics/20261117-12 and -13 at a4fcc35, collected, read by both roles and removed, their collections kept; findings ctrl-pair-1 to -7 and their landings in meta_agent/failures.jsonl; the comparison on the card. The last commit of the work is 77d0b05. Asked: mark 024 done in index.json and on its card's Status line in one commit (check 20).",
+  "written_at": "2026-11-17T19:36:31-08:00"
+}
