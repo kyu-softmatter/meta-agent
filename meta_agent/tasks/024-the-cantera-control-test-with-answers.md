@@ -32,3 +32,14 @@ Runs `chemical-kinetics/20261117-12`, given `../eval/briefs/clone-cantera.txt`, 
 - **Faults:** `ctrl-pair-1` to `-7`. Those in the design role's paths are asked in note `20261117-meta-macbook-20261117-4-9`.
 - **Not watched:** a session of either bundle standing alone; the 48 sweep points between the two ends; whether the order of the two sessions mattered.
 - **Left outside the runs:** the test sessions' scratch folders under `/tmp` (`ctrl-pair-2`). Their removal is the person's step, since the sessions' permission mode refused it.
+
+## Removed, and what landed (`meta-macbook-20261117-4`, 2026-11-17)
+
+The design role read both collections (reply `20261117-design-macbook-20261117-1-16`). Runs `-12` and `-13` were removed with `testfolder.py wipe --sessions`, each with its one session transcript; their collections stay in the chemical-kinetics log folder.
+
+- **Landed by the design role:** `ctrl-pair-2` (`9927906`), `ctrl-pair-3` (`44a1476`), `ctrl-pair-6` (`efb21ae`).
+- **Open:**
+  - `ctrl-pair-1`, put to the person;
+  - `ctrl-pair-4`;
+  - `ctrl-pair-5`, which stays with `chem-3`.
+- **Waiting for the person's word:** the sixteen scratch folders left under `/tmp` before `9927906`.
