@@ -1,0 +1,55 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "echo",
+  "description": "fetch an engine's example inputs and their pseudopotential files, read-only; the mock adapter in this bundle stands in for the download",
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "message": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required": [
+      "message"
+    ]
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "message": {
+        "type": "string"
+      },
+      "length": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "required": [
+      "message",
+      "length"
+    ]
+  },
+  "errors": [
+    "invalid_input"
+  ],
+  "side_effects": "network",
+  "safety_gate": {
+    "required": true,
+    "place": "src/gate.py, consulted by src/run_tool.py before the call",
+    "opens_by": "execution_permission"
+  },
+  "idempotent": true,
+  "timeout_s": null,
+  "fetches_from": [
+    {
+      "host": "gitlab.com",
+      "access": "read_only_anonymous"
+    },
+    {
+      "host": "pseudo-mirror.example.org",
+      "access": "read_only_anonymous"
+    }
+  ]
+}

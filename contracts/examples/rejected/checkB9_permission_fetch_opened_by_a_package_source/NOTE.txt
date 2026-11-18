@@ -1,0 +1,1 @@
+The tool fetches data from a host and the permission lists no data host, only a package source: a package source opens an install and never a fetch (tasks/023).

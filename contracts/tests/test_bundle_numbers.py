@@ -84,7 +84,7 @@ class B9Permission(unittest.TestCase):
     """What the lab's execution permission opens (the person, 2026-11-16): an engine, the agent's own files, and an
     install from a package source a person allowed; never an instrument."""
 
-    def bundle(self, side, installs=None, sources=None, perm=True):
+    def bundle(self, side, installs=None, sources=None, perm=True, fetches=None, hosts=None):
         d = tempfile.mkdtemp(prefix="b9-")
         self.addCleanup(shutil.rmtree, d, True)
         os.makedirs(os.path.join(d, "tools", "t"))
@@ -97,11 +97,13 @@ class B9Permission(unittest.TestCase):
         tc = {"name": "t", "side_effects": side, "safety_gate": {"required": True, "place": "src/gate.py", "opens_by": "execution_permission"}}
         if installs:
             tc["installs_from"] = installs
+        if fetches:
+            tc["fetches_from"] = fetches
         with open(os.path.join(d, "tools", "t", "tool.json"), "w") as f:
             json.dump(tc, f)
         if perm:
             with open(os.path.join(d, "envelope", "execution_permission.json"), "w") as f:
-                json.dump({"reaches": "engine", "package_sources": sources or []}, f)
+                json.dump({"reaches": "engine", "package_sources": sources or [], "data_sources": hosts or []}, f)
         report = validate.Report(quiet=True)
         validate.checkB9(d, "bundle", report)
         return [m for _, _, m in report.fails]
@@ -114,6 +116,28 @@ class B9Permission(unittest.TestCase):
         self.assertEqual(len(self.bundle("network", {"installer": "pip", "channel": "pypi"}, allowed)), 1)
         self.assertEqual(len(self.bundle("controls_instrument", None, allowed)), 1)
         self.assertEqual(len(self.bundle("writes_files", perm=False)), 1)
+
+    def test_a_fetch_opens_only_from_hosts_the_permission_lists_and_neither_list_opens_the_other(self):
+        # The person, 2026-11-17 (tasks/023): data hosts a built agent may read from, for every agent of the lab.
+        pkgs = [{"installer": "pixi", "channel": "conda-forge"}]
+        hosts = [{"host": "gitlab.com", "access": "read_only_anonymous"},
+                 {"host": "pseudopotentials.quantum-espresso.org", "access": "read_only_anonymous"}]
+        examples = [{"host": "gitlab.com", "access": "read_only_anonymous"}]
+        both = hosts
+        self.assertEqual(self.bundle("network", fetches=examples, hosts=hosts), [])
+        self.assertEqual(self.bundle("network", fetches=both, hosts=hosts), [])
+        self.assertEqual(self.bundle("network", {"installer": "pixi", "channel": "conda-forge"}, pkgs, fetches=examples, hosts=hosts), [])
+        # a second kind: a weather station's archive, allowed and not
+        archive = [{"host": "archive.example-weather.org", "access": "read_only_anonymous"}]
+        self.assertEqual(self.bundle("network", fetches=archive, hosts=archive), [])
+        self.assertEqual(len(self.bundle("network", fetches=archive, hosts=hosts)), 1)
+        self.assertEqual(len(self.bundle("network", fetches=examples + archive, hosts=hosts)), 1)
+        self.assertEqual(len(self.bundle("network", fetches=[{"host": "www.gitlab.com", "access": "read_only_anonymous"}], hosts=hosts)), 1)
+        self.assertEqual(len(self.bundle("network", fetches=[{"host": "gitlab.com", "access": "read_write"}], hosts=hosts)), 1)
+        # a data host opens no install, and a package source opens no fetch
+        self.assertEqual(len(self.bundle("network", {"installer": "pixi", "channel": "conda-forge"}, [], hosts=hosts)), 1)
+        self.assertEqual(len(self.bundle("network", sources=pkgs, fetches=examples)), 1)
+        self.assertEqual(len(self.bundle("network", fetches=[], hosts=hosts)), 1)
 
 
 if __name__ == "__main__":

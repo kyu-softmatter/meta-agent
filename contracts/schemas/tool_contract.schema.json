@@ -72,7 +72,7 @@
             "safety_values",
             "execution_permission"
           ],
-          "description": "what opens the gate for this tool; absent means safety_values. execution_permission is for a tool that starts an engine or writes the agent's own files and touches no instrument: it opens where the bundle's envelope/execution_permission.json, a copy of the lab's confirmed permission, reaches an engine (the person, 2026-11-16, docs/ideas/20261116.md). A tool that changes an instrument opens only by safety values a person wrote (MP4). A tool that reaches the network may open by the permission only to install packages, from a source its contract names under installs_from and the bundle's permission lists under package_sources."
+          "description": "what opens the gate for this tool; absent means safety_values. execution_permission is for a tool that starts an engine or writes the agent's own files and touches no instrument: it opens where the bundle's envelope/execution_permission.json, a copy of the lab's confirmed permission, reaches an engine (the person, 2026-11-16, docs/ideas/20261116.md). A tool that changes an instrument opens only by safety values a person wrote (MP4). A tool that reaches the network may open by the permission only to install packages, from a source its contract names under installs_from and the bundle's permission lists under package_sources, or to read data, from hosts its contract names under fetches_from and the permission lists under data_sources (tasks/023)."
         }
       },
       "additionalProperties": false,
@@ -122,6 +122,31 @@
         "channel"
       ],
       "description": "for a tool that reaches the network to install the agent's own packages: the installer and the channel it fetches from. Its gate opens by the execution permission only where the bundle's permission lists the same pair (B9)."
+    },
+    "fetches_from": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$",
+            "description": "a bare lower-case host name, matched by equality: no scheme, port, path or wildcard"
+          },
+          "access": {
+            "enum": [
+              "read_only_anonymous"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "host",
+          "access"
+        ]
+      },
+      "minItems": 1,
+      "description": "for a tool that reaches the network to read data (an engine's example inputs, a published table, an archive): every host it reads from, and how. Its gate opens by the execution permission only where the bundle's permission lists each host under data_sources with the same access (B9, tasks/023). A tool may name this beside installs_from; each is judged against its own list."
     }
   },
   "required": [

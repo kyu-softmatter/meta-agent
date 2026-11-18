@@ -1369,22 +1369,37 @@ def checkB9(bundle, label, report):
             side = tc.get("side_effects")
             if side not in PERMISSION_OPENS + ("network",):
                 report.fail("B9", relpath, "a tool with side effects %r opens only by safety values a person wrote; the "
-                            "execution permission opens only %s, and network to install packages" % (side, " and ".join(PERMISSION_OPENS)))
+                            "execution permission opens only %s, and network to install packages or read data from listed "
+                            "hosts" % (side, " and ".join(PERMISSION_OPENS)))
             elif not os.path.isfile(ppath):
                 report.fail("B9", relpath, "the gate opens by the execution permission and the bundle carries no "
                             "envelope/execution_permission.json for it to read")
             elif side == "network":
+                # An install from a package source (the person, 2026-11-16), or a read of data from hosts (the person,
+                # 2026-11-17, tasks/023): each judged against its own list, and neither list opens the other.
                 src = tc.get("installs_from")
-                if not isinstance(src, dict):
+                fetches = tc.get("fetches_from")
+                if not isinstance(src, dict) and not (isinstance(fetches, list) and fetches):
                     report.fail("B9", relpath, "a tool that reaches the network opens by the execution permission only to "
-                                "install packages, from a source its contract names under installs_from; this one names none")
+                                "install packages from a source its contract names under installs_from, or to read data from "
+                                "hosts it names under fetches_from; this one names neither")
                 else:
                     perm = bundle_json(bundle, "envelope/execution_permission.json", report, "B9") or {}
-                    allowed = [(s.get("installer"), s.get("channel")) for s in perm.get("package_sources") or [] if isinstance(s, dict)]
-                    if (src.get("installer"), src.get("channel")) not in allowed:
-                        report.fail("B9", relpath, "installs from %s/%s, which the bundle's execution permission does not list "
-                                    "under package_sources (%s)" % (src.get("installer"), src.get("channel"),
-                                                                    ", ".join("%s/%s" % a for a in allowed) or "none"))
+                    if isinstance(src, dict):
+                        allowed = [(s.get("installer"), s.get("channel")) for s in perm.get("package_sources") or [] if isinstance(s, dict)]
+                        if (src.get("installer"), src.get("channel")) not in allowed:
+                            report.fail("B9", relpath, "installs from %s/%s, which the bundle's execution permission does not list "
+                                        "under package_sources (%s)" % (src.get("installer"), src.get("channel"),
+                                                                        ", ".join("%s/%s" % a for a in allowed) or "none"))
+                    if isinstance(fetches, list) and fetches:
+                        hosts = [(h.get("host"), h.get("access")) for h in perm.get("data_sources") or [] if isinstance(h, dict)]
+                        missing = [f for f in fetches if not isinstance(f, dict) or (f.get("host"), f.get("access")) not in hosts]
+                        if missing:
+                            report.fail("B9", relpath, "fetches from %s, which the bundle's execution permission does not list "
+                                        "under data_sources (%s)" % (
+                                            ", ".join("%s (%s)" % (f.get("host"), f.get("access")) if isinstance(f, dict) else repr(f)
+                                                      for f in missing),
+                                            ", ".join("%s (%s)" % h for h in hosts) or "none"))
 
 
 SKILL_TOKEN_RE = re.compile(r"`([a-z][a-z0-9_]*@v[1-9][0-9]*)`")

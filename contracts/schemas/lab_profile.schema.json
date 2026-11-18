@@ -202,6 +202,30 @@
                               "channel"
                             ]
                           }
+                        },
+                        "data_sources": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "host": {
+                                "type": "string",
+                                "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$",
+                                "description": "a bare lower-case host name, matched by equality: no scheme, port, path or wildcard"
+                              },
+                              "access": {
+                                "enum": [
+                                  "read_only_anonymous"
+                                ]
+                              }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "host",
+                              "access"
+                            ]
+                          },
+                          "description": "the hosts a person allowed every agent built for this lab to read data from, read-only and anonymously (the person, 2026-11-17; tasks/023); copied by the Designer into a bundle's envelope/execution_permission.json as package_sources is"
                         }
                       },
                       "additionalProperties": false,
