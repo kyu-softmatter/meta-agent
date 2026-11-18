@@ -8,7 +8,9 @@
                                                               a new run: a clean clone of this repository and a
                                                               copy of each bundle (default: every agent's newest build);
                                                               --source takes them from another repository's committed
-                                                              head instead, such as the clone of an earlier run
+                                                              head instead, such as the clone of an earlier run;
+                                                              a relative BUILD is read from the repository the run is
+                                                              made from, --source's when it is given
   python contracts/tools/testfolder.py status                 every run: what it holds, what was collected, removed or not
   python contracts/tools/testfolder.py session RUN ITEM --brief FILE [--model M] [--effort E]
                                                               run one unattended session in an item of a run
@@ -32,7 +34,11 @@ say otherwise for one call.
 A run is `<test folder>/<YYYYMMDD>-<n>/`, and a name is never used twice, even after its folder is gone: the
 application keeps a session's history and memory by the path the session was opened in, so a path used
 again would hand a later test what an earlier one left. The log folder gets the run's entry the moment it
-is made, which is what keeps the name taken. In a run:
+is made, which is what keeps the name taken. A name is also one run across the folders of a computer: when
+each kind of test keeps its runs in a folder of its own (`--root <test folder>/<kind>`, `--logs <log
+folder>/<kind>`), a new name passes by every name standing in the given folders, in the configured test
+folder and log folder, and in each folder directly under those two that holds runs or run entries, so that
+"run <name>" in a record names one run (the person, 2026-11-17). In a run:
 
   TESTFOLDER.json           the mark of a folder this tool made; wipe removes no folder without it
   origin.git/               a bare copy of this repository at its head, with no remote of its own
@@ -213,8 +219,42 @@ def run_names(root, logs):
     return sorted(names, key=lambda n: (RUN_RE.match(n).group(1), int(RUN_RE.match(n).group(2))))
 
 
-def next_run(root, logs, today):
-    used = [int(RUN_RE.match(n).group(2)) for n in run_names(root, logs) if RUN_RE.match(n).group(1) == today]
+def configured(repo=REPO):
+    """The test folder and the log folder this clone's git configuration names, those that are named."""
+    out = []
+    for key in (KEY_ROOT, KEY_LOGS):
+        value = git(repo, "config", "--get", key, check=False).strip()
+        if value:
+            out.append(os.path.abspath(os.path.expanduser(value)))
+    return out
+
+
+def names_taken(root, logs, repo=REPO):
+    """Every run name standing anywhere a run of this computer may be: the given folders, the configured test
+    folder and log folder, and each folder directly under those two that holds a run (a folder with the mark)
+    or a run's entry (a folder with made.json). Each kind of test keeps its runs in a folder of its own, and a
+    name is one run across all of them."""
+    names = set(run_names(root, logs))
+    for base in configured(repo):
+        names.update(run_names(base, base))
+        try:
+            subs = [os.path.join(base, n) for n in os.listdir(base)]
+        except OSError:
+            continue
+        for sub in subs:
+            if not os.path.isdir(sub) or RUN_RE.match(os.path.basename(sub)):
+                continue
+            try:
+                kids = os.listdir(sub)
+            except OSError:
+                continue
+            names.update(n for n in kids if RUN_RE.match(n) and (os.path.isfile(os.path.join(sub, n, MARK))
+                                                                 or os.path.isfile(os.path.join(sub, n, "made.json"))))
+    return names
+
+
+def next_run(root, logs, today, repo=REPO):
+    used = [int(RUN_RE.match(n).group(2)) for n in names_taken(root, logs, repo) if RUN_RE.match(n).group(1) == today]
     return "%s-%d" % (today, max(used) + 1 if used else 1)
 
 
@@ -242,11 +282,19 @@ def newest_builds(repo):
 
 
 def build_rel(repo, given):
-    rel = os.path.relpath(os.path.abspath(given), repo).replace(os.sep, "/").rstrip("/")
+    """A build folder as a path inside the repository it is taken from. A relative one is read from that
+    repository (--source's when it is given), not from the folder the command was started in."""
+    path = os.path.expanduser(given)
+    if not os.path.isabs(path):
+        path = os.path.join(repo, path)
+    try:
+        rel = os.path.relpath(real(path), real(repo)).replace(os.sep, "/").rstrip("/")
+    except ValueError:                          # another drive
+        raise Refused("%s is outside the repository %s" % (given, repo))
     if rel.endswith("/bundle"):
         rel = rel[:-len("/bundle")]
-    if rel.startswith("../"):
-        raise Refused("%s is outside the repository" % given)
+    if rel in (".", "..", "bundle") or rel.startswith("../"):
+        raise Refused("%s is outside the repository %s" % (given, repo))
     return rel
 
 
@@ -301,6 +349,7 @@ def make_clone(repo, run_path):
 
 def make(args, repo=REPO):
     root, logs = folders(args, repo)
+    here = repo                                         # the clone whose configuration names this computer's folders
     if args.source:
         source = os.path.abspath(os.path.expanduser(args.source))
         if not os.path.isdir(os.path.join(source, ".git")) and git(source, "rev-parse", "--is-bare-repository", check=False).strip() != "true":
@@ -314,7 +363,7 @@ def make(args, repo=REPO):
     builds = [build_rel(repo, b) for b in args.bundle] if args.bundle else ([] if args.no_bundles else newest_builds(repo))
     if args.no_clone and not builds:
         raise Refused("nothing to make: no clone and no bundle")
-    run = next_run(root, logs, datetime.date.today().strftime("%Y%m%d"))
+    run = next_run(root, logs, datetime.date.today().strftime("%Y%m%d"), here)
     run_path = os.path.join(root, run)
     os.makedirs(run_path)
     try:
@@ -892,7 +941,8 @@ def main(argv=None, repo=REPO):
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("where")
     m = sub.add_parser("make")
-    m.add_argument("--bundle", action="append", default=[], metavar="BUILD", help="a build folder, e.g. meta_agent/builds/echo/0004")
+    m.add_argument("--bundle", action="append", default=[], metavar="BUILD", help="a build folder, e.g. meta_agent/builds/echo/0004; a relative one is read from "
+                   "the repository the run is made from, --source's when it is given")
     m.add_argument("--no-clone", action="store_true")
     m.add_argument("--no-bundles", action="store_true")
     m.add_argument("--source", help="the repository whose committed head the run is made from (default: this one)")

@@ -11,9 +11,9 @@ A test is a *run*: a folder made from the committed head, in which sessions are 
 
 1. **Know where.** `python contracts/tools/testfolder.py where` prints the test folder and the log folder of this computer. If one has not been said, ask the person; never choose a folder.
 2. **Commit what is to be tested.** A run is the committed head and nothing else; the tool says how many uncommitted paths it left out.
-3. **Make it.** `python contracts/tools/testfolder.py make` writes a clone of the repository, whose origin is a copy inside the run that never moves, and a copy of the newest build of every agent. `--bundle <build folder>` names builds instead, `--no-clone` and `--no-bundles` leave a part out. It prints the folder to open a session in for each. A run's name is never used again.
+3. **Make it.** `python contracts/tools/testfolder.py make` writes a clone of the repository, whose origin is a copy inside the run that never moves, and a copy of the newest build of every agent. `--bundle <build folder>` names builds instead, `--no-clone` and `--no-bundles` leave a part out. It prints the folder to open a session in for each. A run's name is never used again, and it is unique across the category folders too: when each kind of test keeps its runs under `--root <test folder>/<category>` and `--logs <log folder>/<category>`, a new name passes by every name standing in the configured test folder and log folder and in the category folders directly under them, so a record that names a run names one.
 
-A bundle that a session built in the clone of an earlier run, and that is in no commit here, is tested standing alone from that clone: `python contracts/tools/testfolder.py make --no-clone --source <that run's repo folder> --bundle <its build folder>`. Make it before the earlier run is removed.
+A bundle that a session built in the clone of an earlier run, and that is in no commit here, is tested standing alone from that clone: `python contracts/tools/testfolder.py make --no-clone --source <that run's repo folder> --bundle <its build folder>`. With `--source`, a relative `--bundle` is read from the source repository, not from this one, and it must still lie inside that repository. Make it before the earlier run is removed.
 
 ## Run the sessions
 

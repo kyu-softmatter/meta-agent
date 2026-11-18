@@ -135,6 +135,41 @@ class TestFolder(unittest.TestCase):
         sh(self.top, "init", "--quiet", stray)
         self.assertEqual(self.run_tool("make", "--no-clone", "--source", stray)[0], 1)
 
+    def test_a_relative_bundle_with_a_source_is_read_from_the_source(self):
+        # a test session gave the build folder relative to the earlier run's clone, and it was refused (2026-11-17)
+        first = self.make("--no-bundles")
+        clone = os.path.join(self.root, first, "repo")
+        bdir = "meta_agent/builds/kinetics/0001"
+        put(clone, bdir + "/bundle/CLAUDE.md", "# kinetics\n")
+        digest = tf.tree_digest(tf.tree_hashes(os.path.join(clone, *bdir.split("/"), "bundle")))
+        put(clone, bdir + "/build.json", json.dumps({"card": "build", "id": "build-kinetics-0001", "bundle_path": bdir + "/bundle", "bundle_sha256": digest}))
+        sh(clone, "add", ".")
+        sh(clone, "commit", "--quiet", "-m", "a build made in the clone")
+        second = self.make("--no-clone", "--source", clone, "--bundle", bdir)
+        made = tf.read_json(os.path.join(self.logs, second, "made.json"))
+        self.assertEqual([(it["name"], it["build"]) for it in made["items"]], [("kinetics-0001", bdir)])
+        self.assertTrue(os.path.isfile(os.path.join(self.root, second, "bundles", "kinetics-0001", "CLAUDE.md")))
+        code, _, err = self.run_tool("make", "--no-clone", "--source", clone, "--bundle", "../../../source/meta_agent/builds/echo/0001")
+        self.assertEqual(code, 1)                                                       # one that leaves the source stays refused
+        self.assertIn("is outside the repository", err)
+
+    def test_a_run_name_is_one_run_across_the_category_folders(self):
+        # each category keeps its runs in a folder of its own under the configured ones (the person, 2026-11-17)
+        sh(self.repo, "config", tf.KEY_ROOT, self.root)
+        sh(self.repo, "config", tf.KEY_LOGS, self.logs)
+        def make_in(category):
+            code, out, err = tf_main(self, ["--root", os.path.join(self.root, category), "--logs", os.path.join(self.logs, category),
+                                            "make", "--no-clone", "--bundle", os.path.join(self.repo, "meta_agent", "builds", "echo", "0001")])
+            self.assertEqual(code, 0, err)
+            return out.splitlines()[0].split()[-1]
+        first = make_in("molecular-dynamics")
+        second = make_in("dft")
+        self.assertNotEqual(first, second)
+        self.assertTrue(os.path.isfile(os.path.join(self.logs, "dft", second, "made.json")))
+        shutil.rmtree(os.path.join(self.root, "molecular-dynamics", first))             # the run's entry still keeps its name
+        shutil.rmtree(os.path.join(self.root, "dft", second))
+        self.assertNotIn(make_in("cfd"), (first, second))
+
     def test_uncommitted_work_is_not_in_a_run(self):
         put(self.repo, "meta_agent/builds/echo/0002/bundle/stray.txt", "not committed\n")
         run = self.make()
