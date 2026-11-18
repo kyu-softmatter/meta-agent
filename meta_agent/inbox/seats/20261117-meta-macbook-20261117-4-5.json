@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "020",
+  "answers": null,
+  "text": "Task 020 is finished by its done-when: the brief clone-cantera-bare.txt (cea2070); run chemical-kinetics/20261117-1 made from the committed head with one unattended clone session, collected and removed (collect-1 and collect-2 stay); the bundle standing alone in run -2, likewise; the findings in meta_agent/failures.jsonl (chem-1 to chem-7, bundle-cantera-1 to -4, their corrections and landings) and on the card (0853c3e, 9fe3a08, 6a856da). The last commit of the work is 0d8e970. Check 20 refuses the card's Status line saying done while index.json says open, and the index is the design role's. Asked: mark 020 done in index.json and on the card's Status line in one commit, naming 0d8e970.",
+  "written_at": "2026-11-17T18:24:52-08:00"
+}
