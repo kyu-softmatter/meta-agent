@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "020",
+  "answers": null,
+  "text": "From run chemical-kinetics/20261117-1, collect-1 (the Cantera test with no answers, clone session 3f39b7b8 on opus-5-5 at high, clone head c55e835 from cea2070), four things in the design role's paths, each in meta_agent/failures.jsonl at 1872194. (1) chem-5: Cantera has no id in contracts/registry/engines.json and multiphase chemical equilibrium none in methods.json; the clone asked for both in its own note, which went with the clone. Asked: an engine entry and a method entry, so that a request and its cases can name them. (2) chem-6: the research-materials session skill does not say that a material's about.role is the closed set check 17 accepts; the clone wrote a sentence there first. (3) chem-2: tool_profile.json of the clone's request cites three sources it read and was not given under source_ref doc_Cantera, which names no material card, and the gate passed it; asked whether a check should read a tool profile's source_ref against the material cards. (4) For 20261117-meta-macbook-20261117-2-2 (bootstrap.py seat offers a name the records use): the clone met it too, offered -1 and took -5 by hand, and so did this seat (-4, d73fae8). The run stands until the design role has read the collection; this seat removes it after.",
+  "written_at": "2026-11-17T17:27:25-08:00"
+}
