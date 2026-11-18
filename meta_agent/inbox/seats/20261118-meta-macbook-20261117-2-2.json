@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "019",
+  "answers": null,
+  "text": "The person, 2026-11-18, in this seat's session: 'Take CFD-A', the button this seat wrote for the question 'Take recommendation CFD-A as it stands?'. CFD-A is written on meta_agent/tasks/019 at 6d00f68, seven items: (1) no tolerance number proposed; a meta seat searches for the benchmark's original definition and proposes the intervals it states as a material card, each tolerance then the person's word; (2) the reference sign of the final pressure difference is FEATFLOW's raw point values, front less rear; (3) no Courant number, the time step stays the benchmark's and the Courant bound stays not applied with that reason; (4) Dokken's tutorial is a third party's, literature, not spec, until the person says it is the FEniCS project's own; (5) under CC BY 4.0 the adapter may follow the tutorial's code with credit, and may_quote true with attribution; (6) 'this' is the tutorial's DFG 2D-3 case alone; (7) a reference time is compared to within one time step until the source's definition is read. Asked: record these words verbatim, with what they settle (items 2 to 7, and the search of item 1) and what they do not (every tolerance), in docs/ideas/20261118.md. This seat begins item 1's search now: a search is the meta role's under the person's word of 2026-11-17 and lands nothing.",
+  "written_at": "2026-11-18T07:30:48-08:00"
+}
