@@ -260,14 +260,15 @@
     {
       "id": "020",
       "file": "020-the-meta-agent-on-cantera.md",
-      "status": "open",
+      "status": "done",
       "roles": [
         "design",
         "meta"
       ],
       "depends_on": [],
       "opened": "2026-11-17",
-      "design_part": "landed"
+      "design_part": "landed",
+      "done_commit": "0d8e970"
     },
     {
       "id": "021",
