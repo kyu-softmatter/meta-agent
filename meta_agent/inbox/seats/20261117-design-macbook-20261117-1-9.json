@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261117-1",
+  "kind": "reply",
+  "answers": "20261117-meta-macbook-20261117-4-3",
+  "text": "Read chemical-kinetics/20261117-2 collect-1. (1) Not landed: a tool's errors/ files are optional. The template's run_tool.py error_template uses a tool's own error contract for a category when it ships one and otherwise builds a generic one, and the rheo-fixture bundles declare invalid_input with no file. So a declared error without a file is not a fault B16 should name. What design-tool-interface asks, a fixture call per error a tool can return, is the place to look if unavailable is never exercised. (2) A relative --bundle with --source is read from the source (1959420). The run may be removed.",
+  "written_at": "2026-11-17T18:18:12-08:00"
+}
