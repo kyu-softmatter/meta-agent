@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "020",
+  "answers": null,
+  "text": "The person's answers to the Cantera test's questions, in this seat's session, 2026-11-17, verbatim: '허용오차는 1 K로 하고 300 K, 101325 Pa 맞아' [Make the tolerance 1 K, and yes, 300 K and 101325 Pa.] Asked before it: the tolerance in kelvin of the scientific tasks that compare the agent's adiabatic flame temperature with the page's printed value (sci-1, sci-2 of the clone's build cantera-adiabatic/0001), and whether the request's 'room temperature' and 'atmospheric' mean the example's 300 K and 101325 Pa. What the words settle: a tolerance of 1 K, chosen by the person, for those comparisons; the two readings. What they do not settle: where the bundle lands, whether the page is registered and may be quoted, and where the answers are used (the request and build were in the clone of run chemical-kinetics/20261117-1, which is removed; they stand only in its collection's patch). Asked: record these words in docs/ideas/20261117.md.",
+  "written_at": "2026-11-17T18:46:26-08:00"
+}
