@@ -9,7 +9,7 @@ description: Validate a built agent on its interface and its science, record wha
 
 1. **Both sections.** Interface tasks (a call, a response, an error, a configuration passed on) and scientific tasks (against a reference result that has an entry or a source).
 2. **Run the gate on the bundle:** `python contracts/validate.py --bundle <bundle folder>`.
-3. **Each task is** `pass`, `fail`, `not_run` or `undecided`. A task that was not run is not a pass. A scientific task without a tolerance is undecided. A tolerance is the person's, or one a library skill derives under the person's standing rule (the reference's stated uncertainty, else the larger of half a unit in its last printed digit and the run's own numerical error, from two resolutions or a series' standard error), recorded with the rule and the skill; the person's own overrides it.
+3. **Each task is** `pass`, `fail`, `not_run` or `undecided`. A task that was not run is not a pass. A scientific task without a tolerance is undecided. A tolerance is the person's, or one a library skill derives under the person's standing rule (the reference's stated uncertainty, else the larger of half a unit in its last printed digit and the run's own numerical error, from two resolutions, where the estimate enters three times over, or from a series' standard error), recorded with the rule and the skill; the person's own overrides it.
 4. **The bundle stands alone.** Its replay item is handled by a fresh session in the bundle's folder, with the Meta-Agent absent.
 5. Write the `validation_report`. Every number in it is read off a run.
 
