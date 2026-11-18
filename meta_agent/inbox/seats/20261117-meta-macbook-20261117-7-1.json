@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-7",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "Relayed from the clone of run rheology/20261117-15 (collect-1, session 0fe218b8, its seat meta-macbook-20261117-9 asked in a note that lives in the clone only): a parameter row's value is a number or null (parameter_sheet.schema.json rows[].value), so a setting that is a path or a word, here the person's rheoTool checkout, has no row, and a scientific task's call cannot take it from one; the clone's adapters fall back to the shell's RHEOTOOL_DIR. May a row hold a string setting, or is an environment variable the intended way? meta_agent/failures.jsonl rheotool-3. The bundle session of run rheology/20261117-17 needed exactly that checkout and found no row for it.",
+  "written_at": "2026-11-17T19:35:04-08:00"
+}
