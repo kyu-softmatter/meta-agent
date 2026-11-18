@@ -1,0 +1,47 @@
+{
+  "note": "The person's answer of 2026-11-18 on the rheoTool engine in a container, carried as two package_sources beside pixi/conda-forge in policy.execution_permission. Shown that rheoTool's of90 needs OpenFOAM v9, which runs on Linux only and has no conda-forge build for this Mac, and offered Colima with a Docker image, a Linux virtual machine, or a remote server, the person said '1, 2 중 가벼운 방법으로 구현 / 나중에 완전 삭제도 편한 것으로.' ('of 1 and 2, implement the lighter way, and one that is easy to remove completely later') and '엔진은 설치하는 중이고. 남는 문제는 너가 스스로 해결방법을 찾을 수 있을거고' ('the engine is being installed; the remaining problem you can solve yourself'); asked by the design seat design-macbook-20261117-1 'Does the execution permission cover rheoTool in a Colima container, installed via Homebrew/Docker?', the person answered 'Yes, covered' (docs/ideas/20261118.md, 'The rheoTool engine on this computer, in a container', bfaaa95). The level engine now reaches rheoTool's engine in the Colima container rheotool on this computer, and the two pairs added are that answer for that engine and nothing wider: no other engine in a container and no other source (the schema's pair has no field for an engine, so the scope is written in each channel). pixi/conda-forge, the level, the words and data_sources are those of v6_lab_profile.json unchanged. Written by the seat meta-macbook-20261118-1 on the design seat's message of 2026-11-18 (tasks/016). It is for this lab's profile and for no other.",
+  "answered_by": "human",
+  "date": "2026-11-18",
+  "answers": {
+    "policy.execution_permission": {
+      "reaches": "engine",
+      "words": "as far as a simulation engine on this computer; no instrument",
+      "package_sources": [
+        {
+          "installer": "pixi",
+          "channel": "conda-forge"
+        },
+        {
+          "installer": "homebrew",
+          "channel": "homebrew/core: colima, lima, docker, docker-buildx (for the rheoTool engine only)"
+        },
+        {
+          "installer": "docker",
+          "channel": "rheotool:of90 in Colima profile rheotool, built from ~/Desktop/Projects/rheotool-engine/Dockerfile on the Ubuntu archive, dl.openfoam.org and github.com/fppimenta/rheotool (for the rheoTool engine only)"
+        }
+      ],
+      "data_sources": [
+        {
+          "host": "gitlab.com",
+          "access": "read_only_anonymous"
+        },
+        {
+          "host": "pseudopotentials.quantum-espresso.org",
+          "access": "read_only_anonymous"
+        },
+        {
+          "host": "files.rcsb.org",
+          "access": "read_only_anonymous"
+        },
+        {
+          "host": "mackerell.umaryland.edu",
+          "access": "read_only_anonymous"
+        },
+        {
+          "host": "www.mdtutorials.com",
+          "access": "read_only_anonymous"
+        }
+      ]
+    }
+  }
+}
