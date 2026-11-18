@@ -108,6 +108,7 @@ PERMISSION_MODES = ("auto", "acceptEdits", "dontAsk", "manual", "plan")   # neve
 NOT_PASSED_ON = ("CLAUDE", "ANTHROPIC", "USE_STAGING_OAUTH", "USE_LOCAL_OAUTH")   # an application's own, by prefix
 BLIND_DIRS = ("meta_agent/eval", "docs/ideas")    # what a blind clone does not hold, as a whole
 TASKS_REL, CLAIMS_REL = "meta_agent/tasks", "meta_agent/tasks/claims"
+NOTES_REL = "meta_agent/inbox/seats"                # the notes between seats, also left out of a blind clone
 TASK_FILE_RE = re.compile(r"^([0-9]{3})-[a-z0-9-]+\.md$")
 CLAIM_FILE_RE = re.compile(r"^([0-9]{3})-.+\.json$")
 TEST_CARD_RE = re.compile(r"eval/(briefs|plans)/")   # a card naming a brief or a plan runs a test
@@ -367,7 +368,7 @@ def test_tasks(dest):
 def make_blind(dest, source_head):
     """Leave out of a clone what would tell a test session its answers (the person, 2026-11-17,
     docs/ideas/20261117.md, "A test clone is blind"): the test plans and briefs, the cards of the tasks that
-    run tests with their rows and claims, and the person's recorded answers. One commit in the clone, by the
+    run tests with their rows and claims, the person's recorded answers, and the notes between seats. One commit in the clone, by the
     tool's own label. A kept row that depends on a removed task loses that dependency, which is listed.
     Returns (left_out, the blind commit or None when there was nothing to leave out)."""
     left_out = []
@@ -405,6 +406,12 @@ def make_blind(dest, source_head):
             if m and m.group(1) in removed:
                 git(dest, "rm", "-q", "--", CLAIMS_REL + "/" + name)
                 left_out.append(CLAIMS_REL + "/" + name)
+    # the notes between seats quote the person's answers and carry the real system's pending asks, which a test
+    # session would otherwise answer inside its clone (run cfd/20261117-21, cfd-15); the folder's README stays
+    for name in sorted(git(dest, "ls-files", "--", NOTES_REL).split()):
+        if name.endswith(".json"):
+            git(dest, "rm", "-q", "--", name)
+            left_out.append(name)
     if not left_out:
         return left_out, None
     message = ("testfolder: a blind clone (the person, 2026-11-17, \"A test clone is blind\")\n\n"

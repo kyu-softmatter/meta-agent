@@ -39,7 +39,10 @@ BLIND_FIXTURE = {
     TEST_CLAIM: json.dumps({"task": "001", "seat": "meta-bench-20261117-1", "claimed_at": "2026-11-17T00:00:00Z"}) + "\n",
     "meta_agent/profiles/lab.json": "{}\n",
     "meta_agent/failures.jsonl": "{\"kind\": \"deviation\"}\n",
+    "meta_agent/inbox/seats/README.md": "# notes between seats\n",
+    "meta_agent/inbox/seats/20261117-meta-bench-20261117-1-1.json": "{\"kind\": \"ask\", \"text\": \"the person said 1 K\"}\n",
 }
+NOTE = "meta_agent/inbox/seats/20261117-meta-bench-20261117-1-1.json"
 
 
 def sh(cwd, *args):
@@ -195,9 +198,10 @@ class TestFolder(unittest.TestCase):
         self.assertEqual(code, 0, err)
         run = out.splitlines()[0].split()[-1]
         clone = os.path.join(self.root, run, "repo")
-        for rel in ("docs/ideas", "meta_agent/eval", TEST_CARD, TEST_CLAIM):
+        # the notes between seats quote the person's answers and carry the real system's pending asks (cfd-15)
+        for rel in ("docs/ideas", "meta_agent/eval", TEST_CARD, TEST_CLAIM, NOTE):
             self.assertFalse(os.path.exists(os.path.join(clone, *rel.split("/"))), rel)
-        for rel in (OTHER_CARD, "meta_agent/profiles/lab.json", "meta_agent/failures.jsonl"):
+        for rel in (OTHER_CARD, "meta_agent/profiles/lab.json", "meta_agent/failures.jsonl", "meta_agent/inbox/seats/README.md"):
             self.assertTrue(os.path.isfile(os.path.join(clone, *rel.split("/"))), rel)
         with open(os.path.join(clone, "meta_agent", "tasks", "index.json"), encoding="utf-8") as f:
             text = f.read()
@@ -207,8 +211,8 @@ class TestFolder(unittest.TestCase):
         it = tf.read_json(os.path.join(self.logs, run, "made.json"))["items"][0]
         self.assertTrue(it["blind"])
         self.assertEqual(it["left_out"], ["meta_agent/eval/", "docs/ideas/", TEST_CARD, "meta_agent/tasks/index.json: the rows of 001",
-                                          "meta_agent/tasks/index.json: the dependency of 002 on 001", TEST_CLAIM])
-        self.assertIn("blind   6 path(s) left out", out)
+                                          "meta_agent/tasks/index.json: the dependency of 002 on 001", TEST_CLAIM, NOTE])
+        self.assertIn("blind   7 path(s) left out", out)
 
     def test_the_clones_head_is_the_blind_commit_and_a_collection_starts_after_it(self):
         run = self.make("--no-bundles")
