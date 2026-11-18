@@ -119,6 +119,12 @@ v16 changes one script of the checks, the runner of tools and text, after the
     run again after it, and that its Status line is the builder's; CLAUDE.md
     says so, that the builder's dates are in UTC, and that the agreement is
     the skill's output.
+v17 changes the runner of tools, after round two of the CFD test (tasks/019,
+    cfd-13): src/run_tool.py takes a type that is a list of JSON Schema
+    types, such as an integer or null, and refuses a value of none of them
+    with an error contract instead of raising. From this version the
+    builder keeps each run of the agreement skill on the validation report,
+    as a number whose source names the skill (src/validate/gate.py, cfd-14).
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -137,8 +143,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v9": os.path.join(HERE, "template_v9"), "v10": os.path.join(HERE, "template_v10"),
            "v11": os.path.join(HERE, "template_v11"), "v12": os.path.join(HERE, "template_v12"),
            "v13": os.path.join(HERE, "template_v13"), "v14": os.path.join(HERE, "template_v14"),
-           "v15": os.path.join(HERE, "template_v15"), "v16": os.path.join(HERE, "template_v16")}
-LATEST = "v16"
+           "v15": os.path.join(HERE, "template_v15"), "v16": os.path.join(HERE, "template_v16"),
+           "v17": os.path.join(HERE, "template_v17")}
+LATEST = "v17"
 SOURCE = SOURCES[LATEST]
 
 

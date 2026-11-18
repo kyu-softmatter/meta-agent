@@ -159,7 +159,8 @@ class EchoRequest(unittest.TestCase):
         self.assertIsNone(sci[0]["tolerance"])
         self.assertIn("no tolerance chosen by a person yet: undecided; it ran and measured 11", sci[0]["reason"])
         self.assertEqual(vr["overall"], "undecided")
-        self.assertEqual(sorted(n["name"] for n in vr["numbers"]), ["sci1_agreement", "sci1_reference_count"])
+        # beside the reference and the agreement, the run of the agreement skill that gave it (template v16 on; cfd-14)
+        self.assertEqual(sorted(n["name"] for n in vr["numbers"]), ["sci-1.length.error", "sci1_agreement", "sci1_reference_count"])
 
     def test_bundle_runs_alone_in_a_fresh_process(self):
         env = dict(os.environ, PYTHONUTF8="1", PYTHONDONTWRITEBYTECODE="1")

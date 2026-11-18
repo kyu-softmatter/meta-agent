@@ -123,9 +123,9 @@ class TheErrors(unittest.TestCase):
 
 
 class TheVersion(unittest.TestCase):
-    def test_v16_is_the_latest_and_changes_what_it_says(self):
+    def test_v16_changes_what_it_says(self):
         v15 = template_mod.SOURCES["v15"]
-        self.assertEqual(template_mod.LATEST, "v16")
+        self.assertIn("v16", template_mod.SOURCES)                  # v17 is the latest since cfd-13
         self.assertEqual(cards.tree_files(v15), cards.tree_files(V16))
         changed = sorted(r for r in cards.tree_files(v15) if cards.sha256_file(os.path.join(v15, r)) != cards.sha256_file(os.path.join(V16, r)))
         self.assertEqual(changed, ["CLAUDE.md", "TEMPLATE.json", "src/run_tool.py", "src/validate_tasks.py", "tasks/001-start.md"])

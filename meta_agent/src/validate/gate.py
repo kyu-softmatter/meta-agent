@@ -165,10 +165,26 @@ def task_verdicts():
     return list(v.get("enum") or [])
 
 
+def agreement_runs(t):
+    """[(field, run)] of the agreement skill's runs a task printed (template v16 on), each one that ran with an error
+    and a magnitude; [] for a bundle of an earlier template, whose agreement its own script computed."""
+    out = []
+    for field, run in sorted((t.get("agreement_runs") or {}).items()):
+        outputs = (run or {}).get("outputs") or {}
+        if (run or {}).get("verdict") == "ran" and all(isinstance(outputs.get(k), (int, float)) and not isinstance(outputs.get(k), bool)
+                                                       for k in ("error", "magnitude")):
+            out.append((field, run))
+    return out
+
+
 def measured_words(t):
     if "measured" not in t:
         return ""
-    return "; it ran and measured %s against the reference %s, agreement %s" % (t.get("measured"), t.get("reference"), t.get("agreement"))
+    words = "; it ran and measured %s against the reference %s, agreement %s" % (t.get("measured"), t.get("reference"), t.get("agreement"))
+    skills = sorted({run["skill"] for _, run in agreement_runs(t)})
+    if skills:
+        words += ", given by %s" % ", ".join(skills)
+    return words
 
 
 def measured_unit(bundle_path, task_file):
@@ -236,6 +252,16 @@ def make_validation_report(report, build_id, rid, bundle_rel, seat, now=None, en
                                       "source": "computed:%s/validation/scientific/%s#agreement" % (bundle_rel, t["file"]),
                                       "grade": "E4", "value_kind": "computed",
                                       "note": "absolute difference between the measured output and the reference"})
+        runs = agreement_runs(t)
+        for field, run in runs:
+            # the skill that gave the agreement, kept on the record (cfd-14, run cfd/20261117-21): each run's error is
+            # a number whose source names the skill and the task, its magnitude being the task's agreement
+            unit = measured_unit(bundle_path, t.get("file")) or (t.get("tolerance") or {}).get("unit") or "1"
+            vr["numbers"].append({"name": "%s.%s.error" % (t["id"], field), "value": run["outputs"]["error"], "unit": unit,
+                                  "source": "computed:%s@%s/validation/scientific/%s#%s" % (run["skill"], bundle_rel, t["file"], field),
+                                  "grade": "E4", "value_kind": "computed",
+                                  "note": "the measured value less the reference, given by %s through the bundle's runner; "
+                                          "its magnitude, %r, is the task's agreement" % (run["skill"], run["outputs"]["magnitude"])})
         if t["verdict"] == "undecided":
             item["reason"] = "no tolerance chosen by a person yet: undecided" + measured_words(t)
             if said != "undecided":
