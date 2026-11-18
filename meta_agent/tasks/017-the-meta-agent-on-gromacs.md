@@ -25,3 +25,19 @@ Asked by this seat, the person answered with the buttons this seat wrote:
 - on level: "opus-5-5, high (Recommended)".
 
 So the brief is `../eval/briefs/clone-gromacs-bare.txt`; the run is made now under the `molecular-dynamics` folders; the clone session runs on `claude-opus-5-5` at `high`. Not settled: the source and prefix of the third party's tutorial, whether GROMACS may be installed and run on this computer, and every tolerance; these are left to the clone to ask.
+
+## Run `molecular-dynamics/20261117-16`, read from `collect-1`
+
+One unattended session (`bc74eb79`, `claude-opus-5-5` at `high`, permission mode `auto`) in the clone made at `b065854`; it ended by itself. Clone head `0b3c5a7`, 11 commits, nothing uncommitted, the clone's gate `VERDICT PASS ... head=0b3c5a7 ... failed=0 pending=6`. The collection says 145 calls, 3 in error, 0 questions put to the person in the session, 0 web searches, 0 web fetches, 10 shell fetches, 1 material card added (queued), none found by a seat, no library skill run through a bundle's runner.
+
+**How far it went:** materials (the tutorial, 11 pages and 5 `.mdp` files, read and hashed, not copied; three material cards: the tutorial queued, two pages of the GROMACS 2025.2 manual), intake in three revisions, the physical system, one library skill (`solute_box_distance_min_from_cutoff@v1`, from the manual's cut-off restriction), a parameter sheet written by the runner (box distance at least 1.2 nm), two tool contracts (`install_environment`, `prepare_system`), and build `gromacs-lysozyme/0001`: interface tasks pass, replay as expected, the three scientific tasks `not_run` because the structure and the force field are not in the bundle. It stopped after the set-up steps. Minimisation, the two equilibrations, production and analysis are not built: their settings need units the registry lacks (gmx-1) and the person's answers. The stop is partly a question to the person and partly a fault in the registry.
+
+**Asked or inferred:** five questions put to the person in the intake: data hosts (RCSB, CHARMM36, the tutorial's files), force field and water model (recommends CHARMM36 and TIP3P), whether the tutorial may be registered and quoted and what kind of source it is, tolerances and criteria for "settled", run length and GROMACS version (recommends 2025.2). No policy or permission was decided by itself. The version it recommended was fixed in the build's install adapter while still a question (gmx-7).
+
+**Sources:** it searched for the maker's documentation by itself (the GROMACS 2025.2 manual and online help) and wrote two pages as material cards with the `spec:` prefix, as the person decided on 2026-11-17 for the maker's documentation. The third party's tutorial stays queued, its kind put to the person. The scientific tasks name the tutorial's counts as their reference, with no tolerance (null) and `not_run`.
+
+**Environment:** it found for itself that GROMACS installs with pixi from conda-forge on this computer, made the environment in the run folder, and read `gmx --version` (`2025.2-conda_forge`); a trial of `prepare_system` on a hand-written peptide went through pdb2gmx to genion. The fetch of PDB 1AKI was refused by the permission mode (gmx-2).
+
+**Generality:** gmx-4 is cfd-2 again and gmx-5 is ctrl-pair-6 again, each now on a second kind. gmx-1 is a gap in a general vocabulary, not shaped by HOOMD-blue. gmx-6 makes the run not blind: the clone read this card and the plan in its eighth and ninth calls.
+
+**Watched:** the said text, the calls, the patch of the clone, the collection's counts. **Not watched:** the transcript line by line; the built bundle in a session of its own (not run); whether the GROMACS trial's printed counts were right (a model's numbers, they enter no card). Failure lines gmx-1 to gmx-9 are in `../failures.jsonl`. The run stands until the design role has read the collection.
