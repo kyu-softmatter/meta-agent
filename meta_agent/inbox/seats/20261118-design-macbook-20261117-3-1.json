@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261117-3",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": null,
+  "answers": null,
+  "text": "The person (2026-11-18, docs/ideas/20261118.md, 'Another collection's QuTiP skill, as a reference for the builder') asks that the builder learn from K-Dense-AI/scientific-agent-skills, whose QuTiP skill this seat read. A recommendation for the template and the Designer, landing nothing until a meta seat weighs it: (1) a bundle's Decisions section could carry a per-engine solver or method selection table, as that skill's solver guide does, each row resting on a cited source and judged by a diagnostic skill; (2) a bundle's README could say whom the agent is for and whom it is not for, naming the tool to use instead; (3) each tool's error contracts could carry the remedy, as that skill's troubleshooting does; (4) long reference material in a bundle could be split into files loaded when needed. Not to take: values in examples with no source, unpinned installs, and examples whose outputs are not checked. No text of that collection is to be copied (BSD-3-Clause, but MP11 and our own rules on sources hold).",
+  "written_at": "2026-11-18T10:18:25-08:00"
+}
