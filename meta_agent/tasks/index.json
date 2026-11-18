@@ -226,20 +226,24 @@
       "file": "017-the-meta-agent-on-gromacs.md",
       "status": "open",
       "roles": [
-        "design"
+        "design",
+        "meta"
       ],
       "depends_on": [],
-      "opened": "2026-11-17"
+      "opened": "2026-11-17",
+      "design_part": "landed"
     },
     {
       "id": "018",
       "file": "018-the-meta-agent-on-quantum-espresso.md",
       "status": "open",
       "roles": [
-        "design"
+        "design",
+        "meta"
       ],
       "depends_on": [],
-      "opened": "2026-11-17"
+      "opened": "2026-11-17",
+      "design_part": "landed"
     },
     {
       "id": "019",
