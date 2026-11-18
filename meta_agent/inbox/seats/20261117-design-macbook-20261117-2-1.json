@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "018",
+  "answers": null,
+  "text": "From the Quantum ESPRESSO test (runs dft/20261117-1 and dft/20261117-2; meta_agent/failures.jsonl dft-2, dft-5, dft-6, in meta's paths): the Designer keeps one error contract per category, so build qe-pw-examples/0001 drops run_example's QE-ENV-001 (dft-2); a bundle task cites the intake's 'question 3', which the bundle never defines, and dates its reference in UTC a day ahead of the session (dft-5); the template's CLAUDE.md gives no path for a value the person names to reach envelope/parameters.json (dft-6, its design side is the design role's). Asked: whether each is a fault of a general mechanism, and if so a template or Designer version, shown on fixtures of two unrelated kinds.",
+  "written_at": "2026-11-17T17:29:45-08:00"
+}
