@@ -1,0 +1,39 @@
+{
+  "note": "The person's answer of 2026-11-18 on three more hosts a built agent may read data from, carried as data_sources beside the level and package_sources of policy.execution_permission. Shown the GROMACS clone's question on data hosts (run molecular-dynamics/20261117-16, tasks/017), the person said '모두 그렇다' ('all of them, yes'); asked by the seat meta-macbook-20261117-8 whether that meant the agent may fetch from files.rcsb.org (PDB 1AKI), mackerell.umaryland.edu (CHARMM36) and www.mdtutorials.com (the tutorial's .mdp files), the person chose 'Yes, all of that'; asked whether the three hosts hold for every agent built for this lab or for the GROMACS agent only, the person chose 'Every agent of this lab'. The three hosts, each read_only_anonymous, are that answer and nothing wider. gitlab.com and pseudopotentials.quantum-espresso.org are those of v5_lab_profile.json unchanged (the person, 2026-11-17). The level engine, the words and package_sources [pixi/conda-forge] are those of v5 unchanged (the person, 2026-11-16). Written by the seat meta-macbook-20261117-8 (tasks/017). It is for this lab's profile and for no other.",
+  "answered_by": "human",
+  "date": "2026-11-18",
+  "answers": {
+    "policy.execution_permission": {
+      "reaches": "engine",
+      "words": "as far as a simulation engine on this computer; no instrument",
+      "package_sources": [
+        {
+          "installer": "pixi",
+          "channel": "conda-forge"
+        }
+      ],
+      "data_sources": [
+        {
+          "host": "gitlab.com",
+          "access": "read_only_anonymous"
+        },
+        {
+          "host": "pseudopotentials.quantum-espresso.org",
+          "access": "read_only_anonymous"
+        },
+        {
+          "host": "files.rcsb.org",
+          "access": "read_only_anonymous"
+        },
+        {
+          "host": "mackerell.umaryland.edu",
+          "access": "read_only_anonymous"
+        },
+        {
+          "host": "www.mdtutorials.com",
+          "access": "read_only_anonymous"
+        }
+      ]
+    }
+  }
+}
