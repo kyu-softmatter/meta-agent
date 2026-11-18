@@ -1,0 +1,28 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human (asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json); this file becomes a queued card when check 17 allows it.",
+  "kind": "manual",
+  "citation": "NIST/SEMATECH e-Handbook of Statistical Methods, 1.3.5.6 Measures of Scale",
+  "location": {
+    "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda356.htm"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-18T15:15:02Z",
+    "content_hash": "sha256:00fca5ff1ce1e9618ace7e5f1cc13c821334c069c8b5b5c8a0a79af8e3e25d77",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261117-2",
+  "access": "anonymous, read-only, no login",
+  "how_found": "the page round two of the CFD test's clone cited for series_maximum, read again here; the clone recorded another hash for it on the same day",
+  "licence": "not read for a licence; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "skills": [
+        "series_maximum@v1"
+      ],
+      "locus": "the entry range: the largest value minus the smallest value in a data set"
+    }
+  ],
+  "state": "queued",
+  "registered": "the person's word, not given"
+}

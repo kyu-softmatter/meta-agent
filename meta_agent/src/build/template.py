@@ -125,6 +125,12 @@ v17 changes the runner of tools, after round two of the CFD test (tasks/019,
     with an error contract instead of raising. From this version the
     builder keeps each run of the agreement skill on the validation report,
     as a number whose source names the skill (src/validate/gate.py, cfd-14).
+v18 changes text only, the bundle's classify-knowledge, to say what the
+    builder's own says (the design role's ask 20261117-design-macbook-
+    20261117-1-14, em-10; cfd-5, cfd-16 of tasks/019): spec is the maker's
+    documentation, a tutorial or example page of the maker included; a
+    quantity defined up to a constant is compared only once both share its
+    zero; a tabled value is read against the source's raw series.
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -144,8 +150,8 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v11": os.path.join(HERE, "template_v11"), "v12": os.path.join(HERE, "template_v12"),
            "v13": os.path.join(HERE, "template_v13"), "v14": os.path.join(HERE, "template_v14"),
            "v15": os.path.join(HERE, "template_v15"), "v16": os.path.join(HERE, "template_v16"),
-           "v17": os.path.join(HERE, "template_v17")}
-LATEST = "v17"
+           "v17": os.path.join(HERE, "template_v17"), "v18": os.path.join(HERE, "template_v18")}
+LATEST = "v18"
 SOURCE = SOURCES[LATEST]
 
 

@@ -141,9 +141,9 @@ class TheReportKeepsTheAgreementRuns(unittest.TestCase):
 
 
 class TheVersion(unittest.TestCase):
-    def test_v17_is_the_latest_and_changes_the_runner_of_tools_alone(self):
+    def test_v17_changes_the_runner_of_tools_alone(self):
         v16 = template_mod.SOURCES["v16"]
-        self.assertEqual(template_mod.LATEST, "v17")
+        self.assertIn("v17", template_mod.SOURCES)                  # v18 is the latest since the ask 1-14
         self.assertEqual(cards.tree_files(v16), cards.tree_files(V17))
         changed = sorted(r for r in cards.tree_files(v16) if cards.sha256_file(os.path.join(v16, r)) != cards.sha256_file(os.path.join(V17, r)))
         self.assertEqual(changed, ["TEMPLATE.json", "src/run_tool.py"])

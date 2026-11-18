@@ -905,6 +905,63 @@
       "sha256": "sha256:9ab9b31ecfc265f9321eca10284d4d47f9d96c484b6d2eee10170a71f788f073"
     },
     {
+      "ref": "series_maximum@v1",
+      "id": "series_maximum",
+      "version": 1,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the largest value of a sampled series and the independent variable at which it is first reached",
+      "description": "The largest value of a sampled series and the value of the independent variable at which it is first reached, with its place in the series. Take it when a run or a measurement gives a series against time, wavelength or another variable and the question is its peak and where the peak falls, as a benchmark's largest coefficient and its instant are.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "series",
+          "unit": "1",
+          "meaning": "the samples as a list of pairs, each the independent variable in its own unit (a run's time at each step, a spectrum's wavelength at each channel) and the value there in the quantity's unit"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "found",
+          "unit": "1",
+          "meaning": "true when the series has a largest value; false, with why, when it is empty or a sample is not a pair"
+        },
+        {
+          "name": "maximum",
+          "unit": "1",
+          "meaning": "the largest value, in the quantity's unit"
+        },
+        {
+          "name": "at",
+          "unit": "1",
+          "meaning": "the independent variable at the first sample holding the largest value, in the independent variable's own unit, which no manifest of a series of any kind can name; the reader says it from the series it handed"
+        },
+        {
+          "name": "index",
+          "unit": "count",
+          "meaning": "that sample's place in the series, counted from zero"
+        },
+        {
+          "name": "points",
+          "unit": "count",
+          "meaning": "how many samples were handed"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "when found is false, why nothing was found"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/series_maximum@v1",
+      "sha256": "sha256:346046585de70a5ec3f8642d7494d51ac508b8fe34f1a22c64128c3b9ef29001"
+    },
+    {
       "ref": "standard_error_of_independent_estimates@v1",
       "id": "standard_error_of_independent_estimates",
       "version": 1,
