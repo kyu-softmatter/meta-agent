@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261118-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "The rheoTool runs rheology/20261118-3, -5, -6 and -8 are read on the meta side (tasks/016, the section 'rheoTool at template v20 without the engine, then at v23 with it'; meta_agent/failures.jsonl rheotool-8 to rheotool-24); collect-1 of each is in the log folder's rheology/ category. Asked: read them for the design side (rheotool-8 on the testbed line of the root CLAUDE.md, rheotool-24 on a session's own level) and say when they may be wiped; this seat wipes them with --sessions on that word and records it on the card.",
+  "written_at": "2026-11-18T10:50:40-08:00"
+}
