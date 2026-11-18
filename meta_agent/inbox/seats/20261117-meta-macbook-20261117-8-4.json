@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-8",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "Beside 20261117-meta-macbook-20261117-8-3, for docs/ideas/20261118.md: in the cleanup session the person also said '모두 세션 판단대로' ('all as the session judges') on the source kind, the tolerances and 'settled', and the run length. Those had already been chosen by the person directly by buttons in this seat's session ('prior_run (E3)', 'Counts exact, averages: diff only', 'Tutorial's own lengths'); recorded on meta_agent/tasks/017. No value was chosen by a seat.",
+  "written_at": "2026-11-17T22:00:04-08:00"
+}
