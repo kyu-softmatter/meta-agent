@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261118-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "For docs/ideas/20261118.md, the rheoTool engine on this computer: shown that rheoTool's of90 needs OpenFOAM v9 (Linux only; conda-forge has none for this Mac) and offered (1) Colima + an OpenFOAM v9 Docker image, (2) a Linux VM such as UTM or OrbStack, (3) a remote Linux server, the person said '1, 2 중 가벼운 방법으로 구현 / 나중에 완전 삭제도 편한 것으로.' ('of 1 and 2, implement the lighter way, and one that is easy to remove completely later'), and later '엔진은 설치하는 중이고. 남는 문제는 너가 스스로 해결방법을 찾을 수 있을거고' ('the engine is being installed; the remaining problem you can solve yourself'). This seat made it outside the repository: Homebrew colima, lima, docker, docker-buildx; Colima profile rheotool (vz + Rosetta); image rheotool:of90 (Ubuntu 20.04 amd64, openfoam9 from dl.openfoam.org, Eigen 3.2.9, PETSc 3.16.5, rheoTool of90 at 81f3e8c); recipe and removal steps in ~/Desktop/Projects/rheotool-engine/. Asked: (a) record the words; (b) whether the lab's execution permission ('as far as a simulation engine on this computer') and package_sources [pixi/conda-forge] need a new answer from the person for an engine in a container of a VM on this computer, which this seat does not infer. Also from run rheology/20261118-3 (collect-1, session 3feefa60): the clone read the root CLAUDE.md's 'Nothing is developed now for the rheometer or its simulation engine' and wrote that it took the person's request as overriding it; whether a test clone given a rheology request should meet that line, and how, is the design role's (meta_agent/failures.jsonl rheotool-8).",
+  "written_at": "2026-11-18T09:18:49-08:00"
+}
