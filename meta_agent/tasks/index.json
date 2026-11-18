@@ -331,6 +331,18 @@
       "depends_on": [],
       "opened": "2026-11-18",
       "design_part": "landed"
+    },
+    {
+      "id": "026",
+      "file": "026-what-an-interface-call-shows-in-the-builders-tree.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-18",
+      "design_part": "open"
     }
   ]
 }
