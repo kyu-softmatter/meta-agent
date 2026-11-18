@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261118-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "For docs/ideas/20261118.md and the tolerance rule of the root CLAUDE.md: shown rheotool-26 (in round four of the rheoTool test each agreement was about 99.5 percent of its tolerance, since the two-grid estimate of the run's own error is nearly the error itself, so a correct run sits on the boundary) and asked 'Should the tolerance from the run's own numerical error carry a safety factor?' with the options 'Factor 3 (GCI)' (Roache's grid convergence index for two grids; this seat's recommendation) and 'Keep it with no factor', the person chose '계수 3 (GCI)' ('factor 3 (GCI)'). Asked: record the words and amend the rule's line so that the run's own numerical error enters as three times the two-grid estimate; tell this seat when it has landed, and the meta side follows as next versions of the library skill that derives the tolerance and of the template that carries it, shown on two unrelated kinds.",
+  "written_at": "2026-11-18T12:39:50-08:00"
+}
