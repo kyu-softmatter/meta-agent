@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "018",
+  "answers": null,
+  "text": "From the Quantum ESPRESSO test, round three (runs dft/20261117-20 and dft/20261117-22; meta_agent/failures.jsonl dft-12, dft-13 and the meta side of dft-14): the bundle's task 001 says replay ends OK, but a replay item that needs the engine's environment fails before the install and the task asks to rerun only validate_tasks (dft-12); an interface item passes whatever exit status run_example returns, so an example's script ending in failure shows in no verdict (dft-13); the bundle's classify-knowledge on template v16 (built in the clone only) still left the session unsure whether a maker's reference output is spec or prior_run, and the bundle carries no grade table (dft-14, the design side is the design role's). Asked: whether each is a fault of a general mechanism and, if so, a template or Designer version shown on fixtures of two unrelated kinds.",
+  "written_at": "2026-11-17T21:36:02-08:00"
+}
