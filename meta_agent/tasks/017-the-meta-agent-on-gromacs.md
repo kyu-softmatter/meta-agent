@@ -13,3 +13,15 @@
 **Done when (read off a run):** the brief `../eval/briefs/clone-gromacs-bare.txt` is committed in the words the person confirmed; one run was made from the committed head with one unattended session in its clone, collected and removed, the collection still in the log folder; what it showed is in failure lines, cases, notes or new versions, each naming the run and the collection; this card says how far the clone went, what it asked and what it inferred, and what was watched and what was not.
 
 **Must not:** write a brief or make a run before the person's word; put any answer in the brief that the person did not give for this engine; change a build or decide a threshold from the test; fix a fault in anything but a general mechanism shown on fixtures of two unrelated kinds; push.
+
+## Begun (2026-11-17, `meta-macbook-20261117-8`)
+
+The person opened this session with "그로맥스 시뮬레이션 생성 및 테스트 / 폴더가 없다면 폴더를 만들고 검증" ("create and test the GROMACS simulation; if the folder does not exist, make it and check"). Both category folders, `molecular-dynamics` under the test folder and under the log folder, already stood and were empty; none was made.
+
+Asked by this seat, the person answered with the buttons this seat wrote:
+
+- on the brief (role line `meta`, the link `http://www.mdtutorials.com/gmx/lysozyme/`, a third party's tutorial, "이것을 자동화 하고싶어", the lines on carrying through and reporting, no answers): "Yes, this bare brief (Recommended)";
+- on timing, two other test sessions working at the time (`cfd/20261117-14`, `chemical-kinetics/20261117-12`): "Start now, in parallel (Recommended)";
+- on level: "opus-5-5, high (Recommended)".
+
+So the brief is `../eval/briefs/clone-gromacs-bare.txt`; the run is made now under the `molecular-dynamics` folders; the clone session runs on `claude-opus-5-5` at `high`. Not settled: the source and prefix of the third party's tutorial, whether GROMACS may be installed and run on this computer, and every tolerance; these are left to the clone to ask.

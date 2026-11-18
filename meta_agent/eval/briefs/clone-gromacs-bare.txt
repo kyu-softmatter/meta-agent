@@ -1,0 +1,7 @@
+Your role is `meta`.
+
+http://www.mdtutorials.com/gmx/lysozyme/
+
+이것을 자동화 하고싶어
+
+Carry the request through as far as it goes without me. Report when you stop: what you did, what the gate printed, what is open, and what you ran on.
