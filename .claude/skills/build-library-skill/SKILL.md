@@ -26,6 +26,7 @@ Load `classify-knowledge` before the first value, statement or data file of this
 - `skill.json`: the manifest code reads (`contracts/schemas/skill.schema.json`).
 - `scripts`, a folder: the source. The manifest's `entry` names one function.
 - `cases.json`: worked cases with their inputs and the expected output.
+- **A common skill**, one that every simulation bundle carries (`meta_agent/tasks/025-a-common-library-every-bundle-carries.md`), says `common: true` in its manifest, applies to no particular engine, instrument or parameter, and its worked cases each name their `system`, at least two unrelated kinds of system among them. A build that adapts it to an engine makes a next version beside it with `adapted_from` and the engine under `applies_to.engines`, and never edits the common one.
 
 The kinds, and the side effect each may declare, are in `contracts/skill_kinds.json`.
 

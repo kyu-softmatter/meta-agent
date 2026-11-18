@@ -37,7 +37,7 @@ It runs intake through validation and writes the bundle under `meta_agent/builds
 - The bundle comes from a versioned template; the `build` card carries the difference from the template and the hash.
 - Safety values are `null`. Only the person writes them, at the destination.
 - Only `observed` and `derived` claims become capabilities.
-- The bundle carries the library skills it needs, run through its own runner. From template version v3 on it also carries its session skills: one that sends the bundle's session to that runner, with a page per library skill, and beside it the ones for choosing a session's level and for classifying a piece of knowledge.
+- The bundle carries the library skills it needs, run through its own runner, and a simulation bundle carries every common skill as well (`common: true`, `meta_agent/tasks/025-a-common-library-every-bundle-carries.md`). Where a common skill must be adapted to the engine, the build makes a next version with `adapted_from`, and the `build` card lists it in its difference from the template; the common skill itself is never edited. From template version v3 on it also carries its session skills: one that sends the bundle's session to that runner, with a page per library skill, and beside it the ones for choosing a session's level and for classifying a piece of knowledge.
 - Check it alone: `python contracts/validate.py --bundle <bundle folder>`.
 
 ## Build an agent again
