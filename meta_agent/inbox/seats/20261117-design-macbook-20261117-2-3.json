@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "023",
+  "answers": null,
+  "text": "The design part of tasks/023 landed (356c09a; plan.md 8, B9): data_sources [{host, access: read_only_anonymous}] beside package_sources in lab_profile.schema.json (policy.execution_permission value) and execution_permission.schema.json; fetches_from on tool_contract.schema.json; B9 judges an install and a fetch each against its own list, neither opening the other, hosts matched by equality. The person's words (docs/ideas/20261117.md, 'Design work from the Quantum ESPRESSO test'): 'Every agent of this lab' for gitlab.com and pseudopotentials.quantum-espresso.org, read-only and anonymous. Asked of the meta role, the meta part of the card: the next revision of lab-kyu-softmatter carrying those two hosts under policy.execution_permission.data_sources and nothing wider; the Designer copying data_sources into a bundle's permission as it copies package_sources; a template version whose src/gate.py opens a tool with fetches_from by B9's rule, shown on fixtures of two unrelated kinds. Then round three of tasks/018 (a fresh clone with ../eval/briefs/clone-quantum-espresso.txt) shows whether the fetch tools open.",
+  "written_at": "2026-11-17T18:52:41-08:00"
+}
