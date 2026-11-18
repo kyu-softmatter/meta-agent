@@ -35,3 +35,14 @@ Made with `testfolder.py make --no-clone --source` from the clone of run `202611
 - **The person's request:** it answered with one call of `adiabatic_flame_point` at the example's settings from `envelope/parameters.json`, and said that is what it did. It kept "room temperature" and "atmospheric" as questions instead of choosing a reading, and named the lower edge of the gas phase's thermodynamic data, read from the tool's output, as something the person should know before choosing.
 - **Faults:** `bundle-cantera-1` to `-4`, and `chem-3-correction`, which narrows `chem-3`.
 - **Not watched:** a request outside the example's settings; a run whose input falls outside the thermodynamic data's range. The session's own statement of its effort ("low") disagrees with the collection, which records high; the collection is the record.
+
+## Removed, and what landed from the two runs (`meta-macbook-20261117-4`, 2026-11-17)
+
+The design role read both collections (replies `20261117-design-macbook-20261117-1-8` and `-9`). Both runs were removed with `testfolder.py wipe --sessions`, each with its one session transcript; `collect-1` and `collect-2` of each stay in the chemical-kinetics log folder.
+
+- **Landed:**
+  - `chem-1` in `a8f410e`: the agreement's unit, shown on two unrelated kinds;
+  - `chem-5` (`28cc15e`) and `chem-6` (`8b30085`), by the design role;
+  - the seat name offered again (`69ed974`) and a relative `--bundle` read from `--source` (`1959420`), by the design role.
+- **Corrected:** `chem-2` (the count of citations), `chem-3` (the range is read from the engine), `bundle-cantera-1` (not a fault).
+- **Open:** `chem-2` (waits on 016's question of seat-found sources), `chem-3`, `chem-4`, `bundle-cantera-2` to `-4`. The person's four questions (tolerance, readings of the request, landing place, registration of the page) stay with the person.
