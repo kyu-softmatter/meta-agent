@@ -141,6 +141,38 @@
         "safety limits"
       ],
       "verified": null
+    },
+    {
+      "id": "chemical_equilibrium",
+      "name": "chemical equilibrium, single-phase and multiphase",
+      "scale": [
+        "continuum"
+      ],
+      "settings_that_matter": [
+        "species and phases",
+        "thermodynamic data",
+        "which two properties are held fixed",
+        "initial composition"
+      ],
+      "verified": null,
+      "note": "added 2026-11-17 (tasks/020, failure chem-5): the Cantera example the test was given computes a multiphase equilibrium; named from that example as the test read it, unverified like the seed entries"
+    },
+    {
+      "id": "fdtd",
+      "name": "finite-difference time-domain electromagnetics",
+      "scale": [
+        "continuum"
+      ],
+      "settings_that_matter": [
+        "geometry and materials",
+        "resolution",
+        "absorbing boundary layers",
+        "sources",
+        "Courant factor",
+        "run time"
+      ],
+      "verified": null,
+      "note": "added 2026-11-17 (tasks/021, failure em-4): the Meep tutorial the test was given uses it; named from that tutorial as the test read it, unverified like the seed entries"
     }
   ]
 }

@@ -231,6 +231,38 @@
       "material_refs": [],
       "verified": null,
       "note": "commercial"
+    },
+    {
+      "id": "cantera",
+      "name": "Cantera",
+      "scale": [
+        "continuum"
+      ],
+      "methods": [
+        "chemical_equilibrium"
+      ],
+      "interface": "python_api",
+      "language": "C++",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null,
+      "note": "added 2026-11-17 (tasks/020, failure chem-5): the clone of run chemical-kinetics/20261117-1 found no id for the engine of its request; named as that test read the engine, not read by the seat that added it, and unverified like the seed entries"
+    },
+    {
+      "id": "meep",
+      "name": "Meep",
+      "scale": [
+        "continuum"
+      ],
+      "methods": [
+        "fdtd"
+      ],
+      "interface": "python_api",
+      "language": "C++",
+      "license": "to verify",
+      "material_refs": [],
+      "verified": null,
+      "note": "added 2026-11-17 (tasks/021, failure em-4): the clone of run electromagnetics/20261117-1 found no id for the engine of its request; named as that test read the engine, not read by the seat that added it, and unverified like the seed entries"
     }
   ]
 }

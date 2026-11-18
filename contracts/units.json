@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "note": "Authoritative unit registry, in soft-matter-agents' shape: multiplicative, si_factor converts to SI base units, dim is the dimension vector (L length, T time, M mass, Th temperature, A angle, N count, I electric current). Offset units (Celsius, Fahrenheit) are not registered: temperature is carried in kelvin and a reading given in Celsius is noted on the number. Rheology units (Pa, Pa.s, 1/s, N.m, rad/s) are here from the start because the first testbed is the rheometer and a rheology engine (plan.md 10). kDa is 1000 g/mol, so its si_factor is 1.0 kg/mol. Added 2026-11-16 (tasks/016), asked twice by sessions that built an engine agent: engine_length, for an engine's own lengths, and id, for a number that names and does not measure; neither has an si_factor. Added 2026-11-17 (tasks/016, run 20261117-4): engine_length^3, a volume in the engine's own units. Added 2026-11-17 (tasks/016, the person's word relayed from the clone of run 20261117-3): engine_energy, engine_time, engine_mass, engine_drag, engine_viscosity and engine_diffusivity, an engine's own units of each, none with an si_factor. engine_length^2 added the same day, for a mean squared displacement.",
+  "note": "Authoritative unit registry, in soft-matter-agents' shape: multiplicative, si_factor converts to SI base units, dim is the dimension vector (L length, T time, M mass, Th temperature, A angle, N count, I electric current). Offset units (Celsius, Fahrenheit) are not registered: temperature is carried in kelvin and a reading given in Celsius is noted on the number. Rheology units (Pa, Pa.s, 1/s, N.m, rad/s) are here from the start because the first testbed is the rheometer and a rheology engine (plan.md 10). kDa is 1000 g/mol, so its si_factor is 1.0 kg/mol. Added 2026-11-16 (tasks/016), asked twice by sessions that built an engine agent: engine_length, for an engine's own lengths, and id, for a number that names and does not measure; neither has an si_factor. Added 2026-11-17 (tasks/016, run 20261117-4): engine_length^3, a volume in the engine's own units. Added 2026-11-17 (tasks/016, the person's word relayed from the clone of run 20261117-3): engine_energy, engine_time, engine_mass, engine_drag, engine_viscosity and engine_diffusivity, an engine's own units of each, none with an si_factor. engine_length^2 added the same day, for a mean squared displacement. Added 2026-11-17 (tasks/021, failure em-4; the paper-reproduction clone of run 20261117-11 asked for a speed): 1/engine_time, 1/engine_length and engine_length/engine_time, none with an si_factor.",
   "dimensions": {
     "L": "length",
     "T": "time",
@@ -472,6 +472,28 @@
       "si_factor": null,
       "dim": {},
       "note": "an identifier written as a number, such as a random seed: it is set and compared, never added, scaled or converted"
+    },
+    "1/engine_time": {
+      "si_factor": null,
+      "dim": {
+        "T": -1
+      },
+      "note": "a frequency or a rate in an engine's own units, the inverse of engine_time (Meep's frequency, in units of the speed of light over its unit length)"
+    },
+    "1/engine_length": {
+      "si_factor": null,
+      "dim": {
+        "L": -1
+      },
+      "note": "a count per engine_length (Meep's resolution, pixels per unit length); no factor to inverse metres until a request names the length scale"
+    },
+    "engine_length/engine_time": {
+      "si_factor": null,
+      "dim": {
+        "L": 1,
+        "T": -1
+      },
+      "note": "a speed in an engine's own units"
     }
   }
 }
