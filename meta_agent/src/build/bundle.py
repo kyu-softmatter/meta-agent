@@ -722,6 +722,12 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     if agreement and scientific_tasks and agreement not in {r["ref"] for r in skills}:
         from ..skills import catalogue as catalogue_mod
         skills.append(catalogue_mod.take([agreement])[0])
+    interval = cards.load_json(meta).get("interval_skill") if os.path.isfile(meta) else None
+    if interval and interval not in {r["ref"] for r in skills} and any(
+            isinstance(t.get("tolerance"), dict) and "interval" in t["tolerance"] for t in scientific_tasks or []):
+        # a task judged by an interval the person gave needs the skill that judges it (cfd-19)
+        from ..skills import catalogue as catalogue_mod
+        skills.append(catalogue_mod.take([interval])[0])
     common = (cards.load_json(meta).get("common_skills") if os.path.isfile(meta) else None) or []
     if common and simulation:
         skills = with_common(skills, common, adaptations or [], agreement)

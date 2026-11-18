@@ -106,9 +106,9 @@ class APassingTaskKeepsWhatItMeasured(unittest.TestCase):
 
 
 class TheVersion(unittest.TestCase):
-    def test_v21_is_the_latest_and_changes_its_template_card_alone(self):
+    def test_v21_changes_its_template_card_alone(self):
         v20_src = template_mod.SOURCES["v20"]
-        self.assertEqual(template_mod.LATEST, "v21")
+        self.assertIn("v21", template_mod.SOURCES)                  # v22 is the latest since cfd-19
         changed = sorted(r for r in cards.tree_files(v20_src)
                          if cards.sha256_file(os.path.join(v20_src, r)) != cards.sha256_file(os.path.join(V21, r)))
         self.assertEqual(changed, ["TEMPLATE.json"])
