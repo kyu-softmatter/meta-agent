@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "019",
+  "answers": null,
+  "text": "The person, 2026-11-18, in this seat's session: 'Take CFD-T', the button this seat wrote for the question 'Take recommendation CFD-T for the tolerances?'. CFD-T is written on meta_agent/tasks/019 at aa73bee, four items: (1) the maximal drag coefficient, the maximal lift coefficient and the pressure difference at the final time are each judged against the 1996 interval of Schaefer and Turek as V. John 2004 quotes it (printed page 783; meta_agent/inbox/materials/20261118-john-2004-dfg-reference-values): [2.93, 2.97], [0.47, 0.49] and [-0.115, -0.105]; (2) the times of the maxima against John's reference times, to within one time step of the agent's run; (3) the reference of the next build is John's 2004 values, not FEATFLOW's level-6 row; (4) a fail of the maximal drag coefficient is reported as a finding, not tuned away, and a convergence run follows only if the person asks. Asked: record these words verbatim in docs/ideas/20261118.md with what they settle (the tolerances of the CFD test's three quantities and its times, and the reference) and what they do not (any other engine's tolerance; the registration of John 2004, still queued). Next, this seat drafts round three's brief, which carries these answers to a clone, since a blind clone does not hold docs/ideas; the brief's words go to the person before it is committed.",
+  "written_at": "2026-11-18T07:36:33-08:00"
+}
