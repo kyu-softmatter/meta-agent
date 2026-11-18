@@ -371,7 +371,7 @@ class TestFolder(unittest.TestCase):
         put(self.top, "fake.py", "import json, os, sys\n"
             "json.dump({'argv': sys.argv[1:], 'cwd': os.getcwd(), 'stdin': sys.stdin.read(), "
             "'passed_on': sorted(k for k in os.environ if k.startswith('CLAUDE')), "
-            "'tmp': [os.environ.get(k) for k in ('TMPDIR', 'TMP', 'TEMP')]}, open(%r, 'w'))\n"
+            "'tmp': [os.environ.get(k) for k in ('TMPDIR', 'TMP', 'TEMP')], 'cache': os.environ.get('XDG_CACHE_HOME')}, open(%r, 'w'))\n"
             "print(json.dumps({'session_id': 'abcd', 'is_error': os.environ.get('FAKE_FAILS') == '1', 'result': 'task done'}))\n" % seen)
         brief = put(self.top, "brief.txt", "Read tasks/001-start.md first.\n")
         os.environ["CLAUDE_CODE_SOMETHING_OF_THE_OPENER"] = "1"
@@ -390,6 +390,8 @@ class TestFolder(unittest.TestCase):
         # ctrl-pair-2: folders under the system's temporary folder outlived three runs)
         scratch = os.path.join(self.root, run, "tmp")
         self.assertEqual(got["tmp"], [scratch] * 3)
+        # and a program's cache that follows XDG goes there too, not under the person's home (run cfd/20261118-7, cfd-27)
+        self.assertEqual(got["cache"], os.path.join(scratch, "cache"))
         self.assertTrue(os.path.isdir(scratch))
         mcp = put(os.path.join(self.root, run, "bundles", "balance-0001"), ".mcp.json", "{\"mcpServers\": {}}\n")
         self.assertEqual(self.run_tool("session", run, "balance-0001", "--brief", brief, "--claude", fake)[0], 0)
