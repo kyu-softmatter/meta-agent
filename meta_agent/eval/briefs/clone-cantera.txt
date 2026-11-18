@@ -1,0 +1,14 @@
+Your role is `meta`.
+
+https://cantera.org/stable/examples/python/thermo/adiabatic.html
+
+이것을 자동화 하고싶어
+
+I have already answered these, in an earlier session, and they are recorded in `docs/ideas/20261117.md`; do not ask them again:
+
+- The scientific checks: the adiabatic flame temperature the agent gives is compared with the value the page prints, with a tolerance of 1 K.
+- The conditions I mean are the example's: 300 K and 101325 Pa.
+
+Not decided, and not to wait for: where the bundle lands, and whether the page is registered and may be quoted. Leave each undecided on the card it belongs to and carry on.
+
+Carry the request through as far as it goes without me. Report when you stop: what you did, what the gate printed, what is open, and what you ran on.
