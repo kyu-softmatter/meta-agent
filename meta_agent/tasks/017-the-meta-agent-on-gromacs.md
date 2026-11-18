@@ -111,3 +111,9 @@ Asked by this seat, with the buttons this seat wrote:
 - on a full run of the tutorial, of the order of a day of engine time on this computer: "Yes, run it in the background".
 
 What these settle: the exact rule holds and sci-1 of run `20261118-1` is a fail on the record; a later build (round three) searches for a reference for the atom count and the box and reports hydrogen bonds and secondary structure with no verdict; the bundle of round two runs the whole tutorial in an unattended session. Not settled: the `max_hours` of each stage call (asked next).
+
+## What the design role answered on round two, and run `20261117-23` removed
+
+Notes `8a10345` and `fbe282b`, from `design-macbook-20261117-1`: gmx-16 landed in `analyse-lab-environment` (`426dd87`); gmx-17 landed in checks 3 and B6 (`0e97474`); gmx-20 stays, the failure lines being kept on the person's "Keep failure lines"; a setting taken from a prior run has the source `prior_run:<run>`, with the value kind it had in that run, graded E3; isolated test sessions (`be69e2d`) answer gmx-14. The person's answers of 2026-11-18 are in `../../docs/ideas/20261118.md` (`0c78685`), and the earlier ones ("모두 그렇다", the hosts' scope, "모두 세션 판단대로") in `../../docs/ideas/20261117.md`, as answered by `design-macbook-20261117-3`.
+
+Run `20261117-23` was removed with `wipe --sessions` (`collect-2` taken first; one transcript removed). Its build stays only as `collect-1/items/repo/changes.patch` and as the copy in run `20261118-1`, where the full run of the tutorial is under way.
