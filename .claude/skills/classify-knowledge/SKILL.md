@@ -44,7 +44,7 @@ For a data file, what you read about its layout is itself a claim: `observed` wh
 1. **Which quantity, by its definition.** The name and the symbol the source uses, and the convention behind it. One word often covers several quantities: a viscosity that is dynamic or kinematic, a height measured to a centre or to a surface, a rate or an angular frequency, a peak or a root mean square, an amount per particle or per mole.
 2. **Of what.** The sample, the model or the instrument it belongs to.
 3. **Under what conditions.** Temperature, concentration, geometry, the range over which it holds.
-4. **Relative to what.** The reference of a ratio and the zero of a scale.
+4. **Relative to what.** The reference of a ratio and the zero of a scale. A quantity defined only up to a constant (a pressure in an incompressible flow, a potential, an energy) is compared with another only after both are shown to share that zero: a pressure fixed at an outlet and one left free there are not the same quantity until one is shifted to the other's reference.
 5. **How it was obtained.** The method decides what it may be compared with.
 6. **What it is for here.** The row, the parameter or the claim of this request that it supports. A value nothing here needs is not carried.
 

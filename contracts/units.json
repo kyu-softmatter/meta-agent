@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "note": "Authoritative unit registry, in soft-matter-agents' shape: multiplicative, si_factor converts to SI base units, dim is the dimension vector (L length, T time, M mass, Th temperature, A angle, N count, I electric current). Offset units (Celsius, Fahrenheit) are not registered: temperature is carried in kelvin and a reading given in Celsius is noted on the number. Rheology units (Pa, Pa.s, 1/s, N.m, rad/s) are here from the start because the first testbed is the rheometer and a rheology engine (plan.md 10). kDa is 1000 g/mol, so its si_factor is 1.0 kg/mol. Added 2026-11-16 (tasks/016), asked twice by sessions that built an engine agent: engine_length, for an engine's own lengths, and id, for a number that names and does not measure; neither has an si_factor. Added 2026-11-17 (tasks/016, run 20261117-4): engine_length^3, a volume in the engine's own units. Added 2026-11-17 (tasks/016, the person's word relayed from the clone of run 20261117-3): engine_energy, engine_time, engine_mass, engine_drag, engine_viscosity and engine_diffusivity, an engine's own units of each, none with an si_factor. engine_length^2 added the same day, for a mean squared displacement. Added 2026-11-17 (tasks/021, failure em-4; the paper-reproduction clone of run 20261117-11 asked for a speed): 1/engine_time, 1/engine_length and engine_length/engine_time, none with an si_factor. Added 2026-11-17 (tasks/018, dft-1, on the person's word '여기서 진행'): eV and Ry, the energies Quantum ESPRESSO's pw.x prints, each with its factor to joules read from NIST's CODATA 2022 values and cited in its own note.",
+  "note": "Authoritative unit registry, in soft-matter-agents' shape: multiplicative, si_factor converts to SI base units, dim is the dimension vector (L length, T time, M mass, Th temperature, A angle, N count, I electric current). Offset units (Celsius, Fahrenheit) are not registered: temperature is carried in kelvin and a reading given in Celsius is noted on the number. Rheology units (Pa, Pa.s, 1/s, N.m, rad/s) are here from the start because the first testbed is the rheometer and a rheology engine (plan.md 10). kDa is 1000 g/mol, so its si_factor is 1.0 kg/mol. Added 2026-11-16 (tasks/016), asked twice by sessions that built an engine agent: engine_length, for an engine's own lengths, and id, for a number that names and does not measure; neither has an si_factor. Added 2026-11-17 (tasks/016, run 20261117-4): engine_length^3, a volume in the engine's own units. Added 2026-11-17 (tasks/016, the person's word relayed from the clone of run 20261117-3): engine_energy, engine_time, engine_mass, engine_drag, engine_viscosity and engine_diffusivity, an engine's own units of each, none with an si_factor. engine_length^2 added the same day, for a mean squared displacement. Added 2026-11-17 (tasks/021, failure em-4; the paper-reproduction clone of run 20261117-11 asked for a speed): 1/engine_time, 1/engine_length and engine_length/engine_time, none with an si_factor. Added 2026-11-17 (tasks/018, dft-1, on the person's word '여기서 진행'): eV and Ry, the energies Quantum ESPRESSO's pw.x prints, each with its factor to joules read from NIST's CODATA 2022 values and cited in its own note. Added 2026-11-17 (tasks/017, failure gmx-1, run molecular-dynamics/20261117-16): ps, bar, 1/bar, kJ/(mol.nm), kJ/(mol.nm^2) and e, each with its exact factor.",
   "dimensions": {
     "L": "length",
     "T": "time",
@@ -512,6 +512,57 @@
         "T": -2
       },
       "note": "the Rydberg unit of energy, the Rydberg constant times hc, read from NIST's CODATA 2022 recommended values (https://physics.nist.gov/cgi-bin/cuu/Value?rydhcj, read 2026-11-17): 2.179 872 361 1030(24) x 10^-18 J, relative standard uncertainty 1.1e-12. Quantum ESPRESSO's pw.x prints the total energy in it."
+    },
+    "ps": {
+      "si_factor": 1e-12,
+      "dim": {
+        "T": 1
+      }
+    },
+    "bar": {
+      "si_factor": 100000.0,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -2
+      },
+      "note": "exactly 100000 Pa by definition"
+    },
+    "1/bar": {
+      "si_factor": 1e-05,
+      "dim": {
+        "M": -1,
+        "L": 1,
+        "T": 2
+      },
+      "note": "a compressibility per bar"
+    },
+    "kJ/(mol.nm)": {
+      "si_factor": 1000000000000.0,
+      "dim": {
+        "M": 1,
+        "L": 1,
+        "T": -2,
+        "N": -1
+      },
+      "note": "a force per mole, as GROMACS states a force"
+    },
+    "kJ/(mol.nm^2)": {
+      "si_factor": 1e+21,
+      "dim": {
+        "M": 1,
+        "T": -2,
+        "N": -1
+      },
+      "note": "a force constant per mole, as GROMACS states a bond's or a restraint's"
+    },
+    "e": {
+      "si_factor": 1.602176634e-19,
+      "dim": {
+        "I": 1,
+        "T": 1
+      },
+      "note": "the elementary charge, a charge in coulombs exact by the SI's definition (the same constant as the eV's entry, read from NIST's CODATA 2022 values); molecular engines state partial charges in it"
     }
   }
 }
