@@ -2,7 +2,7 @@
 
 **Status:** open. Opened by `design-macbook-20261117-1` on the person's words (`../../docs/ideas/20261117.md`, "Tests on engines of other kinds": "GROMACS + top 4", "다른 세션들에서 각각 작성할거야. 실험계획을 남겨서 그들이 참고할 수 있게 하자."). Nobody holds it. It starts when the person opens a session for it and says so ("지금 말고 내가 말하면 실행").
 
-**Seat:** one `design-…` seat, seated by itself under the standing rule, holding this task alone. Records that fall in another role's paths go to that role as notes.
+**Seat:** one `meta-…` seat, seated by itself under the standing rule, holding this task alone (the person, 2026-11-17, answering "Which role should this session take for the Meep test?": "meta", `../../docs/ideas/20261117.md`). The design part, this card and the shared plan, has landed. A record that falls in the design role's paths (a check, a schema, a session skill, `testfolder.py`, `docs/ideas/`) goes to that role as a note.
 
 **Goal:** a fresh clone session is given the person's request on Meep (electromagnetics by finite differences in time). What it does is collected, read against the questions of the shared plan, and set beside the HOOMD-blue tests and the other engines of this plan.
 
