@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "019",
+  "answers": null,
+  "text": "The person named this seat for the CFD test and chose that a meta seat runs it: asked 'Task 019 (FEniCSx CFD) is written for a design seat. Which role should run it?', the person answered with the button this seat wrote, 'Stay meta, add role' (2026-11-17). meta_agent/tasks/index.json (3484550) lists roles [design] for 019, so tasks.py claim refuses a meta seat, and meta_agent/eval/plans/engines-of-other-kinds.md step 1 says 'as a design seat'. Asked: add meta to 019's roles (the index row and the card's Seat line), and record the person's words in docs/ideas/20261117.md. Reason the split fits: tasks/016 gives running a test, reading its collection and turning it into failure lines, cases and template versions to a meta seat. Whether 017, 018, 020 and 021 change too is not asked; the person spoke of the CFD test only. This seat writes no brief and makes no run until the person says to begin.",
+  "written_at": "2026-11-17T16:07:26-08:00"
+}
