@@ -280,6 +280,18 @@
       "depends_on": [],
       "opened": "2026-11-17",
       "design_part": "landed"
+    },
+    {
+      "id": "022",
+      "file": "022-a-sheet-row-per-run.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-17",
+      "design_part": "open"
     }
   ]
 }
