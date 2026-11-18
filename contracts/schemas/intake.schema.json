@@ -591,10 +591,9 @@
             "required": [
               "skill",
               "inputs",
-              "ratio_row",
-              "order_row"
+              "ratio_row"
             ],
-            "description": "a refinement run that measures the run's own numerical error (the person, 2026-11-18, 'Yes, refine and derive'): the skill that estimates the error from the run at two resolutions, the call's inputs for the finer run each from a row of envelope/parameters.json, and the rows of the refinement ratio and the order of accuracy; the tolerance the standing rule derives from that error is chosen_by rule with from run_numerical_error",
+            "description": "a refinement run that measures the run's own numerical error (the person, 2026-11-18, 'Yes, refine and derive'): the skill that estimates the error from the run at two resolutions, the call's inputs for the finer run each from a row of envelope/parameters.json, the row of the refinement ratio, and either the row of the order of accuracy from a source or a third, finer run (third_inputs) from which the order is observed; the tolerance the standing rule derives from that error is chosen_by rule with from run_numerical_error",
             "properties": {
               "skill": {
                 "type": "string",
@@ -615,8 +614,29 @@
               "order_row": {
                 "type": "string",
                 "minLength": 1
+              },
+              "third_inputs": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "the call's inputs for a third run, finer again by the same ratio, each from a row: with three results the order is observed rather than taken from a source (cfd-25)"
               }
-            }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "order_row"
+                ]
+              },
+              {
+                "required": [
+                  "third_inputs"
+                ]
+              }
+            ]
           }
         },
         "description": "a scientific task carries its reference and its tolerance as the validation report the Designer writes from it will judge them"

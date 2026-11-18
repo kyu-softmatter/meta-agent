@@ -1,0 +1,1 @@
+A scientific task's refinement names its ratio but neither an order of accuracy (order_row) nor a third, finer run (third_inputs): the run's error from two resolutions needs the order, from a source as a row or observed from a third run (the person, 2026-11-18, "Yes, refine and derive"; meta_agent/failures.jsonl cfd-25).
