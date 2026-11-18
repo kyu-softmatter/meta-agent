@@ -735,10 +735,23 @@ class DataSources(unittest.TestCase):
         i["tool_contract"]["fetches_from"] = copy.deepcopy(hosts)
         return i
 
+    def persons_latest_hosts(self):
+        """The data hosts of the person's newest answer file beside the lab's profile, as the person named them."""
+        folder = os.path.join(META, "profiles", self.LAB)
+        newest = sorted(f for f in os.listdir(folder) if f.startswith("answers_") and f.endswith("_data_sources.json"))[-1]
+        return cards.load_json(os.path.join(folder, newest))["answers"]["policy.execution_permission"]["data_sources"]
+
     def test_the_hosts_are_copied_from_the_profile_as_the_person_named_them(self):
+        # the latest profile carries the hosts of the person's newest answer, no more and no fewer
         p = designer.execution_permission(META, self.LAB)
-        self.assertEqual(p["data_sources"], self.HOSTS)
+        self.assertEqual(p["data_sources"], self.persons_latest_hosts())
         self.assertEqual(p["package_sources"], [{"installer": "pixi", "channel": "conda-forge"}])
+        # the revision of tasks/023 (v5, the person, 2026-11-17) carries the two hosts of Quantum ESPRESSO alone
+        v5 = os.path.join(self.tmp, "v5")
+        os.makedirs(os.path.join(v5, "profiles", self.LAB))
+        shutil.copy(os.path.join(META, "profiles", self.LAB, "v5_lab_profile.json"),
+                    os.path.join(v5, "profiles", self.LAB, "v5_lab_profile.json"))
+        self.assertEqual(designer.execution_permission(v5, self.LAB)["data_sources"], self.HOSTS)
         self.weather_lab(self.root)
         w = designer.execution_permission(self.root, self.WEATHER_LAB)
         self.assertEqual(w["data_sources"], self.WEATHER)
