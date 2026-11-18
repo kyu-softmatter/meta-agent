@@ -711,9 +711,10 @@ class WhatTheBundleSaysItLacks(unittest.TestCase):
         i = copy.deepcopy(load_intake())
         i["held"] = list(self.HELD)
         props = i["tool_contract"]["inputs"]["properties"]
-        props["style"] = {"type": "string", "enum": ["plain", "quoted"], "description": "how the text comes back"}
-        props["copies"] = {"type": "integer", "enum": [1, 2], "description": "how many times"}
-        props["frame"] = {"type": "string", "enum": ["f1", "f2"], "description": "a word with a digit"}
+        props["style"] = {"type": "string", "enum": ["plain", "quoted"], "description": "how the text comes back",
+                          "default": "plain"}
+        props["copies"] = {"type": "integer", "enum": [1, 2], "description": "how many times", "default": 1}
+        props["frame"] = {"type": "string", "enum": ["f1", "f2"], "description": "a word with a digit", "default": "f1"}
         tmp, root = scratch_root()
         try:
             designer.run(i, SEAT, "0001", NOW, root)
@@ -724,6 +725,8 @@ class WhatTheBundleSaysItLacks(unittest.TestCase):
             text = cards.read_text(os.path.join(bundle, "CLAUDE.md"))
             self.assertIn("one of `plain`, `quoted`", text)
             self.assertEqual(text.count("one of the values its contract lists"), 2)   # a number, a word with a digit
+            self.assertIn("left out, it is `plain`", text)                           # template v14: the default
+            self.assertEqual(text.count("left out, it is the default its contract states"), 2)
             p = subprocess.run([sys.executable, VALIDATE, tmp, "--strict"], capture_output=True, text=True,
                                env=dict(os.environ, PYTHONUTF8="1"))
             self.assertIn("0 failed, 0 pending", p.stdout, p.stdout + p.stderr)       # B6 among them

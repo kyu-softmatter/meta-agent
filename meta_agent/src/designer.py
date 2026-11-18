@@ -415,6 +415,30 @@ def tools_of(intake, root):
              "errors": list(t.get("error_contracts", []))} for t in listed]
 
 
+def builder_ids(root, rid):
+    """The ids of the builder's cards a build of `rid` may cite and its bundle does not carry: every card of the request's
+    folder, every material card of the inbox and every lab profile (run electromagnetics/20261117-2, em-7: rows cited a
+    material and a sheet by id). The top-level id of each JSON file only."""
+    out = set()
+    places = [os.path.join(root, "requests", rid)]
+    places += [os.path.join(root, "inbox", "materials", d) for d in sorted(os.listdir(os.path.join(root, "inbox", "materials")))
+               if os.path.isdir(os.path.join(root, "inbox", "materials", d))] if os.path.isdir(os.path.join(root, "inbox", "materials")) else []
+    places += [os.path.join(root, "profiles", d) for d in sorted(os.listdir(os.path.join(root, "profiles")))
+               if os.path.isdir(os.path.join(root, "profiles", d))] if os.path.isdir(os.path.join(root, "profiles")) else []
+    for d in places:
+        if not os.path.isdir(d):
+            continue
+        for f in sorted(os.listdir(d)):
+            if f.endswith(".json"):
+                try:
+                    c = cards.load_json(os.path.join(d, f))
+                except (ValueError, OSError):
+                    continue
+                if isinstance(c, dict) and isinstance(c.get("id"), str) and c["id"]:
+                    out.add(c["id"])
+    return sorted(out)
+
+
 def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_skills, subagents, build_id, seat, created,
                        put, parent_build=None, note=None, held_skills=None):
     """S5 and S6 for one build: the bundle from the latest template, its diff, its gates read off a fresh
@@ -457,7 +481,8 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
                              intake["interface_tasks"], intake["scientific_tasks"], intake["replay_items"],
                              skills=built_skills, subagents=subagents, workflow=intake.get("workflow"),
                              decisions=intake.get("decisions"),
-                             words=bundle_mod.words_by_record(intake, goal, spec))
+                             words=bundle_mod.words_by_record(intake, goal, spec),
+                             ids=builder_ids(root, rid), questions=bundle_mod.questions_by_number(intake))
     diff_text = bundle_mod.diff_from_template(template_path, bundle_path)
     put(os.path.join(build_dir, "diff_from_template.txt"), diff_text)
 

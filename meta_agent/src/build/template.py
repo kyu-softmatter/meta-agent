@@ -86,6 +86,16 @@ v13 changes one script (tasks/016): src/validate_tasks.py runs a
     scientific task's analysis, a library skill on the call's output with
     its other inputs from rows, through src/run_skill.py, and judges the
     skill's output; a row absent or null leaves the task not_run.
+v14 changes text only, after the Meep bundle was tested standing alone
+    (tasks/021, em-7 to em-9) beside the Quantum ESPRESSO bundle (dft-5):
+    CLAUDE.md says that the build also marks a card of the builder's
+    repository named by its id and a question put to the person named by
+    its number, envelope/parameters.json among the files, quoting the
+    question and its answer; tasks/001-start.md says that an interface task
+    whose call starts the engine fails before the install as a scientific
+    task is not_run. From this version the build refuses an optional input
+    that names neither a row nor a default, and the Tools section prints
+    the default (bundle.py).
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -103,8 +113,8 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v7": os.path.join(HERE, "template_v7"), "v8": os.path.join(HERE, "template_v8"),
            "v9": os.path.join(HERE, "template_v9"), "v10": os.path.join(HERE, "template_v10"),
            "v11": os.path.join(HERE, "template_v11"), "v12": os.path.join(HERE, "template_v12"),
-           "v13": os.path.join(HERE, "template_v13")}
-LATEST = "v13"
+           "v13": os.path.join(HERE, "template_v13"), "v14": os.path.join(HERE, "template_v14")}
+LATEST = "v14"
 SOURCE = SOURCES[LATEST]
 
 

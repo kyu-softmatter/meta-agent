@@ -162,7 +162,7 @@ class TheVersion(unittest.TestCase):
         self.assertEqual(cards.tree_files(v12), cards.tree_files(v13))
         changed = sorted(r for r in cards.tree_files(v12) if cards.sha256_file(os.path.join(v12, r)) != cards.sha256_file(os.path.join(v13, r)))
         self.assertEqual(changed, ["TEMPLATE.json", "src/validate_tasks.py"])
-        self.assertEqual(template_mod.LATEST, "v13")
+        self.assertIn("v13", template_mod.SOURCES)                  # v14 is the latest since tasks/021
         self.assertEqual(cards.load_json(os.path.join(v13, "TEMPLATE.json"))["version"], "v13")
 
 

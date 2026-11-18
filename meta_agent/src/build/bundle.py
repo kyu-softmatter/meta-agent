@@ -63,7 +63,31 @@ def field(name, prop, required=False):
             text += "; one of %s" % ", ".join("`%s`" % v for v in words)
         else:
             text += "; one of the values its contract lists"
+    if "default" in prop:
+        # what the tool takes when the input is left out (test run electromagnetics/20261117-2, em-8: a session guessed
+        # it); a number or a word with a digit is not printed (B6), and the contract is named instead
+        d = prop["default"]
+        if isinstance(d, str) and not any(ch.isdigit() for ch in d):
+            text += "; left out, it is `%s`" % d
+        else:
+            text += "; left out, it is the default its contract states"
     return "`%s` (%s)" % (name, text)
+
+
+def default_problems(tool_contracts):
+    """An optional input of a tool contract that names neither a parameter row nor a default: what the tool takes when
+    the input is left out is then known to its adapter alone, and a session asked to run the tool guesses it (test run
+    electromagnetics/20261117-2, em-8). Top-level inputs only, as the Tools section prints them."""
+    out = []
+    for tc in tool_contracts:
+        ins = (tc or {}).get("inputs") or {}
+        required = set(ins.get("required") or [])
+        for k, prop in sorted((ins.get("properties") or {}).items()):
+            if k in required or not isinstance(prop, dict):
+                continue
+            if prop.get("row") is None and "default" not in prop:
+                out.append("tool %s: the optional input %s names neither a row nor a default" % (tc.get("name"), k))
+    return out
 
 
 def gate_line(tc):
@@ -234,8 +258,58 @@ def builder_paths(value, bundle_path):
     return found
 
 
-def builder_records(paths, words=None):
-    """One entry per path: the record is the builder's and is not here; a person's words recorded in it, quoted."""
+QUESTION_RE = re.compile(r"(?<![\w-])questions? (\d+)(?!\w)", re.IGNORECASE)
+
+
+def builder_cards(value, ids):
+    """The ids of the builder's cards (`ids`, the cards the build read) that a JSON value names in its strings."""
+    text = []
+    def walk(v):
+        if isinstance(v, str):
+            text.append(v)
+        elif isinstance(v, dict):
+            for k in sorted(v):
+                walk(v[k])
+        elif isinstance(v, list):
+            for x in v:
+                walk(x)
+    walk(value)
+    joined = "\n".join(text)
+    return [i for i in sorted(set(ids or ())) if i and re.search(r"(?<![\w-])%s(?![\w-])" % re.escape(i), joined)]
+
+
+def builder_questions(value, questions):
+    """The numbers of the intake's questions for the person (`questions`, {n: question}) that a JSON value names as
+    'question <n>' in its strings (runs electromagnetics/20261117-2, em-7, and dft/20261117-2, dft-5)."""
+    found = []
+    def walk(v):
+        if isinstance(v, str):
+            for m in QUESTION_RE.finditer(v):
+                n = int(m.group(1))
+                if n in (questions or {}) and n not in found:
+                    found.append(n)
+        elif isinstance(v, dict):
+            for k in sorted(v):
+                walk(v[k])
+        elif isinstance(v, list):
+            for x in v:
+                walk(x)
+    walk(value)
+    return sorted(found)
+
+
+def questions_by_number(intake):
+    """{n: question} from an intake's questions_for_the_person: the question as it was asked and its answer, if any."""
+    out = {}
+    for q in (intake or {}).get("questions_for_the_person") or []:
+        if isinstance(q, dict) and isinstance(q.get("n"), int) and isinstance(q.get("question"), str):
+            out[q["n"]] = {k: q[k] for k in ("question", "answer") if k in q}
+    return out
+
+
+def builder_records(paths, words=None, card_ids=(), question_ns=(), questions=None):
+    """One entry per path: the record is the builder's and is not here; a person's words recorded in it, quoted. Then
+    one per card id named, and one per question named, quoting the question and the person's answer where there was one."""
     out = []
     for p in paths:
         e = {"path": p, "in_this_bundle": False,
@@ -246,13 +320,30 @@ def builder_records(paths, words=None):
         else:
             e["words_here"] = "none: what the item rests on is what it says in its own words"
         out.append(e)
+    for i in card_ids:
+        out.append({"card": i, "in_this_bundle": False,
+                    "whose": "a card of the builder's repository, named by its id; it is not in this bundle and is not "
+                             "looked for here"})
+    for n in question_ns:
+        q = (questions or {}).get(n) or {}
+        e = {"question": n, "in_this_bundle": False,
+             "whose": "a question the builder put to the person in its intake, which is not in this bundle",
+             "asked": q.get("question")}
+        a = q.get("answer")
+        if isinstance(a, dict):
+            e["answer"] = {k: a[k] for k in ("verbatim", "date", "gloss") if k in a}
+        else:
+            e["answer_here"] = "none: the person had not answered it when this bundle was built"
+        out.append(e)
     return out
 
 
 def mark_builder_records(bundle_path, words=None, subs=("validation/interface", "validation/scientific", "replay"),
-                         files=("TEMPLATE.json",)):
+                         files=("TEMPLATE.json", "envelope/parameters.json"), ids=(), questions=None):
     """Add builder_records to each task, replay item and named file that names a record the bundle does not carry.
-    `words` is {path: [{verbatim, date, gloss?}]}, the person's words the builder had for a record."""
+    `words` is {path: [{verbatim, date, gloss?}]}, the person's words the builder had for a record; `ids` the ids of the
+    builder's cards the build read, and `questions` the intake's {n: question} (questions_by_number). The parameter rows
+    are marked as a file: a row cites the material and the sheet it came from (run electromagnetics/20261117-2, em-7)."""
     marked = []
     targets = [os.path.join(bundle_path, f) for f in files]
     for sub in subs:
@@ -265,9 +356,12 @@ def mark_builder_records(bundle_path, words=None, subs=("validation/interface", 
         item = cards.load_json(path)
         if not isinstance(item, dict):
             continue
-        paths = builder_paths({k: v for k, v in item.items() if k != "builder_records"}, bundle_path)
-        if paths:
-            item["builder_records"] = builder_records(paths, words)
+        body = {k: v for k, v in item.items() if k != "builder_records"}
+        paths = builder_paths(body, bundle_path)
+        card_ids = builder_cards(body, ids)
+        question_ns = builder_questions(body, questions)
+        if paths or card_ids or question_ns:
+            item["builder_records"] = builder_records(paths, words, card_ids, question_ns, questions)
             cards.write_json(path, item)
             marked.append(os.path.relpath(path, bundle_path).replace(os.sep, "/"))
     return marked
@@ -471,12 +565,15 @@ def add_skills(bundle_path, rows, subagents):
 
 
 def compose(template_path, bundle_path, fill, tools, capabilities, envelope, interface_tasks,
-            scientific_tasks, replay_items, skills=None, subagents=None, workflow=None, words=None, decisions=None):
+            scientific_tasks, replay_items, skills=None, subagents=None, workflow=None, words=None, decisions=None,
+            ids=None, questions=None):
     """Write the bundle. `tools` is a list of {name, contract, adapter_source, errors:[contract]}.
 
     `workflow` is the request's order of tool names, or None, and fills the Workflow section of a template that has
     one. `words` is {record path: [the person's words]}: each task, replay item and TEMPLATE.json that names a record
-    of the builder's repository the bundle does not carry is marked with builder_records, quoting them.
+    of the builder's repository the bundle does not carry is marked with builder_records, quoting them; so is each that
+    names one of `ids` (the builder's cards the build read) or one of `questions` (the intake's {n: question}).
+    An optional input of a tool that names neither a row nor a default is refused before anything is written.
 
     `skills` is the library's rows for the `<id>@v<n>` the specification names, in the specification's order
     (src/skills/catalogue.take: each row carries its `folder`), and `subagents` the specification's list of
@@ -499,6 +596,9 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     faults = analysis_problems(scientific_tasks, [t["contract"] for t in tools], skills, row_names)
     if faults:
         raise ValueError("the scientific tasks' analyses cannot run in this bundle: " + "; ".join(faults))
+    faults = default_problems([t["contract"] for t in tools])
+    if faults:
+        raise ValueError("a tool's input is left to its adapter: " + "; ".join(faults))
     shutil.copytree(template_path, bundle_path, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     add_skills(bundle_path, rows, subagents)
     add_pages(bundle_path, [r["ref"] for r in skills])
@@ -523,7 +623,7 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
         gk = os.path.join(d, ".gitkeep")
         if items and os.path.exists(gk):
             os.remove(gk)
-    mark_builder_records(bundle_path, words)
+    mark_builder_records(bundle_path, words, ids=ids or (), questions=questions)
     return cards.sha256_tree(bundle_path)
 
 
