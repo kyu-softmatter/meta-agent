@@ -343,6 +343,52 @@
       "side": "max"
     },
     {
+      "ref": "timestep_max_from_courant@v2",
+      "id": "timestep_max_from_courant",
+      "version": 2,
+      "kind": "bound",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the largest time step the Courant condition allows on a grid",
+      "description": "Upper bound on the time step of a solver that advances advection or a wave in time on a grid or a mesh, from the Courant condition. Take it when time_step is a parameter and the method steps a field in time on a grid or a mesh, whatever program does it.",
+      "applies_to": {
+        "parameters": [
+          "time_step"
+        ],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "courant_limit",
+          "unit": "1",
+          "meaning": "the Courant number the scheme is run below; a judgement that depends on the scheme, bound to a row with its own source"
+        },
+        {
+          "name": "cell_size",
+          "unit": "m",
+          "meaning": "the smallest cell or element of the grid or mesh, along the direction the signal travels"
+        },
+        {
+          "name": "velocity",
+          "unit": "m/s",
+          "meaning": "the largest speed at which the solution carries information across the grid: the largest flow velocity for advection, the wave speed for a wave equation"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "time_step_max",
+          "unit": "s",
+          "meaning": "the upper bound on the time step from the Courant condition"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "bound/timestep_max_from_courant@v2",
+      "sha256": "sha256:3e045de0eb450fcde20bb35672f0fe345e92ae20b899c6645e67b592d391e4b2",
+      "parameter": "time_step",
+      "side": "max"
+    },
+    {
       "ref": "timestep_max_from_diffusion@v1",
       "id": "timestep_max_from_diffusion",
       "version": 1,
