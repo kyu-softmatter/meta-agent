@@ -4,13 +4,14 @@
 (plan.md 14-39, meta_agent/tasks/016; the person, 2026-11-16, docs/ideas/20261116.md).
 
   python contracts/tools/testfolder.py where                  the test folder and the log folder of this clone
-  python contracts/tools/testfolder.py make [--bundle BUILD ...] [--no-clone] [--no-bundles] [--source REPO]
+  python contracts/tools/testfolder.py make [--bundle BUILD ...] [--no-clone] [--no-bundles] [--source REPO] [--not-blind]
                                                               a new run: a clean clone of this repository and a
                                                               copy of each bundle (default: every agent's newest build);
                                                               --source takes them from another repository's committed
                                                               head instead, such as the clone of an earlier run;
                                                               a relative BUILD is read from the repository the run is
-                                                              made from, --source's when it is given
+                                                              made from, --source's when it is given; the clone
+                                                              is blind unless --not-blind is given
   python contracts/tools/testfolder.py status                 every run: what it holds, what was collected, removed or not
   python contracts/tools/testfolder.py session RUN ITEM --brief FILE [--model M] [--effort E]
                                                               run one unattended session in an item of a run
@@ -43,7 +44,17 @@ folder and log folder, and in each folder directly under those two that holds ru
   TESTFOLDER.json           the mark of a folder this tool made; wipe removes no folder without it
   origin.git/               a bare copy of this repository at its head, with no remote of its own
   repo/                     a clone of that copy, set up as begin-session asks of a clone. Its origin is the
-                            copy beside it: it never moves while the test runs, and a push ends inside the run
+                            copy beside it: it never moves while the test runs, and a push ends inside the run.
+                            It is blind (the person, 2026-11-17, docs/ideas/20261117.md, "A test clone is
+                            blind"): one commit by the label `testfolder`, made before the clone's hooks are
+                            set and pushed to the copy beside it, leaves out meta_agent/eval/ (the test plans and
+                            briefs), docs/ideas/ (the person's recorded answers) and the task cards that name a
+                            path under eval/briefs/ or eval/plans/, with their rows in the index and their
+                            claims; a kept row loses its dependency on a card left out. The lab's profile,
+                            meta_agent/failures.jsonl and the cases stay. made.json lists what was left out, and
+                            the clone's recorded head is that commit, so a collection starts after it. The files
+                            left out are still in the clone's history. --not-blind, only on the person's word,
+                            leaves everything in
   bundles/<agent>-<build>/  the bundle alone, as committed, its digest equal to its build card's
 
 `session` runs one session with nobody present, as a person at a terminal would start it: the command-line
@@ -95,6 +106,12 @@ HASH_SKIP = (".git", "__pycache__")               # as the build card's digest s
 WRITERS = ("Write", "Edit", "NotebookEdit")       # the application's tools that write a file by its path
 PERMISSION_MODES = ("auto", "acceptEdits", "dontAsk", "manual", "plan")   # never one that asks nothing
 NOT_PASSED_ON = ("CLAUDE", "ANTHROPIC", "USE_STAGING_OAUTH", "USE_LOCAL_OAUTH")   # an application's own, by prefix
+BLIND_DIRS = ("meta_agent/eval", "docs/ideas")    # what a blind clone does not hold, as a whole
+TASKS_REL, CLAIMS_REL = "meta_agent/tasks", "meta_agent/tasks/claims"
+TASK_FILE_RE = re.compile(r"^([0-9]{3})-[a-z0-9-]+\.md$")
+CLAIM_FILE_RE = re.compile(r"^([0-9]{3})-.+\.json$")
+TEST_CARD_RE = re.compile(r"eval/(briefs|plans)/")   # a card naming a brief or a plan runs a test
+BLIND_LABEL = ("testfolder", "testfolder@seat.invalid")
 NOT_SEEN = [
     "a session removed from the application before this collection: its transcript is gone with it",
     "a file a shell command wrote outside the folder the session was opened in: only the command's text is here",
@@ -330,12 +347,93 @@ def make_bundle(repo, rel, run_path):
             "template_version": card.get("template_version"), "bundle_sha256": digest, "files": hashes}
 
 
-def make_clone(repo, run_path):
+def test_tasks(dest):
+    """{task id: card file} of the task cards in a clone that run tests: a card naming a path under
+    meta_agent/eval/ (a brief or a plan)."""
+    tdir = os.path.join(dest, *TASKS_REL.split("/"))
+    out = {}
+    if not os.path.isdir(tdir):
+        return out
+    for name in sorted(os.listdir(tdir)):
+        m = TASK_FILE_RE.match(name)
+        if not m:
+            continue
+        with open(os.path.join(tdir, name), "r", encoding="utf-8") as f:
+            if TEST_CARD_RE.search(f.read()):
+                out[m.group(1)] = name
+    return out
+
+
+def make_blind(dest, source_head):
+    """Leave out of a clone what would tell a test session its answers (the person, 2026-11-17,
+    docs/ideas/20261117.md, "A test clone is blind"): the test plans and briefs, the cards of the tasks that
+    run tests with their rows and claims, and the person's recorded answers. One commit in the clone, by the
+    tool's own label. A kept row that depends on a removed task loses that dependency, which is listed.
+    Returns (left_out, the blind commit or None when there was nothing to leave out)."""
+    left_out = []
+    for rel in BLIND_DIRS:
+        if git(dest, "ls-files", "--", rel).strip():
+            git(dest, "rm", "-r", "-q", "--", rel)
+            left_out.append(rel + "/")
+    removed = test_tasks(dest)
+    for tid, name in sorted(removed.items()):
+        git(dest, "rm", "-q", "--", TASKS_REL + "/" + name)
+        left_out.append(TASKS_REL + "/" + name)
+    ipath = os.path.join(dest, *TASKS_REL.split("/"), "index.json")
+    if removed and os.path.isfile(ipath):
+        index = read_json(ipath)
+        kept, rows_out, deps_out = [], [], []
+        for r in index.get("tasks", []):
+            if isinstance(r, dict) and r.get("id") in removed:
+                rows_out.append(r["id"])
+                continue
+            if isinstance(r, dict) and any(d in removed for d in r.get("depends_on", [])):
+                deps_out += ["%s on %s" % (r.get("id"), d) for d in r["depends_on"] if d in removed]
+                r = dict(r, depends_on=[d for d in r["depends_on"] if d not in removed])
+            kept.append(r)
+        if rows_out:
+            index["tasks"] = kept
+            with open(ipath, "w", encoding="utf-8") as f:
+                f.write(json.dumps(index, indent=2, ensure_ascii=False) + "\n")
+            git(dest, "add", "--", TASKS_REL + "/index.json")
+            left_out.append("%s/index.json: the rows of %s" % (TASKS_REL, ", ".join(rows_out)))
+            left_out += ["%s/index.json: the dependency of %s" % (TASKS_REL, d) for d in deps_out]
+    cdir = os.path.join(dest, *CLAIMS_REL.split("/"))
+    if removed and os.path.isdir(cdir):
+        for name in sorted(os.listdir(cdir)):
+            m = CLAIM_FILE_RE.match(name)
+            if m and m.group(1) in removed:
+                git(dest, "rm", "-q", "--", CLAIMS_REL + "/" + name)
+                left_out.append(CLAIMS_REL + "/" + name)
+    if not left_out:
+        return left_out, None
+    message = ("testfolder: a blind clone (the person, 2026-11-17, \"A test clone is blind\")\n\n"
+               "Made by contracts/tools/testfolder.py make from %s, before the clone's hooks were set, so no\n"
+               "hook judged this commit: it is the tool's, not a seat's. Left out of this clone:\n\n%s\n"
+               % (source_head, "\n".join("- " + p for p in left_out)))
+    env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+    env.update(GIT_AUTHOR_NAME=BLIND_LABEL[0], GIT_AUTHOR_EMAIL=BLIND_LABEL[1],
+               GIT_COMMITTER_NAME=BLIND_LABEL[0], GIT_COMMITTER_EMAIL=BLIND_LABEL[1])
+    p = subprocess.run(["git", "-c", "commit.gpgsign=false", "commit", "-q", "-F", "-"], cwd=dest, env=env,
+                       input=message.encode("utf-8"), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if p.returncode != 0:
+        raise Refused("the blind commit in the clone: %s" % p.stderr.decode("utf-8", "replace").strip())
+    return left_out, git(dest, "rev-parse", "HEAD").strip()
+
+
+def make_clone(repo, run_path, blind=True):
     origin, dest = os.path.join(run_path, "origin.git"), os.path.join(run_path, "repo")
     git(repo, "clone", "--quiet", "--bare", "--no-hardlinks", repo, origin)
     git(origin, "remote", "remove", "origin")        # nothing in a run points at the working copy
     git(run_path, "clone", "--quiet", "--no-hardlinks", origin, dest)
     setup = {"remote.origin.url": "origin.git, a bare copy inside the run"}
+    source_head = git(dest, "rev-parse", "HEAD").strip()
+    left_out = []
+    if blind:
+        # before the hooks are set: the clone's pre-commit hook judges a seat's commit, and this one is the tool's
+        left_out, commit = make_blind(dest, source_head)
+        if commit:                              # the copy beside it starts where the clone does
+            git(dest, "push", "--quiet", "origin", "HEAD")
     if os.path.isdir(os.path.join(dest, "contracts", "hooks")):
         git(dest, "config", "core.hooksPath", "contracts/hooks")
         setup["core.hooksPath"] = "contracts/hooks"
@@ -344,7 +442,8 @@ def make_clone(repo, run_path):
         git(dest, "config", "meta-agent.machine", tag)
         setup["meta-agent.machine"] = tag
     return {"name": "repo", "kind": "clone", "path": "repo", "head": git(dest, "rev-parse", "HEAD").strip(),
-            "branch": git(dest, "rev-parse", "--abbrev-ref", "HEAD").strip(), "setup": setup}
+            "source_head": source_head, "branch": git(dest, "rev-parse", "--abbrev-ref", "HEAD").strip(),
+            "setup": setup, "blind": blind, "left_out": left_out}
 
 
 def make(args, repo=REPO):
@@ -367,7 +466,7 @@ def make(args, repo=REPO):
     run_path = os.path.join(root, run)
     os.makedirs(run_path)
     try:
-        items = [] if args.no_clone else [make_clone(repo, run_path)]
+        items = [] if args.no_clone else [make_clone(repo, run_path, blind=not args.not_blind)]
         items += [make_bundle(repo, rel, run_path) for rel in builds]
         made = {"testfolder": VERSION, "run": run, "made_at": now(), "folder": run_path,
                 "source": {"repository": repo, "head": git(repo, "rev-parse", "HEAD").strip(),
@@ -387,6 +486,10 @@ def make(args, repo=REPO):
     for it in items:
         if it["kind"] == "clone":
             print("clone   %s  at %s on %s; its origin is a copy inside the run" % (it["path"], it["head"][:7], it["branch"]))
+            if it["blind"]:
+                print("blind   %d path(s) left out of the clone: %s" % (len(it["left_out"]), "; ".join(it["left_out"]) or "none was there"))
+            else:
+                print("blind   no: the clone holds everything (--not-blind, only on the person's word)")
         else:
             print("bundle  %s  %d file(s), digest equal to %s's" % (it["path"], len(it["files"]), it["build_id"]))
     if made["source"]["uncommitted"]:
@@ -950,6 +1053,8 @@ def main(argv=None, repo=REPO):
                    "the repository the run is made from, --source's when it is given")
     m.add_argument("--no-clone", action="store_true")
     m.add_argument("--no-bundles", action="store_true")
+    m.add_argument("--not-blind", action="store_true", help="a clone that holds everything, the test plans, briefs, "
+                   "test task cards and docs/ideas/ included; only on the person's word")
     m.add_argument("--source", help="the repository whose committed head the run is made from (default: this one)")
     sub.add_parser("status")
     r = sub.add_parser("session")

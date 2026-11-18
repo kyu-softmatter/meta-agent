@@ -24,6 +24,23 @@ BUNDLES = {
     "balance/0001": {"CLAUDE.md": "# balance\n", "src/run.py": "print('balance')\n", "envelope/safety.json": "{}\n"},
 }
 
+# what a blind clone leaves out and what it keeps (the person, 2026-11-17, docs/ideas/20261117.md)
+TEST_CARD, OTHER_CARD = "meta_agent/tasks/001-run-a-test.md", "meta_agent/tasks/002-build-a-thing.md"
+TEST_CLAIM = "meta_agent/tasks/claims/001-meta-bench-20261117-1.json"
+BLIND_FIXTURE = {
+    "docs/ideas/20261117.md": "# the person's answers\n",
+    "meta_agent/eval/briefs/x.txt": "Build an agent for the bench.\n",
+    TEST_CARD: "# 001\n\n**Status:** open\n\nRun a session from `eval/briefs/x.txt`.\n",
+    OTHER_CARD: "# 002\n\n**Status:** open\n\nBuild a thing.\n",
+    "meta_agent/tasks/index.json": json.dumps({"schema_version": "0.1", "tasks": [
+        {"id": "001", "file": "001-run-a-test.md", "status": "open", "roles": ["meta"], "depends_on": [], "opened": "2026-11-17"},
+        {"id": "002", "file": "002-build-a-thing.md", "status": "open", "roles": ["meta"], "depends_on": ["001"], "opened": "2026-11-17"}]},
+        indent=2, ensure_ascii=False) + "\n",
+    TEST_CLAIM: json.dumps({"task": "001", "seat": "meta-bench-20261117-1", "claimed_at": "2026-11-17T00:00:00Z"}) + "\n",
+    "meta_agent/profiles/lab.json": "{}\n",
+    "meta_agent/failures.jsonl": "{\"kind\": \"deviation\"}\n",
+}
+
 
 def sh(cwd, *args):
     env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
@@ -53,6 +70,8 @@ class TestFolder(unittest.TestCase):
             digest = tf.tree_digest(tf.tree_hashes(os.path.join(self.repo, *bdir.split("/"), "bundle")))
             put(self.repo, bdir + "/build.json", json.dumps({"card": "build", "id": "build-" + build.replace("/", "-"),
                                                              "bundle_path": bdir + "/bundle", "bundle_sha256": digest}))
+        for rel, text in BLIND_FIXTURE.items():
+            put(self.repo, rel, text)
         sh(self.repo, "init", "--quiet", "-b", "main")
         sh(self.repo, "config", "meta-agent.machine", "bench")
         sh(self.repo, "add", ".")
@@ -95,7 +114,7 @@ class TestFolder(unittest.TestCase):
             self.assertFalse(os.path.exists(os.path.join(copy, "build.json")))          # the bundle alone
         self.assertEqual(tf.stands_above(os.path.join(path, "bundles")), [])           # nothing above a bundle
         clone = os.path.join(path, "repo")
-        self.assertEqual(tf.git(clone, "rev-parse", "HEAD").strip(), made["source"]["head"])
+        self.assertEqual(tf.git(clone, "rev-parse", "HEAD^").strip(), made["source"]["head"])   # the blind commit on it
         self.assertEqual(tf.git(clone, "config", "--get", "meta-agent.machine").strip(), "bench")
         self.assertEqual(tf.git(clone, "config", "--get", "core.hooksPath").strip(), "contracts/hooks")
 
@@ -169,6 +188,57 @@ class TestFolder(unittest.TestCase):
         shutil.rmtree(os.path.join(self.root, "molecular-dynamics", first))             # the run's entry still keeps its name
         shutil.rmtree(os.path.join(self.root, "dft", second))
         self.assertNotIn(make_in("cfd"), (first, second))
+
+    def test_a_clone_is_blind_by_default(self):
+        # a clone read the person's answers and its own task card (failures ctrl-pair-1, gmx-6; the person, 2026-11-17)
+        code, out, err = self.run_tool("make", "--no-bundles")
+        self.assertEqual(code, 0, err)
+        run = out.splitlines()[0].split()[-1]
+        clone = os.path.join(self.root, run, "repo")
+        for rel in ("docs/ideas", "meta_agent/eval", TEST_CARD, TEST_CLAIM):
+            self.assertFalse(os.path.exists(os.path.join(clone, *rel.split("/"))), rel)
+        for rel in (OTHER_CARD, "meta_agent/profiles/lab.json", "meta_agent/failures.jsonl"):
+            self.assertTrue(os.path.isfile(os.path.join(clone, *rel.split("/"))), rel)
+        with open(os.path.join(clone, "meta_agent", "tasks", "index.json"), encoding="utf-8") as f:
+            text = f.read()
+        index = json.loads(text)
+        self.assertEqual(text, json.dumps(index, indent=2, ensure_ascii=False) + "\n")
+        self.assertEqual([(r["id"], r["depends_on"]) for r in index["tasks"]], [("002", [])])   # the kept card loses its dependency
+        it = tf.read_json(os.path.join(self.logs, run, "made.json"))["items"][0]
+        self.assertTrue(it["blind"])
+        self.assertEqual(it["left_out"], ["meta_agent/eval/", "docs/ideas/", TEST_CARD, "meta_agent/tasks/index.json: the rows of 001",
+                                          "meta_agent/tasks/index.json: the dependency of 002 on 001", TEST_CLAIM])
+        self.assertIn("blind   6 path(s) left out", out)
+
+    def test_the_clones_head_is_the_blind_commit_and_a_collection_starts_after_it(self):
+        run = self.make("--no-bundles")
+        clone = os.path.join(self.root, run, "repo")
+        made = tf.read_json(os.path.join(self.logs, run, "made.json"))
+        it = made["items"][0]
+        self.assertEqual(it["head"], tf.git(clone, "rev-parse", "HEAD").strip())
+        self.assertEqual(tf.git(clone, "rev-parse", "HEAD^").strip(), made["source"]["head"])
+        self.assertEqual(tf.git(clone, "log", "-1", "--format=%an <%ae>|%cn <%ce>").strip(),
+                         "testfolder <testfolder@seat.invalid>|testfolder <testfolder@seat.invalid>")
+        message = tf.git(clone, "log", "-1", "--format=%B")
+        self.assertIn("A test clone is blind", message)
+        for rel in it["left_out"]:
+            self.assertIn(rel, message)
+        self.assertEqual(tf.git(clone, "rev-list", "--count", "origin/main..HEAD").strip(), "0")   # the copy beside it agrees
+        self.assertEqual(self.run_tool("collect", run)[0], 0)
+        r = tf.read_json(os.path.join(self.collection(run), "collection.json"))["items"][0]
+        self.assertEqual((r["head_made"], r["commits"], r["patch"]), (it["head"], [], None))
+
+    def test_not_blind_keeps_everything(self):
+        code, out, err = self.run_tool("make", "--no-bundles", "--not-blind")
+        self.assertEqual(code, 0, err)
+        run = out.splitlines()[0].split()[-1]
+        clone = os.path.join(self.root, run, "repo")
+        made = tf.read_json(os.path.join(self.logs, run, "made.json"))
+        self.assertEqual(tf.git(clone, "rev-parse", "HEAD").strip(), made["source"]["head"])
+        for rel in BLIND_FIXTURE:
+            self.assertTrue(os.path.isfile(os.path.join(clone, *rel.split("/"))), rel)
+        self.assertEqual((made["items"][0]["blind"], made["items"][0]["left_out"]), (False, []))
+        self.assertIn("blind   no", out)
 
     def test_uncommitted_work_is_not_in_a_run(self):
         put(self.repo, "meta_agent/builds/echo/0002/bundle/stray.txt", "not committed\n")
