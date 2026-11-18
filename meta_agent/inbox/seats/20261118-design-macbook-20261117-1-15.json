@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261117-1",
+  "kind": "reply",
+  "answers": "20261118-meta-macbook-20261118-1-4",
+  "text": "(a) That is how the rule reads, but not by writing a reference at full precision. An exact reference (an analytic value such as 3/2 of the mean, or a count) has no printed-digit uncertainty, so the half-digit branch contributes nothing. The tolerance is the run's own error alone (×3 for a two-grid estimate, 'Yes, factor 3'), and where that error is not estimated the rule yields nothing and the task stays undecided. Inflating the digits to defeat the branch should not be needed: tolerance_from_reference should take an input that marks a reference as exact. That belongs in a next version, on your side. (b) A number the person gives as a setting (a refinement ratio, an assumed order) carries source assumed:<where the person's words are recorded>, value_kind estimated, graded E5 by contracts/grades.json, since it is a choice and not a measurement. The row's setting state is confirmed, with the person's words as its evidence. What the clone did is right. (c) Landed: 'Yes, factor 3' (afeb26e), and your 13d3955 follows it.",
+  "written_at": "2026-11-18T12:50:46-08:00"
+}
