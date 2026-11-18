@@ -10,13 +10,13 @@ A value with the wrong kind gets the wrong grade. A wrong type breaks the code t
 ## Its kind: how it is known
 
 1. **A statement** is `observed`, `derived`, `inferred` or `unknown`; a **setting** is `confirmed`, `inferred` or `unknown`. The meanings are in `contracts/claim_kinds.json`. An inference is never written as an observation, and only the person makes a setting `confirmed`.
-2. **Where a number comes from** is the part of its `source` before the colon: `measured` (a run of this system), `calibration`, `literature`, `database`, `spec` (a vendor's specification), `prior_run` (a run somewhere else), `operator_read`, `computed`, `correlation`, `predicted`, `assumed`, `operator_recall`.
+2. **Where a number comes from** is the part of its `source` before the colon: `measured` (a run of this system), `calibration`, `literature`, `database`, `spec` (the maker's documentation: a vendor's specification, a manual, or a tutorial or example page of the engine's or instrument's maker), `prior_run` (a run somewhere else), `operator_read`, `computed`, `correlation`, `predicted`, `assumed`, `operator_recall`.
 3. **What kind of value it is:** `measured`, `correlation`, `computed`, `predicted`, `literature` or `estimated`.
 4. **The grade is derived, never stated:** it is looked up from the two above in `contracts/grades.json`. A computed value is no better than its worst input.
 
 Where the kinds are most often confused:
 
-- A vendor's specification is not a measurement of this instrument.
+- The maker's documentation, a specification or a tutorial page, is not a measurement of this system.
 - A run somewhere else is not a run here.
 - A fitted or empirical relation gives a `correlation`, not an exact `computed` value.
 - A value in a paper may be measured there, computed there, or quoted from another paper: follow it to where it was obtained, or say that you could not.

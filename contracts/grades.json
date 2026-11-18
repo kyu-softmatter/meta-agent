@@ -63,7 +63,7 @@
         "literature"
       ],
       "grade": "E3",
-      "note": "a vendor specification is not this instrument's measurement"
+      "note": "the maker's documentation of an instrument or an engine: a vendor specification, a manual, or a tutorial or example page of the maker's own (the person, 2026-11-17, docs/ideas/20261117.md); it is not this system's measurement"
     },
     {
       "source_kind": "prior_run",
