@@ -44,3 +44,5 @@
 **Not watched:** any example but example01 standing alone; the examples that need mpirun or another program; a run after `be69e2d` (no account skills); whether the person judges the values to agree.
 
 **Removed 2026-11-17** on the person's word ("-18만 지움" [remove -18 only]): run `dft/20261117-18`, collected once more (`collect-2`) and removed with its session's transcript; its collections stay in the log folder. Runs `dft/20261117-20` and `dft/20261117-22` stand, the latter with its environment and the examples in place.
+
+**Removed 2026-11-18** on the person's word relayed by `design-macbook-20261117-3` (`../../docs/ideas/20261118.md`, "Finished sessions are cleaned up…"): run `dft/20261117-20`, round three's clone, collected once more (`collect-2`) and removed with its session's transcript; and the scratch folders round one's clone left outside its run, `/tmp/qe-mat-VVps`, `/tmp/qe-rehearse` and `/tmp/qe-work` (`dft-3`; `/tmp/qe-trial-1` was already gone). Run `dft/20261117-22` stands: a session asked in a person's words to run every example is working in it.
