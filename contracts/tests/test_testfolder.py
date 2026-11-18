@@ -296,7 +296,8 @@ class TestFolder(unittest.TestCase):
         os.chmod(fake, 0o755)
         put(self.top, "fake.py", "import json, os, sys\n"
             "json.dump({'argv': sys.argv[1:], 'cwd': os.getcwd(), 'stdin': sys.stdin.read(), "
-            "'passed_on': sorted(k for k in os.environ if k.startswith('CLAUDE'))}, open(%r, 'w'))\n"
+            "'passed_on': sorted(k for k in os.environ if k.startswith('CLAUDE')), "
+            "'tmp': [os.environ.get(k) for k in ('TMPDIR', 'TMP', 'TEMP')]}, open(%r, 'w'))\n"
             "print(json.dumps({'session_id': 'abcd', 'is_error': os.environ.get('FAKE_FAILS') == '1', 'result': 'task done'}))\n" % seen)
         brief = put(self.top, "brief.txt", "Read tasks/001-start.md first.\n")
         os.environ["CLAUDE_CODE_SOMETHING_OF_THE_OPENER"] = "1"
@@ -307,6 +308,11 @@ class TestFolder(unittest.TestCase):
         self.assertEqual(got["argv"], ["-p", "--output-format", "json", "--permission-mode", "auto", "--model", "model-a", "--effort", "medium"])
         self.assertEqual((got["cwd"], got["stdin"], got["passed_on"]),
                          (os.path.join(self.root, run, "bundles", "balance-0001"), "Read tasks/001-start.md first.\n", []))
+        # a session's scratch folders go inside the run and are removed with it (run chemical-kinetics/20261117-12,
+        # ctrl-pair-2: folders under the system's temporary folder outlived three runs)
+        scratch = os.path.join(self.root, run, "tmp")
+        self.assertEqual(got["tmp"], [scratch] * 3)
+        self.assertTrue(os.path.isdir(scratch))
         rec = tf.read_json(os.path.join(self.logs, run, "sessions", "balance-0001-1.json"))
         self.assertEqual((rec["brief"], rec["permission_mode"], rec["result"]["session_id"]), ("Read tasks/001-start.md first.\n", "auto", "abcd"))
         code, _, err = self.run_tool("session", run, "balance-0001", "--brief", brief, "--claude", fake, "--permission-mode", "bypassPermissions")

@@ -817,6 +817,11 @@ def session(args, repo=REPO):
     cmd = [exe, "-p", "--output-format", "json", "--permission-mode", args.permission_mode]
     cmd += (["--model", args.model] if args.model else []) + (["--effort", args.effort] if args.effort else [])
     env = {k: v for k, v in os.environ.items() if not k.startswith(NOT_PASSED_ON) and not k.startswith("GIT_")}
+    # the session's temporary folder is inside the run, beside its items, so that what it leaves there (a trial's
+    # environment, a draft) goes when the run is wiped (run chemical-kinetics/20261117-12, ctrl-pair-2)
+    scratch = os.path.join(run_path, "tmp")
+    os.makedirs(scratch, exist_ok=True)
+    env.update(TMPDIR=scratch, TMP=scratch, TEMP=scratch)
     cwd = os.path.join(run_path, *item["path"].split("/"))
     started = now()
     p = subprocess.run(cmd, cwd=cwd, env=env, input=brief.encode("utf-8"), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
