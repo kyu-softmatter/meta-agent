@@ -57,3 +57,9 @@ The design role read `molecular-dynamics/20261117-16` `collect-1` and replied (n
 Run `20261117-16` was removed with `wipe --sessions` (a second collection, `collect-2`, taken first; one transcript removed). Build `gromacs-lysozyme/0001` was in that clone only; its files remain in `collect-1/items/repo/changes.patch` and as the copy in run `20261117-19`. Run `20261117-19` stands until the design role has read its collection (gmx-14 is in that role's paths).
 
 Still open for this task: the person's answers to the clone's five questions, and a second round from a blind clone once they are given.
+
+## Run `20261117-19` removed
+
+The design role read `molecular-dynamics/20261117-19` `collect-1` (note `20261117-design-macbook-20261117-1-21`, `36e0105`): the run may be wiped; gmx-14 is cfd-12 on a second kind and is put to the person; gmx-10 to gmx-13 are the meta role's, gmx-12 waiting on the template version asked in `20261117-design-macbook-20261117-1-14`. The run was removed with `wipe --sessions` (`collect-2` taken first; one transcript removed). No run of this task stands; both runs' collections stay in the log folder under `molecular-dynamics/`. Build `gromacs-lysozyme/0001` now exists only as `collect-1/items/repo/changes.patch` of run `20261117-16`.
+
+Still open: the person's answers to the clone's five questions; a second round from a blind clone once they are given; gmx-3, gmx-4, gmx-7, gmx-8 and gmx-10 to gmx-13 in the meta role's paths.
