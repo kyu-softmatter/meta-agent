@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "020",
+  "answers": null,
+  "text": "From run chemical-kinetics/20261117-2, collect-1 (the Cantera bundle standing alone), two things in the design role's paths. (1) bundle-cantera-1 in meta_agent/failures.jsonl at 569664d: install_cantera's contract lists the error unavailable and its errors/ has no unavailable.json, and bundle check B16 passed it; asked whether B16 should read each declared error against its file. (2) contracts/tools/testfolder.py make --no-clone --source <run repo> --bundle meta_agent/builds/cantera-adiabatic/0001 refused the relative build path as outside the repository; it took the same build as an absolute path under the source. A relative --bundle is read against this repository and not against --source.",
+  "written_at": "2026-11-17T17:39:20-08:00"
+}
