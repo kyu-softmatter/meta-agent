@@ -11,6 +11,9 @@
   python bootstrap.py seat ROLE [--machine TAG] [--task ID] [--write]
                                                  the next free seat name for this computer and its entry for
                                                  contracts/seats.json (plan.md 9); --write adds the entry
+                                                 under a lock in the git dir (seat.lock); a name found in
+                                                 tracked files or in git history's committers is skipped;
+                                                 META_AGENT_SEAT_LOCK_WAIT sets how long the lock is awaited
 
 Nothing is vendored: each tool comes from its own source at the version the lock names, and lands for the
 current user under the tools home (tools.lock.json), outside the repository. Without --yes an install prints
@@ -18,15 +21,18 @@ its plan and changes nothing. This script never edits PATH, a shell profile, the
 configuration, never enables a Windows feature, never installs WSL and never asks for a password; those
 steps stay with the person. Standard library only, Python 3.9 or later.
 """
+import contextlib
 import hashlib
 import json
 import os
 import platform
+import re
 import shutil
 import subprocess
 import sys
 import tarfile
 import tempfile
+import time
 import urllib.request
 import zipfile
 
@@ -370,8 +376,75 @@ def selftest(lock):
     return 0
 
 
+SEAT_LOCK_WAIT = 10.0   # seconds a --write waits for another one's lock; META_AGENT_SEAT_LOCK_WAIT overrides it
+
+
+def seat_names_elsewhere(root, role, machine, yyyymmdd):
+    """Seat names of this role, machine and date used outside contracts/seats.json: in tracked files (a record
+    naming a seat of a test clone) and in the committer lines of git history. Returns (names, None), or
+    (set(), why) when git could not be asked, and then the table alone decides."""
+    if not (re.match(r"^[a-z]+$", role or "") and re.match(r"^[a-z]+$", machine or "") and re.match(r"^[0-9]{8}$", yyyymmdd)):
+        return set(), "the role, machine or date is not a plain seat-name part"
+    stem = "%s-%s-%s-" % (role, machine, yyyymmdd)
+    code, grep = capture(["git", "grep", "-h", "-o", "-w", "-I", "-E", stem + "[1-9][0-9]*"], cwd=root)
+    if code not in (0, 1):
+        return set(), "git grep did not run (%s)" % ("git not found" if code is None else "exit %d" % code)
+    code, log = capture(["git", "log", "--all", "--format=%cn%n%ce"], cwd=root)
+    if code != 0:
+        return set(), "git log did not run (%s)" % ("git not found" if code is None else "exit %d" % code)
+    pattern = re.compile(r"(?<![a-z0-9])" + re.escape(stem) + r"[1-9][0-9]*(?![0-9])")
+    return set(pattern.findall(grep + "\n" + log)), None
+
+
+def seat_lock_path(root):
+    """The lock file for the read-modify-write of contracts/seats.json: inside the git dir, so it is never a
+    file of the working copy; outside git, in the temporary folder, keyed by this repository's path."""
+    code, out = capture(["git", "rev-parse", "--git-path", "seat.lock"], cwd=root)
+    if code == 0 and out:
+        return os.path.normpath(os.path.join(root, out))
+    key = hashlib.sha256(os.path.abspath(root).encode("utf-8")).hexdigest()[:16]
+    return os.path.join(tempfile.gettempdir(), "meta-agent-seat-%s.lock" % key)
+
+
+@contextlib.contextmanager
+def seat_lock(path, wait):
+    """Hold path, created exclusively (O_CREAT|O_EXCL works on macOS, Linux and Windows), for the block; wait
+    up to `wait` seconds for another holder, then refuse. Only a lock this call created is removed."""
+    deadline = time.monotonic() + wait
+    busy = (FileExistsError, PermissionError) if IS_WINDOWS else (FileExistsError,)
+    while True:
+        try:
+            fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            break
+        except busy:
+            if time.monotonic() >= deadline:
+                try:
+                    with open(path, encoding="utf-8", errors="replace") as f:
+                        holder = f.read().strip() or "nothing recorded"
+                except OSError:
+                    holder = "unreadable"
+                raise SystemExit("seat: another `bootstrap.py seat --write` holds the lock %s (waited %.1f s; it "
+                                 "records: %s). Nothing was written. Run again when it is done; if no such command "
+                                 "is running, the lock is stale: remove that file and run again." % (path, wait, holder))
+            time.sleep(0.1)
+    try:
+        import datetime
+        os.write(fd, ("pid %d, %s\n" % (os.getpid(), datetime.datetime.now().isoformat(timespec="seconds"))).encode("utf-8"))
+        os.close(fd)
+        yield
+    finally:
+        try:
+            os.remove(path)
+        except OSError:
+            pass
+
+
 def seat(rest):
-    """Name the next seat of a role on this computer and print its entry (the standing rule of 2026-11-09)."""
+    """Name the next seat of a role on this computer and print its entry (the standing rule of 2026-11-09).
+
+    A name is never reissued: besides contracts/seats.json, names of the same role, machine and date in tracked
+    files and in git history's committer lines are skipped. With --write the table is re-read and the name
+    chosen under an exclusive lock, so two sessions seating at once take two names."""
     import datetime
     sys.path.insert(0, os.path.join(HERE, "contracts", "tools"))
     import seats as seat_rules
@@ -403,25 +476,45 @@ def seat(rest):
         raise SystemExit("seat: machine tag %r is not in contracts/seats.json; the person gives a new computer "
                          "its tag before its first seat (known: %s)" % (machine, ", ".join(sorted(table.get("machines", {})))))
     today = datetime.date.today()
-    name = seat_rules.next_name(table, role, machine, today.strftime("%Y%m%d"))
+    yyyymmdd = today.strftime("%Y%m%d")
     seated = "%s, self-registered%s" % (today.isoformat(), " for tasks/%s" % args["--task"] if args["--task"] else "")
-    entry = seat_rules.entry_for(table, name, "self, under the person's standing rule of 2026-11-09 "
-                                 "(docs/ideas/20261109.md)", seated)
-    problems = seat_rules.entry_problems(table, entry)
-    if problems:
-        raise SystemExit("seat: " + "; ".join(problems))
-    print("seat      %s" % name)
-    print("committer seat:%s <%s>" % (name, entry["committer_email"]))
-    print("entry     %s" % json.dumps(entry, ensure_ascii=False))
-    commit = 'python contracts/tools/seat_commit.py --seat %s -m "contracts/seats: %s seats itself" contracts/seats.json' % (name, name)
+
+    def choose(table):
+        elsewhere, why = seat_names_elsewhere(HERE, role, machine, yyyymmdd)
+        name = seat_rules.next_name(table, role, machine, yyyymmdd, also_used=elsewhere)
+        entry = seat_rules.entry_for(table, name, "self, under the person's standing rule of 2026-11-09 "
+                                     "(docs/ideas/20261109.md)", seated)
+        problems = seat_rules.entry_problems(table, entry)
+        if problems:
+            raise SystemExit("seat: " + "; ".join(problems))
+        print("seat      %s" % name)
+        print("committer seat:%s <%s>" % (name, entry["committer_email"]))
+        print("entry     %s" % json.dumps(entry, ensure_ascii=False))
+        in_table = {s.get("seat") for s in table.get("seats", [])}
+        skipped = sorted(elsewhere - in_table, key=lambda n: seat_rules.parse_name(n)[3])
+        if skipped:
+            print("skipped   %s (used outside contracts/seats.json: tracked files or git history)" % ", ".join(skipped))
+        if why:
+            print("note      %s; the name is checked against contracts/seats.json alone" % why)
+        return name, entry
+
     if write:
-        table["seats"].append(entry)
-        with open(seat_rules.SEATS_PATH, "w", encoding="utf-8") as f:
-            f.write(seat_rules.dump(table))
+        try:
+            wait = float(os.environ.get("META_AGENT_SEAT_LOCK_WAIT", SEAT_LOCK_WAIT))
+        except ValueError:
+            raise SystemExit("seat: META_AGENT_SEAT_LOCK_WAIT is not a number of seconds")
+        with seat_lock(seat_lock_path(HERE), wait):
+            table = seat_rules.load()       # re-read: another session may have written its entry meanwhile
+            name, entry = choose(table)
+            table["seats"].append(entry)
+            with open(seat_rules.SEATS_PATH, "w", encoding="utf-8") as f:
+                f.write(seat_rules.dump(table))
         print("written   contracts/seats.json (this entry only). Register it in its own commit before any other work:")
     else:
+        name, entry = choose(table)
         print("nothing written. With --write the entry is added; then register it in its own commit:")
-    print("  " + commit)
+    print('  python contracts/tools/seat_commit.py --seat %s -m "contracts/seats: %s seats itself" contracts/seats.json'
+          % (name, name))
     return 0
 
 

@@ -69,11 +69,15 @@ def inside(seat, path):
         not any(path_in(x, path) for x in seat.get("excludes", []))
 
 
-def next_name(seats, role, machine, yyyymmdd):
-    """The first name of this role, machine and date that was never issued."""
+def next_name(seats, role, machine, yyyymmdd, also_used=()):
+    """The first name of this role, machine and date that was never issued.
+
+    also_used: names known to be used outside this table (a test clone's seats.json, a record, a committer
+    line in git history); the caller gathers them, since this module does no git. A name is never reissued.
+    """
     used = set()
-    for s in seats.get("seats", []):
-        p = parse_name(s.get("seat"))
+    for name in [s.get("seat") for s in seats.get("seats", [])] + list(also_used):
+        p = parse_name(name)
         if p and p[:3] == (role, machine, yyyymmdd):
             used.add(p[3])
     n = 1
