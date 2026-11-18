@@ -1,0 +1,53 @@
+{
+  "note": "The same answer of the person as answers_20261118_engine_container.json (2026-11-18, 'Yes, covered', docs/ideas/20261118.md bfaaa95), carried in the form the schema now gives it (3a0c4ec): the scope 'for the rheoTool engine only', which v7 wrote into each channel string, is engines: [\"rheotool\"], the id of contracts/registry/engines.json, on the two pairs the answer added. Nothing else changes: pixi/conda-forge, the level, the words and data_sources are those of v7_lab_profile.json. Written by the seat meta-macbook-20261118-1 on the design seat design-macbook-20261117-1's message of 2026-11-18 (tasks/016). It is for this lab's profile and for no other.",
+  "answered_by": "human",
+  "date": "2026-11-18",
+  "answers": {
+    "policy.execution_permission": {
+      "reaches": "engine",
+      "words": "as far as a simulation engine on this computer; no instrument",
+      "package_sources": [
+        {
+          "installer": "pixi",
+          "channel": "conda-forge"
+        },
+        {
+          "installer": "homebrew",
+          "channel": "homebrew/core: colima, lima, docker, docker-buildx",
+          "engines": [
+            "rheotool"
+          ]
+        },
+        {
+          "installer": "docker",
+          "channel": "rheotool:of90 in Colima profile rheotool, built from ~/Desktop/Projects/rheotool-engine/Dockerfile on the Ubuntu archive, dl.openfoam.org and github.com/fppimenta/rheotool",
+          "engines": [
+            "rheotool"
+          ]
+        }
+      ],
+      "data_sources": [
+        {
+          "host": "gitlab.com",
+          "access": "read_only_anonymous"
+        },
+        {
+          "host": "pseudopotentials.quantum-espresso.org",
+          "access": "read_only_anonymous"
+        },
+        {
+          "host": "files.rcsb.org",
+          "access": "read_only_anonymous"
+        },
+        {
+          "host": "mackerell.umaryland.edu",
+          "access": "read_only_anonymous"
+        },
+        {
+          "host": "www.mdtutorials.com",
+          "access": "read_only_anonymous"
+        }
+      ]
+    }
+  }
+}
