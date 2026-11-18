@@ -121,3 +121,9 @@ Run `20261117-23` was removed with `wipe --sessions` (`collect-2` taken first; o
 ## The standing rule for tolerances (2026-11-18), as it touches this task
 
 The person set a standing rule (`../../docs/ideas/20261118.md`, "Tolerances by a standing rule", `c2499f2`): a scientific task's tolerance is the reference's stated uncertainty, else half a unit in the last digit it prints, derived by a library skill (`chosen_by: rule`); a tolerance the person gave overrides it. For this task: the exact comparison of the set-up counts stands (the person's, and after the fail "Keep exact; record fail"); the averages stay value, reference and difference with no verdict, which is also the person's own word ("Counts exact, averages: diff only"). Whether the rule should replace either of those in round three is the person's and is not asked by this seat on its own. The mechanism (a library skill, the template's `validate_tasks.py`, the Designer) is asked of the meta role in `76ba4c5`, with no task; it is general work and not this task's.
+
+Asked by this seat "Should the standing tolerance rule replace the GROMACS exact counts in round three?", the person answered with the button this seat wrote (2026-11-18):
+
+> No, keep exact
+
+So in round three and after, the set-up counts of the GROMACS agent keep tolerance 0, chosen by the person, and the standing rule does not replace it. The averages stay value, reference and difference with no verdict (the person's "Counts exact, averages: diff only"); this answer was asked of the counts alone.
