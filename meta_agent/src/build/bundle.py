@@ -96,8 +96,16 @@ def gate_line(tc):
     gate = tc.get("safety_gate") or {}
     if tc.get("side_effects") == "network":
         installer = (tc.get("installs_from") or {}).get("installer")
+        hosts = [f.get("host") for f in tc.get("fetches_from") or [] if isinstance(f, dict)]
+        opened = []
+        if isinstance(tc.get("installs_from"), dict):
+            opened.append("as the one install, where it lists this tool's installer and channel under `package_sources`")
+        if hosts:   # a read of data from named hosts (tasks/023): each host listed under data_sources with the same access
+            opened.append("as a read of data, where it lists every host this tool fetches from (%s) under `data_sources` "
+                          "with the same access" % ", ".join("`%s`" % h for h in hosts))
         return ("asked of every call, at %s; opened by the lab's execution permission in `envelope/execution_permission.json`, "
-                "as the one install, where it lists this tool's installer and channel" % gate.get("place", "src/gate.py")
+                "%s" % (gate.get("place", "src/gate.py"), " and ".join(opened) or "as the one install, where it lists this "
+                        "tool's installer and channel")
                 + ("; the installer `%s` must already be on the computer, and putting it there is the person's step" % installer
                    if installer else ""))
     if not gate.get("required"):

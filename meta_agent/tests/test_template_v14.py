@@ -178,7 +178,7 @@ class TheVersion(unittest.TestCase):
         self.assertEqual(cards.tree_files(v13), cards.tree_files(v14))
         changed = sorted(r for r in cards.tree_files(v13) if cards.sha256_file(os.path.join(v13, r)) != cards.sha256_file(os.path.join(v14, r)))
         self.assertEqual(changed, ["CLAUDE.md", "TEMPLATE.json", "tasks/001-start.md"])
-        self.assertEqual(template_mod.LATEST, "v14")
+        self.assertIn(template_mod.LATEST, template_mod.SOURCES)            # v15 is the latest since tasks/023
         self.assertEqual(cards.load_json(os.path.join(v14, "TEMPLATE.json"))["version"], "v14")
         text = cards.read_text(os.path.join(v14, "CLAUDE.md"))
         self.assertEqual([ch for ch in text if ch.isdigit()], [])          # B6

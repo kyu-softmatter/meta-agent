@@ -96,6 +96,16 @@ v14 changes text only, after the Meep bundle was tested standing alone
     task is not_run. From this version the build refuses an optional input
     that names neither a row nor a default, and the Tools section prints
     the default (bundle.py).
+v15 changes the gate, after round two of the Quantum ESPRESSO test held
+    its fetch tools for want of a way to read data from hosts the person
+    had allowed (tasks/023, dft-7): src/gate.py also opens a network tool
+    whose contract names fetches_from, where the permission reaches an
+    engine and lists every host it names under data_sources with the same
+    access; an install and a read are each judged against their own list
+    and neither opens the other. The runner looks for an installer only
+    for a tool that names installs_from, and CLAUDE.md says which network
+    calls the agent may make. The Designer copies data_sources from the
+    lab profile into envelope/execution_permission.json.
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -113,8 +123,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v7": os.path.join(HERE, "template_v7"), "v8": os.path.join(HERE, "template_v8"),
            "v9": os.path.join(HERE, "template_v9"), "v10": os.path.join(HERE, "template_v10"),
            "v11": os.path.join(HERE, "template_v11"), "v12": os.path.join(HERE, "template_v12"),
-           "v13": os.path.join(HERE, "template_v13"), "v14": os.path.join(HERE, "template_v14")}
-LATEST = "v14"
+           "v13": os.path.join(HERE, "template_v13"), "v14": os.path.join(HERE, "template_v14"),
+           "v15": os.path.join(HERE, "template_v15")}
+LATEST = "v15"
 SOURCE = SOURCES[LATEST]
 
 

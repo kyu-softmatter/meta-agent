@@ -662,7 +662,7 @@ class ExecutionPermission(unittest.TestCase):
         for installs in ({"installer": "pip", "channel": "pypi"}, None):
             with self.assertRaises(designer.Stopped) as e:
                 designer.run(self.intake(self.LAB, "network", installs=installs), SEAT, "0001", NOW, self.root)
-            self.assertIn("pip/pypi, which the lab's permission does not list" if installs else "names no installs_from",
+            self.assertIn("pip/pypi, which the lab's permission does not list" if installs else "names neither installs_from nor fetches_from",
                           str(e.exception))
             self.assertFalse(os.path.exists(os.path.join(self.root, "requests")))
 
@@ -699,6 +699,94 @@ class ExecutionPermission(unittest.TestCase):
         bundle = os.path.join(self.root, "builds", "echo", "0001", "bundle")
         self.assertEqual(cards.load_json(os.path.join(bundle, "envelope", "execution_permission.json"))["reaches"], "sandbox")
 
+
+
+class DataSources(unittest.TestCase):
+    """The person, 2026-11-17 (docs/ideas/20261117.md, 'Every agent of this lab'; tasks/023): the hosts a built agent may
+    read data from are a list beside package_sources in the lab's permission. The Designer copies it into
+    envelope/execution_permission.json as it copies package_sources, and stops where a network tool fetches from a host
+    the list does not carry with the same access; neither list opens the other. Two unrelated kinds: an
+    electronic-structure engine's pseudopotentials from this lab's profile, and a weather station's archive from a
+    fixture lab whose profile lists another host."""
+
+    HOSTS = [{"host": "gitlab.com", "access": "read_only_anonymous"},
+             {"host": "pseudopotentials.quantum-espresso.org", "access": "read_only_anonymous"}]
+    WEATHER_LAB = "lab-fixture-weather"
+    WEATHER = [{"host": "archive.weather-station.example.org", "access": "read_only_anonymous"}]
+    LAB = ExecutionPermission.LAB
+    setUp = ExecutionPermission.setUp
+    intake = ExecutionPermission.intake
+
+    def weather_lab(self, root):
+        """A second lab: this lab's latest profile under another id, with one data host and no package source."""
+        rev, path = designer.latest_file(os.path.join(META, "profiles", self.LAB), "lab_profile.json")
+        p = cards.load_json(path)
+        p.update(id=self.WEATHER_LAB, lab_id=self.WEATHER_LAB, revision=1)
+        p.pop("supersedes", None)
+        value = p["policy"]["execution_permission"]["value"]
+        value.pop("package_sources", None)
+        value["data_sources"] = copy.deepcopy(self.WEATHER)
+        cards.write_json(os.path.join(root, "profiles", self.WEATHER_LAB, "lab_profile.json"), p)
+
+    def fetching(self, lab, hosts, installs=None):
+        i = self.intake(lab, "network", installs=installs)
+        i["tool_contract"]["fetches_from"] = copy.deepcopy(hosts)
+        return i
+
+    def test_the_hosts_are_copied_from_the_profile_as_the_person_named_them(self):
+        p = designer.execution_permission(META, self.LAB)
+        self.assertEqual(p["data_sources"], self.HOSTS)
+        self.assertEqual(p["package_sources"], [{"installer": "pixi", "channel": "conda-forge"}])
+        self.weather_lab(self.root)
+        w = designer.execution_permission(self.root, self.WEATHER_LAB)
+        self.assertEqual(w["data_sources"], self.WEATHER)
+        self.assertNotIn("package_sources", w)
+        # a revision of before tasks/023 carries none, and none is written
+        early = os.path.join(self.tmp, "early")
+        os.makedirs(os.path.join(early, "profiles", self.LAB))
+        shutil.copy(os.path.join(META, "profiles", self.LAB, "v4_lab_profile.json"),
+                    os.path.join(early, "profiles", self.LAB, "v4_lab_profile.json"))
+        self.assertNotIn("data_sources", designer.execution_permission(early, self.LAB))
+
+    def test_a_fetch_from_listed_hosts_is_built_open_and_the_tree_passes(self):
+        for lab, hosts in ((self.LAB, self.HOSTS[1:]), (self.LAB, self.HOSTS), (self.WEATHER_LAB, self.WEATHER)):
+            tmp, root = scratch_root()
+            try:
+                shutil.copytree(os.path.join(META, "profiles", self.LAB), os.path.join(root, "profiles", self.LAB))
+                self.weather_lab(root)
+                out = designer.run(self.fetching(lab, hosts), SEAT, "0001", NOW, root)
+                bundle = os.path.join(root, "builds", "echo", "0001", "bundle")
+                perm = cards.load_json(os.path.join(bundle, "envelope", "execution_permission.json"))
+                self.assertEqual(perm, designer.execution_permission(root, lab))
+                self.assertEqual(cards.load_json(os.path.join(bundle, "TEMPLATE.json"))["version"], "v15")
+                self.assertEqual(out["held"], [], lab)
+                self.assertEqual(out["gates"]["interface"], "pass", lab)        # the calls ran: the gate opened the read
+                text = cards.read_text(os.path.join(bundle, "CLAUDE.md"))
+                for h in hosts:
+                    self.assertIn("`%s`" % h["host"], text)
+                a5 = cards.load_json(os.path.join(root, "requests", "req-echo-001", "spec_a5.json"))["content"]
+                self.assertIn("to read data only from", a5["gate"])
+                p = subprocess.run([sys.executable, VALIDATE, tmp, "--strict"], capture_output=True, text=True,
+                                   env=dict(os.environ, PYTHONUTF8="1"))
+                self.assertIn("0 failed, 0 pending", p.stdout, p.stdout + p.stderr)
+            finally:
+                shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_a_host_the_lab_did_not_allow_or_a_list_that_is_not_its_own_stops_the_designer(self):
+        self.weather_lab(self.root)
+        cases = [(self.LAB, self.fetching(self.LAB, self.HOSTS + [{"host": "mirror.example.net", "access": "read_only_anonymous"}]),
+                  "it fetches from mirror.example.net (read_only_anonymous), which the lab's permission does not list"),
+                 (self.WEATHER_LAB, self.fetching(self.WEATHER_LAB, self.HOSTS[:1]), "it fetches from gitlab.com"),
+                 # the weather lab lists a data host and no package source: its host opens no install
+                 (self.WEATHER_LAB, self.intake(self.WEATHER_LAB, "network", installs={"installer": "pixi", "channel": "conda-forge"}),
+                  "it installs from pixi/conda-forge, which the lab's permission does not list"),
+                 (self.LAB, self.intake(self.LAB, "network"), "names neither installs_from nor fetches_from")]
+        for lab, intake, said in cases:
+            with self.assertRaises(designer.Stopped) as e:
+                designer.run(intake, SEAT, "0001", NOW, self.root)
+            self.assertIn(said, str(e.exception), lab)
+            self.assertIn("data_sources", str(e.exception))
+            self.assertFalse(os.path.exists(os.path.join(self.root, "requests")))
 
 
 class WhatTheBundleSaysItLacks(unittest.TestCase):

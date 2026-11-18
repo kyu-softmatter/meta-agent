@@ -251,6 +251,8 @@ def execution_permission(root, lab_id):
            "lab_profile_ref": profile["id"], "profile_revision": profile["revision"]}
     if "package_sources" in value:      # the installers and channels a person allowed, as the profile lists them
         out["package_sources"] = [{"installer": s["installer"], "channel": s["channel"]} for s in value["package_sources"]]
+    if "data_sources" in value:         # the hosts a person allowed data to be read from, as the profile lists them (tasks/023)
+        out["data_sources"] = [{"host": h["host"], "access": h["access"]} for h in value["data_sources"]]
     return out
 
 
@@ -272,33 +274,49 @@ def opens_by_permission(intake):
 
 
 def unlisted_installs(contracts, permission):
-    """[(tool, why)] for each tool that reaches the network and opens by the permission without an install from a
-    source the permission lists: bundle check B9 refuses such a bundle."""
-    allowed = [(p["installer"], p["channel"]) for p in (permission or {}).get("package_sources") or []]
+    """[(tool, why)] for each tool that reaches the network and opens by the permission where what it names is not
+    what the permission lists: an install from a pair not under package_sources, a fetch from a host not under
+    data_sources with the same access, or neither named. Each is judged against its own list and neither list opens
+    the other, as bundle check B9 judges them (tasks/023)."""
+    perm = permission or {}
+    allowed = [(p["installer"], p["channel"]) for p in perm.get("package_sources") or []]
+    hosts = [(h["host"], h["access"]) for h in perm.get("data_sources") or []]
     out = []
     for c in contracts:
         if c.get("side_effects") != "network":
             continue
         src = c.get("installs_from")
-        if not isinstance(src, dict):
-            out.append((c.get("name"), "it reaches the network and names no installs_from; the permission opens a network "
-                                       "call only to install packages"))
-        elif (src.get("installer"), src.get("channel")) not in allowed:
+        fetches = c.get("fetches_from")
+        if not isinstance(src, dict) and not (isinstance(fetches, list) and fetches):
+            out.append((c.get("name"), "it reaches the network and names neither installs_from nor fetches_from; the "
+                                       "permission opens a network call only to install packages from a listed source "
+                                       "or to read data from listed hosts"))
+            continue
+        if isinstance(src, dict) and (src.get("installer"), src.get("channel")) not in allowed:
             out.append((c.get("name"), "it installs from %s/%s, which the lab's permission does not list (it lists %s)" % (
                 src.get("installer"), src.get("channel"), ", ".join("%s/%s" % a for a in allowed) or "none")))
+        if isinstance(fetches, list) and fetches:
+            missing = [f for f in fetches if not isinstance(f, dict) or (f.get("host"), f.get("access")) not in hosts]
+            if missing:
+                out.append((c.get("name"), "it fetches from %s, which the lab's permission does not list under "
+                                           "data_sources (it lists %s)" % (
+                    ", ".join("%s (%s)" % (f.get("host"), f.get("access")) if isinstance(f, dict) else repr(f) for f in missing),
+                    ", ".join("%s (%s)" % h for h in hosts) or "none")))
     return out
 
 
 def permission_stop(intake, root):
     """Raise Stopped when a tool opens by the execution permission and the lab's profile gives no level to copy, or
-    when a network tool opening by it installs from no source the permission lists: bundle check B9 refuses both."""
+    when a network tool opening by it installs from a source or fetches from a host the permission does not list:
+    bundle check B9 refuses both."""
     names = opens_by_permission(intake)
     lab = intake.get("lab_profile_ref")
     if names and execution_permission(root, lab) is not None:
         bad = unlisted_installs(permission_contracts(intake), execution_permission(root, lab))
         if bad:
-            raise Stopped("; ".join("%s: %s" % b for b in bad) + ". A package source is the person's to allow, in the lab's "
-                          "profile (policy.execution_permission, package_sources); nothing is inferred")
+            raise Stopped("; ".join("%s: %s" % b for b in bad) + ". A package source or a data host is the person's to "
+                          "allow, in the lab's profile (policy.execution_permission, package_sources or data_sources); "
+                          "nothing is inferred")
     if names and execution_permission(root, lab) is None:
         raise Stopped("%s open%s by the lab's execution permission, and the latest profile of %s carries it as words and no "
                       "level a person confirmed, so there is nothing to copy into envelope/execution_permission.json. The "

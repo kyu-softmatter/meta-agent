@@ -104,6 +104,12 @@ def make_axes(goal, profile, brief, lab_profile_ref, bundle_dir, tool_contract, 
             content["A5"]["gate"] += "; %s reach%s the network only to install, from %s, a source the permission lists" % (
                 ", ".join(c["name"] for c in installs), "es" if len(installs) == 1 else "",
                 ", ".join(sorted({"%s/%s" % (c["installs_from"]["installer"], c["installs_from"]["channel"]) for c in installs})))
+        fetches = [c for c in contracts if c["name"] in by_permission and c.get("fetches_from")]
+        if fetches:     # tasks/023: a read of data from hosts the permission lists, never an install
+            content["A5"]["gate"] += "; %s reach%s the network to read data only from %s, host%s the permission lists" % (
+                ", ".join(c["name"] for c in fetches), "es" if len(fetches) == 1 else "",
+                ", ".join(sorted({f["host"] for c in fetches for f in c["fetches_from"] if isinstance(f, dict)})),
+                "" if len({f.get("host") for c in fetches for f in c["fetches_from"] if isinstance(f, dict)}) == 1 else "s")
         content["A5"]["human_only"].append("the lab's execution permission")
     if skills or subagents:
         content["A2"]["skills"] = [{"ref": r["ref"], "kind": r["kind"], "side_effect": r["side_effect"], "status": r["status"],
