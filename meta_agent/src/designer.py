@@ -526,7 +526,13 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
 
     # S6 validate -> the bundle's own gates, read off a fresh process; validation_report
     build_id_full = "build-%s-%s" % (agent, build_id)
-    report = gate_mod.run_bundle(bundle_path)
+    # a bundle whose tool starts an engine already on the computer is run only in an isolated copy outside the
+    # repository, where the lab's permission lets its engine run; none of its calls is made in the builder's tree
+    engine_report, engine_why, tree_safe = gate_mod.in_a_copy(bundle_path)
+    if engine_report is None and not tree_safe:
+        raise RuntimeError("S6 made no report for %s: its engine is run only in an isolated copy outside the repository, "
+                           "and the copy gave none: %s" % (rel_repo(bundle_path, root), engine_why))
+    report = engine_report if engine_report is not None else gate_mod.run_bundle(bundle_path)
     # where the gates ran: an adapter of a tool whose contract names an external program calls that program,
     # so the gates of a bundle with such a tool ran in a sandbox; every other adapter here is a mock
     environment = "sandbox" if any(c.get("calls_external") for c in contracts) else "mock"
@@ -546,6 +552,13 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
                      in_tree["interface"]["verdict"], in_tree["scientific"]["verdict"]))
     elif not_made:
         where = "the bundle's environment was not made, so a task that needs it is not_run: " + not_made
+    if engine_report is not None:
+        environment = "sandbox"
+        where = ("read off an isolated copy of the bundle outside the repository, where its %s started the engine already "
+                 "on this computer by the lab's execution permission; none of its calls was made in the builder's tree; %s" % (
+                     " and ".join(n for n, _ in gate_mod.engine_tools(bundle_path)), engine_why or "the copy was removed"))
+    elif engine_why:
+        where = (where + "; " + engine_why) if where else engine_why
     vr, iface_v, sci_v = gate_mod.make_validation_report(report, build_id_full, rid, bundle_rel, seat, created,
                                                          environment=environment, not_made=not_made,
                                                          bundle_path=bundle_path)

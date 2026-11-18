@@ -110,6 +110,61 @@ def in_its_environment(bundle_path):
     return report, made, why
 
 
+def engine_tools(bundle_path):
+    """[(name, contract)] of the tools that start an engine already on the computer: a contract that names the
+    external program it calls (calls_external), whose gate opens by the execution permission, and that installs
+    nothing. A call of one in the builder's tree would run the engine inside the repository, which the Meta-Agent
+    never does (meta_agent/CLAUDE.md, Tier 0; request req-rheotool-001, the rheoTool engine in its Colima container)."""
+    tools = os.path.join(bundle_path, "tools")
+    out = []
+    for name in sorted(os.listdir(tools)) if os.path.isdir(tools) else []:
+        path = os.path.join(tools, name, "tool.json")
+        if not os.path.isfile(path):
+            continue
+        c = cards.load_json(path)
+        if isinstance(c.get("calls_external"), dict) and not isinstance(c.get("installs_from"), dict) \
+                and (c.get("safety_gate") or {}).get("opens_by") == "execution_permission":
+            out.append((name, c))
+    return out
+
+
+def in_a_copy(bundle_path):
+    """(report, why, in_tree) for a bundle with a tool that starts an engine already on the computer (engine_tools).
+    Where the bundle carries an execution permission a person confirmed that reaches an engine, its gates run in an
+    isolated copy outside the repository, with no time limit, and the copy is removed: `report` is what they printed,
+    or None where the copy gave none, `why` says why or names what the removal left, and in_tree is False: the gates
+    are never run in the tree instead, since there the engine would run inside the repository. Where it carries no
+    such permission, the gate refuses every such call, in_tree is True and `why` says so. A bundle with no such tool
+    gives (None, None, True)."""
+    tools = engine_tools(bundle_path)
+    if not tools:
+        return None, None, True
+    perm_path = os.path.join(bundle_path, "envelope", "execution_permission.json")
+    perm = cards.load_json(perm_path) if os.path.isfile(perm_path) else None
+    if not isinstance(perm, dict) or perm.get("confirmed_by") != "human" or perm.get("reaches") not in OPENS_AT:
+        return None, ("no execution permission a person confirmed that reaches an engine, so the gate refuses %s and "
+                      "the gates ran in the tree" % ", ".join(n for n, _ in tools)), True
+    tmp = tempfile.mkdtemp(prefix="ma-s6-engine-")
+    report, why = None, None
+    try:
+        if not outside(tmp):
+            why = "the isolated copy would be inside the repository (%s), and is not made" % tmp
+        else:
+            copy = os.path.join(tmp, "bundle")
+            top = os.path.abspath(bundle_path)
+            shutil.copytree(bundle_path, copy, ignore=lambda d, names: [
+                n for n in names if n in ("__pycache__",) or n.endswith(".pyc") or (os.path.abspath(d) == top and n == "runs")])
+            try:
+                report = run_bundle(copy, timeout=None)
+            except RuntimeError as e:
+                why = "the gates of the copy printed no verdict: %s" % e
+    finally:
+        left = remove_copy(tmp)
+    if left:
+        why = "%s; %s" % (why, left) if why else left
+    return report, why, False
+
+
 def remove_copy(path):
     """Remove S6's isolated copy and look whether it is gone (failure line dft-8, test run dft/20261117-3). None when it
     is gone; otherwise a sentence naming what is left and the first errors the removal met, after a second try."""
