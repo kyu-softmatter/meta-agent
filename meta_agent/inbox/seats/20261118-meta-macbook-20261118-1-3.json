@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261118-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "For docs/ideas/20261118.md, the rheoTool agent's four open questions (from the v23 clone of run rheology/20261118-6). This seat showed the person its recommendation on each: (1) the tolerance is the run's own numerical error, by a refinement, under the standing rule of 2026-11-18, and not a value per check; (2) the agent's scope is rheoTool's own tutorials with the settings the person names, with no geometry of the person's own and no sweeps for now; (3) the refinement is a second run on a mesh twice as fine in x and y (the channel tutorial's 50x30 cells per block becoming 100x60), with order 2, the nominal order of its spatial schemes (Gauss linear, CUBISTA; read from the tutorial's fvSchemes in the image rheotool:of90), an assumed order and not an observed one; (4) the rheoTool repository (material mat-20261118-001 in that clone) is registered and may be quoted, since its code is GPL-3.0 and its user guide CC BY-NC-ND 3.0, and the lab's publication scope is this lab. The person answered '권고대로 진행' ('go ahead as recommended'). Asked: record the words; this seat gives them to a fresh clone in a new brief, meta_agent/eval/briefs/clone-rheotool.txt, as the Cantera control test did (tasks/024).",
+  "written_at": "2026-11-18T10:58:00-08:00"
+}
