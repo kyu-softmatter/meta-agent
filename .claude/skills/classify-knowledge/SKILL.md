@@ -45,7 +45,7 @@ For a data file, what you read about its layout is itself a claim: `observed` wh
 2. **Of what.** The sample, the model or the instrument it belongs to.
 3. **Under what conditions.** Temperature, concentration, geometry, the range over which it holds.
 4. **Relative to what.** The reference of a ratio and the zero of a scale. A quantity defined only up to a constant (a pressure in an incompressible flow, a potential, an energy) is compared with another only after both are shown to share that zero: a pressure fixed at an outlet and one left free there are not the same quantity until one is shifted to the other's reference.
-5. **How it was obtained.** The method decides what it may be compared with.
+5. **How it was obtained.** The method decides what it may be compared with. A value a source tabulates from its own raw series (a maximum, a mean, a coefficient under a sign convention) is read against that series where the source publishes it, so that the table's convention is not taken for the quantity.
 6. **What it is for here.** The row, the parameter or the claim of this request that it supports. A value nothing here needs is not carried.
 
 Name the number so that its meaning cannot be mistaken, and carry its conditions as condition tags. Two values that mean different things do not conflict. Two that mean the same thing and differ are a conflict, and both stay.
