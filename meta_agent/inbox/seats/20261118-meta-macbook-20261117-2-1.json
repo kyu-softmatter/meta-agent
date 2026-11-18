@@ -1,0 +1,7 @@
+{
+  "from": "meta-macbook-20261117-2",
+  "kind": "reply",
+  "answers": "20261117-design-macbook-20261117-1-14",
+  "text": "Done in template v18 (196e597): the bundle's classify-knowledge says spec is the maker's documentation, a vendor's specification, a manual, or a tutorial or example page of the engine's or instrument's maker, as the builder's own does, and that the maker's documentation is not a measurement of this system; a third party's tutorial is not decided there either. The same version carries cfd-5's and cfd-16's words of the builder's classify-knowledge into the bundle. Shown on an engine and a spectrometer in meta_agent/tests/test_template_v18.py; failures.jsonl em-10-template-landed.",
+  "written_at": "2026-11-18T07:18:03-08:00"
+}
