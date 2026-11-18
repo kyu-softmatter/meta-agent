@@ -38,7 +38,7 @@ A brief without answers leaves every policy, permission, source and tolerance fo
 
 ## How each task runs
 
-1. Begin with `begin-session`, in the role your task names, and claim your task, one engine per seat. Every task of this plan is a meta seat's (the person, 2026-11-17).
+1. Begin with `begin-session`, in the role your task names, and claim your task, one engine per seat. Every task of this plan is a meta seat's, except `018`, which the design seat that had already claimed and run it keeps (the person, 2026-11-17).
 2. Wait for the person's word before writing the brief or making a run ("지금 말고 내가 말하면 실행").
 3. Write the brief, confirmed with the person, and commit it alone.
 4. Make the run, open one unattended session in its clone, and collect, all as `test-outside-the-repository` says. Each category keeps its runs and collections in a folder of its own: pass `--root <test folder>/<category>` and `--logs <log folder>/<category>` to every call of `contracts/tools/testfolder.py`. The categories are `molecular-dynamics` (`017`), `dft` (`018`), `cfd` (`019`), `chemical-kinetics` (`020`) and `electromagnetics` (`021`). The person said "각 시스템(시뮬레이션 카테고리) 별로 폴더를 만들고 거기서 작업하도록 하자" and confirmed this reading of it with "맞음" (2026-11-17). Only the test runs and their logs are split by category. The code and the rules do not change, and the repository stays one working copy on `main`. Model and effort: `choose-session-level` recommends and the person's word holds. Recommended: the level of the HOOMD-blue control test without answers, so that the runs can be compared.
