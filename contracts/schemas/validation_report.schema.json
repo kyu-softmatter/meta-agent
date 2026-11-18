@@ -227,7 +227,8 @@
                       "from": {
                         "enum": [
                           "stated_uncertainty",
-                          "last_printed_digit"
+                          "last_printed_digit",
+                          "run_numerical_error"
                         ]
                       }
                     },
@@ -237,7 +238,7 @@
                       "unit",
                       "chosen_by"
                     ],
-                    "description": "chosen_by is human for a tolerance the person gave, or rule for one derived from the person's standing rule of 2026-11-18 (docs/ideas/20261118.md): the reference's stated uncertainty, else half a unit in its last printed digit, derived by a library skill through the runner; such a tolerance names the rule and the skill (derived_by), and a tolerance the person gives overrides it",
+                    "description": "chosen_by is human for a tolerance the person gave, or rule for one derived from the person's standing rule of 2026-11-18 (docs/ideas/20261118.md): the reference's stated uncertainty, else the larger of half a unit in its last printed digit and the run's own numerical error (amended 2026-11-18), derived by a library skill through the runner; such a tolerance names the rule and the skill (derived_by), and a tolerance the person gives overrides it",
                     "if": {
                       "properties": {
                         "chosen_by": {
