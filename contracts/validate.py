@@ -1392,6 +1392,19 @@ def checkB9(bundle, label, report):
                             report.fail("B9", relpath, "installs from %s/%s, which the bundle's execution permission does not list "
                                         "under package_sources (%s)" % (src.get("installer"), src.get("channel"),
                                                                         ", ".join("%s/%s" % a for a in allowed) or "none"))
+                        else:
+                            # a source the person allowed for named engines alone (the person, 2026-11-18, "Yes, covered")
+                            # opens an install only in a bundle whose CAPABILITIES.json names one of them
+                            pairs = [s for s in perm.get("package_sources") or [] if isinstance(s, dict)
+                                     and (s.get("installer"), s.get("channel")) == (src.get("installer"), src.get("channel"))]
+                            if pairs and all(isinstance(s.get("engines"), list) for s in pairs):
+                                cap = bundle_json(bundle, "CAPABILITIES.json", report, "B9") or {}
+                                engine = cap.get("engine") if isinstance(cap, dict) else None
+                                scope = sorted({e for s in pairs for e in s["engines"]})
+                                if engine not in scope:
+                                    report.fail("B9", relpath, "installs from %s/%s, which the execution permission allows only for "
+                                                "the engines %s; the bundle's CAPABILITIES.json names the engine %r"
+                                                % (src.get("installer"), src.get("channel"), ", ".join(scope), engine))
                     if isinstance(fetches, list) and fetches:
                         hosts = [(h.get("host"), h.get("access")) for h in perm.get("data_sources") or [] if isinstance(h, dict)]
                         missing = [f for f in fetches if not isinstance(f, dict) or (f.get("host"), f.get("access")) not in hosts]

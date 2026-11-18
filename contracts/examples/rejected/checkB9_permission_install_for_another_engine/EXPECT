@@ -1,0 +1,3 @@
+check B9
+
+A bundle's install tool names a package source that the bundle's execution permission lists, but only for the engine rheotool (`engines`), while the bundle's CAPABILITIES.json names the engine gromacs: a source the person allowed for one engine opens an install only in a bundle of that engine (the person, 2026-11-18, docs/ideas/20261118.md, "Yes, covered").

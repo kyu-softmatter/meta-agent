@@ -51,6 +51,15 @@
           "channel": {
             "type": "string",
             "minLength": 1
+          },
+          "engines": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*$"
+            },
+            "description": "the engines (ids of contracts/registry/engines.json) a person allowed this source for alone (the person, 2026-11-18, docs/ideas/20261118.md, 'Yes, covered'); a source without it serves any engine the permission reaches"
           }
         },
         "additionalProperties": false,
