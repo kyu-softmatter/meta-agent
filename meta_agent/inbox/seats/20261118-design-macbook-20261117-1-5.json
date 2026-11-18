@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261117-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": null,
+  "answers": null,
+  "text": "The person set a standing rule for scientific tolerances (2026-11-18, docs/ideas/20261118.md, 'Tolerances by a standing rule'): the reference's stated uncertainty where the source states one, else half a unit in the last digit the reference prints; where neither applies the task stays undecided; a tolerance the person gave overrides it (Cantera 1 K, GROMACS exact counts, CFD-T stand). contracts/schemas/validation_report.schema.json now takes tolerance.chosen_by 'rule' with rule, derived_by (computed:<skill>@vN) and from (stated_uncertainty | last_printed_digit). Asked of the meta role: (1) a library skill that derives the tolerance from a reference as read (its printed text, or its stated uncertainty), run through the runner, shown on fixtures of two unrelated kinds; (2) the template's validate_tasks.py, which today accepts only chosen_by human, to accept chosen_by rule with its derivation and to judge by it; (3) the Designer to fill such tolerances where the person gave none.",
+  "written_at": "2026-11-18T07:48:06-08:00"
+}
