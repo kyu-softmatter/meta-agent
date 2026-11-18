@@ -572,6 +572,55 @@ def add_skills(bundle_path, rows, subagents):
         cards.write_text(os.path.join(bundle_path, ".claude", "agents", a["name"] + ".md"), subagent_markdown(a, rows))
 
 
+def stated_unit(task, tools, skills):
+    """The unit of the one field a scientific task states: the analysis skill's output unit where the task measures
+    through one, else the unit the called tool's contract declares for that output, else '1'."""
+    stated = (task.get("measure") or {}).get("stated") or {}
+    field = next(iter(stated))
+    analysis = task.get("analysis") if isinstance(task.get("analysis"), dict) else None
+    if analysis:
+        for r in skills:
+            if r.get("ref") == analysis.get("skill"):
+                for o in r.get("outputs") or []:
+                    if o.get("name") == field and o.get("unit"):
+                        return o["unit"]
+    tool = ((task.get("call") or {}).get("tool"))
+    for t in tools:
+        if t["name"] == tool:
+            prop = (((t["contract"].get("outputs") or {}).get("properties") or {}).get(field) or {})
+            if prop.get("unit"):
+                return prop["unit"]
+    return "1"
+
+
+def with_rule_tolerance(task, rule, tools, skills):
+    """The task with a tolerance derived by the person's standing rule of 2026-11-18, where the person gave none and the
+    task states one field (a tolerance judges one field): the rule's skill runs through the runner on the reference as
+    the task prints it (measure.printed), else on the stored number, with the stated uncertainty where the task gives
+    one (measure.stated_uncertainty). The task records how the tolerance came under tolerance_derivation. A task the
+    rule gives no tolerance for is left as it is, undecided."""
+    stated = (task.get("measure") or {}).get("stated")
+    if task.get("tolerance") or not isinstance(stated, dict) or len(stated) != 1:
+        return task
+    from ..skills import runner as runner_mod
+    field, value = next(iter(stated.items()))
+    printed = ((task.get("measure") or {}).get("printed") or {}).get(field)
+    printed_from = "measure.printed"
+    if not isinstance(printed, str):
+        printed, printed_from = (repr(value) if not isinstance(value, bool) else None), "the stored number"
+    uncertainty = ((task.get("measure") or {}).get("stated_uncertainty") or {}).get(field)
+    record = runner_mod.run(rule["skill"], {"printed": printed, "stated_uncertainty": uncertainty})
+    out = record.get("outputs") or {}
+    if record.get("verdict") != "ran" or out.get("tolerance") is None:
+        return task
+    t = dict(task)
+    t["tolerance"] = {"value": out["tolerance"], "unit": stated_unit(task, tools, skills), "chosen_by": "rule",
+                      "rule": rule["rule"], "derived_by": "computed:%s" % rule["skill"], "from": out["from"]}
+    t["tolerance_derivation"] = {"skill": rule["skill"], "inputs": record.get("inputs"), "outputs": out,
+                                 "printed_from": printed_from if out["from"] == "last_printed_digit" else None}
+    return t
+
+
 def compose(template_path, bundle_path, fill, tools, capabilities, envelope, interface_tasks,
             scientific_tasks, replay_items, skills=None, subagents=None, workflow=None, words=None, decisions=None,
             ids=None, questions=None):
@@ -597,6 +646,9 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     if agreement and scientific_tasks and agreement not in {r["ref"] for r in skills}:
         from ..skills import catalogue as catalogue_mod
         skills.append(catalogue_mod.take([agreement])[0])
+    rule = (cards.load_json(meta).get("tolerance_rule") if os.path.isfile(meta) else None) or None
+    if rule and scientific_tasks:
+        scientific_tasks = [with_rule_tolerance(t, rule, tools, skills) for t in scientific_tasks]
     rows = check_drawing(skills, subagents, {t["name"]: t["contract"].get("side_effects") for t in tools}, template_path)
     fill = dict(fill)
     if skills:

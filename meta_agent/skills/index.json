@@ -1009,6 +1009,53 @@
       "sha256": "sha256:9e83e9becb8b0763b5dfe60df8a48c0871b08f9fe042ee50bd805b0e296c80e2"
     },
     {
+      "ref": "tolerance_from_reference@v1",
+      "id": "tolerance_from_reference",
+      "version": 1,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "a scientific task's tolerance by the person's standing rule: the reference's stated uncertainty, otherwise half a unit in the last digit it prints",
+      "description": "A scientific task's tolerance by the person's standing rule, from the reference as its source gives it: the uncertainty the source states, otherwise half a unit in the last digit the reference prints. Take it when a scientific task compares a measured value with a reference and the person has given no tolerance for it.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "printed",
+          "unit": "1",
+          "meaning": "the reference value as its source prints it, as text, its last digit kept as printed (a trailing zero included); in the quantity's unit"
+        },
+        {
+          "name": "stated_uncertainty",
+          "unit": "1",
+          "meaning": "the uncertainty the source states for that value, in the quantity's unit, or null where it states none"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "tolerance",
+          "unit": "1",
+          "meaning": "the tolerance, in the quantity's unit; null, with why, where neither input gives one"
+        },
+        {
+          "name": "from",
+          "unit": "1",
+          "meaning": "stated_uncertainty or last_printed_digit: which of the rule's two ways gave it; null where none did"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why no tolerance was given, or null"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/tolerance_from_reference@v1",
+      "sha256": "sha256:164db6a341720c586e51873f0d4886fcd7c4638282b41eb4943833120647f0d9"
+    },
+    {
       "ref": "diffusive_regime_from_msd@v1",
       "id": "diffusive_regime_from_msd",
       "version": 1,

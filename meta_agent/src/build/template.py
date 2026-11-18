@@ -131,6 +131,13 @@ v18 changes text only, the bundle's classify-knowledge, to say what the
     documentation, a tutorial or example page of the maker included; a
     quantity defined up to a constant is compared only once both share its
     zero; a tabled value is read against the source's raw series.
+v19 changes one script of the checks and the start task, on the person's
+    standing rule of 2026-11-18 for tolerances (the design role's ask
+    20261118-design-macbook-20261117-1-5): src/validate_tasks.py judges by a
+    tolerance a person chose or one the rule gave (chosen_by rule, naming the
+    rule and the skill), alike. From this version the builder derives such a
+    tolerance where the person gave none, by tolerance_from_reference@v1
+    through the runner, from the reference as its task prints it (bundle.py).
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -150,8 +157,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v11": os.path.join(HERE, "template_v11"), "v12": os.path.join(HERE, "template_v12"),
            "v13": os.path.join(HERE, "template_v13"), "v14": os.path.join(HERE, "template_v14"),
            "v15": os.path.join(HERE, "template_v15"), "v16": os.path.join(HERE, "template_v16"),
-           "v17": os.path.join(HERE, "template_v17"), "v18": os.path.join(HERE, "template_v18")}
-LATEST = "v18"
+           "v17": os.path.join(HERE, "template_v17"), "v18": os.path.join(HERE, "template_v18"),
+           "v19": os.path.join(HERE, "template_v19")}
+LATEST = "v19"
 SOURCE = SOURCES[LATEST]
 
 

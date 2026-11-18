@@ -1,0 +1,28 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human (asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json); this file becomes a queued card when check 17 allows it.",
+  "kind": "standard",
+  "citation": "JCGM 100:2008, Evaluation of measurement data - Guide to the expression of uncertainty in measurement (GUM)",
+  "location": {
+    "url": "https://www.bipm.org/documents/20126/2071204/JCGM_100_2008_E.pdf"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-18T15:49:32Z",
+    "content_hash": "sha256:41bbf068fbc0d7986c98691b2d1af6680cb3044f6a1a89b3560933ed9ef9626c",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261117-2",
+  "access": "anonymous, read-only, no login",
+  "how_found": "searched for where half a unit of the last digit is defined as the bound of a value, for the person's standing rule on tolerances",
+  "licence": "the pages read carry '(c) JCGM 2008 - All rights reserved'; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "skills": [
+        "tolerance_from_reference@v1"
+      ],
+      "locus": "F.2.2.1, The resolution of a digital indication, printed page 64 (page 76 of the file)"
+    }
+  ],
+  "state": "queued",
+  "registered": "the person's word, not given"
+}

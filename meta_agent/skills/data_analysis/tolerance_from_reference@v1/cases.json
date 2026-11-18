@@ -1,0 +1,62 @@
+[
+  {
+    "name": "a temperature printed as a whole number, the rule's own example: half a kelvin",
+    "inputs": {
+      "printed": "1066",
+      "stated_uncertainty": null
+    },
+    "expect": {
+      "tolerance": 0.5,
+      "from": "last_printed_digit"
+    },
+    "worked": "the last printed digit is the units digit, a unit of 1; half of it is 0.5"
+  },
+  {
+    "name": "a drag coefficient printed to nine decimals",
+    "inputs": {
+      "printed": "2.950921575",
+      "stated_uncertainty": null
+    },
+    "expect": {
+      "tolerance": 5e-10,
+      "from": "last_printed_digit"
+    },
+    "worked": "the last printed digit is the ninth after the point, a unit of 1e-9; half of it is 5e-10"
+  },
+  {
+    "name": "a value printed in exponent form, its trailing zero kept",
+    "inputs": {
+      "printed": "1.20e-3",
+      "stated_uncertainty": null
+    },
+    "expect": {
+      "tolerance": 5e-06,
+      "from": "last_printed_digit"
+    },
+    "worked": "1.20e-3 has its last digit at 1e-5; half of it is 5e-6"
+  },
+  {
+    "name": "a stated uncertainty is taken before the printed digits",
+    "inputs": {
+      "printed": "0.47795",
+      "stated_uncertainty": 0.0001
+    },
+    "expect": {
+      "tolerance": 0.0001,
+      "from": "stated_uncertainty"
+    },
+    "worked": "the source states 0.0001, so that is the tolerance, whatever the digits"
+  },
+  {
+    "name": "a reference that is not a number gives none",
+    "inputs": {
+      "printed": "about three",
+      "stated_uncertainty": null
+    },
+    "expect": {
+      "tolerance": null,
+      "from": null
+    },
+    "worked": "the text is not a number, so neither way of the rule gives a tolerance"
+  }
+]

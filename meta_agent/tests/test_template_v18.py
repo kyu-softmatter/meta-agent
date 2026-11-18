@@ -52,9 +52,9 @@ class TheBundlesClassifyKnowledge(unittest.TestCase):
 
 
 class TheVersion(unittest.TestCase):
-    def test_v18_is_the_latest_and_changes_one_text(self):
+    def test_v18_changes_one_text(self):
         v17_src = template_mod.SOURCES["v17"]
-        self.assertEqual(template_mod.LATEST, "v18")
+        self.assertIn("v18", template_mod.SOURCES)                  # v19 is the latest since the tolerance rule
         self.assertEqual(cards.tree_files(v17_src), cards.tree_files(V18))
         changed = sorted(r for r in cards.tree_files(v17_src)
                          if cards.sha256_file(os.path.join(v17_src, r)) != cards.sha256_file(os.path.join(V18, r)))
