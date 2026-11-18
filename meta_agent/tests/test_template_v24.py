@@ -93,7 +93,7 @@ class AFactorOfThree(unittest.TestCase):
 class TheVersion(unittest.TestCase):
     def test_v24_is_the_latest_and_changes_one_script(self):
         v23_path = template_mod.SOURCES["v23"]
-        self.assertEqual(template_mod.LATEST, "v24")
+        self.assertIn("v24", template_mod.SOURCES)                  # v25 is the latest since the third run
         changed = sorted(r for r in cards.tree_files(v23_path)
                          if cards.sha256_file(os.path.join(v23_path, r)) != cards.sha256_file(os.path.join(V24, r)))
         self.assertEqual(changed, ["TEMPLATE.json", "src/validate_tasks.py"])

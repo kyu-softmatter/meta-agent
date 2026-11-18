@@ -1014,6 +1014,63 @@
       "sha256": "sha256:4594770b9dad58cc48cf9f24dd995d62fe552ebc9552594bad23f8d0a31dded0"
     },
     {
+      "ref": "observed_order_of_convergence@v1",
+      "id": "observed_order_of_convergence",
+      "version": 1,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the observed order of convergence of a quantity from three runs at a constant refinement ratio",
+      "description": "The observed order of convergence of a quantity from three runs, each finer than the last by the same refinement ratio. Take it when a run's own numerical error is to be estimated from a refinement and no source gives the scheme's order, or when the order a source gives is to be checked against the runs.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "coarse",
+          "unit": "1",
+          "meaning": "the quantity from the coarsest of the three runs, in its unit"
+        },
+        {
+          "name": "medium",
+          "unit": "1",
+          "meaning": "the same quantity from the middle run, in the same unit"
+        },
+        {
+          "name": "fine",
+          "unit": "1",
+          "meaning": "the same quantity from the finest run, in the same unit"
+        },
+        {
+          "name": "refinement_ratio",
+          "unit": "1",
+          "meaning": "the constant ratio of each run's spacing to the next finer one's, above 1"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "observed",
+          "unit": "1",
+          "meaning": "true when an order was read from the three results; false, with why, when they do not converge monotonically or the inputs do not allow it"
+        },
+        {
+          "name": "order",
+          "unit": "1",
+          "meaning": "the observed order of convergence"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why no order was read, or null"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/observed_order_of_convergence@v1",
+      "sha256": "sha256:290deb93a1e7b59ecb39a7e5a1a755b7080be9f1cfaa601e07efff4224f0de45"
+    },
+    {
       "ref": "series_maximum@v1",
       "id": "series_maximum",
       "version": 1,

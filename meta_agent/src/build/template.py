@@ -168,6 +168,13 @@ v24 changes one script of the checks, on the person's 'Yes, factor 3'
     run's error (TEMPLATE.json run_error_from), so that a two-grid estimate
     enters three times over, Roache's factor of safety for two grids.
 
+v25 changes one script of the checks and TEMPLATE.json (cfd-25; the intake card's
+    third_inputs, 6c7a488): a refinement with a third, finer run observes the
+    order from the three results by observed_order_of_convergence@v1 (order_skill,
+    also in the common set), estimates the finest result's error at that order,
+    judges the finest, and tells the rule's skill three_or_more_grids, so that no
+    factor enters. The builder checks the third run's rows (bundle.py).
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -192,8 +199,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v21": os.path.join(HERE, "template_v21"),
            "v22": os.path.join(HERE, "template_v22"),
            "v23": os.path.join(HERE, "template_v23"),
-           "v24": os.path.join(HERE, "template_v24")}
-LATEST = "v24"
+           "v24": os.path.join(HERE, "template_v24"),
+           "v25": os.path.join(HERE, "template_v25")}
+LATEST = "v25"
 SOURCE = SOURCES[LATEST]
 
 

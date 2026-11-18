@@ -667,9 +667,19 @@ def refinement_problems(tasks, tools, envelope, template_path):
                 out.append("%s: the tool takes no input %s" % (tid, name))
             if row not in rows:
                 out.append("%s: no row %s hands the finer run its %s" % (tid, row, name))
-        for key in ("ratio_row", "order_row"):
+        third = ref.get("third_inputs")
+        keys = ("ratio_row",) if third else ("ratio_row", "order_row")
+        for key in keys:
             if ref.get(key) not in rows:
                 out.append("%s: no row %s for its %s" % (tid, ref.get(key), key))
+        if third:
+            if not m.get("order_skill"):
+                out.append("%s: the template %s does not observe an order from a third run; it needs v25 or later" % (tid, m.get("version")))
+            for name, row in sorted(third.items()):
+                if name not in props:
+                    out.append("%s: the tool takes no input %s for the third run" % (tid, name))
+                if row not in rows:
+                    out.append("%s: no row %s hands the third run its %s" % (tid, row, name))
     return out
 
 
@@ -767,6 +777,8 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
             raise ValueError("a scientific task's refinement cannot run in this bundle: " + "; ".join(faults))
         from ..skills import catalogue as catalogue_mod
         need = [t["refinement"]["skill"] for t in refining] + [cards.load_json(meta)["tolerance_rule"]["skill"]]
+        if any(t["refinement"].get("third_inputs") for t in refining):
+            need.append(cards.load_json(meta)["order_skill"])
         for ref in need:
             if ref not in {r["ref"] for r in skills}:
                 skills.append(catalogue_mod.take([ref])[0])
