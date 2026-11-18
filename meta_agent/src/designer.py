@@ -511,7 +511,7 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
                              words=bundle_mod.words_by_record(intake, goal, spec),
                              ids=builder_ids(root, rid), questions=bundle_mod.questions_by_number(intake),
                              simulation=(intake.get("tool") or {}).get("kind") == "engine",
-                             adaptations=adapted_skills(root, rid))
+                             adaptations=adapted_skills(root, rid), tool_kind=(intake.get("tool") or {}).get("kind"))
     diff_text = bundle_mod.diff_from_template(template_path, bundle_path)
     put(os.path.join(build_dir, "diff_from_template.txt"), diff_text)
 

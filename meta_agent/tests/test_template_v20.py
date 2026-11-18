@@ -23,6 +23,7 @@ from meta_agent.src.skills import rules
 from meta_agent.tests import test_template_v13 as v13
 
 V20 = template_mod.SOURCES["v20"]
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 COMMON = cards.load_json(os.path.join(V20, "TEMPLATE.json"))["common_skills"]
 AGREEMENT = "measurement_error@v2"
 

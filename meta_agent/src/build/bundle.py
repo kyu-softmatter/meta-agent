@@ -699,7 +699,7 @@ def with_rule_tolerance(task, rule, tools, skills):
 
 def compose(template_path, bundle_path, fill, tools, capabilities, envelope, interface_tasks,
             scientific_tasks, replay_items, skills=None, subagents=None, workflow=None, words=None, decisions=None,
-            ids=None, questions=None, simulation=False, adaptations=None):
+            ids=None, questions=None, simulation=False, adaptations=None, tool_kind=None):
     """Write the bundle. `tools` is a list of {name, contract, adapter_source, errors:[contract]}.
 
     `workflow` is the request's order of tool names, or None, and fills the Workflow section of a template that has
@@ -753,6 +753,10 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     add_pages(bundle_path, [r["ref"] for r in skills])
     claude = cards.read_text(os.path.join(bundle_path, "CLAUDE.md"))
     cards.write_text(os.path.join(bundle_path, "CLAUDE.md"), render(claude, fill))
+    if tool_kind:
+        # what kind of tool the agent is for (the intake's tool.kind), which bundle check B18 reads to know a simulation
+        # bundle (the design role's ask 20261118-design-macbook-20261117-1-8; tasks/025)
+        capabilities = dict(capabilities, tool_kind=tool_kind)
     cards.write_json(os.path.join(bundle_path, "CAPABILITIES.json"), capabilities)
     for name, content in envelope.items():
         cards.write_json(os.path.join(bundle_path, "envelope", name + ".json"), content)

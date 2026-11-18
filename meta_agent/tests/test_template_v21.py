@@ -48,6 +48,37 @@ class TheRunsOwnError(unittest.TestCase):
             v20.V20 = orig
 
 
+class TheToolKind(unittest.TestCase):
+    """The builder writes the intake's tool kind into CAPABILITIES.json, so bundle check B18 knows a simulation bundle
+    (the design role's ask 20261118-design-macbook-20261117-1-8): an engine's bundle of each kind passes B18 with the
+    set, and fails it when a common skill is taken out."""
+
+    def test_an_engine_s_bundle_says_so_and_b18_judges_it(self):
+        import subprocess, sys
+        from meta_agent.src.build import bundle as bundle_mod
+        tmp = tempfile.mkdtemp(prefix="ma-template-v21-")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        for kind, k in v13.KINDS.items():
+            c = v13.contract(k)
+            fill = {"agent_name": kind, "template": "agent@test", "rid": "req-%s" % kind, "purpose": "p", "science_task": "t",
+                    "tools_section": bundle_mod.tools_section([c]), "must_not": bundle_mod.must_not_section([]),
+                    "skills_section": bundle_mod.skills_section([]), "seat_form": "x-<machine>-<YYYYMMDD>-<n>"}
+            params = {"rows": [{"name": n, "value": v, "unit": u} for n, (v, u) in k["rows"].items()]}
+            b = os.path.join(tmp, kind)
+            from meta_agent.src.skills import catalogue as catalogue_mod
+            bundle_mod.compose(V21, b, fill, [{"name": k["tool"], "contract": c, "adapter_source": k["adapter"], "errors": []}],
+                               {"capabilities": []}, {"safety": {}, "parameters": params},
+                               [{"id": "if-a", "call": {"tool": k["tool"], "input": {}}, "expected_verdict": "pass"}],
+                               [v13.task(kind)], [], skills=catalogue_mod.take([k["analysis"]["skill"]]),
+                               simulation=True, tool_kind="engine")
+            self.assertEqual(cards.load_json(os.path.join(b, "CAPABILITIES.json"))["tool_kind"], "engine", kind)
+            check = lambda: subprocess.run([sys.executable, os.path.join(v20.REPO, "contracts", "validate.py"), "--bundle", b],
+                                           capture_output=True, text=True, cwd=v20.REPO).stdout
+            self.assertNotIn("B18", " ".join(l for l in check().splitlines() if l.startswith("FAIL")), kind)
+            shutil.rmtree(os.path.join(b, "skills", ERROR))
+            self.assertIn("B18", " ".join(l for l in check().splitlines() if l.startswith("FAIL")), kind)
+
+
 class TheVersion(unittest.TestCase):
     def test_v21_is_the_latest_and_changes_its_template_card_alone(self):
         v20_src = template_mod.SOURCES["v20"]
