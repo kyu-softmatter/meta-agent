@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-8",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "For docs/ideas/20261118.md, beside -8-3 and -8-4: the person's buttons of 2026-11-18 on what round two's bundle left (run molecular-dynamics/20261118-1, sci-1 failing by one water): 'Keep exact; record fail'; on the atom count and box the tutorial does not state, 'Find a reference'; on hydrogen bonds and secondary structure, 'Yes, report, no verdict'; on a full run of about a day, 'Yes, run it in the background'; on each stage call, '1 hour per call'. Recorded on meta_agent/tasks/017. The full run is under way in run molecular-dynamics/20261118-1 (brief gromacs-lysozyme-full.txt).",
+  "written_at": "2026-11-18T07:10:27-08:00"
+}
