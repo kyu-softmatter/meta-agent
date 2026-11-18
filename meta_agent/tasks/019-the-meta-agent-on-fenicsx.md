@@ -62,4 +62,6 @@
 - *New:* an interval has no form as a tolerance, so the clone turned each into a centre and a half-width by a skill of its own (`cfd-19`); B7's fixture calls run where no environment is made (`cfd-20`); the report dropped a passing task's measured value (`cfd-21`, landed).
 - *Not watched:* this bundle standing alone.
 
+**Cleaned up (2026-11-18, on the person's "완료된 세션들 정리하자, 빌드한 시스템들은 적절히 삭제하라고 해", recorded in `../../docs/ideas/20261118.md`, `2949b75`):** run `cfd/20261118-2` (round three) was wiped with `--sessions` after both roles read it, its bundle first copied into run `cfd/20261118-4`; removed outside any run: the round-one clone's three folders under `/tmp` (`fenicsx-fetch-<pid>`, `fenicsx-drafts`, `featflow-p`, `cfd-6`) and this seat's scratch copies of the sources it read and a clone it gated in. Kept: run `cfd/20261118-4`, whose session (round three's bundle at its time step and at half of it) is still running; it is wiped once both roles have read it. Builds and records in the repository stay.
+
 **Must not:** write a brief or make a run before the person's word; put any answer in the brief that the person did not give for this engine; change a build or decide a threshold from the test; fix a fault in anything but a general mechanism shown on fixtures of two unrelated kinds; push.
