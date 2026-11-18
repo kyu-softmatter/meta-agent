@@ -343,6 +343,16 @@
       "depends_on": [],
       "opened": "2026-11-18",
       "design_part": "open"
+    },
+    {
+      "id": "027",
+      "file": "027-a-copy-made-for-someone-else.md",
+      "status": "open",
+      "roles": [
+        "design"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-18"
     }
   ]
 }

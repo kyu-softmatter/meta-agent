@@ -8,7 +8,7 @@ description: Start a working session in this repository. Runs the gate, takes a 
 Every command runs from the repository root. Nothing else is written before step three is committed.
 
 1. **Fetch, then run the gate.** `git fetch origin`, and `git status -sb` to see whether the remote's `main` has commits this copy lacks: another computer's seats push there, and the person's decisions arrive that way. If it has, say so before anything is written; a session that starts behind writes against a plan that has moved. Then `python contracts/validate.py`. The last line must say `VERDICT PASS`. If it does not, say what failed and stop: a session does not start work on a tree that fails.
-2. **Know your role.** The person names it, or the task you were given does. Never choose a role, a machine tag or a wider path yourself. If none is named, ask the person once.
+2. **Know your role.** The person names it, or the task you were given does. If neither names one, your role is meta, the default role (`CLAUDE.md`), and `bootstrap.py seat` with no role takes it; design and harness are taken only when named. Never choose another role, a machine tag or a wider path yourself.
 3. **Take a seat, in its own commit.**
    ```
    python bootstrap.py seat <role> --write
@@ -41,7 +41,7 @@ python bootstrap.py check
 python bootstrap.py install node rea --yes
 ```
 
-`git config meta-agent.machine` must print the tag the person gave this computer. If it prints nothing, ask the person for the tag; a session does not invent one.
+`git config meta-agent.machine` must print the tag the person gave this computer. If it prints nothing, ask the person for the tag; a session does not invent one. If the tag is not yet in `contracts/seats.json` (a new computer, or a copy made for someone else, whose user is the person of that copy), record the person's tag and words with `python bootstrap.py machine <tag> "<which computer>" --write`; the person commits `contracts/seats.json` alone, before the computer's first seat.
 
 ## When you are done
 

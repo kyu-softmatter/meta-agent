@@ -8,12 +8,17 @@
   python bootstrap.py install harness2 [--yes]   Linux or WSL only: the pinned harness2 commit with a Python 3.12 venv
   python bootstrap.py run rea [ARGS ...]         REA with the pinned Node; .mcp.json calls `run rea mcp`
   python bootstrap.py selftest                   offline checks of this script
-  python bootstrap.py seat ROLE [--machine TAG] [--task ID] [--write]
+  python bootstrap.py seat [ROLE] [--machine TAG] [--task ID] [--write]
                                                  the next free seat name for this computer and its entry for
-                                                 contracts/seats.json (plan.md 9); --write adds the entry
-                                                 under a lock in the git dir (seat.lock); a name found in
+                                                 contracts/seats.json (plan.md 9); with no ROLE, the table's
+                                                 default role (meta, the person 2026-11-18); --write adds the
+                                                 entry under a lock in the git dir (seat.lock); a name found in
                                                  tracked files or in git history's committers is skipped;
                                                  META_AGENT_SEAT_LOCK_WAIT sets how long the lock is awaited
+  python bootstrap.py machine TAG DESCRIPTION [--write]
+                                                 the tag the person of this copy gives this computer: added to
+                                                 the machines of contracts/seats.json and to this clone's git
+                                                 configuration (meta-agent.machine), before its first seat
 
 Nothing is vendored: each tool comes from its own source at the version the lock names, and lands for the
 current user under the tools home (tools.lock.json), outside the repository. Without --yes an install prints
@@ -464,14 +469,22 @@ def seat(rest):
             raise SystemExit("seat: unexpected argument %r" % rest[i])
     table = seat_rules.load()
     roles = sorted(table.get("roles", {}))
+    by_default = role is None
+    if by_default:
+        role = table.get("default_role")
+        if not role:
+            raise SystemExit("seat: no role is named and contracts/seats.json names no default role; name one of %s"
+                             % ", ".join(roles))
     if role not in roles:
         raise SystemExit("seat: role %r is not one of %s; a new role is the person's" % (role, ", ".join(roles)))
     machine = args["--machine"]
     if machine is None:
         machine = capture(["git", "config", "--get", "meta-agent.machine"], cwd=HERE)[1].strip() or None
     if machine is None:
-        raise SystemExit("seat: this clone has no machine tag. Record it once: git config meta-agent.machine <tag>  "
-                         "(known: %s), or pass --machine" % ", ".join(sorted(table.get("machines", {}))))
+        raise SystemExit("seat: this clone has no machine tag. If this computer has one (known: %s), record it once: "
+                         "git config meta-agent.machine <tag>, or pass --machine. If it is a new computer, the person "
+                         "gives it a tag: python bootstrap.py machine <tag> \"<which computer>\" --write"
+                         % ", ".join(sorted(table.get("machines", {}))))
     if machine not in table.get("machines", {}):
         raise SystemExit("seat: machine tag %r is not in contracts/seats.json; the person gives a new computer "
                          "its tag before its first seat (known: %s)" % (machine, ", ".join(sorted(table.get("machines", {})))))
@@ -490,6 +503,9 @@ def seat(rest):
         print("seat      %s" % name)
         print("committer seat:%s <%s>" % (name, entry["committer_email"]))
         print("entry     %s" % json.dumps(entry, ensure_ascii=False))
+        if by_default:
+            print("role      %s, the default role: none was named (the person, 2026-11-18; a role the person or "
+                  "the task names holds over it)" % role)
         in_table = {s.get("seat") for s in table.get("seats", [])}
         skipped = sorted(elsewhere - in_table, key=lambda n: seat_rules.parse_name(n)[3])
         if skipped:
@@ -518,10 +534,52 @@ def seat(rest):
     return 0
 
 
+def machine(rest):
+    """Record the tag the person of this copy gives this computer (the person, 2026-11-18).
+
+    A new computer's tag is the person's word; on a copy made for someone else, that someone is the person of the
+    copy. The tag goes into the machines of contracts/seats.json, in a commit of its own before the computer's
+    first seat (a self-registration is judged against the table before it, so the tag must already stand), and
+    into this clone's git configuration. A session runs this only with the tag and the words the person gave."""
+    sys.path.insert(0, os.path.join(HERE, "contracts", "tools"))
+    import seats as seat_rules
+    write = "--write" in rest
+    rest = [r for r in rest if r != "--write"]
+    if len(rest) != 2 or not rest[1].strip():
+        raise SystemExit('machine: give the tag and which computer it is, in the person\'s words: '
+                         'python bootstrap.py machine <tag> "<which computer>" [--write]')
+    tag, description = rest[0], rest[1].strip()
+    if not re.match(r"^[a-z]+$", tag):
+        raise SystemExit("machine: a tag is lower-case letters only, as a seat name's part (%r is not)" % tag)
+    table = seat_rules.load()
+    machines = table.setdefault("machines", {})
+    if tag in machines:
+        raise SystemExit("machine: %r is already the tag of %s; a tag is never given twice" % (tag, machines[tag]))
+    print("machine   %s: %s" % (tag, description))
+    if not write:
+        print("nothing written. With --write the tag is added to contracts/seats.json and to this clone's git "
+              "configuration.")
+        return 0
+    machines[tag] = description
+    with open(seat_rules.SEATS_PATH, "w", encoding="utf-8") as f:
+        f.write(seat_rules.dump(table))
+    code, _ = capture(["git", "config", "meta-agent.machine", tag], cwd=HERE)
+    if code != 0:
+        raise SystemExit("machine: contracts/seats.json is written, but git config meta-agent.machine %s failed; "
+                         "run it by hand" % tag)
+    print("written   contracts/seats.json (this tag only) and git config meta-agent.machine %s" % tag)
+    print("Commit contracts/seats.json in its own commit, before this computer's first seat:")
+    print('  git commit -m "contracts/seats: the person gives this computer the tag %s" contracts/seats.json' % tag)
+    print("then seat:  python bootstrap.py seat --write")
+    return 0
+
+
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv[:1] == ["seat"]:
         return seat(argv[1:])
+    if argv[:1] == ["machine"]:
+        return machine(argv[1:])
     lock = load_lock()
     if not argv or argv[0] in ("-h", "--help", "help"):
         print(__doc__)
