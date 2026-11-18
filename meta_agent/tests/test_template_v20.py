@@ -133,9 +133,9 @@ class AnAdaptation(unittest.TestCase):
 
 
 class TheVersion(unittest.TestCase):
-    def test_v20_is_the_latest_and_changes_one_script(self):
+    def test_v20_changes_one_script(self):
         v19 = template_mod.SOURCES["v19"]
-        self.assertEqual(template_mod.LATEST, "v20")
+        self.assertIn("v20", template_mod.SOURCES)                  # v21 is the latest since the run-error skill
         self.assertEqual(cards.tree_files(v19), cards.tree_files(V20))
         changed = sorted(r for r in cards.tree_files(v19) if cards.sha256_file(os.path.join(v19, r)) != cards.sha256_file(os.path.join(V20, r)))
         self.assertEqual(changed, ["TEMPLATE.json", "src/validate_tasks.py"])

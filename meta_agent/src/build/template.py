@@ -146,6 +146,10 @@ v20 changes one script of the checks, on the person's word that every
     of the common one, which the difference from the template lists
     (bundle.py). src/validate_tasks.py reads the agreement skill's name from
     TEMPLATE.json (measurement_error@v2).
+v21 changes TEMPLATE.json alone: the common set also carries
+    discretization_error_from_two_resolutions@v1, the run's own numerical
+    error from two resolutions, which the amended tolerance rule weighs
+    (tasks/025).
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -167,8 +171,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v15": os.path.join(HERE, "template_v15"), "v16": os.path.join(HERE, "template_v16"),
            "v17": os.path.join(HERE, "template_v17"), "v18": os.path.join(HERE, "template_v18"),
            "v19": os.path.join(HERE, "template_v19"),
-           "v20": os.path.join(HERE, "template_v20")}
-LATEST = "v20"
+           "v20": os.path.join(HERE, "template_v20"),
+           "v21": os.path.join(HERE, "template_v21")}
+LATEST = "v21"
 SOURCE = SOURCES[LATEST]
 
 

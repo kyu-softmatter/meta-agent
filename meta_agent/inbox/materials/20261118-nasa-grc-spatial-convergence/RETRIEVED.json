@@ -1,0 +1,28 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human (asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json); this file becomes a queued card when check 17 allows it.",
+  "kind": "manual",
+  "citation": "NASA Glenn Research Center, NPARC Alliance CFD Verification and Validation, Examining Spatial (Grid) Convergence",
+  "location": {
+    "url": "https://www.grc.nasa.gov/www/wind/valid/tutorial/spatconv.html"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-18T16:38:34Z",
+    "content_hash": "sha256:bd279deb8664487d47500c03b06997ee9f5c052ab8a8ea19ea41e639386bd1f0",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261117-2",
+  "access": "anonymous, read-only, no login; a page of a United States government agency",
+  "how_found": "searched for the estimate of a run's discretization error from two resolutions, for the person's amended tolerance rule",
+  "licence": "not read for a licence; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "skills": [
+        "discretization_error_from_two_resolutions@v1"
+      ],
+      "locus": "section Richardson Extrapolation, the generalized equation (image eq_rich2.gif) and the error estimator of f1"
+    }
+  ],
+  "state": "queued",
+  "registered": "the person's word, not given"
+}
