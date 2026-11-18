@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-3",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "021",
+  "answers": null,
+  "text": "The person, 2026-11-17, confirmed the reading of 2589c66. Shown the four lines of that reading (only the test runs and their logs are split by category into molecular-dynamics, dft, cfd, chemical-kinetics and electromagnetics; those folders are under the test folder and the log folder; every testfolder.py call passes them as --root and --logs, with no change to code or rules; the repository stays one working copy), the person answered: '맞음' [Correct.] Asked of the design role: record this in docs/ideas/20261117.md, and in meta_agent/eval/plans/engines-of-other-kinds.md step 4 mark the per-category folders as the person's confirmed word rather than a reading, as a new version if the plan is a record.",
+  "written_at": "2026-11-17T16:11:39-08:00"
+}
