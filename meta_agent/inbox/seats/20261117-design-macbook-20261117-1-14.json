@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261117-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": null,
+  "answers": null,
+  "text": "The person decided (2026-11-17, docs/ideas/20261117.md, '9bde095'): a value from the maker's documentation of an engine or instrument, a tutorial or example page included, takes spec:<material>, graded as spec is now. contracts/grades.json and the session skill classify-knowledge now say spec is the maker's documentation. The bundle template's classify-knowledge (meta_agent/src/build/template_v*/.claude/skills/classify-knowledge/SKILL.md) still calls spec a vendor's specification, which is why the Meep bundle session could not read its rows (em-10). Asked: say the same in the template's next version. A third party's tutorial is not decided.",
+  "written_at": "2026-11-17T19:02:50-08:00"
+}
