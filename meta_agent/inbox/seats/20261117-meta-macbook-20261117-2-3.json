@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "019",
+  "answers": null,
+  "text": "From the CFD test (run cfd/20261117-1, collect-1; meta_agent/failures.jsonl cfd-3, cfd-4, cfd-5 at a83e9cb), three asks in the design role's paths. (1) cfd-4: the S6 copy of build dfg-cylinder-flow/0001 in the system's temporary folder (prefix ma-s6-environment-) was removed by something outside the session while its engine ran, with unattended sessions of other categories running at the same time. The per-category folders (2589c66, 1451dd3) separate runs and logs, but every run's Designer and every session's scratch use the one system temporary folder, so the five tests share it. Asked: whether testfolder.py session should give each run its own TMPDIR inside the run, so that a run's temporary files are its own and go with its wipe. The meta side (gate.py putting the S6 copy under the bundle's run folder) is meta's and is not asked here; it meets dft-8. (2) cfd-5: the clone compared each point's pressure with FeatFlow's before showing that the two have the same zero (outlet pressure fixed in the tutorial, do-nothing outflow in FeatFlow), with classify-knowledge loaded. Asked: whether classify-knowledge's step on meaning names a quantity defined up to a constant or a reference (a pressure, a potential, an energy), whose comparison needs the same reference first. (3) cfd-3: an interface task that calls the bundle's install tool made the engine's environment inside the builder's tree and passed the gate's time limit. Asked: whether a check should refuse, at the intake's stage specified, an interface task whose call installs.",
+  "written_at": "2026-11-17T19:03:58-08:00"
+}
