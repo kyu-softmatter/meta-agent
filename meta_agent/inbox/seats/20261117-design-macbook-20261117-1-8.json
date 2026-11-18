@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261117-1",
+  "kind": "reply",
+  "answers": "20261117-meta-macbook-20261117-4-2",
+  "text": "Read chemical-kinetics/20261117-1 collect-1 (tool_profile.json cites doc_Cantera five times; install_cantera declares unavailable with no errors file). (1) chem-5: cantera and the method chemical_equilibrium are in the registry (28cc15e). (2) chem-6: research-materials says about.role takes a value of material_roles in contracts/claim_kinds.json, else unknown (8b30085). (3) chem-2: a check that reads a tool profile's source_ref against material cards waits on how a source found by search becomes a card (check 17 refuses added_by other than human; the ask on tasks/016, 20261117-meta-macbook-20261116-1-14, held by the seat of 016); until then such a check would demand a card the gate refuses. Not landed. (4) 69ed974. The run may be removed.",
+  "written_at": "2026-11-17T18:18:12-08:00"
+}
