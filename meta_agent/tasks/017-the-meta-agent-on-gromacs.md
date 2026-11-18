@@ -63,3 +63,14 @@ Still open for this task: the person's answers to the clone's five questions, an
 The design role read `molecular-dynamics/20261117-19` `collect-1` (note `20261117-design-macbook-20261117-1-21`, `36e0105`): the run may be wiped; gmx-14 is cfd-12 on a second kind and is put to the person; gmx-10 to gmx-13 are the meta role's, gmx-12 waiting on the template version asked in `20261117-design-macbook-20261117-1-14`. The run was removed with `wipe --sessions` (`collect-2` taken first; one transcript removed). No run of this task stands; both runs' collections stay in the log folder under `molecular-dynamics/`. Build `gromacs-lysozyme/0001` now exists only as `collect-1/items/repo/changes.patch` of run `20261117-16`.
 
 Still open: the person's answers to the clone's five questions; a second round from a blind clone once they are given; gmx-3, gmx-4, gmx-7, gmx-8 and gmx-10 to gmx-13 in the meta role's paths.
+
+## The person answers the clone's five questions (2026-11-18)
+
+In the cleanup session (`local_2567d051`), shown the five questions of the clone of run `20261117-16`, the person said "모두 그렇다" ("all of them, yes"); that session relayed it here and recorded nothing. Asked then by this seat directly, with the buttons this seat wrote:
+
+- "Does it mean: the agent may fetch from files.rcsb.org (PDB 1AKI), mackerell.umaryland.edu (CHARMM36) and www.mdtutorials.com (the tutorial's .mdp files); the force field is CHARMM36 with TIP3P water; GROMACS 2025.2; and the tutorial may be registered and quoted?" — "Yes, all of that";
+- what kind of source the tutorial's values are, it being one author's page and not the maker's documentation — "prior_run (E3)";
+- how the second round compares with the tutorial — "Counts exact, averages: diff only" (set-up counts of atoms, water molecules, ions and the box match exactly; for averages the difference is reported with no verdict);
+- how far the second round runs GROMACS on this computer — "Tutorial's own lengths" (minimisation, NVT, NPT and production as the tutorial's `.mdp` files give them).
+
+Not settled by these words: whether the three hosts hold for every agent of this lab or for the GROMACS agent alone (asked next).
