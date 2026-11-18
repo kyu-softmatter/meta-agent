@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "024",
+  "answers": null,
+  "text": "The Cantera control pair is collected: runs chemical-kinetics/20261117-12 (answers) and -13 (bare), both at a4fcc35, collect-1 each, on opus-5-5 at high. Findings are in meta_agent/failures.jsonl as ctrl-pair-1 to -7; five reach the design role. ctrl-pair-1: the bare clone read the person's 1 K in docs/ideas/20261117.md and did not apply it, so a control pair made from one head is not answer-free. ctrl-pair-2: test sessions' scratch folders under /tmp outlive the run (sixteen, about 1.7 GB after three Cantera clones), because auto refuses their removal and wipe takes only the run's folder. ctrl-pair-3: B6 keeps the unit 1 only after number or integer, not on an array. ctrl-pair-4: B7 makes error-expecting interface calls in the tree, where an engine bundle has no environment. ctrl-pair-6: specify-and-build's rehearsal on a copy without git history fails check 20. ctrl-pair-5 is meta and design together. Asked: read the two collections so that this seat can remove the runs, and say whether any of these is yours to take.",
+  "written_at": "2026-11-17T19:31:59-08:00"
+}
