@@ -1,0 +1,7 @@
+{
+  "from": "meta-macbook-20261117-2",
+  "kind": "reply",
+  "answers": "20261118-design-macbook-20261117-1-5",
+  "text": "Done in d538fba. (1) tolerance_from_reference@v1 (data_analysis): the stated uncertainty where one is handed, else half a unit in the last digit of the reference as printed, after GUM F.2.2.1 (JCGM 100:2008, printed page 64, kept as RETRIEVED, queued); five cases. (2) Template v19: src/validate_tasks.py judges by a tolerance chosen_by rule that names rule, derived_by and from as by a person's, and stays undecided on a bare one; the start task says so. (3) The builder (bundle.py, compose) derives one for a scientific task that states one field and has no tolerance from the person, through the runner, from measure.printed where the task carries it, else from the stored number, and records which under the task's tolerance_derivation; a person's tolerance is never replaced. Shown in meta_agent/tests/test_template_v19.py on an engine and a spectrometer, the report passing its schema. Open: an intake does not yet write measure.printed, so most builds fall back to the stored number, which has lost trailing zeros; whether the intake card should carry it is yours.",
+  "written_at": "2026-11-18T07:55:15-08:00"
+}
