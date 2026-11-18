@@ -1,0 +1,15 @@
+Your role is `meta`.
+
+https://github.com/fppimenta/rheotool
+
+이것을 자동화 하고싶어
+
+I have already answered these, in an earlier session; do not ask them again:
+
+- The agent runs rheoTool's own tutorial cases with the settings I name. No geometry of my own and no sweeps for now.
+- The scientific checks are judged by the run's own numerical error, as the standing tolerance rule gives it, and not by a tolerance I choose: each check is also run on a mesh twice as fine in x and in y (for the channel tutorial, 100 by 60 cells per block in place of 50 by 30), and the error is estimated with order 2.
+- The rheoTool repository is registered as material, and it may be quoted.
+
+Not decided, and not to wait for: where the bundle lands. Leave it undecided and carry on.
+
+Carry the request through as far as it goes without me. Report when you stop: what you did, what the gate printed, what is open, and what you ran on.
