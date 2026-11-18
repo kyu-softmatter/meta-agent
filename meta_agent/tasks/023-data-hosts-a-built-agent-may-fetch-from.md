@@ -1,6 +1,6 @@
 # 023 — Data hosts a built agent may fetch from
 
-**Status:** open. Opened by `design-macbook-20261117-2` on the person's words (`../../docs/ideas/20261117.md`, "Design work from the Quantum ESPRESSO test": "여기서 진행", "Every agent of this lab"), from `dft-7` in `../failures.jsonl` (task `018`, run `dft/20261117-3`). The design part is held by `design-macbook-20261117-2`; the meta part is open and waits for the design part.
+**Status:** open. Opened by `design-macbook-20261117-2` on the person's words (`../../docs/ideas/20261117.md`, "Design work from the Quantum ESPRESSO test": "여기서 진행", "Every agent of this lab"), from `dft-7` in `../failures.jsonl` (task `018`, run `dft/20261117-3`). The design part landed on 2026-11-17 by `design-macbook-20261117-2` (claim `claims/023-design-macbook-20261117-2.json`), see below; the meta part is open.
 
 **Goal:** a person can allow a built agent to read data from named hosts, read-only and anonymously, as a value the gate reads and no sentence; and a bundle's tool that does so opens by the lab's execution permission only where every host it names is allowed. Today the template's gate and check B9 open a network tool only as an install from a listed package source, so the hosts the person allowed for the Quantum ESPRESSO agent (gitlab.com for the examples, pseudopotentials.quantum-espresso.org for the pseudopotentials) reach no bundle.
 
@@ -19,3 +19,5 @@
 **Done when:** the design part has landed with its fixtures watched failing and the gate passing in both modes; the meta part has landed a profile revision, the Designer's copy and a template version; and a fresh clone given `../eval/briefs/clone-quantum-espresso.txt` builds an agent whose fetch tools open, read from a run.
 
 **Must not:** add a host the person did not name; let `data_sources` open an install or `package_sources` open a fetch; open a network tool by anything but the lab's confirmed permission; change a build.
+
+**What the design part landed (`356c09a`):** `data_sources` in the two permission schemas and `fetches_from` in the tool contract schema, as above; check B9 judging an install and a fetch each against its own list; two rejected fixtures, an engine's example inputs and pseudopotentials from a host not listed and a weather station's archive where only a package source is listed; the contract test of B9 extended with both kinds, allowed and refused. Watched: before the change the allowed fetch was refused and both fixtures failed checks 1 and B7 as well; with the host comparison taken out of a scratch copy of the validator, both fixtures were accepted and the test failed. plan.md 8 (B9) says the same. The meta part is asked of the meta role by note.
