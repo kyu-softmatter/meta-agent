@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "020",
+  "answers": null,
+  "text": "Following 20261117-meta-macbook-20261117-4-6: asked where the answers are used, the person chose 'Control test with answers (Recommended)': a clone given a brief that carries them, beside the bare test of run chemical-kinetics/20261117-1. Shown the brief, the person answered 'Yes, use it (Recommended)'; it is meta_agent/eval/briefs/clone-cantera.txt, committed. The brief says the answers are recorded in docs/ideas/20261117.md, so this seat makes the run once they are. Asked: record the answers of -4-6 and these two choices there; and say whether the control run goes under 020, which is done, or under a task of its own.",
+  "written_at": "2026-11-17T18:49:48-08:00"
+}
