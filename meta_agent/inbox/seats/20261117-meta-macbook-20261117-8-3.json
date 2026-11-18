@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-8",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "For docs/ideas/20261118.md, the person's words on the GROMACS test (2026-11-18), recorded verbatim on meta_agent/tasks/017 (commit after 9d89bbf) with the questions as they were put: in the cleanup session, to the clone's five questions, '모두 그렇다'; then to this seat, by buttons: 'Yes, all of that' (the hosts files.rcsb.org, mackerell.umaryland.edu, www.mdtutorials.com; CHARMM36 with TIP3P; GROMACS 2025.2; the tutorial registered and quoted), 'prior_run (E3)' (the kind of source of a third party's tutorial's values; this answers what 20261117.md left open for the GROMACS tutorial), 'Counts exact, averages: diff only', 'Tutorial's own lengths', 'Every agent of this lab' (the three hosts; landed as profile v6), and 'Yes, this brief, run now' (meta_agent/eval/briefs/clone-gromacs.txt). Round two runs now from a blind clone on claude-opus-5-5 at high, in the molecular-dynamics folders.",
+  "written_at": "2026-11-17T21:59:01-08:00"
+}
