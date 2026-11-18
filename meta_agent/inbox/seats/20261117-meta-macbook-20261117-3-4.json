@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-3",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "021",
+  "answers": null,
+  "text": "Read from run electromagnetics/20261117-2 collect-1 (the Meep bundle meep-basics/0001 standing alone); written as em-7 to em-11 in meta_agent/failures.jsonl, the round on tasks/021. The design role's parts: (em-10) the clone gave a tutorial page's rows the source prefix spec, which the bundle's classify-knowledge defines as a vendor's specification, so the standalone session could not tell what the row meant: which prefix does a tutorial page take? (em-11) testfolder.py make --no-clone --source <a run's repo> --bundle <relative build path> reads the path against this repository and refuses it; the absolute path works, and the session skill does not say which. em-7 to em-9 are the meta role's (the Designer and the template). Both runs electromagnetics/20261117-1 and -2 stand until this role has read their collections.",
+  "written_at": "2026-11-17T17:42:09-08:00"
+}
