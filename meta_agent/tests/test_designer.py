@@ -631,7 +631,15 @@ class ExecutionPermission(unittest.TestCase):
         self.assertEqual((p["reaches"], p["confirmed_by"], p["lab_profile_ref"]), ("engine", "human", self.LAB))
         latest = designer.latest_file(os.path.join(META, "profiles", self.LAB), "lab_profile.json")[1]
         self.assertEqual(p["profile_revision"], cards.load_json(latest)["revision"])
-        self.assertEqual(p["package_sources"], [{"installer": "pixi", "channel": "conda-forge"}])
+        # the package sources are those of the latest profile, as the person named them
+        self.assertEqual(p["package_sources"], cards.load_json(latest)["policy"]["execution_permission"]["value"]["package_sources"])
+        # the revision before the rheoTool container (v6, the person, 2026-11-16 and -18) names pixi from conda-forge alone
+        v6 = os.path.join(self.tmp, "v6")
+        os.makedirs(os.path.join(v6, "profiles", self.LAB))
+        shutil.copy(os.path.join(META, "profiles", self.LAB, "v6_lab_profile.json"),
+                    os.path.join(v6, "profiles", self.LAB, "v6_lab_profile.json"))
+        self.assertEqual(designer.execution_permission(v6, self.LAB)["package_sources"],
+                         [{"installer": "pixi", "channel": "conda-forge"}])
         self.assertIsNone(designer.execution_permission(META, "lab-fixture-rich"))     # its profile has words only
         # an earlier revision with words only gives none either: the level is never read off the sentence
         words_only = os.path.join(self.tmp, "words")
@@ -745,7 +753,8 @@ class DataSources(unittest.TestCase):
         # the latest profile carries the hosts of the person's newest answer, no more and no fewer
         p = designer.execution_permission(META, self.LAB)
         self.assertEqual(p["data_sources"], self.persons_latest_hosts())
-        self.assertEqual(p["package_sources"], [{"installer": "pixi", "channel": "conda-forge"}])
+        # pixi from conda-forge stays first; profile v7 adds the rheoTool container's two sources after it
+        self.assertEqual(p["package_sources"][0], {"installer": "pixi", "channel": "conda-forge"})
         # the revision of tasks/023 (v5, the person, 2026-11-17) carries the two hosts of Quantum ESPRESSO alone
         v5 = os.path.join(self.tmp, "v5")
         os.makedirs(os.path.join(v5, "profiles", self.LAB))
