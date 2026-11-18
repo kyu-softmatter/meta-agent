@@ -74,3 +74,7 @@ In the cleanup session (`local_2567d051`), shown the five questions of the clone
 - how far the second round runs GROMACS on this computer — "Tutorial's own lengths" (minimisation, NVT, NPT and production as the tutorial's `.mdp` files give them).
 
 Not settled by these words: whether the three hosts hold for every agent of this lab or for the GROMACS agent alone (asked next).
+
+## The person's follow-up in the cleanup session (2026-11-18)
+
+On the three parts with no value (the kind of source, the tolerances and the criterion for "settled", the run length), the person said in the cleanup session "모두 세션 판단대로" ("all as the session judges"); that session relayed it here. The values had already been put to the person by this seat directly, each named, and chosen by the person's own buttons (above): the tutorial's values are `prior_run` (E3); set-up counts (atoms, water molecules, ions, box) are compared exactly, and for averages the value, the tutorial's and their difference are reported with no verdict, so no tolerance and no criterion for "settled" is chosen and that judgement stays the person's; the runs go to the tutorial's own lengths as its `.mdp` files give them. No value was chosen by a seat. The round-two brief `../eval/briefs/clone-gromacs.txt` carries those answers and no other.
