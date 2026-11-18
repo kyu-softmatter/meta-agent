@@ -319,6 +319,18 @@
       ],
       "opened": "2026-11-17",
       "done_commit": "77d0b05"
+    },
+    {
+      "id": "025",
+      "file": "025-a-common-library-every-bundle-carries.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-18",
+      "design_part": "open"
     }
   ]
 }
