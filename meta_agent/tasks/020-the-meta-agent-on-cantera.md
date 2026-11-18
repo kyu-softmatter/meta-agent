@@ -26,3 +26,12 @@ Made at `cea2070` under the chemical-kinetics folders of the test and log folder
 - **Generality:** one fault lies in a general mechanism of the meta role (`chem-1`, the agreement's unit). `chem-4` is in the designer. `chem-2`, `chem-5` and `chem-6` reach the design role (note `20261117-meta-macbook-20261117-4-2`). None was fixed from this test.
 - **Watched for Cantera:** the mechanism file is not treated as a material with a source (`chem-3`). There is no over-building of a value the engine reports.
 - **Not watched:** a session of the bundle alone; a control run with answers; whether the clone read the notes folder of earlier runs (it was run from the command line, which gives none); the trial's printed values, which are evidence for the adapters and enter no card.
+
+## What run `chemical-kinetics/20261117-2` showed: the bundle standing alone (read by `meta-macbook-20261117-4`, 2026-11-17)
+
+Made with `testfolder.py make --no-clone --source` from the clone of run `20261117-1`. The copy of `cantera-adiabatic/0001` has a digest equal to the build's. One unattended session (`39e49172`) ran on claude-opus-5-5 at high effort, from the collection, with `../eval/briefs/cantera-adiabatic.txt` (`9fccb19`). The request in that brief is this seat's wording; the person asked for the test. Collection `collect-1` stays in the log folder.
+
+- **Start task:** done as written. The gate self-check and replay passed. `validate_tasks` said scientific `not_run` before the install; the bundle's own `install_cantera` made its environment with pixi; then scientific `undecided`. It asked the person 0 times, ran no library skill and loaded `run-skill` and `classify-knowledge` at the points they name.
+- **The person's request:** it answered with one call of `adiabatic_flame_point` at the example's settings from `envelope/parameters.json`, and said that is what it did. It kept "room temperature" and "atmospheric" as questions instead of choosing a reading, and named the lower edge of the gas phase's thermodynamic data, read from the tool's output, as something the person should know before choosing.
+- **Faults:** `bundle-cantera-1` to `-4`, and `chem-3-correction`, which narrows `chem-3`.
+- **Not watched:** a request outside the example's settings; a run whose input falls outside the thermodynamic data's range. The session's own statement of its effort ("low") disagrees with the collection, which records high; the collection is the record.
