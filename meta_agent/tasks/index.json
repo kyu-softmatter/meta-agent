@@ -272,14 +272,15 @@
     {
       "id": "021",
       "file": "021-the-meta-agent-on-meep.md",
-      "status": "open",
+      "status": "done",
       "roles": [
         "design",
         "meta"
       ],
       "depends_on": [],
       "opened": "2026-11-17",
-      "design_part": "landed"
+      "design_part": "landed",
+      "done_commit": "2ee0848"
     },
     {
       "id": "022",
