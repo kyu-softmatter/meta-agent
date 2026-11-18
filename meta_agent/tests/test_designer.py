@@ -826,6 +826,20 @@ class ValidatedInItsEnvironment(unittest.TestCase):
                                env=dict(os.environ, PYTHONUTF8="1"))
             self.assertIn("0 failed, 0 pending", p.stdout, p.stdout + p.stderr)
 
+    def test_a_copy_that_is_not_removed_is_never_written_removed(self):
+        # failure line dft-8 (run dft/20261117-3): the copy stayed in the temporary folder while the note said removed
+        from unittest import mock
+        from meta_agent.src.validate import gate as gate_mod
+        real = gate_mod.remove_copy
+
+        def left(path):
+            self.assertIsNone(real(path))
+            return "the isolated copy %s was not removed (1 error(s), first: unlink x: PermissionError)" % path
+        with mock.patch.object(gate_mod, "remove_copy", left):
+            _, _, _, vr, _ = self.build("engine", "runs_process", ENGINE_BODY, INSTALLS)
+        self.assertNotIn("the copy was removed", vr["note"])
+        self.assertIn("was not removed (1 error(s), first: unlink x: PermissionError)", vr["note"])
+
     def test_when_the_install_fails_the_report_says_not_run_and_why(self):
         for kind, effects, body in (("engine", "runs_process", ENGINE_BODY), ("analysis_software", "writes_files", WRITER_BODY)):
             _, _, out, vr, _ = self.build(kind, effects, body, INSTALL_FAILS)

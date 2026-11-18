@@ -499,10 +499,12 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
     if in_env is not None:
         in_tree = report["validate"]
         report, environment = in_env, "sandbox"
+        # whether the copy is gone is looked at, never assumed (failure line dft-8)
+        removed = in_env.pop("copy_left", None) or "the copy was removed"
         where = ("read off an isolated copy of the bundle outside the repository, whose environment its own %s made through "
-                 "its runner and gate, by the lab's execution permission; the copy was removed. In the repository, with no "
+                 "its runner and gate, by the lab's execution permission; %s. In the repository, with no "
                  "environment, the gates gave interface %s, scientific %s" % (
-                     " and ".join("%s (%s)" % (m["tool"], m["installs_from"]) for m in made),
+                     " and ".join("%s (%s)" % (m["tool"], m["installs_from"]) for m in made), removed,
                      in_tree["interface"]["verdict"], in_tree["scientific"]["verdict"]))
     elif not_made:
         where = "the bundle's environment was not made, so a task that needs it is not_run: " + not_made

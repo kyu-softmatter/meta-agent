@@ -98,27 +98,59 @@ def in_its_environment(bundle_path):
         return None, [], "its install tool takes inputs that nothing in the bundle gives: %s" % "; ".join(asks)
     tmp = tempfile.mkdtemp(prefix="ma-s6-environment-")
     try:
-        if not outside(tmp):
-            return None, [], "the isolated copy would be inside the repository (%s), and is not made" % tmp
-        copy = os.path.join(tmp, "bundle")
-        top = os.path.abspath(bundle_path)
-        shutil.copytree(bundle_path, copy, ignore=lambda d, names: [n for n in names if n in ("__pycache__",) or n.endswith(".pyc")
-                                                                    or (os.path.abspath(d) == top and n == "runs")])
-        made = []
-        for name, c in tools:
-            try:
-                out = call_tool(copy, name, {}, timeout=c.get("timeout_s"))
-            except subprocess.TimeoutExpired:
-                return None, made, "%s did not end within its contract's timeout" % name
-            if isinstance(out, dict) and out.get("artifact") == "error_contract":
-                return None, made, "%s returned %s (%s): %s" % (name, out.get("code"), out.get("category"), out.get("message"))
-            made.append({"tool": name, "installs_from": "%s/%s" % (c["installs_from"].get("installer"), c["installs_from"].get("channel"))})
-        try:
-            return run_bundle(copy, timeout=None), made, None
-        except RuntimeError as e:
-            return None, made, "the gates of the copy printed no verdict: %s" % e
+        report, made, why = copy_and_run(bundle_path, tools, tmp)
     finally:
-        shutil.rmtree(tmp, ignore_errors=True)
+        left = remove_copy(tmp)
+    if left:
+        # never 'removed' unchecked (failure line dft-8): what is left is said where the report says where its gates ran
+        if report is not None:
+            report["copy_left"] = left
+        else:
+            why = "%s; %s" % (why, left) if why else left
+    return report, made, why
+
+
+def remove_copy(path):
+    """Remove S6's isolated copy and look whether it is gone (failure line dft-8, test run dft/20261117-3). None when it
+    is gone; otherwise a sentence naming what is left and the first errors the removal met, after a second try."""
+    errors = []
+
+    def met(func, p, exc):
+        e = exc[1] if isinstance(exc, tuple) else exc
+        errors.append("%s %s: %s" % (getattr(func, "__name__", func), os.path.relpath(p, path), type(e).__name__))
+    for _ in range(2):
+        if not os.path.lexists(path):
+            return None
+        if sys.version_info >= (3, 12):
+            shutil.rmtree(path, onexc=met)
+        else:
+            shutil.rmtree(path, onerror=met)
+    if not os.path.lexists(path):
+        return None
+    return "the isolated copy %s was not removed (%d error(s), first: %s)" % (path, len(errors), "; ".join(errors[:3]) or "none")
+
+
+def copy_and_run(bundle_path, tools, tmp):
+    """The isolated copy in `tmp`, its own install tools called through its runner and gate, then its gates."""
+    if not outside(tmp):
+        return None, [], "the isolated copy would be inside the repository (%s), and is not made" % tmp
+    copy = os.path.join(tmp, "bundle")
+    top = os.path.abspath(bundle_path)
+    shutil.copytree(bundle_path, copy, ignore=lambda d, names: [n for n in names if n in ("__pycache__",) or n.endswith(".pyc")
+                                                                or (os.path.abspath(d) == top and n == "runs")])
+    made = []
+    for name, c in tools:
+        try:
+            out = call_tool(copy, name, {}, timeout=c.get("timeout_s"))
+        except subprocess.TimeoutExpired:
+            return None, made, "%s did not end within its contract's timeout" % name
+        if isinstance(out, dict) and out.get("artifact") == "error_contract":
+            return None, made, "%s returned %s (%s): %s" % (name, out.get("code"), out.get("category"), out.get("message"))
+        made.append({"tool": name, "installs_from": "%s/%s" % (c["installs_from"].get("installer"), c["installs_from"].get("channel"))})
+    try:
+        return run_bundle(copy, timeout=None), made, None
+    except RuntimeError as e:
+        return None, made, "the gates of the copy printed no verdict: %s" % e
 
 
 def task_verdicts():
