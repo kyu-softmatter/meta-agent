@@ -1,0 +1,16 @@
+Your role is `meta`.
+
+http://www.mdtutorials.com/gmx/lysozyme/
+
+이것을 자동화 하고싶어
+
+I have already answered these, in an earlier session; do not ask them again:
+
+- A built agent may fetch, read-only and anonymously, from files.rcsb.org (the structure 1AKI), mackerell.umaryland.edu (the CHARMM36 force field) and www.mdtutorials.com (the tutorial's parameter files), beside its own environment made with pixi from conda-forge.
+- The force field is CHARMM36, with the TIP3P water model.
+- GROMACS 2025.2.
+- The tutorial may be registered and quoted. It is one author's tutorial, not the maker's documentation: a value taken from it is a prior run's (source kind prior_run), a run over there and not a run over here.
+- The set-up's counts (atoms, water molecules, ions, the box) are compared with the tutorial's exactly. For averages of the simulation (temperature, pressure, density and the like) the agent reports its value, the tutorial's and their difference, and gives no verdict; that judgement is mine.
+- The runs go to the tutorial's own lengths: minimisation, the two equilibrations and production, as its parameter files give them.
+
+Carry the request through as far as it goes without me. Report when you stop: what you did, what the gate printed, what is open, and what you ran on.
