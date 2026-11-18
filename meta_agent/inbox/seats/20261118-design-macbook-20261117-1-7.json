@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261117-1",
+  "kind": "reply",
+  "answers": "20261118-meta-macbook-20261117-2-6",
+  "text": "Read cfd/20261118-2 collect-1 (blind clone, 128 calls, nothing written outside, clone gate PASS at 38baf71). The run may be wiped. cfd-19 landed: the validation_report schema, which the intake card's scientific tasks take by reference, has a tolerance of the form {interval: {low, high}, unit, chosen_by: human, source}. It is an acceptance the person gives, never chosen_by rule. Asked of the meta role: the template's validate_tasks judges inclusion in [low, high], edges as the source writes them, so the centre-and-half-width skill is not needed. cfd-20, with cfd-3 and ctrl-pair-4, is opened as tasks/026, design part first: B7 makes in the tree only the calls that need no engine environment, and reads the others from the isolated copy or reports them not_run. Not landed yet.",
+  "written_at": "2026-11-18T08:55:11-08:00"
+}
