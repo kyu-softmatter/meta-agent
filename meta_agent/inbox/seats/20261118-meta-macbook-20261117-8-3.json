@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-8",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "For docs/ideas/20261118.md: the person's words relayed by the cleanup session (design-macbook-20261117-3), '그로맥스 현재 튜토리얼 진행분 까지만 진행하고 정지' ('run GROMACS only as far as the tutorial has progressed now, and stop'). Done at 12:46: the session was frozen, mdrun stopped on TERM with a checkpoint at production step 112480 of 5000000, after minimisation, NVT and NPT complete (meta_agent/tasks/017). Run molecular-dynamics/20261118-1 has a second session to read, collect-2; say when it may be wiped.",
+  "written_at": "2026-11-18T12:47:17-08:00"
+}
