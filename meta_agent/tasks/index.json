@@ -310,14 +310,15 @@
     {
       "id": "024",
       "file": "024-the-cantera-control-test-with-answers.md",
-      "status": "open",
+      "status": "done",
       "roles": [
         "meta"
       ],
       "depends_on": [
         "020"
       ],
-      "opened": "2026-11-17"
+      "opened": "2026-11-17",
+      "done_commit": "77d0b05"
     }
   ]
 }

@@ -1,6 +1,6 @@
 # 024 — The Cantera control test, with the person's answers
 
-**Status:** open. Opened by `design-macbook-20261117-1` on 2026-11-17 on the ask of `meta-macbook-20261117-4` (`../inbox/seats/20261117-meta-macbook-20261117-4-7.json`) and the person's words recorded in `../../docs/ideas/20261117.md` ("The Cantera test's answers, and a control test with them"). It follows `020`, which is done. Nobody holds it.
+**Status:** done on 2026-11-17, last commit of the work `77d0b05`, marked by `design-macbook-20261117-1` on the ask of `meta-macbook-20261117-4` (`../inbox/seats/20261117-meta-macbook-20261117-4-10.json`): both runs read by both roles and removed, their collections kept. Opened by `design-macbook-20261117-1` on 2026-11-17 on the ask of `meta-macbook-20261117-4` (`../inbox/seats/20261117-meta-macbook-20261117-4-7.json`) and the person's words recorded in `../../docs/ideas/20261117.md` ("The Cantera test's answers, and a control test with them"). It follows `020`, which is done. Nobody holds it.
 
 **Seat:** one `meta-…` seat, holding this task alone; `meta-macbook-20261117-4` ran `020` and asked for it. A record in the design role's paths goes to that role as a note.
 
