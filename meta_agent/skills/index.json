@@ -1326,6 +1326,73 @@
       "sha256": "sha256:0051cd62408d278197d202d7b18ca7fe5db63620cc5494bb5d259e7f14562cfc"
     },
     {
+      "ref": "tolerance_from_reference@v3",
+      "id": "tolerance_from_reference",
+      "version": 3,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "a scientific task's tolerance by the person's standing rule: the reference's stated uncertainty, otherwise the larger of half a unit in its last printed digit and the run's own numerical error, a two-grid estimate of that error entering three times over",
+      "description": "A scientific task's tolerance by the person's standing rule, from the reference as its source gives it: the uncertainty the source states, otherwise the larger of half a unit in the last digit the reference prints and the run's own numerical error where that was estimated, a two-grid estimate of it entering three times over. Take it when a scientific task compares a measured value with a reference and the person has given no tolerance for it.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "printed",
+          "unit": "1",
+          "meaning": "the reference value as its source prints it, as text, its last digit kept as printed (a trailing zero included); in the quantity's unit"
+        },
+        {
+          "name": "stated_uncertainty",
+          "unit": "1",
+          "meaning": "the uncertainty the source states for that value, in the quantity's unit, or null where it states none"
+        },
+        {
+          "name": "run_numerical_error",
+          "unit": "1",
+          "meaning": "the run's own numerical error of the quantity, in its unit, as an estimating skill gave it through the runner (the difference between two resolutions, or the standard error of a series the run produced); null where it was not estimated"
+        },
+        {
+          "name": "run_error_from",
+          "unit": "1",
+          "meaning": "how the run's own error was estimated: two_grids (two resolutions, as discretization_error_from_two_resolutions gives it), three_or_more_grids, or series_standard_error; null where the run's error is null"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "tolerance",
+          "unit": "1",
+          "meaning": "the tolerance, in the quantity's unit; null, with why, where the inputs give none"
+        },
+        {
+          "name": "from",
+          "unit": "1",
+          "meaning": "stated_uncertainty, last_printed_digit or run_numerical_error: which of the rule's ways gave it; null where none did"
+        },
+        {
+          "name": "run_error_estimated",
+          "unit": "1",
+          "meaning": "true when a run's numerical error was handed and weighed, false when it was not estimated and the half-digit branch alone applied, null where the stated uncertainty was taken"
+        },
+        {
+          "name": "factor",
+          "unit": "1",
+          "meaning": "the factor the run's own error entered with: 3 for a two-grid estimate, 1 for three or more grids or a series' standard error; null where no run error was weighed"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why no tolerance was given, or that the run's error was not estimated; else null"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/tolerance_from_reference@v3",
+      "sha256": "sha256:e3c55ea733839b9f09dd79ce1a9720038444c07eb673178e266c52e0c2761336"
+    },
+    {
       "ref": "diffusive_regime_from_msd@v1",
       "id": "diffusive_regime_from_msd",
       "version": 1,

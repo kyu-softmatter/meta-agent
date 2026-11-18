@@ -172,9 +172,9 @@ class TheRunsOwnErrorJudges(unittest.TestCase):
 
 
 class TheVersion(unittest.TestCase):
-    def test_v23_is_the_latest_and_changes_one_script(self):
+    def test_v23_changes_one_script(self):
         v22 = template_mod.SOURCES["v22"]
-        self.assertEqual(template_mod.LATEST, "v23")
+        self.assertIn("v23", template_mod.SOURCES)                  # v24 is the latest since the factor of 3
         changed = sorted(r for r in cards.tree_files(v22) if cards.sha256_file(os.path.join(v22, r)) != cards.sha256_file(os.path.join(V23, r)))
         self.assertEqual(changed, ["TEMPLATE.json", "src/validate_tasks.py"])
 

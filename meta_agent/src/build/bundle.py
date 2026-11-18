@@ -721,6 +721,8 @@ def with_rule_tolerance(task, rule, tools, skills):
         # the run's own error is not known when the bundle is built, before any run: the half-digit branch applies, and
         # the skill's output says the run's error was not estimated (the person's amended rule of 2026-11-18)
         inputs["run_numerical_error"] = None
+    if "run_error_from" in names:
+        inputs["run_error_from"] = None      # no run's error at build time, so nothing says how one was estimated
     record = runner_mod.run(rule["skill"], inputs)
     out = record.get("outputs") or {}
     if record.get("verdict") != "ran" or out.get("tolerance") is None:

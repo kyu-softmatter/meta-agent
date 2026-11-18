@@ -1,0 +1,74 @@
+{
+  "schema_version": "0.1",
+  "id": "tolerance_from_reference",
+  "version": 3,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "a scientific task's tolerance by the person's standing rule: the reference's stated uncertainty, otherwise the larger of half a unit in its last printed digit and the run's own numerical error, a two-grid estimate of that error entering three times over",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "printed",
+      "unit": "1",
+      "meaning": "the reference value as its source prints it, as text, its last digit kept as printed (a trailing zero included); in the quantity's unit"
+    },
+    {
+      "name": "stated_uncertainty",
+      "unit": "1",
+      "meaning": "the uncertainty the source states for that value, in the quantity's unit, or null where it states none"
+    },
+    {
+      "name": "run_numerical_error",
+      "unit": "1",
+      "meaning": "the run's own numerical error of the quantity, in its unit, as an estimating skill gave it through the runner (the difference between two resolutions, or the standard error of a series the run produced); null where it was not estimated"
+    },
+    {
+      "name": "run_error_from",
+      "unit": "1",
+      "meaning": "how the run's own error was estimated: two_grids (two resolutions, as discretization_error_from_two_resolutions gives it), three_or_more_grids, or series_standard_error; null where the run's error is null"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "tolerance",
+      "unit": "1",
+      "meaning": "the tolerance, in the quantity's unit; null, with why, where the inputs give none"
+    },
+    {
+      "name": "from",
+      "unit": "1",
+      "meaning": "stated_uncertainty, last_printed_digit or run_numerical_error: which of the rule's ways gave it; null where none did"
+    },
+    {
+      "name": "run_error_estimated",
+      "unit": "1",
+      "meaning": "true when a run's numerical error was handed and weighed, false when it was not estimated and the half-digit branch alone applied, null where the stated uncertainty was taken"
+    },
+    {
+      "name": "factor",
+      "unit": "1",
+      "meaning": "the factor the run's own error entered with: 3 for a two-grid estimate, 1 for three or more grids or a series' standard error; null where no run error was weighed"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why no tolerance was given, or that the run's error was not estimated; else null"
+    }
+  ],
+  "entry": {
+    "script": "scripts/analysis.py",
+    "function": "analysis"
+  },
+  "validity": "one reference value of one quantity. The stated uncertainty, where there is one, is taken as handed: which uncertainty a source states (a standard error, the spread between its refinement levels) is the reader's to say. The last printed digit is read off the text as printed, so a trailing zero counts and a number already stored as a float has lost its printed form; an integer printed with trailing zeros is read as printed. A run's numerical error is taken as handed, with how it was estimated: estimating it is another skill's, and a run error handed without run_error_from gives no tolerance. It judges nothing, and a tolerance the person gave overrides it",
+  "source": {
+    "citation": "the person's standing rule of 2026-11-18 (docs/ideas/20261118.md, 'Tolerances by a standing rule', amended in 'Yes, run's own error' and 'Yes, factor 3'); JCGM 100:2008, Evaluation of measurement data - Guide to the expression of uncertainty in measurement (GUM), BIPM (read 2026-11-18, https://www.bipm.org/documents/20126/2071204/JCGM_100_2008_E.pdf; meta_agent/inbox/materials/20261118-jcgm-100-2008-gum); NASA Glenn Research Center, NPARC Alliance CFD Verification and Validation, Examining Spatial (Grid) Convergence (read 2026-11-18, https://www.grc.nasa.gov/www/wind/valid/tutorial/spatconv.html; meta_agent/inbox/materials/20261118-nasa-grc-spatial-convergence), after P. J. Roache",
+    "locus": "GUM F.2.2.1, The resolution of a digital indication, printed page 64: half the unit of the last printed digit is the half-width the rule takes; NASA GRC, section Grid Convergence Index (GCI): the factor of safety is recommended to be 3.0 for comparisons of two grids and 1.25 for comparisons over three or more grids; the person's rule takes the first and keeps no factor for three or more grids"
+  },
+  "note": "v2 with the person's 'Yes, factor 3' (2026-11-18, docs/ideas/20261118.md): a two-grid estimate of the run's own error enters the rule three times over, Roache's factor of safety for two grids, so that a correct run's agreement does not sit on the boundary of its own error (meta_agent/failures.jsonl rheotool-26); an estimate from three or more grids, or from a series' standard error, enters as it is. The run's error now comes with how it was estimated (run_error_from), and a run error without it gives none. Common, as v2 (every simulation bundle carries it; meta_agent/tasks/025). No value of a source stands behind the worked cases but the person's own example of 1066 K: each is worked by hand in its worked field.",
+  "cases": "cases.json",
+  "common": true
+}

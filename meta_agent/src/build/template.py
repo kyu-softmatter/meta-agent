@@ -162,6 +162,11 @@ v23 changes one script of the checks, on the person's 'Yes, refine and
     as built and a finer run through the refinement's skill; the finer result is
     judged, and the record names what was refined. The builder carries the
     refinement's and the rule's skills into such a bundle (bundle.py).
+v24 changes one script of the checks, on the person's 'Yes, factor 3'
+    (2026-11-18, rheotool-26): the rule's skill is tolerance_from_reference@v3,
+    and src/validate_tasks.py hands it how the refinement's skill estimates the
+    run's error (TEMPLATE.json run_error_from), so that a two-grid estimate
+    enters three times over, Roache's factor of safety for two grids.
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -186,8 +191,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v20": os.path.join(HERE, "template_v20"),
            "v21": os.path.join(HERE, "template_v21"),
            "v22": os.path.join(HERE, "template_v22"),
-           "v23": os.path.join(HERE, "template_v23")}
-LATEST = "v23"
+           "v23": os.path.join(HERE, "template_v23"),
+           "v24": os.path.join(HERE, "template_v24")}
+LATEST = "v24"
 SOURCE = SOURCES[LATEST]
 
 
