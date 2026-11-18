@@ -1,0 +1,21 @@
+Your role is `meta`.
+
+https://jsdokken.com/dolfinx-tutorial/chapter2/ns_code2.html
+
+이것을 자동화 하고싶어
+
+I have already answered these, in earlier sessions; do not ask them again:
+
+- "This" is the tutorial's DFG 2D-3 case alone: the time-dependent flow around a cylinder in a channel, as the tutorial sets it up.
+- The tutorial is J. S. Dokken's, a third party's and not the FEniCS project's own, so a value taken from it is literature, not spec. Its licence is CC BY 4.0: an adapter may follow its code with credit to its author, and the page may be quoted with attribution.
+- A built agent may make its own environment with pixi from the channel conda-forge, its packages pinned, and a tool that only starts the engine or writes the agent's own files is opened by the lab's execution permission.
+- No Courant number is given for this scheme: the time step is the benchmark's own, and a Courant bound stays not applied for that reason.
+- The reference values are V. John's: Reference values for drag and lift of a two-dimensional time-dependent flow around a cylinder, International Journal for Numerical Methods in Fluids 44 (2004) 777-788, https://wias-berlin.de/people/john/ELECTRONIC_PAPERS/Joh04.IJNMF.pdf, which you may fetch and read anonymously; not FEATFLOW's tables.
+- The pressure difference is the front less the back, with the sign John gives it and FEATFLOW's raw point values have.
+- The maximal lift coefficient and the pressure difference between the front and the back of the cylinder at the final time are judged against the interval of Schäfer and Turek 1996 as John quotes it on his printed page 783, [0.47, 0.49] and [-0.115, -0.105]: these two are my tolerances, given as intervals.
+- The maximal drag coefficient, the time of the maximal drag and the time of the maximal lift take their tolerance from the run's own numerical error, by the standing rule: one refinement run, with a finer mesh and a halved time step, against the run as built. So the agent's tool takes the mesh as well as the time step as rows of its parameters, not fixed inside its adapter; the finer mesh halves the tutorial's mesh sizes. The order of convergence the estimate needs is a row with its own source, which you find; where you find none, that row stays a question for me and the half-digit branch of the rule applies.
+- A result outside its tolerance is reported as it is: do not change the build to make it pass.
+
+Not decided, and not to wait for: where the bundle lands, whether an interface is wanted, and the registration of the sources you read. Leave each undecided on the card it belongs to and carry on.
+
+Carry the request through as far as it goes without me. Report when you stop: what you did, what the gate printed, what is open, and what you ran on.
