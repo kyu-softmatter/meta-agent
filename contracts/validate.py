@@ -1184,7 +1184,7 @@ def checkB5(bundle, label, report):
             report.fail("B5", label, "%s/ has no task with an expected verdict" % sub)
 
 
-FIELD_UNIT_ONE_RE = re.compile(r"\((?:number|integer)\s*,\s*1(?=\s*[,;)])")   # a field's type and unit, the unit being `1`
+FIELD_UNIT_ONE_RE = re.compile(r"\((?:number|integer|array)\s*,\s*1(?=\s*[,;)])")   # a field's type and unit, the unit being `1`
 
 
 def unit_res(units):

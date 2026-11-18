@@ -46,6 +46,14 @@ class B6(unittest.TestCase):
         self.assertEqual(self.judge("- input: `fraction` (number, 1, required; the volume fraction), `n` (integer, 1; a count)\n"), [])
         self.assertEqual(len(self.judge("- input: `fraction` (number, 12, required)\n")), 1)
 
+    def test_the_unit_one_stands_on_an_array_too(self):
+        # two unrelated kinds: a sweep of equivalence ratios from a combustion engine (run chemical-kinetics/20261117-12,
+        # ctrl-pair-3) and a list of strain amplitudes from an instrument
+        self.assertEqual(self.judge("- output: `equivalence_ratios` (array, 1, required), `temperatures` (array, K)\n"), [])
+        self.assertEqual(self.judge("- input: `strain_amplitudes` (array, 1; the amplitudes to visit)\n"), [])
+        self.assertEqual(len(self.judge("- output: `ratios` (array, 12)\n")), 1)
+        self.assertEqual(len(self.judge("- output: `ratios` (array, 1); at most 3 of them\n")), 1)
+
     def test_a_version_of_three_parts_is_an_identifier_and_a_number_beside_it_is_still_read(self):
         # two unrelated kinds of program: a simulation engine and an instrument's firmware (tasks/016, run 20261117-1)
         self.assertEqual(self.judge("Pinned: hoomd 7.2.2, gsd 5.0.1.\n"), [])
