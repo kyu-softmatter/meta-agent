@@ -215,6 +215,20 @@
                       },
                       "chosen_by": {
                         "type": "string"
+                      },
+                      "rule": {
+                        "type": "string",
+                        "pattern": "^docs/ideas/[0-9]{8}\\.md"
+                      },
+                      "derived_by": {
+                        "type": "string",
+                        "pattern": "^computed:[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+                      },
+                      "from": {
+                        "enum": [
+                          "stated_uncertainty",
+                          "last_printed_digit"
+                        ]
                       }
                     },
                     "additionalProperties": false,
@@ -222,7 +236,25 @@
                       "value",
                       "unit",
                       "chosen_by"
-                    ]
+                    ],
+                    "description": "chosen_by is human for a tolerance the person gave, or rule for one derived from the person's standing rule of 2026-11-18 (docs/ideas/20261118.md): the reference's stated uncertainty, else half a unit in its last printed digit, derived by a library skill through the runner; such a tolerance names the rule and the skill (derived_by), and a tolerance the person gives overrides it",
+                    "if": {
+                      "properties": {
+                        "chosen_by": {
+                          "const": "rule"
+                        }
+                      },
+                      "required": [
+                        "chosen_by"
+                      ]
+                    },
+                    "then": {
+                      "required": [
+                        "rule",
+                        "derived_by",
+                        "from"
+                      ]
+                    }
                   }
                 ]
               },

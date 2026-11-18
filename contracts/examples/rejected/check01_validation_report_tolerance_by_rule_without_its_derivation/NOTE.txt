@@ -1,0 +1,1 @@
+A scientific task's tolerance says it comes from the person's standing rule (chosen_by: rule) but names neither the rule nor the library skill that derived it: a tolerance by the rule is derived by a skill through the runner from the reference, and says which (the person, 2026-11-18, docs/ideas/20261118.md, "Tolerances by a standing rule").
