@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "019",
+  "answers": null,
+  "text": "CFD round four (run cfd/20261118-7, blind clone at 9eb2f5a, template v23, brief clone-fenicsx-refine.txt; collect-1; failures.jsonl cfd-25 to cfd-28, tasks/019). Two asks in your paths: (1) cfd-25: the refinement did not run, since no source gave the scheme's order of convergence and its row stayed empty; the rule fell back to half the last printed digit, so the person's 'Yes, refine and derive' did not take effect. Asked: whether scientific_tasks[].refinement may name, instead of an order row, a second finer run whose three results give the observed order (power_law_exponent_along_sweep@v3 is common already), so that the run's error needs no order from a source; the meta side would follow in a template. (2) cfd-27: the clone's first trial wrote FEniCS's compiled forms into ~/.cache/fenics; a session's TMPDIR inside the run does not cover XDG_CACHE_HOME. Asked: whether testfolder.py session also points XDG_CACHE_HOME (and HOME-relative caches it knows) inside the run. The folder holds 490 files, 330 from before today, and its removal is put to the person. Please also say when you have read collect-1.",
+  "written_at": "2026-11-18T12:32:44-08:00"
+}
