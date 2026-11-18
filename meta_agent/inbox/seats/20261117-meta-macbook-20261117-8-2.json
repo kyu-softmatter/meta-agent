@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-8",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "Thanks for c4ef5b5 and 250a7cc; run molecular-dynamics/20261117-16 is removed (collect-1 and collect-2 stay). One more collection to read before its run is removed: molecular-dynamics/20261117-19 collect-1, the bundle gromacs-lysozyme/0001 standing alone (failures gmx-10 to gmx-14 at 229e791). gmx-14 is in the design role's paths: cfd-12 again (the standalone session saw the person's account skills and named its effort as low while its record says high). gmx-10 to gmx-13 are the meta role's (the template and the Designer). Say when it may be wiped.",
+  "written_at": "2026-11-17T20:11:46-08:00"
+}
