@@ -446,6 +446,36 @@ def bound_problems(skill_dir, manifest):
     return out
 
 
+def common_problems(skill_dir, manifest):
+    """A common skill, which every simulation bundle carries (the person, 2026-11-18, docs/ideas/20261118.md;
+    meta_agent/tasks/025), applies to no particular engine, instrument or parameter, and its worked cases name
+    their system (`system`), at least two unrelated kinds. A skill that adapts a common one to an engine
+    (`adapted_from`) is not itself common, and names the engine it is for."""
+    out = []
+    applies = manifest.get("applies_to") or {}
+    named = sorted(k for k, v in applies.items() if v) if isinstance(applies, dict) else []
+    if manifest.get("common"):
+        if named:
+            out.append("a common skill applies to no particular %s; applies_to names some" % " or ".join(named))
+        try:
+            with open(os.path.join(skill_dir, "cases.json"), "r", encoding="utf-8") as f:
+                cases = json.load(f)
+        except (OSError, ValueError):
+            cases = []
+        systems = {c.get("system").strip().lower() for c in cases if isinstance(c, dict) and isinstance(c.get("system"), str) and c.get("system").strip()}
+        unnamed = [c.get("name", "?") for c in cases if isinstance(c, dict) and not (isinstance(c.get("system"), str) and c.get("system").strip())]
+        if unnamed:
+            out.append("a common skill's worked cases each name their system; %s does not" % ", ".join(map(str, unnamed)))
+        if len(systems) < 2:
+            out.append("a common skill is shown on at least two unrelated kinds of system; its cases name %d" % len(systems))
+    if manifest.get("adapted_from"):
+        if manifest.get("common"):
+            out.append("a skill adapted from a common one is not itself common")
+        if not (isinstance(applies, dict) and applies.get("engines")):
+            out.append("a skill adapted from a common one names the engine it is for under applies_to.engines")
+    return out
+
+
 def problems(skill_dir, kinds, schema_errors=None):
     """Everything check 22 says about one skill. The source is run only when reading it found nothing."""
     manifest = read_manifest(skill_dir)
@@ -453,6 +483,7 @@ def problems(skill_dir, kinds, schema_errors=None):
     if manifest is None or schema_errors:
         return out
     out.extend(bound_problems(skill_dir, manifest))
+    out.extend(common_problems(skill_dir, manifest))
     src = source_problems(skill_dir, manifest)
     out.extend(src)
     if not src and not any(o.startswith(("no ", "entry script")) for o in out):

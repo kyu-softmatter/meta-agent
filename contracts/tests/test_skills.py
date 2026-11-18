@@ -34,6 +34,7 @@ REASONS = {
     "check22_bound_two_outputs": ("box_edge_from_volume@v1", "a bound skill gives one output"),
     "check22_estimate_one_worked_case": ("scans_for_signal_to_noise@v1", "an estimate skill carries two worked cases"),
     "check22_diagnostic_without_an_undecided_case": ("series_settled@v1", "a worked case that expects state undecided"),
+    "check22_common_skill_shown_on_one_kind": ("series_settled@v1", "shown on at least two unrelated kinds of system"),
 }
 
 
@@ -88,6 +89,35 @@ class Reading(unittest.TestCase):
         self.assertFalse(skills._same({"x": 1.0}, {"x": 1.001}, 1e-9))
         self.assertFalse(skills._same({"ready": True}, {"ready": 1}, 1e-9))
         self.assertTrue(skills._same({"a": [1, {"b": None}]}, {"a": [1, {"b": None}]}, 1e-9))
+
+
+
+
+class Common(unittest.TestCase):
+    """A common skill every simulation bundle carries, and a skill adapted from one (the person, 2026-11-18;
+    meta_agent/tasks/025)."""
+
+    def cases_on(self, systems):
+        import json, tempfile
+        d = tempfile.mkdtemp()
+        with open(os.path.join(d, "cases.json"), "w", encoding="utf-8") as f:
+            json.dump([{"name": "case %d" % i, "system": s} for i, s in enumerate(systems)], f)
+        return d
+
+    def test_a_common_skill_on_two_unrelated_kinds_and_no_engine_is_clean(self):
+        d = self.cases_on(["molecular dynamics of a protein", "chemical equilibrium of a flame"])
+        self.assertEqual(skills.common_problems(d, {"common": True, "applies_to": {"engines": [], "parameters": []}}), [])
+
+    def test_a_common_skill_that_names_an_engine_is_refused(self):
+        d = self.cases_on(["molecular dynamics", "finite elements"])
+        found = skills.common_problems(d, {"common": True, "applies_to": {"engines": ["gromacs"]}})
+        self.assertTrue(any("applies to no particular engines" in m for m in found), found)
+
+    def test_an_adapted_skill_names_its_engine_and_is_not_common(self):
+        d = self.cases_on(["molecular dynamics"])
+        self.assertEqual(skills.common_problems(d, {"adapted_from": "series_settled@v2", "applies_to": {"engines": ["gromacs"]}}), [])
+        found = skills.common_problems(d, {"adapted_from": "series_settled@v2", "applies_to": {"engines": []}})
+        self.assertTrue(any("names the engine it is for" in m for m in found), found)
 
 
 if __name__ == "__main__":

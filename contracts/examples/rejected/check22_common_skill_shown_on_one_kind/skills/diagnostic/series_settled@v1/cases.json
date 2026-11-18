@@ -1,0 +1,68 @@
+[
+  {
+    "name": "an engine's acceptance ratio settles",
+    "inputs": {
+      "series": [
+        0.62,
+        0.48,
+        0.41,
+        0.4,
+        0.41,
+        0.4,
+        0.4,
+        0.41
+      ],
+      "window": 3,
+      "tolerance": 0.05
+    },
+    "expect": {
+      "state": "settled",
+      "last_mean": 0.4033333333333333,
+      "relative_change": 0.00826446280991741
+    },
+    "worked": "last window [0.40, 0.40, 0.41], mean 0.403333; the one before [0.41, 0.40, 0.41], mean 0.406667; change 0.003333 / 0.403333 = 0.008264, within 0.05",
+    "system": "hard-particle Monte Carlo"
+  },
+  {
+    "name": "a sample's temperature still rises, in K",
+    "inputs": {
+      "series": [
+        293.0,
+        295.0,
+        297.0,
+        298.0,
+        299.0,
+        300.0
+      ],
+      "window": 3,
+      "tolerance": 0.001
+    },
+    "expect": {
+      "state": "not_settled",
+      "last_mean": 299.0,
+      "relative_change": 0.013377926421404682
+    },
+    "worked": "last window [298, 299, 300] K, mean 299; the one before [293, 295, 297] K, mean 295; change 4 / 299 = 0.013378, above 0.001",
+    "system": "hard-particle Monte Carlo"
+  },
+  {
+    "name": "no tolerance chosen",
+    "inputs": {
+      "series": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "window": 2,
+      "tolerance": null
+    },
+    "expect": {
+      "state": "undecided",
+      "last_mean": 1.0,
+      "relative_change": 0.0
+    },
+    "worked": "means 1 and 1; with no tolerance the state is undecided",
+    "system": "hard-particle Monte Carlo"
+  }
+]

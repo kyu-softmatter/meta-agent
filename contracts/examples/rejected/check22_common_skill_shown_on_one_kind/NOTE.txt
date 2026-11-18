@@ -1,0 +1,1 @@
+A skill marked common, which every simulation bundle carries (the person, 2026-11-18, docs/ideas/20261118.md; tasks/025), whose worked cases name one kind of system only: a common skill shows its worked cases on at least two unrelated kinds of system, each case naming its system, and applies to no particular engine, instrument or parameter.

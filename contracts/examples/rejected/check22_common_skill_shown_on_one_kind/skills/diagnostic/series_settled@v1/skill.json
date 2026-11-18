@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1",
+  "id": "series_settled",
+  "version": 1,
+  "kind": "diagnostic",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "whether a series of readings has settled, by the change between the means of its last two windows",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "series",
+      "unit": "1",
+      "meaning": "the readings in the order they were taken, all in one unit"
+    },
+    {
+      "name": "window",
+      "unit": "count",
+      "meaning": "how many readings each mean takes"
+    },
+    {
+      "name": "tolerance",
+      "unit": "1",
+      "meaning": "the largest relative change of the mean between the last two windows that counts as settled; null when none is chosen"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "state",
+      "unit": "1",
+      "meaning": "settled | not_settled | undecided"
+    },
+    {
+      "name": "last_mean",
+      "unit": "1",
+      "meaning": "the mean of the last window, in the readings' unit; null when there are fewer than two windows"
+    },
+    {
+      "name": "relative_change",
+      "unit": "1",
+      "meaning": "the change between the last two windows' means over the last mean; null when it cannot be computed"
+    }
+  ],
+  "entry": {
+    "script": "scripts/diagnostic.py",
+    "function": "diagnostic"
+  },
+  "validity": "readings under fixed conditions, in one unit; a last mean of zero gives no relative change",
+  "source": {
+    "citation": "block averaging: a quantity has settled when the means of successive blocks agree within the tolerance chosen",
+    "locus": "the comparison of block means used to judge equilibration and steady state"
+  },
+  "cases": "cases.json",
+  "common": true
+}

@@ -279,6 +279,15 @@
         "correlation"
       ],
       "description": "a skill of side value: what kind of value it gives. correlation: a fitted or empirical relation, whose row says value_kind correlation and source correlation:<id>@v<n>, so that a sheet keeps which value is a correlation (plan.md 5.3); computed (the default): a definition or an exact relation"
+    },
+    "common": {
+      "type": "boolean",
+      "description": "true for a skill every simulation bundle carries (the person, 2026-11-18, docs/ideas/20261118.md; tasks/025): it applies to no particular engine, instrument or parameter, and its worked cases name at least two unrelated kinds of system"
+    },
+    "adapted_from": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*@v[1-9][0-9]*$",
+      "description": "the common skill this one adapts to an engine, as a next version made by a build and listed in its build card's difference; never an edit of the skill it names"
     }
   },
   "required": [
