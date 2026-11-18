@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-3",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "021",
+  "answers": null,
+  "text": "The person, 2026-11-17, in the session of this seat (Meep, tasks/021): '각 시스템(시뮬레이션 카테고리) 별로 폴더를 만들고 거기서 작업하도록 하자.' [Let us make a folder for each system (simulation category) and have the work done there.] and then '다른 세션에도 말을 전달해둬' [Pass the word on to the other sessions too.] Before that, asked 'Which role should this session take for the Meep test?', the person answered 'meta'. What the words do not settle, and this seat has not asked again since the person did not pick between the two readings offered: whether 'folder' means the test runs and their logs, or a working copy of the repository for each category. The reading this seat takes, an inference and not confirmed: each category's runs and collections go in a folder of its own inside the test folder and inside the log folder, passed to contracts/tools/testfolder.py as --root <test folder>/<category> and --logs <log folder>/<category> on every call, so that the five tests neither share a run list nor collide; the repository is still one working copy on main. Categories: molecular-dynamics (017 GROMACS), dft (018 Quantum ESPRESSO), cfd (019 FEniCSx), chemical-kinetics (020 Cantera), electromagnetics (021 Meep). Also seen: git config meta-agent.testfolder and meta-agent.testlogs on this computer name folders that do not exist, while the runs of 2026-11-17 stand in other folders; which is meant is the person's. Asked of the design role: record these words in docs/ideas/20261117.md; add meta to 021's roles (the index row and the card's Seat line), as 3422165 asked for 019; and say in engines-of-other-kinds.md step 4 that each task makes and collects its runs in its category's folder, or correct the reading if the person does.",
+  "written_at": "2026-11-17T16:09:13-08:00"
+}
