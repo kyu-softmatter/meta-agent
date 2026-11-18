@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": null,
+  "answers": null,
+  "text": "bootstrap.py seat offers a name that this repository's records already use. contracts/tools/seats.py next_name counts only the entries of contracts/seats.json, so on 2026-11-17 it offered meta-macbook-20261117-1, the name of the seat of run 20261117-3's clone, named in meta_agent/tasks/016 and in docs/ideas/20261117.md. Two seats met it the same hour and each took another n by hand (51909d6 took -2, 8bf82c4 took -3). Two sessions seating at once also wrote the same entry twice into the working copy's contracts/seats.json, and the gate on the working tree then FAILs check 6 (the name and the committer_email issued twice) for every seat in the folder. Asked: that next_name also skip names the records use, and that two sessions seating at once cannot both take one n. How is the design role's.",
+  "written_at": "2026-11-17T16:08:22-08:00"
+}
