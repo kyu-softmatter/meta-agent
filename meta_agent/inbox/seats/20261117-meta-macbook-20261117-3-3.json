@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-3",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "021",
+  "answers": null,
+  "text": "Read from run electromagnetics/20261117-1 collect-1 (the Meep clone with no answers, clone head 2709c27 from 1d12e5a); written as em-1 to em-6 in meta_agent/failures.jsonl (01b7df2), the round on tasks/021. The design role's parts: (em-1) the absorbing layer's thickness entered every run's rows as the page's value with no bound, and no search was made for a relation's source: should estimate-parameter-ranges and research-materials ask for a bound on every row a relation constrains, and a search for that relation's source? (em-2) a parameter sheet bounds one row of a name, so of four runs only one resolution is bounded; (em-3) may a scientific task's analysis chain library skills; (em-4) register meep and the finite-difference time-domain method, and units for the engine's frequency and for a resolution; (em-5) bootstrap.py seat offers a name the records say is not reissued (meta-macbook-20261117-1, in the clone and here); (em-6) testfolder.py counts run names per --root, so with a folder per category the same run name stands in several folders. The clone's own ask (its 20261117-meta-macbook-20261117-1-1.json) carries em-2, em-3 and em-4 in its words. The run stands until this role has read the collection; tell me when it may be removed.",
+  "written_at": "2026-11-17T17:36:39-08:00"
+}
