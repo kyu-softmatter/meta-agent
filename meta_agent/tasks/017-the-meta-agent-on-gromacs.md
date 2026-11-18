@@ -100,3 +100,14 @@ The person asked for it ("Yes, test bundle", 2026-11-18). `gromacs-lysozyme/0001
 What it did: task 001's commands printed `gate: self-check ok`, `replay: 2 item(s), 2 as expected, 0 not; OK` and, before the inputs, `gates: interface pass, scientific not_run; overall not_run`. It installed GROMACS through the bundle's tool (`2025.2-conda_forge`, mixed precision, no GPU). On the request it fetched the inputs through `fetch_inputs` (the gate opened the fetch by the hosts of profile v6; the session says the 7 files match the builder's copy) and prepared the system. Read off the bundle's own validation, against the person's tolerance of 0: `fail sci-1 outside the tolerance: waters (measured 12589, stated 12588), waters_after_solvate (measured 12597, stated 12596)` and `pass sci-2 … agreement 0.0` (chloride 8, net charge 8 e); final line `gates: interface pass, scientific fail; overall fail`. It compared nothing for the atom count and the box, for want of a tutorial value, gave the cause of the extra water as unknown, and put the one-water difference to the person as the person's call.
 
 Faults it showed: gmx-21 to gmx-23 in `../failures.jsonl`. Not watched: the stages after the set-up, which wait for the person's answer and for the person's word on a run of about a day of engine time. Runs `20261117-23` and `20261118-1` stand until the design role has read their collections.
+
+## The person answers what the bundle of round two left (2026-11-18)
+
+Asked by this seat, with the buttons this seat wrote:
+
+- on the water count, one more than the tutorial's after solvate and after genion, against the exact rule: "Keep exact; record fail" (the tolerance stays 0; run `20261118-1` is recorded as a fail of sci-1, and the agent goes on);
+- on the atom count and the box, which the tutorial does not state: "Find a reference" (the Meta-Agent looks for a published value to compare with, and it is then put to the person);
+- on hydrogen bonds and secondary structure: "Yes, report, no verdict" (added in a later build, reported beside the tutorial's rough words with no verdict);
+- on a full run of the tutorial, of the order of a day of engine time on this computer: "Yes, run it in the background".
+
+What these settle: the exact rule holds and sci-1 of run `20261118-1` is a fail on the record; a later build (round three) searches for a reference for the atom count and the box and reports hydrogen bonds and secondary structure with no verdict; the bundle of round two runs the whole tutorial in an unattended session. Not settled: the `max_hours` of each stage call (asked next).
