@@ -26,6 +26,7 @@ Policy fields are never skipped and never inferred: working mode, approval mode,
 
 - **Source, documents, configuration, existing scripts:** read them with ordinary tools.
 - **Binaries and runtime behaviour:** only through REA, and only when the `tool_profile` carries an `analysis_permission` that names a person, a scope, a basis and a date. Without it the gap is `inaccessible` and the design uses documented interfaces only. Runtime capture happens only in a replica with no instrument attached.
+- **What an engine prints** is read from its documentation and its examples. The engine is started only as the trial of an adapter you wrote, through the bundle's runner, in an isolated environment under the temporary folder and only where the lab's confirmed execution permission reaches an engine (`meta_agent/CLAUDE.md`). Running it by hand to see what it prints is not such a trial.
 - **Every claim is one of four:** `observed`, `derived`, `inferred` or `unknown`, with its `basis`, its evidence and its limitations. An `unknown` says what would resolve it. Unsupported is never concluded from partial evidence.
 - **Six points for software that drives something:** connection, operation, parameters, bandwidth, what is streamed live, and how often it is refreshed.
 
