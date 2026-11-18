@@ -252,6 +252,17 @@ def make_validation_report(report, build_id, rid, bundle_rel, seat, now=None, en
                                       "source": "computed:%s/validation/scientific/%s#agreement" % (bundle_rel, t["file"]),
                                       "grade": "E4", "value_kind": "computed",
                                       "note": "absolute difference between the measured output and the reference"})
+        refinement = t.get("refinement") or {}
+        error = ((refinement.get("error_run") or {}).get("outputs") or {})
+        if (refinement.get("error_run") or {}).get("verdict") == "ran" and error.get("estimated"):
+            # the run's own numerical error a refinement measured (template v23), from which the rule derived the tolerance
+            field = next(iter(((t.get("reference") if isinstance(t.get("reference"), dict) else None) or {"value": 0}).keys()))
+            vr["numbers"].append({"name": "%s.%s.run_numerical_error" % (t["id"], field), "value": error["error"],
+                                  "unit": (t.get("tolerance") or {}).get("unit") or "1",
+                                  "source": "computed:%s@%s/validation/scientific/%s#%s" % (refinement.get("skill"), bundle_rel, t["file"], field),
+                                  "grade": "E4", "value_kind": "computed",
+                                  "note": "the finer run's discretization error, from the run as built and a finer run refining %s; "
+                                          "the tolerance the person's rule derived from it is the task's" % ", ".join(refinement.get("refines") or [])})
         runs = agreement_runs(t)
         for field, run in runs:
             # the skill that gave the agreement, kept on the record (cfd-14, run cfd/20261117-21): each run's error is

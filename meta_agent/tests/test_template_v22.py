@@ -81,9 +81,9 @@ class AnInterval(unittest.TestCase):
 
 
 class TheVersion(unittest.TestCase):
-    def test_v22_is_the_latest_and_changes_one_script(self):
+    def test_v22_changes_one_script(self):
         v21 = template_mod.SOURCES["v21"]
-        self.assertEqual(template_mod.LATEST, "v22")
+        self.assertIn("v22", template_mod.SOURCES)                  # v23 is the latest since the refinement
         changed = sorted(r for r in cards.tree_files(v21) if cards.sha256_file(os.path.join(v21, r)) != cards.sha256_file(os.path.join(V22, r)))
         self.assertEqual(changed, ["TEMPLATE.json", "src/validate_tasks.py"])
         self.assertEqual(cards.load_json(os.path.join(V22, "TEMPLATE.json"))["interval_skill"], WINDOW)

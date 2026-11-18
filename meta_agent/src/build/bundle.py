@@ -640,6 +640,39 @@ def adaptations_section(bundle_path):
     return lines
 
 
+def refinement_problems(tasks, tools, envelope, template_path):
+    """What keeps a scientific task's refinement from running in this bundle (the intake card's refinement, template v23):
+    a template that does not judge one, a skill the library lacks, an input the called tool does not take, a row the
+    bundle's parameters do not hold, or a task that does not state one field."""
+    from ..skills import catalogue as catalogue_mod
+    out = []
+    meta = os.path.join(template_path, "TEMPLATE.json")
+    m = cards.load_json(meta) if os.path.isfile(meta) else {}
+    if not m.get("tolerance_rule") or m.get("version") in (None,) or int(str(m.get("version", "v0"))[1:] or 0) < 23:
+        out.append("the template %s does not judge a refinement; it needs v23 or later" % m.get("version"))
+    rows = {r.get("name") for r in ((envelope.get("parameters") or {}).get("rows") or []) if isinstance(r, dict)}
+    contracts = {t["name"]: t["contract"] for t in tools}
+    for t in tasks:
+        ref, tid = t["refinement"], t.get("id")
+        stated = (t.get("measure") or {}).get("stated")
+        if not isinstance(stated, dict) or len(stated) != 1:
+            out.append("%s: a refinement judges one stated field" % tid)
+        if catalogue_mod.find(ref.get("skill") or "") is None:
+            out.append("%s: the library has no skill %s" % (tid, ref.get("skill")))
+        props = ((contracts.get((t.get("call") or {}).get("tool")) or {}).get("inputs") or {}).get("properties") or {}
+        if not ref.get("inputs"):
+            out.append("%s: a refinement names at least one input of the finer run" % tid)
+        for name, row in sorted((ref.get("inputs") or {}).items()):
+            if name not in props:
+                out.append("%s: the tool takes no input %s" % (tid, name))
+            if row not in rows:
+                out.append("%s: no row %s hands the finer run its %s" % (tid, row, name))
+        for key in ("ratio_row", "order_row"):
+            if ref.get(key) not in rows:
+                out.append("%s: no row %s for its %s" % (tid, ref.get(key), key))
+    return out
+
+
 def stated_unit(task, tools, skills):
     """The unit of the one field a scientific task states: the analysis skill's output unit where the task measures
     through one, else the unit the called tool's contract declares for that output, else '1'."""
@@ -670,6 +703,9 @@ def with_rule_tolerance(task, rule, tools, skills):
     stated = (task.get("measure") or {}).get("stated")
     if task.get("tolerance") or not isinstance(stated, dict) or len(stated) != 1:
         return task
+    if isinstance(task.get("refinement"), dict):
+        # its tolerance is derived when it runs, from the run's own error (template v23); the build hands it the unit
+        return dict(task, tolerance_unit=stated_unit(task, tools, skills))
     from ..skills import runner as runner_mod
     field, value = next(iter(stated.items()))
     printed = ((task.get("measure") or {}).get("printed") or {}).get(field)
@@ -722,6 +758,16 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     if agreement and scientific_tasks and agreement not in {r["ref"] for r in skills}:
         from ..skills import catalogue as catalogue_mod
         skills.append(catalogue_mod.take([agreement])[0])
+    refining = [t for t in scientific_tasks or [] if isinstance(t.get("refinement"), dict)]
+    if refining:
+        faults = refinement_problems(refining, tools, envelope, template_path)
+        if faults:
+            raise ValueError("a scientific task's refinement cannot run in this bundle: " + "; ".join(faults))
+        from ..skills import catalogue as catalogue_mod
+        need = [t["refinement"]["skill"] for t in refining] + [cards.load_json(meta)["tolerance_rule"]["skill"]]
+        for ref in need:
+            if ref not in {r["ref"] for r in skills}:
+                skills.append(catalogue_mod.take([ref])[0])
     interval = cards.load_json(meta).get("interval_skill") if os.path.isfile(meta) else None
     if interval and interval not in {r["ref"] for r in skills} and any(
             isinstance(t.get("tolerance"), dict) and "interval" in t["tolerance"] for t in scientific_tasks or []):
