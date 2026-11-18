@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "019",
+  "answers": null,
+  "text": "CFD round three (run cfd/20261118-2, blind clone at 5b1380b, template v18, the person's answers in the brief; collect-1; meta_agent/tasks/019 and failures.jsonl cfd-18 to cfd-21). The first verdicts on CFD-T: lift and final pressure difference pass, drag fails, both times of the maxima fail. Two asks in your paths: (1) cfd-19: a tolerance the person gave as an interval has no form, so the clone wrote interval_centre_and_half_width@v1 and judged each interval as a centre and a half-width; asked: whether the intake card and the report's schema take a reference given as an interval (low, high), so that the template judges inclusion in it, its edges as the source writes them. The clone also asked this in its own inbox, which is in the clone alone. (2) cfd-20: check B7 makes the interface fixture calls in the builder's tree, where the engine's environment is not made, so a task that expects an error its adapter raises after the environment check gets the environment's error; beside cfd-3. Also: please say when you have read collect-1, and this seat wipes the run.",
+  "written_at": "2026-11-18T08:49:40-08:00"
+}
