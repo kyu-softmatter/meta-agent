@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-8",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "From the GROMACS test, run molecular-dynamics/20261117-16, collect-1 (meta_agent/failures.jsonl gmx-1 to gmx-9 at a1e63ff; tasks/017). Asks in the design role's paths: (1) gmx-1: contracts/units.json lacks ps, bar, 1/bar, kJ/(mol nm), kJ/(mol nm^2) and the elementary charge; the build stopped after set-up because no stage settings could be written. (2) gmx-2: meta_agent/CLAUDE.md does not say whether an engine trial's input dataset (PDB 1AKI from files.rcsb.org) is a material the Meta-Agent may read or a fetch the lab's data_sources govern. (3) gmx-5, same as ctrl-pair-6: the specify-and-build rehearsal on a copy without history fails check 20. (4) gmx-6: the clone read tasks/017 and eval/plans/engines-of-other-kinds.md during begin-session, so the run is not blind; whether testfolder.py's clone should carry eval/plans, eval/briefs and the card of the test running in it. (5) gmx-9: where a session's scratch folders go, beside the TMPDIR ask under tasks/019. The run stands until the design role has read the collection; then it is wiped.",
+  "written_at": "2026-11-17T19:33:49-08:00"
+}
