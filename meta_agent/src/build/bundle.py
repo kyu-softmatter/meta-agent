@@ -572,6 +572,74 @@ def add_skills(bundle_path, rows, subagents):
         cards.write_text(os.path.join(bundle_path, ".claude", "agents", a["name"] + ".md"), subagent_markdown(a, rows))
 
 
+def skill_id(ref):
+    return ref.split("@v")[0]
+
+
+def adaptation_row(folder, common, agreement):
+    """The library row of a skill a build adapted from a common one (the person, 2026-11-18; tasks/025): a next version of
+    a skill of the template's common set, saying adapted_from, naming its engine and not common itself. The agreement
+    skill, which the bundle's own checks run, is not adapted. Raises ValueError for anything else."""
+    from ..skills import catalogue as catalogue_mod
+    m = cards.load_json(os.path.join(folder, "skill.json"))
+    ref = "%s@v%d" % (m.get("id"), m.get("version") or 0)
+    source = m.get("adapted_from")
+    faults = []
+    if source not in common:
+        faults.append("%s says adapted_from %r, which is not a skill of the template's common set" % (ref, source))
+    elif source == agreement:
+        faults.append("%s adapts the agreement skill %s, which the bundle's own checks run and which is not adapted" % (ref, source))
+    else:
+        if skill_id(source) != m.get("id"):
+            faults.append("%s is not a version of %s" % (ref, skill_id(source)))
+        if (m.get("version") or 0) <= int(source.split("@v")[1]):
+            faults.append("%s is not a later version than %s" % (ref, source))
+    if m.get("common"):
+        faults.append("%s is adapted, so it is not itself common" % ref)
+    if not ((m.get("applies_to") or {}).get("engines")):
+        faults.append("%s names no engine under applies_to.engines" % ref)
+    if os.path.basename(os.path.normpath(folder)) != ref:
+        faults.append("the folder of %s is named %s" % (ref, os.path.basename(os.path.normpath(folder))))
+    if faults:
+        raise ValueError("an adaptation cannot be built: " + "; ".join(faults))
+    return dict(catalogue_mod.entry(folder, os.path.dirname(os.path.normpath(folder))), folder=folder)
+
+
+def with_common(skills, common, adaptations, agreement):
+    """The skills a simulation bundle carries: those the specification names, then each skill of the template's common set
+    that it does not name in any version, an adaptation taking the place of the common skill it adapts."""
+    from ..skills import catalogue as catalogue_mod
+    adapted = [adaptation_row(f, common, agreement) for f in adaptations]
+    by_id = {skill_id(r["ref"]): r for r in adapted}
+    if len(by_id) != len(adapted):
+        raise ValueError("two adaptations of one common skill")
+    named = {skill_id(r["ref"]) for r in skills}
+    out = list(skills)
+    for ref in common:
+        i = skill_id(ref)
+        if i in by_id:
+            if i in named:
+                raise ValueError("the specification names %s and an adaptation of it is given as well" % i)
+            out.append(by_id[i])
+        elif i not in named:
+            out.append(catalogue_mod.take([ref])[0])
+    return out
+
+
+def adaptations_section(bundle_path):
+    """The lines of the difference from the template that name each skill a build adapted from a common one."""
+    lines = []
+    root = os.path.join(bundle_path, "skills")
+    for name in sorted(os.listdir(root)) if os.path.isdir(root) else []:
+        path = os.path.join(root, name, "skill.json")
+        if os.path.isfile(path):
+            m = cards.load_json(path)
+            if m.get("adapted_from"):
+                lines.append("adapted   skills/%s  from %s, for %s" % (name, m["adapted_from"],
+                                                                     ", ".join((m.get("applies_to") or {}).get("engines") or [])))
+    return lines
+
+
 def stated_unit(task, tools, skills):
     """The unit of the one field a scientific task states: the analysis skill's output unit where the task measures
     through one, else the unit the called tool's contract declares for that output, else '1'."""
@@ -609,7 +677,15 @@ def with_rule_tolerance(task, rule, tools, skills):
     if not isinstance(printed, str):
         printed, printed_from = (repr(value) if not isinstance(value, bool) else None), "the stored number"
     uncertainty = ((task.get("measure") or {}).get("stated_uncertainty") or {}).get(field)
-    record = runner_mod.run(rule["skill"], {"printed": printed, "stated_uncertainty": uncertainty})
+    inputs = {"printed": printed, "stated_uncertainty": uncertainty}
+    from ..skills import catalogue as catalogue_mod
+    folder = catalogue_mod.find(rule["skill"])
+    names = {i.get("name") for i in (cards.load_json(os.path.join(folder, "skill.json")).get("inputs") or [])} if folder else set()
+    if "run_numerical_error" in names:
+        # the run's own error is not known when the bundle is built, before any run: the half-digit branch applies, and
+        # the skill's output says the run's error was not estimated (the person's amended rule of 2026-11-18)
+        inputs["run_numerical_error"] = None
+    record = runner_mod.run(rule["skill"], inputs)
     out = record.get("outputs") or {}
     if record.get("verdict") != "ran" or out.get("tolerance") is None:
         return task
@@ -623,7 +699,7 @@ def with_rule_tolerance(task, rule, tools, skills):
 
 def compose(template_path, bundle_path, fill, tools, capabilities, envelope, interface_tasks,
             scientific_tasks, replay_items, skills=None, subagents=None, workflow=None, words=None, decisions=None,
-            ids=None, questions=None):
+            ids=None, questions=None, simulation=False, adaptations=None):
     """Write the bundle. `tools` is a list of {name, contract, adapter_source, errors:[contract]}.
 
     `workflow` is the request's order of tool names, or None, and fills the Workflow section of a template that has
@@ -646,6 +722,12 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     if agreement and scientific_tasks and agreement not in {r["ref"] for r in skills}:
         from ..skills import catalogue as catalogue_mod
         skills.append(catalogue_mod.take([agreement])[0])
+    common = (cards.load_json(meta).get("common_skills") if os.path.isfile(meta) else None) or []
+    if common and simulation:
+        skills = with_common(skills, common, adaptations or [], agreement)
+    elif adaptations:
+        raise ValueError("an adaptation of a common skill is built only into a simulation bundle of a template that carries "
+                         "the common set")
     rule = (cards.load_json(meta).get("tolerance_rule") if os.path.isfile(meta) else None) or None
     if rule and scientific_tasks:
         scientific_tasks = [with_rule_tolerance(t, rule, tools, skills) for t in scientific_tasks]
@@ -712,6 +794,9 @@ def diff_from_template(template_path, bundle_path):
         tp, bp = os.path.join(template_path, rel), os.path.join(bundle_path, rel)
         if cards.sha256_file(tp) != cards.sha256_file(bp):
             lines.append("modified  %s" % rel)
+    adapted = adaptations_section(bundle_path)
+    if adapted:
+        lines.extend(["", "# skills adapted from the common library (a next version each, made by this build for its engine)"] + adapted)
     lines.append("")
     for rel in sorted(t_files & b_files):
         tp, bp = os.path.join(template_path, rel), os.path.join(bundle_path, rel)

@@ -1,0 +1,64 @@
+{
+  "schema_version": "0.1",
+  "id": "series_maximum",
+  "version": 2,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the largest value of a sampled series and the independent variable at which it is first reached",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "series",
+      "unit": "1",
+      "meaning": "the samples as a list of pairs, each the independent variable in its own unit (a run's time at each step, a spectrum's wavelength at each channel) and the value there in the quantity's unit"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "found",
+      "unit": "1",
+      "meaning": "true when the series has a largest value; false, with why, when it is empty or a sample is not a pair"
+    },
+    {
+      "name": "maximum",
+      "unit": "1",
+      "meaning": "the largest value, in the quantity's unit"
+    },
+    {
+      "name": "at",
+      "unit": "1",
+      "meaning": "the independent variable at the first sample holding the largest value, in the independent variable's own unit, which no manifest of a series of any kind can name; the reader says it from the series it handed"
+    },
+    {
+      "name": "index",
+      "unit": "count",
+      "meaning": "that sample's place in the series, counted from zero"
+    },
+    {
+      "name": "points",
+      "unit": "count",
+      "meaning": "how many samples were handed"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "when found is false, why nothing was found"
+    }
+  ],
+  "entry": {
+    "script": "scripts/analysis.py",
+    "function": "analysis"
+  },
+  "validity": "a series as sampled: the largest sample, not the largest value between samples, since nothing here interpolates, so the maximum and its place are as fine as the sampling; where two samples hold the largest value the first is taken. It judges nothing: whether the maximum is near a reference is a tolerance a person chooses",
+  "source": {
+    "citation": "NIST/SEMATECH e-Handbook of Statistical Methods, section 1.3.5.6, Measures of Scale (read 2026-11-18, https://www.itl.nist.gov/div898/handbook/eda/section3/eda356.htm; meta_agent/inbox/materials/20261118-nist-sematech-measures-of-scale)",
+    "locus": "the entry range: the largest value minus the smallest value in a data set; the largest value of a data set is the one this skill gives"
+  },
+  "note": "Taken from what round two of the CFD test's clone built and used (series_maximum@v2 of run cfd/20261117-21, collect-1; its bundle session ran it in run cfd/20261117-14), written here as the first version of this library, its source read again by this seat; cfd-9 asked that the unit of the place of the maximum follow the series, which a manifest cannot name, so its meaning says whose it is to name. A benchmark that reports a largest coefficient and the instant it occurs, such as the DFG 2D-3 flow around a cylinder, is what it was made for, and a spectrum's peak is the second kind its cases show. No value of the source stands behind the worked cases: each is worked by hand in its worked field. v2 is v1 made common, unchanged in its code and its cases' values: every simulation bundle carries it (the person, 2026-11-18, docs/ideas/20261118.md; meta_agent/tasks/025), and each worked case names the kind of system it is worked on, at least two unrelated kinds. A build adapts it to an engine as a next version that names the engine and says adapted_from.",
+  "cases": "cases.json",
+  "common": true
+}

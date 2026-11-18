@@ -905,6 +905,48 @@
       "sha256": "sha256:9ab9b31ecfc265f9321eca10284d4d47f9d96c484b6d2eee10170a71f788f073"
     },
     {
+      "ref": "measurement_error@v2",
+      "id": "measurement_error",
+      "version": 2,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the measurement error of a measured value against a reference value, and its magnitude",
+      "description": "The measurement error of a measured value against a reference value, and its magnitude. Take it whenever a measured value is compared with a reference value of the same quantity, as a scientific task's agreement is.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "measured",
+          "unit": "1",
+          "meaning": "the measured quantity value, in the quantity's unit"
+        },
+        {
+          "name": "reference",
+          "unit": "1",
+          "meaning": "the reference quantity value it is compared with, in the same unit"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "error",
+          "unit": "1",
+          "meaning": "the measured value minus the reference value, in the quantity's unit; its sign says on which side of the reference the measured value lies"
+        },
+        {
+          "name": "magnitude",
+          "unit": "1",
+          "meaning": "the absolute value of the error, in the quantity's unit: what a tolerance in that unit is compared with"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/measurement_error@v2",
+      "sha256": "sha256:4594770b9dad58cc48cf9f24dd995d62fe552ebc9552594bad23f8d0a31dded0"
+    },
+    {
       "ref": "series_maximum@v1",
       "id": "series_maximum",
       "version": 1,
@@ -962,6 +1004,63 @@
       "sha256": "sha256:346046585de70a5ec3f8642d7494d51ac508b8fe34f1a22c64128c3b9ef29001"
     },
     {
+      "ref": "series_maximum@v2",
+      "id": "series_maximum",
+      "version": 2,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the largest value of a sampled series and the independent variable at which it is first reached",
+      "description": "The largest value of a sampled series and the value of the independent variable at which it is first reached, with its place in the series. Take it when a run or a measurement gives a series against time, wavelength or another variable and the question is its peak and where the peak falls, as a benchmark's largest coefficient and its instant are.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "series",
+          "unit": "1",
+          "meaning": "the samples as a list of pairs, each the independent variable in its own unit (a run's time at each step, a spectrum's wavelength at each channel) and the value there in the quantity's unit"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "found",
+          "unit": "1",
+          "meaning": "true when the series has a largest value; false, with why, when it is empty or a sample is not a pair"
+        },
+        {
+          "name": "maximum",
+          "unit": "1",
+          "meaning": "the largest value, in the quantity's unit"
+        },
+        {
+          "name": "at",
+          "unit": "1",
+          "meaning": "the independent variable at the first sample holding the largest value, in the independent variable's own unit, which no manifest of a series of any kind can name; the reader says it from the series it handed"
+        },
+        {
+          "name": "index",
+          "unit": "count",
+          "meaning": "that sample's place in the series, counted from zero"
+        },
+        {
+          "name": "points",
+          "unit": "count",
+          "meaning": "how many samples were handed"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "when found is false, why nothing was found"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/series_maximum@v2",
+      "sha256": "sha256:d636d54fc996e3ba51636fc6e0bb3dcfcca23cd5615e3ca0b837f08019b9612a"
+    },
+    {
       "ref": "standard_error_of_independent_estimates@v1",
       "id": "standard_error_of_independent_estimates",
       "version": 1,
@@ -1009,6 +1108,53 @@
       "sha256": "sha256:9e83e9becb8b0763b5dfe60df8a48c0871b08f9fe042ee50bd805b0e296c80e2"
     },
     {
+      "ref": "standard_error_of_independent_estimates@v2",
+      "id": "standard_error_of_independent_estimates",
+      "version": 2,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the mean of independent estimates of one quantity, their standard deviation and the standard error of the mean",
+      "description": "The mean of several independent estimates of one quantity, with their standard deviation and the standard error of the mean. Take it when a coefficient was fitted once per block of a run, per subset of particles, per replicate or per subset of scans, and its uncertainty is wanted.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "estimates",
+          "unit": "1",
+          "meaning": "independent estimates of one quantity, all in one unit: one per block of a run, per subset of particles, per replicate or per scan subset"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mean",
+          "unit": "1",
+          "meaning": "the mean of the estimates, in their unit"
+        },
+        {
+          "name": "standard_deviation",
+          "unit": "1",
+          "meaning": "the sample standard deviation, with n - 1"
+        },
+        {
+          "name": "standard_error",
+          "unit": "1",
+          "meaning": "the standard deviation over the square root of the number of estimates"
+        },
+        {
+          "name": "count",
+          "unit": "count",
+          "meaning": "how many estimates were handed"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/standard_error_of_independent_estimates@v2",
+      "sha256": "sha256:033b508c8b46b10a5aa025061238b321ed3c114cb1e03cdc8d8db2eca9a2b007"
+    },
+    {
       "ref": "tolerance_from_reference@v1",
       "id": "tolerance_from_reference",
       "version": 1,
@@ -1054,6 +1200,63 @@
       "uses_skills": [],
       "path": "data_analysis/tolerance_from_reference@v1",
       "sha256": "sha256:164db6a341720c586e51873f0d4886fcd7c4638282b41eb4943833120647f0d9"
+    },
+    {
+      "ref": "tolerance_from_reference@v2",
+      "id": "tolerance_from_reference",
+      "version": 2,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "a scientific task's tolerance by the person's standing rule: the reference's stated uncertainty, otherwise the larger of half a unit in its last printed digit and the run's own numerical error",
+      "description": "A scientific task's tolerance by the person's standing rule, from the reference as its source gives it: the uncertainty the source states, otherwise the larger of half a unit in the last digit the reference prints and the run's own numerical error where that was estimated. Take it when a scientific task compares a measured value with a reference and the person has given no tolerance for it.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "printed",
+          "unit": "1",
+          "meaning": "the reference value as its source prints it, as text, its last digit kept as printed (a trailing zero included); in the quantity's unit"
+        },
+        {
+          "name": "stated_uncertainty",
+          "unit": "1",
+          "meaning": "the uncertainty the source states for that value, in the quantity's unit, or null where it states none"
+        },
+        {
+          "name": "run_numerical_error",
+          "unit": "1",
+          "meaning": "the run's own numerical error of the quantity, in its unit, as an estimating skill gave it through the runner (the difference between two resolutions, or the standard error of a series the run produced); null where it was not estimated"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "tolerance",
+          "unit": "1",
+          "meaning": "the tolerance, in the quantity's unit; null, with why, where the inputs give none"
+        },
+        {
+          "name": "from",
+          "unit": "1",
+          "meaning": "stated_uncertainty, last_printed_digit or run_numerical_error: which of the rule's ways gave it; null where none did"
+        },
+        {
+          "name": "run_error_estimated",
+          "unit": "1",
+          "meaning": "true when a run's numerical error was handed and weighed, false when it was not estimated and the half-digit branch alone applied, null where the stated uncertainty was taken"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why no tolerance was given, or that the run's error was not estimated; else null"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/tolerance_from_reference@v2",
+      "sha256": "sha256:0051cd62408d278197d202d7b18ca7fe5db63620cc5494bb5d259e7f14562cfc"
     },
     {
       "ref": "diffusive_regime_from_msd@v1",
@@ -1304,6 +1507,68 @@
       "sha256": "sha256:954a2b74cb33f074f6394b02f8e228a696d3e89a4dc76775286bdf9503633ba6"
     },
     {
+      "ref": "power_law_exponent_along_sweep@v3",
+      "id": "power_law_exponent_along_sweep",
+      "version": 3,
+      "kind": "diagnostic",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "whether a quantity changes along a sweep, by the exponent of a power law fitted to it and that exponent's standard error, against a tolerance and a multiple it is handed",
+      "description": "Whether a quantity changes along a sweep of another, by the exponent of a power law fitted through it and that exponent's standard error, judged against a tolerance and a multiple it is handed. Take it when a person asks whether something changes with size, with a setting or with time, a diffusivity along the particles' diameters or a peak's width along the integration time alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "sweep",
+          "unit": "1",
+          "meaning": "the values the sweep took, all positive, in one unit"
+        },
+        {
+          "name": "values",
+          "unit": "1",
+          "meaning": "the quantity at each value of the sweep, all positive, in one unit"
+        },
+        {
+          "name": "tolerance",
+          "unit": "1",
+          "meaning": "the largest size of the exponent that counts as not changing; null when none is chosen"
+        },
+        {
+          "name": "multiple",
+          "unit": "1",
+          "meaning": "how many standard errors the exponent must clear the tolerance by, on either side; null when none is chosen"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "changes | does_not_change | undecided"
+        },
+        {
+          "name": "exponent",
+          "unit": "1",
+          "meaning": "the least-squares slope of the logarithm of the values on the logarithm of the sweep; null below three points"
+        },
+        {
+          "name": "exponent_standard_error",
+          "unit": "1",
+          "meaning": "the slope's standard error, the residual sum over n - 2 over the sum of squared deviations, rooted; null below three points"
+        },
+        {
+          "name": "points",
+          "unit": "count",
+          "meaning": "how many points were fitted"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "diagnostic/power_law_exponent_along_sweep@v3",
+      "sha256": "sha256:563f90b14d094b4cdb62a098771569c7abc851b1fdde001b6b8acf0de53a92cc"
+    },
+    {
       "ref": "series_settled@v1",
       "id": "series_settled",
       "version": 1,
@@ -1408,6 +1673,58 @@
       "sha256": "sha256:abc1eb727cbf1af42e7419df793b1bc1cf4075d9330d2357481e9b2c8b11d190"
     },
     {
+      "ref": "series_settled@v3",
+      "id": "series_settled",
+      "version": 3,
+      "kind": "diagnostic",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "whether a series of readings has settled, by the change between the means of its last two windows",
+      "description": "Whether a series of readings has settled, by comparing the means of its last two windows against a relative tolerance it is handed. Any run or measurement that reports a quantity over time, an engine's acceptance ratio or an instrument's sample temperature alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "series",
+          "unit": "1",
+          "meaning": "the readings in the order they were taken, all in one unit"
+        },
+        {
+          "name": "window",
+          "unit": "count",
+          "meaning": "how many readings each mean takes"
+        },
+        {
+          "name": "tolerance",
+          "unit": "1",
+          "meaning": "the largest relative change of the mean between the last two windows that counts as settled; null when none is chosen"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "settled | not_settled | undecided"
+        },
+        {
+          "name": "last_mean",
+          "unit": "1",
+          "meaning": "the mean of the last window, in the readings' unit; null when there are fewer than two windows"
+        },
+        {
+          "name": "relative_change",
+          "unit": "1",
+          "meaning": "the change between the last two windows' means over the last mean; null when it cannot be computed"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "diagnostic/series_settled@v3",
+      "sha256": "sha256:a23867f26ad53846b4afbf885525ab46b10bf09e64939834309b123f74c34f4b"
+    },
+    {
       "ref": "series_within_window@v1",
       "id": "series_within_window",
       "version": 1,
@@ -1510,6 +1827,58 @@
       "uses_skills": [],
       "path": "diagnostic/series_within_window@v2",
       "sha256": "sha256:2d0c348aa6c684b605d87fca82929fdc9e01f6dec6e92e12741261135b8fb388"
+    },
+    {
+      "ref": "series_within_window@v3",
+      "id": "series_within_window",
+      "version": 3,
+      "kind": "diagnostic",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "whether the mean of a series' last readings lies inside a band, between a lowest and a highest value it is handed",
+      "description": "Whether the recent readings of a series lie inside a window, a lowest and a highest value it is handed, by the mean of its last readings. Any run or measurement that must keep a quantity in a band, an engine's acceptance ratio or an instrument's sample temperature alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "series",
+          "unit": "1",
+          "meaning": "the readings in the order they were taken, all in one unit"
+        },
+        {
+          "name": "window",
+          "unit": "count",
+          "meaning": "how many of the last readings the mean takes"
+        },
+        {
+          "name": "low",
+          "unit": "1",
+          "meaning": "the lowest value inside the band, in the readings' unit; null when none is chosen"
+        },
+        {
+          "name": "high",
+          "unit": "1",
+          "meaning": "the highest value inside the band, in the readings' unit; null when none is chosen"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "within | below | above | undecided"
+        },
+        {
+          "name": "last_mean",
+          "unit": "1",
+          "meaning": "the mean of the last window, in the readings' unit; null when there are fewer readings than the window"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "diagnostic/series_within_window@v3",
+      "sha256": "sha256:7586e0427da2008a0c2cc1ffff2cc8296b46b52c6d80fa160e302337be7b945c"
     },
     {
       "ref": "box_length_for_volume_fraction@v1",

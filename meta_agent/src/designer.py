@@ -457,6 +457,15 @@ def builder_ids(root, rid):
     return sorted(out)
 
 
+def adapted_skills(root, rid):
+    """The folders of the skills this request's build adapted from the common library, under requests/<rid>/adapted/, one
+    folder <id>@v<N> each (tasks/025); none where the folder is not there."""
+    d = os.path.join(root, "requests", rid, "adapted")
+    if not os.path.isdir(d):
+        return []
+    return [os.path.join(d, n) for n in sorted(os.listdir(d)) if os.path.isfile(os.path.join(d, n, "skill.json"))]
+
+
 def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_skills, subagents, build_id, seat, created,
                        put, parent_build=None, note=None, held_skills=None):
     """S5 and S6 for one build: the bundle from the latest template, its diff, its gates read off a fresh
@@ -500,7 +509,9 @@ def build_and_validate(root, intake, goal, profile, brief, spec, tools, built_sk
                              skills=built_skills, subagents=subagents, workflow=intake.get("workflow"),
                              decisions=intake.get("decisions"),
                              words=bundle_mod.words_by_record(intake, goal, spec),
-                             ids=builder_ids(root, rid), questions=bundle_mod.questions_by_number(intake))
+                             ids=builder_ids(root, rid), questions=bundle_mod.questions_by_number(intake),
+                             simulation=(intake.get("tool") or {}).get("kind") == "engine",
+                             adaptations=adapted_skills(root, rid))
     diff_text = bundle_mod.diff_from_template(template_path, bundle_path)
     put(os.path.join(build_dir, "diff_from_template.txt"), diff_text)
 

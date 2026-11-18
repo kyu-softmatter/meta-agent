@@ -1,0 +1,75 @@
+[
+  {
+    "name": "a temperature printed as a whole number, the run's error not estimated: half a kelvin, and said so",
+    "system": "a chemical equilibrium computation",
+    "inputs": {
+      "printed": "1066",
+      "stated_uncertainty": null,
+      "run_numerical_error": null
+    },
+    "expect": {
+      "tolerance": 0.5,
+      "from": "last_printed_digit",
+      "run_error_estimated": false
+    },
+    "worked": "no run error was handed; the last printed digit is a unit of 1, half of it 0.5"
+  },
+  {
+    "name": "a drag coefficient printed to ten decimals and a run that resolves far less: the run's error",
+    "system": "a fluid flow simulation",
+    "inputs": {
+      "printed": "2.9437637214",
+      "stated_uncertainty": null,
+      "run_numerical_error": 0.002
+    },
+    "expect": {
+      "tolerance": 0.002,
+      "from": "run_numerical_error",
+      "run_error_estimated": true
+    },
+    "worked": "half the last printed digit is 5e-11; the run's error 0.002 is larger, so it is the tolerance"
+  },
+  {
+    "name": "a wavelength printed to one decimal and a run more precise than that: half the digit",
+    "system": "a spectrometer reading",
+    "inputs": {
+      "printed": "502.3",
+      "stated_uncertainty": null,
+      "run_numerical_error": 0.01
+    },
+    "expect": {
+      "tolerance": 0.05,
+      "from": "last_printed_digit",
+      "run_error_estimated": true
+    },
+    "worked": "half the last printed digit is 0.05; the run's error 0.01 is smaller, so 0.05 is the tolerance"
+  },
+  {
+    "name": "a stated uncertainty is taken before the digits and the run's error",
+    "system": "a fluid flow simulation",
+    "inputs": {
+      "printed": "0.47795",
+      "stated_uncertainty": 0.0001,
+      "run_numerical_error": 0.003
+    },
+    "expect": {
+      "tolerance": 0.0001,
+      "from": "stated_uncertainty"
+    },
+    "worked": "the source states 0.0001, so that is the tolerance, whatever the digits or the run"
+  },
+  {
+    "name": "a reference that is not a number gives none",
+    "system": "a spectrometer reading",
+    "inputs": {
+      "printed": "about three",
+      "stated_uncertainty": null,
+      "run_numerical_error": null
+    },
+    "expect": {
+      "tolerance": null,
+      "from": null
+    },
+    "worked": "the text is not a number, so no way of the rule gives a tolerance"
+  }
+]

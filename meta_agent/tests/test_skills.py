@@ -45,8 +45,9 @@ FOR_THE_RHEOMETER = ["bring_to_ready@v1", "calibrate@v1", "find_and_identify@v1"
                      "shear_stress_min_from_min_torque@v1", "viscosity_min_measurable_at_rate@v1"]
 SEED = sorted(FOR_THE_RHEOMETER + NOT_FOR_THE_RHEOMETER)
 SESSION_SKILLS = ["choose-session-level", "classify-knowledge", "run-skill"]
-# the skill template v16 puts into every bundle with a scientific task, for its agreement (tasks/019, cfd-7)
-AGREEMENT = "measurement_error@v1"
+# the skill the latest template puts into every bundle with a scientific task, for its agreement (tasks/019, cfd-7;
+# the common measurement_error@v2 from template v20, tasks/025)
+AGREEMENT = "measurement_error@v2"
 ENV = dict({k: v for k, v in os.environ.items() if k != "PYTHONPATH"}, PYTHONUTF8="1", PYTHONDONTWRITEBYTECODE="1")
 
 

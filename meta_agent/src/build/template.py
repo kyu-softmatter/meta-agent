@@ -138,6 +138,14 @@ v19 changes one script of the checks and the start task, on the person's
     rule and the skill), alike. From this version the builder derives such a
     tolerance where the person gave none, by tolerance_from_reference@v1
     through the runner, from the reference as its task prints it (bundle.py).
+v20 changes one script of the checks, on the person's word that every
+    simulation bundle carries a common set of library skills (tasks/025):
+    TEMPLATE.json names the set under common_skills; the builder puts it into
+    every bundle whose tool is an engine, and an adaptation to the engine, a
+    next version with adapted_from from the request's adapted/ folder, in place
+    of the common one, which the difference from the template lists
+    (bundle.py). src/validate_tasks.py reads the agreement skill's name from
+    TEMPLATE.json (measurement_error@v2).
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -158,8 +166,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v13": os.path.join(HERE, "template_v13"), "v14": os.path.join(HERE, "template_v14"),
            "v15": os.path.join(HERE, "template_v15"), "v16": os.path.join(HERE, "template_v16"),
            "v17": os.path.join(HERE, "template_v17"), "v18": os.path.join(HERE, "template_v18"),
-           "v19": os.path.join(HERE, "template_v19")}
-LATEST = "v19"
+           "v19": os.path.join(HERE, "template_v19"),
+           "v20": os.path.join(HERE, "template_v20")}
+LATEST = "v20"
 SOURCE = SOURCES[LATEST]
 
 

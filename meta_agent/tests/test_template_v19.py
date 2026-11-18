@@ -115,9 +115,9 @@ class TheBuilderDerivesByTheRule(unittest.TestCase):
 
 
 class TheVersion(unittest.TestCase):
-    def test_v19_is_the_latest_and_changes_the_checks_and_the_start_task(self):
+    def test_v19_changes_the_checks_and_the_start_task(self):
         v18 = template_mod.SOURCES["v18"]
-        self.assertEqual(template_mod.LATEST, "v19")
+        self.assertIn("v19", template_mod.SOURCES)                  # v20 is the latest since tasks/025
         self.assertEqual(cards.tree_files(v18), cards.tree_files(V19))
         changed = sorted(r for r in cards.tree_files(v18) if cards.sha256_file(os.path.join(v18, r)) != cards.sha256_file(os.path.join(V19, r)))
         self.assertEqual(changed, ["TEMPLATE.json", "src/validate_tasks.py", "tasks/001-start.md"])
