@@ -256,6 +256,43 @@
                         "from"
                       ]
                     }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "interval": {
+                        "type": "object",
+                        "properties": {
+                          "low": {
+                            "type": "number"
+                          },
+                          "high": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "low",
+                          "high"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "unit": {
+                        "$ref": "common.schema.json#/$defs/unit"
+                      },
+                      "chosen_by": {
+                        "const": "human"
+                      },
+                      "source": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "interval",
+                      "unit",
+                      "chosen_by"
+                    ],
+                    "additionalProperties": false,
+                    "description": "an acceptance interval the person gave (2026-11-18, CFD-T; meta_agent/failures.jsonl cfd-19): the measured value passes when it lies within [low, high], its edges as the source writes them; source names where the interval is read; only a person gives one, as the standing rule derives a half-width and never an interval"
                   }
                 ]
               },

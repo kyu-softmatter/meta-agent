@@ -1,0 +1,1 @@
+A scientific task's tolerance is an acceptance interval that says it was derived by the standing rule (chosen_by: rule). An interval is an acceptance the person gives (CFD-T, 2026-11-18); the standing rule derives a half-width around a reference value, never an interval (docs/ideas/20261118.md; meta_agent/failures.jsonl cfd-19).
