@@ -74,3 +74,7 @@ What to watch for in each engine:
 - the model and effort of each test session;
 - every tolerance a comparison needs;
 - whether the candidates that were not chosen are ever tested.
+
+## To check later
+
+- **QuTiP** (`https://qutip.org`, the quantum toolbox in Python): named by the person on 2026-11-18 as something to check later (`../../../docs/ideas/20261118.md`; a row of `../../inbox/materials/LINKS.md`). No brief, task or run is made for it until the person says to begin.
