@@ -311,6 +311,7 @@ STRIP_RES = [
     re.compile(r"\b(?:check|checks|step|steps|group|question|rule|rules|section|rev|revision|version|versions|item|k|N)\s*=?\s*\d+(?:\.\d+)*", re.I),
     re.compile(r"[§#]\s*\d+(?:\.\d+)*"),
     re.compile(r"\bv\d+(?:\.\d+)*"),
+    re.compile(r"\bversions?\b[\s:=|*`]*\d+(?:\.\d+)*`?", re.I),   # a version after the word and markup: | version | 2025.2 | (gmx-17)
 ]
 
 

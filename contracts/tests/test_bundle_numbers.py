@@ -46,6 +46,14 @@ class B6(unittest.TestCase):
         self.assertEqual(self.judge("- input: `fraction` (number, 1, required; the volume fraction), `n` (integer, 1; a count)\n"), [])
         self.assertEqual(len(self.judge("- input: `fraction` (number, 12, required)\n")), 1)
 
+    def test_a_version_after_the_word_version_and_markup_is_an_identifier(self):
+        # two unrelated kinds: a molecular engine's version in a table (run molecular-dynamics/20261117-23, gmx-17) and an
+        # instrument's firmware in a field
+        for text in ("| version | 2025.2 |\n", "- version: 2025.2\n", "**Version** 4.1 of the firmware\n", "version `2025.2`\n"):
+            self.assertEqual(self.judge(text), [], text)
+        self.assertEqual(len(self.judge("| cutoff | 1.2 |\n")), 1)          # a number in a table is still read
+        self.assertEqual(len(self.judge("version: 2025.2, with 4 ranks\n")), 1)
+
     def test_the_unit_one_stands_on_an_array_too(self):
         # two unrelated kinds: a sweep of equivalence ratios from a combustion engine (run chemical-kinetics/20261117-12,
         # ctrl-pair-3) and a list of strain amplitudes from an instrument
