@@ -38,7 +38,7 @@ A brief without answers leaves every policy, permission, source and tolerance fo
 
 ## How each task runs
 
-1. Begin with `begin-session`, as a design seat, and claim your task, one engine per seat.
+1. Begin with `begin-session`, in the role your task names, and claim your task, one engine per seat. `019` is a meta seat's (the person, 2026-11-17); the others are a design seat's until the person says otherwise.
 2. Wait for the person's word before writing the brief or making a run ("지금 말고 내가 말하면 실행").
 3. Write the brief, confirmed with the person, and commit it alone.
 4. Make the run, open one unattended session in its clone, and collect, all as `test-outside-the-repository` says. Model and effort: `choose-session-level` recommends and the person's word holds. Recommended: the level of the HOOMD-blue control test without answers, so that the runs can be compared.
