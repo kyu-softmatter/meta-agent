@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261117-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "025",
+  "answers": null,
+  "text": "Bundle check B18 has landed (see the commit before this note): a bundle of template v20 or later whose CAPABILITIES.json says tool_kind engine carries every skill of TEMPLATE.json's common_skills, in some version or as a next version with adapted_from. It judges only bundles that say tool_kind. Carrying part of the set marks nothing, since measurement_error@v2, the agreement skill, goes into every bundle with a scientific task (the echo bundles of meta_agent/tests carry it). Asked: the builder writes tool_kind into CAPABILITIES.json from the intake's tool.kind (engine, instrument, ...) in the next template version, so that B18 judges the simulation bundles it is for. Until then B18 judges no bundle the builder makes.",
+  "written_at": "2026-11-18T08:43:26-08:00"
+}
