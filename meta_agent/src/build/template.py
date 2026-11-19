@@ -210,6 +210,18 @@ v29 changes text and the template's card, on the person's word that a
     uncertainty, one stated range. The builder refuses an uncertainty that is
     negative or stands beside a range, and any under an earlier template.
 
+v30 adds src/engine_wait.py and changes one script of the checks and two
+    texts, after round two of the GROMACS test (gmx-21, gmx-22, gmx-24,
+    gmx-26, gmx-27; tasks/017): an adapter that starts an engine waits
+    through it, so that a budget counts running time only and an engine
+    paused from outside is not killed as hung; a call that gives up stops
+    the engine with TERM first, and a stopped run comes back as timeout or
+    cancelled, retryable, saying whether a call again resumes from a
+    checkpoint. The builder refuses an adapter that waits with a wall-clock
+    timeout under this template. src/validate_tasks.py prints every run of
+    the agreement skill and takes it for a task the rule left undecided;
+    tasks/001-start.md says what a scientific fail is once the call was made.
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -239,8 +251,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v26": os.path.join(HERE, "template_v26"),
            "v27": os.path.join(HERE, "template_v27"),
            "v28": os.path.join(HERE, "template_v28"),
-           "v29": os.path.join(HERE, "template_v29")}
-LATEST = "v29"
+           "v29": os.path.join(HERE, "template_v29"),
+           "v30": os.path.join(HERE, "template_v30")}
+LATEST = "v30"
 SOURCE = SOURCES[LATEST]
 
 

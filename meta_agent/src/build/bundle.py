@@ -90,6 +90,42 @@ def default_problems(tool_contracts):
     return out
 
 
+WAITS = ("run", "call", "check_call", "check_output", "wait", "communicate")   # the subprocess waits that take a timeout
+
+
+def engine_wait_problems(tools, template_path):
+    """Under a template whose TEMPLATE.json names engine_wait (v30 on): an adapter that waits on a process with a
+    wall-clock timeout, which kills an engine paused from outside as if it had hung (gmx-24), and a tool whose adapter
+    waits through src/engine_wait.py but whose contract does not declare the categories its stop returns, timeout and
+    cancelled (gmx-26). An adapter that does not parse is left to the checks that run it."""
+    import ast
+    meta = os.path.join(template_path, "TEMPLATE.json")
+    helper = cards.load_json(meta).get("engine_wait") if os.path.isfile(meta) else None
+    if not helper:
+        return []
+    out = []
+    for t in tools:
+        try:
+            tree = ast.parse(t.get("adapter_source") or "")
+        except SyntaxError:
+            continue
+        timed = sorted({n.func.attr if isinstance(n.func, ast.Attribute) else n.func.id for n in ast.walk(tree)
+                        if isinstance(n, ast.Call) and any(k.arg == "timeout" for k in n.keywords)
+                        and ((isinstance(n.func, ast.Attribute) and n.func.attr in WAITS)
+                             or (isinstance(n.func, ast.Name) and n.func.id in WAITS))})
+        if timed:
+            out.append("tool %s: its adapter waits on a process with a wall-clock timeout (%s), which kills an engine paused "
+                       "from outside as if it had hung; it waits through %s (engine_wait.run, whose budget counts running "
+                       "time only and which stops the engine with TERM first)" % (t["name"], ", ".join(timed), helper))
+        uses = any((isinstance(n, ast.Import) and any(a.name == "engine_wait" for a in n.names))
+                   or (isinstance(n, ast.ImportFrom) and n.module == "engine_wait") for n in ast.walk(tree))
+        declared = set((t.get("contract") or {}).get("errors") or [])
+        if uses and not {"timeout", "cancelled"} <= declared:
+            out.append("tool %s: its adapter waits through %s, whose stop returns timeout or cancelled, and its contract "
+                       "declares %s" % (t["name"], helper, ", ".join(sorted(declared)) or "no error"))
+    return out
+
+
 def gate_line(tc):
     """Where the gate is and which file opens it (test run 20261116-8: a session could not tell which of the two
     envelope files opened a tool's gate)."""
@@ -931,6 +967,9 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     faults = default_problems([t["contract"] for t in tools])
     if faults:
         raise ValueError("a tool's input is left to its adapter: " + "; ".join(faults))
+    faults = engine_wait_problems(tools, template_path)
+    if faults:
+        raise ValueError("a tool's adapter does not wait on its engine as this template's does: " + "; ".join(faults))
     shutil.copytree(template_path, bundle_path, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     add_skills(bundle_path, rows, subagents)
     add_pages(bundle_path, [r["ref"] for r in skills])
