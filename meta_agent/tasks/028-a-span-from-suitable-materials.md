@@ -14,4 +14,4 @@
 - a test shows a built bundle deriving a span from cards it was not handed;
 - `python contracts/validate.py` prints `VERDICT PASS`.
 
-**Must not:** recall a value from memory; take a value from a source without a material card; choose which materials are suitable on the model's word alone, without writing how each compares; widen the interval by any statistic or multiplier; overturn a pass the person gave by judgement.
+**Must not:** shape the skill, the template or the search around the drag coefficient or solvation, which are worked cases only: the skill serves any quantity of any engine or instrument (the person, 2026-11-19, "반드시 항력계수, 솔베이션에만 해당하는게 아닌건 알지?"); recall a value from memory; take a value from a source without a material card; choose which materials are suitable on the model's word alone, without writing how each compares; widen the interval by any statistic or multiplier; overturn a pass the person gave by judgement.
