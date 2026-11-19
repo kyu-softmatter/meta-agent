@@ -256,3 +256,11 @@ What the words settle:
 Not settled:
 - Since production is skipped, whether the reference for the production averages (gmx-25) and the hydrogen-bond and secondary-structure reports are still asked of round three, since they come from a production trajectory, or are left for a later round. This seat will put this to the person when the clone's brief is written.
 - The count after genion.
+
+## Run 20261118-1 removed (2026-11-19)
+
+The hub relayed the person's word "완료된 세션 정리". This seat had already read the run, and what it showed is committed above (aded871). Run `20261118-1` was then removed with its four sessions' transcripts (`testfolder.py wipe --sessions`). Its four collections stay in the log folder. They are never committed.
+
+Environments: the run's environment (`runs/env`, pixi) was inside the run and went with it. This seat built none outside the test folder, and no environment remains in the temporary folder.
+
+The design role had been asked to read collect-4 (note 825166f) before the removal. The collection is still there for it to read.
