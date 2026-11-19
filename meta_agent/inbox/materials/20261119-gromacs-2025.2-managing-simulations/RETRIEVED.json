@@ -1,0 +1,26 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human (asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json); this file becomes a queued card when check 17 allows it.",
+  "kind": "manual",
+  "citation": "GROMACS 2025.2 documentation (the GROMACS development team): User guide, 'Managing long simulations', sections 'Are continuations exact?' and 'Reproducibility'",
+  "location": {
+    "url": "https://manual.gromacs.org/2025.2/user-guide/managing-simulations.html"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-19T07:23:02Z",
+    "content_hash": "sha256:4ca03e791b2c076949aebd9306749684e902169fae0b055b3ffca0814465eafa",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261117-8",
+  "access": "the maker's documentation; anonymous, read-only, no login",
+  "how_found": "searched for how far a set-up count (the water molecules gmx solvate adds) is allowed to differ between runs, versions or machines, on the person's question of 2026-11-19 (tasks/017)",
+  "licence": "not read for a licence; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "question": "tasks/017, the tolerance of a set-up count",
+      "locus": "'Reproducibility': precision, the number of cores, the processor type, compiler optimisation and run-time choices affect the output; an individual trajectory is not reproducible, while the observables (energies, diffusion constants) converge and are"
+    }
+  ],
+  "state": "queued",
+  "registered": "the person's word, not given"
+}
