@@ -280,10 +280,24 @@
                         "$ref": "common.schema.json#/$defs/unit"
                       },
                       "chosen_by": {
-                        "const": "human"
+                        "enum": [
+                          "human",
+                          "rule"
+                        ]
                       },
                       "source": {
                         "type": "string"
+                      },
+                      "rule": {
+                        "type": "string",
+                        "pattern": "^docs/ideas/[0-9]{8}\\.md"
+                      },
+                      "derived_by": {
+                        "type": "string",
+                        "pattern": "^computed:[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+                      },
+                      "from": {
+                        "const": "literature_span"
                       }
                     },
                     "required": [
@@ -292,7 +306,24 @@
                       "chosen_by"
                     ],
                     "additionalProperties": false,
-                    "description": "an acceptance interval the person gave (2026-11-18, CFD-T; meta_agent/failures.jsonl cfd-19): the measured value passes when it lies within [low, high], its edges as the source writes them; source names where the interval is read; only a person gives one, as the standing rule derives a half-width and never an interval"
+                    "description": "an acceptance interval: one the person gave (2026-11-18, CFD-T; meta_agent/failures.jsonl cfd-19), or the span of comparable published values derived under the standing rule (chosen_by rule, from literature_span, naming the rule and the skill; the person, 2026-11-18, 'Yes, add literature span'); the measured value passes when it lies within [low, high], its edges as the source writes them; source names where it is read",
+                    "if": {
+                      "properties": {
+                        "chosen_by": {
+                          "const": "rule"
+                        }
+                      },
+                      "required": [
+                        "chosen_by"
+                      ]
+                    },
+                    "then": {
+                      "required": [
+                        "rule",
+                        "derived_by",
+                        "from"
+                      ]
+                    }
                   }
                 ]
               },
