@@ -189,6 +189,19 @@ v27 changes the gate, one script of the checks, .claude/settings.json and
     tolerance and the run's own error; the hook runs the self-check by the
     project's path; the common set carries series_settled@v4.
 
+v28 changes one script of the checks and text, on the person's amended and
+    widened rule for tolerances (tasks/028): src/validate_tasks.py takes the
+    rule's branches in order. A scientific task may carry materials
+    (measure.materials: entries naming a material, how its system compares,
+    and one value or one stated range); literature_span@v1 gives their span
+    [lowest, highest] through the runner, and the rule's skill, now
+    tolerance_from_reference@v5, takes it after a stated uncertainty and
+    before the printed digit and the run's own error, as an acceptance
+    interval, chosen_by rule, from literature_span. A refinement is run only
+    where no earlier branch gave the tolerance. The builder derives the span
+    for a task that names no refinement and refuses entries that do not name
+    their material or say how it compares.
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -216,8 +229,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v24": os.path.join(HERE, "template_v24"),
            "v25": os.path.join(HERE, "template_v25"),
            "v26": os.path.join(HERE, "template_v26"),
-           "v27": os.path.join(HERE, "template_v27")}
-LATEST = "v27"
+           "v27": os.path.join(HERE, "template_v27"),
+           "v28": os.path.join(HERE, "template_v28")}
+LATEST = "v28"
 SOURCE = SOURCES[LATEST]
 
 

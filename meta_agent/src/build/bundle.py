@@ -712,12 +712,63 @@ def rule_takes_exact(rule):
     return "exact" in names
 
 
-def with_rule_tolerance(task, rule, tools, skills):
+def task_materials(task):
+    """The entries a scientific task carries for the one field it states (measure.materials, template v28), or None."""
+    measure = task.get("measure") or {}
+    stated, materials = measure.get("stated"), measure.get("materials")
+    if not isinstance(materials, dict) or not isinstance(stated, dict) or len(stated) != 1:
+        return None
+    entries = materials.get(next(iter(stated)))
+    return entries if isinstance(entries, list) else None
+
+
+def materials_problems(tasks, template_path):
+    """What keeps a scientific task's materials from entering a span in this bundle (the person's standing rule for
+    tolerances, branch 3; meta_agent/tasks/028): a template that names no span skill, materials on a task that does not
+    state one field, or an entry that does not name its material, does not say how the material's system, quantity and
+    engine compare with the task's, or gives neither one value nor the two edges of one range. Which materials are
+    suitable is never left unsaid, so such an entry is refused here and not passed over."""
+    meta = os.path.join(template_path, "TEMPLATE.json")
+    m = cards.load_json(meta) if os.path.isfile(meta) else {}
+    out = []
+    carrying = [t for t in tasks or [] if isinstance((t.get("measure") or {}).get("materials"), dict)]
+    if carrying and not m.get("span_skill"):
+        out.append("the template %s takes no span of materials; it needs v28 or later" % m.get("version"))
+    number = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool)
+    for t in carrying:
+        tid, stated = t.get("id"), (t.get("measure") or {}).get("stated")
+        if not isinstance(stated, dict) or len(stated) != 1:
+            out.append("%s: materials give the span of one stated field" % tid)
+            continue
+        field = next(iter(stated))
+        for name, entries in sorted(t["measure"]["materials"].items()):
+            if name != field:
+                out.append("%s: materials are given for %s, which the task does not state" % (tid, name))
+            for n, e in enumerate(entries if isinstance(entries, list) else [None], 1):
+                where = "%s: entry %d of %s" % (tid, n, name)
+                if not isinstance(e, dict):
+                    out.append("%s is not an object" % where)
+                    continue
+                if not (isinstance(e.get("material"), str) and e["material"].strip()):
+                    out.append("%s names no material" % where)
+                if not (isinstance(e.get("compares"), str) and e["compares"].strip()):
+                    out.append("%s does not say how its material's system, quantity and engine compare with the task's" % where)
+                value, edges = e.get("value") is not None, e.get("low") is not None or e.get("high") is not None
+                if value == edges or (value and not number(e["value"])) or (
+                        edges and not (number(e.get("low")) and number(e.get("high")))):
+                    out.append("%s gives neither one value nor the two edges of one range" % where)
+    return out
+
+
+def with_rule_tolerance(task, rule, tools, skills, span_skill=None):
     """The task with a tolerance derived by the person's standing rule of 2026-11-18, where the person gave none and the
     task states one field (a tolerance judges one field): the rule's skill runs through the runner on the reference as
     the task prints it (measure.printed), else on the stored number, with the stated uncertainty where the task gives
-    one (measure.stated_uncertainty). The task records how the tolerance came under tolerance_derivation. A task the
-    rule gives no tolerance for is left as it is, undecided."""
+    one (measure.stated_uncertainty). Where the rule's skill takes a span (tolerance_from_reference@v5 on) and the task
+    carries materials, the span's skill runs first, through the runner, and its two edges are handed on: with no
+    stated uncertainty the tolerance is then that interval, chosen_by rule, from literature_span (the person,
+    2026-11-18, 'Yes, add literature span'; 2026-11-19, 'Yes, widen it'). The task records how the tolerance came under
+    tolerance_derivation. A task the rule gives no tolerance for is left as it is, undecided."""
     stated = (task.get("measure") or {}).get("stated")
     if task.get("tolerance") or not isinstance(stated, dict) or len(stated) != 1:
         return task
@@ -745,8 +796,29 @@ def with_rule_tolerance(task, rule, tools, skills):
         # an exact reference has no printed digit to be uncertain in, and before any run there is no run's error: the
         # rule gives no tolerance at build time, and the task's tolerance is the run's own error where it refines (v26)
         inputs["exact"] = ((task.get("measure") or {}).get("exact") or {}).get(field)
+    span = None
+    if "span_low" in names:
+        # branch 3 of the rule: the span of the task's materials, by the span's skill, before the printed digit; null
+        # where the task carries none or the skill gave none
+        inputs["span_low"] = inputs["span_high"] = None
+        entries = task_materials(task)
+        if entries is not None and span_skill:
+            span = runner_mod.run(span_skill, {"entries": entries})
+            so = span.get("outputs") or {}
+            if span.get("verdict") == "ran" and so.get("low") is not None and so.get("high") is not None:
+                inputs["span_low"], inputs["span_high"] = so["low"], so["high"]
     record = runner_mod.run(rule["skill"], inputs)
     out = record.get("outputs") or {}
+    span_record = {"skill": span_skill, "inputs": span.get("inputs"), "verdict": span.get("verdict"),
+                   "outputs": span.get("outputs"), "why": span.get("why")} if span is not None else None
+    if record.get("verdict") == "ran" and out.get("from") == "literature_span" and out.get("interval_low") is not None:
+        t = dict(task)
+        t["tolerance"] = {"interval": {"low": out["interval_low"], "high": out["interval_high"]},
+                          "unit": stated_unit(task, tools, skills), "chosen_by": "rule", "rule": rule["rule"],
+                          "derived_by": "computed:%s" % span_skill, "from": "literature_span"}
+        t["tolerance_derivation"] = {"skill": rule["skill"], "inputs": record.get("inputs"), "outputs": out,
+                                     "printed_from": None, "span": span_record}
+        return t
     if record.get("verdict") != "ran" or out.get("tolerance") is None:
         return task
     t = dict(task)
@@ -754,6 +826,8 @@ def with_rule_tolerance(task, rule, tools, skills):
                       "rule": rule["rule"], "derived_by": "computed:%s" % rule["skill"], "from": out["from"]}
     t["tolerance_derivation"] = {"skill": rule["skill"], "inputs": record.get("inputs"), "outputs": out,
                                  "printed_from": printed_from if out["from"] == "last_printed_digit" else None}
+    if span_record is not None:
+        t["tolerance_derivation"]["span"] = span_record       # the materials gave no span, and the record says why
     return t
 
 
@@ -794,6 +868,18 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
         for ref in need:
             if ref not in {r["ref"] for r in skills}:
                 skills.append(catalogue_mod.take([ref])[0])
+    faults = materials_problems(scientific_tasks, template_path)
+    if faults:
+        raise ValueError("a scientific task's materials cannot enter a span in this bundle: " + "; ".join(faults))
+    span_skill = cards.load_json(meta).get("span_skill") if os.path.isfile(meta) else None
+    if span_skill and any(task_materials(t) is not None for t in scientific_tasks or []):
+        # a task that carries materials is judged by their span where the rule reaches it (tasks/028): the bundle carries
+        # the span's skill, the rule's skill that takes it and the skill that judges an interval
+        from ..skills import catalogue as catalogue_mod
+        m28 = cards.load_json(meta)
+        for ref in (span_skill, (m28.get("tolerance_rule") or {}).get("skill"), m28.get("interval_skill")):
+            if ref and ref not in {r["ref"] for r in skills}:
+                skills.append(catalogue_mod.take([ref])[0])
     interval = cards.load_json(meta).get("interval_skill") if os.path.isfile(meta) else None
     if interval and interval not in {r["ref"] for r in skills} and any(
             isinstance(t.get("tolerance"), dict) and "interval" in t["tolerance"] for t in scientific_tasks or []):
@@ -812,7 +898,7 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
         raise ValueError("scientific task(s) %s mark a reference exact, which the rule's skill of this template (%s) does "
                          "not take; it needs v26 or later" % (", ".join(map(str, marked)), (rule or {}).get("skill")))
     if rule and scientific_tasks:
-        scientific_tasks = [with_rule_tolerance(t, rule, tools, skills) for t in scientific_tasks]
+        scientific_tasks = [with_rule_tolerance(t, rule, tools, skills, span_skill) for t in scientific_tasks]
     rows = check_drawing(skills, subagents, {t["name"]: t["contract"].get("side_effects") for t in tools}, template_path)
     fill = dict(fill)
     if skills:

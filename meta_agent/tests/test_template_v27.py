@@ -176,7 +176,7 @@ class TheDocumentName(unittest.TestCase):
 
 class TheVersion(unittest.TestCase):
     def test_v27_is_the_latest_and_changes_the_gate_one_check_the_hook_and_text(self):
-        self.assertEqual(template_mod.LATEST, "v27")
+        self.assertIn("v27", template_mod.SOURCES)                  # v28 is the latest since the rule takes a span
         changed = sorted(r for r in cards.tree_files(V26) if cards.sha256_file(os.path.join(V26, r)) != cards.sha256_file(os.path.join(V27, r)))
         self.assertEqual(changed, [".claude/settings.json", "CLAUDE.md", "TEMPLATE.json", "src/gate.py", "src/validate_tasks.py"])
 
