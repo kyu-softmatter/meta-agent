@@ -182,6 +182,13 @@ v26 changes one script of the checks and TEMPLATE.json (rheotool-28; the design
     it: the run's own error alone gives the tolerance. The builder hands the
     mark too, and refuses it under a template whose rule's skill cannot take it.
 
+v27 changes the gate, one script of the checks, .claude/settings.json and
+    text (rheotool-22, -23, -29, -32): src/gate.py opens an install from a
+    pair allowed for named engines alone only in a bundle of one of them, as
+    check B9 does; src/validate_tasks.py prints each scientific task's
+    tolerance and the run's own error; the hook runs the self-check by the
+    project's path; the common set carries series_settled@v4.
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -208,8 +215,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v23": os.path.join(HERE, "template_v23"),
            "v24": os.path.join(HERE, "template_v24"),
            "v25": os.path.join(HERE, "template_v25"),
-           "v26": os.path.join(HERE, "template_v26")}
-LATEST = "v26"
+           "v26": os.path.join(HERE, "template_v26"),
+           "v27": os.path.join(HERE, "template_v27")}
+LATEST = "v27"
 SOURCE = SOURCES[LATEST]
 
 

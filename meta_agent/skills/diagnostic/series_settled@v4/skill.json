@@ -1,0 +1,59 @@
+{
+  "schema_version": "0.1",
+  "id": "series_settled",
+  "version": 4,
+  "kind": "diagnostic",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "whether a series of readings has settled, by the change between the means of its last two windows",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "series",
+      "unit": "1",
+      "meaning": "the readings in the order they were taken, all in one unit"
+    },
+    {
+      "name": "window",
+      "unit": "count",
+      "meaning": "how many readings each mean takes; null when no row gives it, which leaves the state undecided"
+    },
+    {
+      "name": "tolerance",
+      "unit": "1",
+      "meaning": "the largest relative change of the mean between the last two windows that counts as settled; null when none is chosen"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "state",
+      "unit": "1",
+      "meaning": "settled | not_settled | undecided"
+    },
+    {
+      "name": "last_mean",
+      "unit": "1",
+      "meaning": "the mean of the last window, in the readings' unit; null when there are fewer than two windows"
+    },
+    {
+      "name": "relative_change",
+      "unit": "1",
+      "meaning": "the change between the last two windows' means over the last mean; null when it cannot be computed"
+    }
+  ],
+  "entry": {
+    "script": "scripts/diagnostic.py",
+    "function": "diagnostic"
+  },
+  "validity": "readings under fixed conditions, in one unit; a last mean of zero gives no relative change",
+  "source": {
+    "citation": "A. Grossfield, P. N. Patrone, D. R. Roe, A. J. Schultz, D. W. Siderius, D. M. Zuckerman, Best Practices for Quantification of Uncertainty and Sampling Quality in Molecular Simulations [Article v1.0], Living J. Comput. Mol. Sci. 1 (2019) 5067, doi:10.33011/livecoms.1.1.5067 (version dated January 3, 2019) (read 2026-11-17, https://livecomsjournal.org/index.php/livecoms/article/download/v1i1e5067/913/2595; meta_agent/inbox/materials/20261117-grossfield-2018-uncertainty-best-practices)",
+    "locus": "Sec. 7.3.2, Eq. (13): a block average is the arithmetic mean of n sequential measurements; Sec. 5: values of observables that depend sensitively on the choice of the equilibration time call for further sampling; Sec. 4.4: the overlap of independent estimates is a proxy for convergence"
+  },
+  "cases": "cases.json",
+  "note": "v1 with a source found by search for the block means it compares; the code and the cases are v1's. The criterion, the largest relative change between the last two block means, is the tolerance it is handed, never the source's or this skill's. No value of the source stands behind the worked cases: each is worked by hand in its worked field. v3 is v2 made common, unchanged in its code and its cases' values: every simulation bundle carries it (the person, 2026-11-18, docs/ideas/20261118.md; meta_agent/tasks/025), and each worked case names the kind of system it is worked on, at least two unrelated kinds. A build adapts it to an engine as a next version that names the engine and says adapted_from. v4 takes a window that is null, or not a whole number of at least one, as undecided, as it takes too short a series, where v3 raised on a null window (TypeError; a bundle bound the window to a row with no value, meta_agent/failures.jsonl rheotool-22); every case of v3 gives the same under v4. Common, as v3.",
+  "common": true
+}

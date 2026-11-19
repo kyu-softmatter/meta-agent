@@ -1988,6 +1988,58 @@
       "sha256": "sha256:a23867f26ad53846b4afbf885525ab46b10bf09e64939834309b123f74c34f4b"
     },
     {
+      "ref": "series_settled@v4",
+      "id": "series_settled",
+      "version": 4,
+      "kind": "diagnostic",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "whether a series of readings has settled, by the change between the means of its last two windows",
+      "description": "Whether a series of readings has settled, by comparing the means of its last two windows against a relative tolerance it is handed. Any run or measurement that reports a quantity over time, an engine's acceptance ratio or an instrument's sample temperature alike.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "series",
+          "unit": "1",
+          "meaning": "the readings in the order they were taken, all in one unit"
+        },
+        {
+          "name": "window",
+          "unit": "count",
+          "meaning": "how many readings each mean takes; null when no row gives it, which leaves the state undecided"
+        },
+        {
+          "name": "tolerance",
+          "unit": "1",
+          "meaning": "the largest relative change of the mean between the last two windows that counts as settled; null when none is chosen"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "settled | not_settled | undecided"
+        },
+        {
+          "name": "last_mean",
+          "unit": "1",
+          "meaning": "the mean of the last window, in the readings' unit; null when there are fewer than two windows"
+        },
+        {
+          "name": "relative_change",
+          "unit": "1",
+          "meaning": "the change between the last two windows' means over the last mean; null when it cannot be computed"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "diagnostic/series_settled@v4",
+      "sha256": "sha256:c377337aa137f82e258b7d0567b569aeeb3d1b7642ead3e96d59b999f42ba2fa"
+    },
+    {
       "ref": "series_within_window@v1",
       "id": "series_within_window",
       "version": 1,

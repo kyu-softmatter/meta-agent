@@ -88,6 +88,16 @@ def names_in(text, names):
     return sorted(n for n in set(names) if re.search(r"(?<![A-Za-z0-9_-])%s(?![A-Za-z0-9_-])" % re.escape(n), text or ""))
 
 
+def document_name(source):
+    """The name of the document a tool profile's source names, for CAPABILITIES.json: each path or link in it by its
+    last part, a trailing slash ignored, and the words around them as they are written, so that no path of the
+    builder's tree enters a bundle. A source split at its last slash cut a sentence that names a path, and a link
+    ending in a slash came out empty (meta_agent/failures.jsonl rheotool-29)."""
+    def last(m):
+        return m.group(0).rstrip("/").split("/")[-1] or m.group(0)
+    return re.sub(r"[^\s()\[\],;]*/[^\s()\[\],;]*", last, str(source).replace("\\", "/").strip())
+
+
 def capabilities(profile, agent_name, tools_here=None, held=None, held_items=None):
     """CAPABILITIES.json: observed and derived claims only; inferred to unverified, unknown to gaps.
 
@@ -105,7 +115,7 @@ def capabilities(profile, agent_name, tools_here=None, held=None, held_items=Non
     absent = sorted({t for h in held for t in h.get("calls_tools") or []} - set(tools_here or []))
     if tools_here is not None and source:
         source = "the documentation of %s (%s), as the builder read it; the document is not in this directory" % (
-            profile["tool"]["name"], str(source).replace("\\", "/").split("/")[-1])
+            profile["tool"]["name"], document_name(source))
     cap = {"schema_version": "0.1", "agent": agent_name, "tool": profile["tool"]["name"],
            "source": source, "observed": [], "derived": [], "unverified": [], "gaps": []}
     if tools_here is not None:

@@ -93,7 +93,7 @@ class TheBuilder(unittest.TestCase):
 
 class TheVersion(unittest.TestCase):
     def test_v26_is_the_latest_and_changes_one_script_and_its_card(self):
-        self.assertEqual(template_mod.LATEST, "v26")
+        self.assertIn("v26", template_mod.SOURCES)                  # v27 is the latest since the runtime gate reads engines
         changed = sorted(r for r in cards.tree_files(V25) if cards.sha256_file(os.path.join(V25, r)) != cards.sha256_file(os.path.join(V26, r)))
         self.assertEqual(changed, ["TEMPLATE.json", "src/validate_tasks.py"])
         m = cards.load_json(os.path.join(V26, "TEMPLATE.json"))
