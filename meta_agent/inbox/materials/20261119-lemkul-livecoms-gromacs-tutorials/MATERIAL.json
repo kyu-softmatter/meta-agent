@@ -1,0 +1,75 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261119-lemkul-livecoms-gromacs-tutorials",
+  "revision": 1,
+  "author": "meta-macbook-20261119-1",
+  "created_at": "2026-11-19T17:48:25Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "First found by the search of meta-macbook-20261117-8 on 2026-11-19 (RETRIEVED.json of this folder, read there for the lysozyme tutorial); read again by this seat on 2026-11-19, with the same content hash, for meta_agent/tasks/028: a material of the worked cases of meta_agent/skills/data_analysis/literature_span@v2 that show a value with its stated uncertainty. What was read: Tutorial 5, 'Ethanol Hydration Free Energy', section 'Run the Free Energy Calculations', the paragraph after the listing of the analysis tool's output: the article's own result for the hydration free energy of ethanol with the error that tool prints, in kJ/mol; and, in the same paragraph, an experimental value and a value computed with another force field with its uncertainty, in kcal/mol, each quoted from another paper that this seat did not read. The same sentence gives the article's own result a second time in kcal/mol without its sign, which is not taken. How it compares, after classify-knowledge: no task of this repository measures this quantity; for a task that follows this tutorial the article's own result is the same system, quantity and engine, and the two quoted values are the same quantity by name only, their conditions unread.",
+  "kind": "paper",
+  "about": {
+    "name": {
+      "value": "J. A. Lemkul, From Proteins to Perturbed Hamiltonians: A Suite of Tutorials for the GROMACS-2025 Molecular Simulation Package (LiveCoMS), the author's source of the article",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261119-lemkul-livecoms-gromacs-tutorials",
+          "locus": "the title and author fields at the head of the file"
+        }
+      ]
+    },
+    "role": {
+      "value": "engine",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261119-lemkul-livecoms-gromacs-tutorials",
+          "locus": "the title names the engine's package, and every tutorial's commands are the engine's"
+        }
+      ]
+    },
+    "methods": {
+      "value": [
+        "molecular dynamics",
+        "free energy calculation"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261119-lemkul-livecoms-gromacs-tutorials",
+          "locus": "the headings of Tutorials 1 and 5"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://raw.githubusercontent.com/jalemkul/gmx_tutorials_livecoms/master/gmx_tutorials.tex"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-19T16:31:00Z",
+    "content_hash": "sha256:b897f7d37cbd0f09f54584df87ced3f54ce89cafac5daf9a81592ed14ad4183c",
+    "archived": null
+  },
+  "added_by": "meta-macbook-20261119-1",
+  "added_at": "2026-11-19",
+  "entry_path": "search",
+  "license_note": {
+    "value": null,
+    "state": "unknown"
+  },
+  "may_quote": "unknown",
+  "state": "queued",
+  "state_reason": null,
+  "questions": [
+    "registered: may this source, found by a seat's search and read for values with stated uncertainties, be registered?",
+    "may_quote: may an excerpt of it be kept? No licence was read in the file."
+  ]
+}

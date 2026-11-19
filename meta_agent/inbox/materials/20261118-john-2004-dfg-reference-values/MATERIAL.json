@@ -13,7 +13,7 @@
   "case_gaps": [],
   "degraded": [],
   "status": "draft",
-  "note": "First found by the search of meta-macbook-20261117-2 on 2026-11-18 (RETRIEVED.json of this folder); read again and used by this seat, with the same content hash. What it was read for, what it gives and how its system compares with the task's are in v2_RETRIEVED.json of this folder, written before check 17 took a seat's card (c84bd5e). Read for meta_agent/tasks/028, the span of branch 3 of the person's standing rule for tolerances; it is a material of the worked cases of meta_agent/skills/data_analysis/literature_span@v1, whose entries name the reading record of this folder.",
+  "note": "First found by the search of meta-macbook-20261117-2 on 2026-11-18 (RETRIEVED.json of this folder); read again and used by this seat, with the same content hash. What it was read for, what it gives and how its system compares with the task's are in v2_RETRIEVED.json of this folder, written before check 17 took a seat's card (c84bd5e). Read for meta_agent/tasks/028, the span of branch 3 of the person's standing rule for tolerances; it is a material of the worked cases of meta_agent/skills/data_analysis/literature_span@v1, whose entries name the reading record of this folder. Since the person's 'Widen by uncertainty' of 2026-11-19 (docs/ideas/20261119.md), the bound the paper states for its reference value of the maximal drag coefficient (section 4, the sentence after equation 8, printed page 784: its error to the true value is less than 5e-7) enters a span as that value's uncertainty, a bound; v2_RETRIEVED.json of this folder, written before that word, calls it no stated range, and literature_span@v2's worked cases take it.",
   "kind": "paper",
   "about": {
     "name": {
