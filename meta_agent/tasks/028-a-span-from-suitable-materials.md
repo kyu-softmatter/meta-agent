@@ -34,8 +34,26 @@
 **Not done:** the test of a built bundle deriving a span from cards it was not handed. It needs a run, and a run waits for the hub's word while GROMACS production holds the computer.
 
 **Open, and whose:**
-- Whether a value a source gives with an uncertainty beside it enters as a range is not settled by the person's words (`../../docs/ideas/20261119.md`). The skill takes it as the value alone. The person's.
+- *Settled on 2026-11-19 ("Widen by uncertainty"):* whether a value a source gives with an uncertainty enters as a range. See "A stated uncertainty widens the span" below.
 - Which of a source's numbers is its value for the quantity (its own result, or every row of its refinement study) is the reader's to say in `compares`. The worked cases take a source's own result only. What makes a material suitable is the person's.
 - Two values printed to their sources' time steps give a span that says nothing of either's resolution (the second worked case). Whether such a span should judge is the person's.
-- The session skills do not yet name `measure.materials`. Asked of the design role.
+- *Landed by the design role (`9c510b2`):* the session skills name `measure.materials`.
 - A span these cases show judges no build. The passes the person gave by judgement stay as they are.
+
+## Material cards (2026-11-19)
+
+Check 17 now takes a card a seat adds by its own search (`c84bd5e`). The four sources of the worked cases are `MATERIAL.json` cards beside their reading records (`0e90631`), and the LiveCoMS article is a fifth (`19ff527`). All are `queued`; registering and quoting stay the person's.
+
+## A stated uncertainty widens the span (2026-11-19, `meta-macbook-20261119-1`)
+
+The person answered "Widen by uncertainty" (`../../docs/ideas/20261119.md`, "A source's stated uncertainty widens the span"), and the design role asked for the next versions (`../inbox/seats/20261119-design-macbook-20261117-1-4.json`).
+
+**Landed:**
+- `1b5fe06`: `../skills/data_analysis/literature_span@v2`. An entry that gives one value may carry `uncertainty`, the uncertainty its material states for that value. It then enters as the range from the value less that uncertainty to the value plus it, with no multiplier, and counts as one stated range, so one such entry gives a span by itself. Every case of v1 gives the same. Check 22 has nothing to say.
+- `0790309`: `../src/build/template_v29`, which names the v2 skill, and the builder, which refuses an uncertainty below zero, one beside a range, and any under a template earlier than v29. `../tests/test_template_v29.py` runs on two unrelated kinds.
+
+**New worked cases, on two unrelated kinds read from materials:**
+- V. John's reference value of the maximal drag coefficient with the bound his paper states for it. With the 1996 interval and the FeatFlow value the span is still the 1996 interval; alone, the value with its bound is a span by itself.
+- The hydration free energy of ethanol in the LiveCoMS article of GROMACS tutorials: the article's own result with the error its analysis prints, and two values it quotes from other papers, one with an uncertainty. The quoted values were not followed to those papers, and each entry says so.
+
+**Still open:** the outside test; which of a source's numbers is its value for the quantity; whether a span of two values known no finer than their sources' time steps should judge. An uncertainty a source states relative to the value, or in another unit, is not converted by the skill: the reader brings it to the quantity's unit through a skill first.
