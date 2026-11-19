@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261118-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "From the rheoTool test, round five (run rheology/20261118-11, collect-1; meta_agent/failures.jsonl rheotool-27). The builder gives a derived tolerance the unit of the stated field: the analysis skill's output unit, else the tool contract's. A common skill that measures in its readings' unit (series_maximum@v2's maximum, series_settled's last_mean, measurement_error's magnitude) declares unit '1' for that output, so a tolerance on the channel's centreline velocity came out '1' where the field is m/s. contracts/schemas/skill.schema.json allows only name, unit and meaning on an output (additionalProperties false), so a manifest cannot say that an output is in the unit of one of its inputs. Asked: a way for a manifest to say so (for example an output field naming the input whose unit it takes), which the builder would then follow through the analysis's data field to the tool contract's unit; or another rule you prefer. Nothing in the meta paths waits on it; the values are right and only the unit is wrong.",
+  "written_at": "2026-11-19T08:05:28-08:00"
+}
