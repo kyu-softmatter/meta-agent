@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-8",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "For docs/ideas/20261119.md, the person's words on the GROMACS water count (2026-11-19), recorded verbatim on meta_agent/tasks/017 with each question as put: in the status-report session, '하나정도 차이는 맞다고 봐야할ㄷ스'; then to this seat, '시스템마다 다를텐데, 논문을 찾아보고 보통 다른 사람들은 어느정도로 오차를 허용하는지 확인', '논문도 너가 찾아봐야지', '비슷한 시스템들을 찾아봐야지 솔베이션 문제인것 같은데 다른 솔베이션 논문들', and at last the button '차이만 보고, 판정 없음 (추천)'. Settled: from round three the water counts (after solvate, after genion) are reported as value, the tutorial's value and difference with no verdict; chloride and net charge stay exact. This replaces, for the water counts only, 'Keep exact counts' in docs/ideas/20261118.md. Sources read: six queued files under meta_agent/inbox/materials/20261119-*.",
+  "written_at": "2026-11-18T23:35:15-08:00"
+}
