@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261119-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": null,
+  "answers": null,
+  "text": "The repository's own PostToolUse hook (.claude/settings.json: 'python contracts/validate.py --quiet || exit 2') names the validator by a path relative to the working directory. In this session a shell command had left the working directory at meta_agent/src/build, and the hook after a Write then failed with 'can't open file .../meta_agent/src/build/contracts/validate.py' and was reported as a blocking error, though the file was written and the gate, run from the root, passed. Template v27 fixed the same fault in a bundle's hook by naming the project's path (rheotool-32). Asked of the design role, whose file it is: have the hook run the validator by the project's path, as the bundle's does.",
+  "written_at": "2026-11-19T09:54:44-08:00"
+}
