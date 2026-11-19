@@ -143,3 +143,13 @@ Watched: the session's text, the engine's log, the stop. Not watched: the averag
 ## Production resumed on the person's word (2026-11-19)
 
 The person said, in the status-report session (`local_2f39e32b`, no seat), relayed here: "그로맥스 계속 진행" ("continue GROMACS"). Production of run `20261118-1` is resumed from its checkpoint (`md_0_10.cpt`, step 112480 of 5000000) by a fresh unattended session in the bundle's folder, brief `../eval/briefs/gromacs-lysozyme-resume.txt`, on `claude-opus-5-5` at `high`, one-hour calls (the person's "1 hour per call"). Its earlier stages are not run again.
+
+## The water count: the person asks for what others allow (2026-11-19)
+
+In the status-report session (`local_2f39e32b`, no seat), about the table of round two's standalone result (run `20261118-1`: water after solvate 12597 against 12596, after genion 12589 against 12588; chloride and charge equal), the person said, relayed here: "하나정도 차이는 맞다고 봐야할ㄷ스" (read by that session as a typo for "봐야할듯": "a difference of about one should be regarded as correct, I think"). This differs from the person's earlier "No, keep exact". Asked by this seat directly how to record it (water counts only ±1, every count ±1, or keep exact), the person answered in their own words:
+
+> 시스템마다 다를텐데, 논문을 찾아보고 보통 다른 사람들은 어느정도로 오차를 허용하는지 확인
+
+("It will differ from system to system; look up papers and check how much error other people usually allow.")
+
+What the words settle: this seat searches the published sources for how far a set-up count (the water molecules a solvation adds, and the counts after ions) is allowed to differ between runs, versions or machines, writes each source it uses as a `queued` material card, and puts what it found to the person as a recommendation. Not settled: the tolerance itself, which stays the person's; until the person chooses, the exact rule of "No, keep exact" stands and sci-1 of run `20261118-1` stays a fail.
