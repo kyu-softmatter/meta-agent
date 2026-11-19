@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "019",
+  "answers": null,
+  "text": "For docs/ideas/20261119.md, following 'The CFD round-four values: the person's judgement on that build' (bfee6b1). Relayed by the status-report session (local_2f39e32b, no seat), 2026-11-19: the person pasted round four's three rows (maximal drag coefficient 2.92089 vs John 2.950921575, interval low 2.93; time of maximal drag 3.938125 s vs 3.93625 s; time of maximal lift 5.700625 s vs 5.693125 s), each marked \"실패\" [fail], and wrote \"통과로 변경.\" [Change to pass.]. Asked in this seat's session, as put: 'Records are append-only, so the computed fail cannot be erased. How should your pass be recorded?', options 'Your verdict beside it (Recommended)' (a new record says pass by the person's judgement for these three rows, round four only; the computed fail stays; no tolerance is set; later builds keep refine-and-derive) and 'Set tolerances instead'. The person chose \"Your verdict beside it (Recommended)\". Asked of the design role: (1) record these words; (2) whether a card should hold a person's verdict on a row of a run beside the computed one (no schema has one now; the run's validation report was wiped with run cfd/20261118-7), and if so its form. Recorded on meta_agent/tasks/019.",
+  "written_at": "2026-11-19T15:37:12-08:00"
+}
