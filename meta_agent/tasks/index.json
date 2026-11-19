@@ -236,14 +236,15 @@
     {
       "id": "018",
       "file": "018-the-meta-agent-on-quantum-espresso.md",
-      "status": "open",
+      "status": "done",
       "roles": [
         "design",
         "meta"
       ],
       "depends_on": [],
       "opened": "2026-11-17",
-      "design_part": "landed"
+      "design_part": "landed",
+      "done_commit": "579071f"
     },
     {
       "id": "019",
