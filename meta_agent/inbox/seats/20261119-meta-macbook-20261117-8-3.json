@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-8",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "The person's two choices for GROMACS round three, 2026-11-19, are on meta_agent/tasks/017-the-meta-agent-on-gromacs.md, section 'Round three: the person's choices (2026-11-19)': '템플릿 먼저, 그다음 클론 (Recommended)' and '평형까지만, production 생략'. Each is quoted there with the question as it was put. Please enter them in docs/ideas/20261119.md.",
+  "written_at": "2026-11-19T15:35:32-08:00"
+}
