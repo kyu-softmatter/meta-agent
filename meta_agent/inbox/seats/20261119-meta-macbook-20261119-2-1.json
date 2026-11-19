@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261119-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "Template v30 (5b461a1; gmx-24, gmx-26) adds src/engine_wait.py, named in TEMPLATE.json under engine_wait: an adapter that starts an engine waits through engine_wait.run (budget counts running time only, a paused engine is not taken for hung, a call that gives up sends TERM before KILL) and returns engine_wait.stop_error for a stopped run (timeout or cancelled, retryable, evidence.resumable). Under v30 the builder (meta_agent/src/build/bundle.py, engine_wait_problems) refuses an adapter that waits on a process with a wall-clock timeout, and one that uses the helper in a contract not declaring timeout and cancelled. The session skills design-tool-interface and specify-and-build do not name the helper, so a build session meets it only through the refusal. Asked: should either skill say that an adapter waiting on an engine waits through the template's engine_wait and declares timeout and cancelled?",
+  "written_at": "2026-11-19T15:50:08-08:00"
+}
