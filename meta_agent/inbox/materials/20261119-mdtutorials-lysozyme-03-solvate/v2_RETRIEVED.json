@@ -1,0 +1,55 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human (asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json); this file becomes a queued card when check 17 allows it.",
+  "revises": "RETRIEVED.json of this folder: the same page, read again for tasks/028, with the value it gives and how it compares written out; nothing of that file is changed",
+  "kind": "tutorial",
+  "citation": "J. Lemkul, GROMACS tutorial 'Lysozyme in Water', page 'Step Three: Defining the Unit Cell & Adding Solvent' (one author's tutorial, not the maker's documentation)",
+  "location": {
+    "url": "http://www.mdtutorials.com/gmx/lysozyme/03_solvate.html"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-19T16:29:00Z",
+    "content_hash": "sha256:339901a29ff6f219167c00a5f925b7946e9b32948a1b973e51fe9c2a2ea0982b",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261119-1",
+  "access": "a third party's page; anonymous, read-only, no login; the content hash equals the one meta-macbook-20261117-8 recorded earlier on 2026-11-19",
+  "how_found": "already recorded in this folder; read again for tasks/028, the span of branch 3 of the person's standing rule for tolerances",
+  "licence": "the page says 'Site design and content copyright Justin Lemkul'; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "task": "028, the span of the number of water molecules a solvation adds",
+      "locus": "the [ molecules ] directive shown after the solvate command: SOL 12596; the commands before it: editconf with -c -d 1.2 -bt cubic, then solvate with -cs spc216.gro",
+      "gives": {
+        "quantity": "the number of water molecules gmx solvate adds to the tutorial's lysozyme in its cubic box",
+        "data_type": "a count",
+        "value": "12596",
+        "unit": "count",
+        "source_kind": "literature",
+        "value_kind": "computed",
+        "how_obtained": "the count the tutorial's author's own run of solvate wrote into the topology; the page does not say with which version or on which computer"
+      }
+    },
+    {
+      "task": "028",
+      "locus": "the note after the directive: minor variations in computer architecture and compilers may result in very slight differences in the number of water molecules added in this step",
+      "gives": {
+        "quantity": "how far that count may differ between computers",
+        "data_type": "a statement in words, kept as words",
+        "value": null,
+        "how_obtained": "the author's statement; it gives no number and no range, so it is no edge of a span"
+      }
+    }
+  ],
+  "compares": {
+    "with": "tasks/017, the GROMACS test: the number of water molecules after solvate in the lysozyme agent's run molecular-dynamics/20261118-1, which follows this tutorial",
+    "written_by": "meta-macbook-20261119-1, after classify-knowledge, 2026-11-19",
+    "system": "the same: the tutorial's own protein, box and solvent file",
+    "quantity": "the same: the count solvate writes into the topology",
+    "engine": "the same engine; the tutorial's version and computer are not stated on the page",
+    "conditions": "one value of one run; a second published value of this count for this set-up was looked for and not found",
+    "kind": "inferred: read from the page and from tasks/017"
+  },
+  "state": "queued",
+  "registered": "the person's word, not given"
+}

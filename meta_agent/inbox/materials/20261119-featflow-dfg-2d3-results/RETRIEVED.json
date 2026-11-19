@@ -1,0 +1,61 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human (asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json); this file becomes a queued card when check 17 allows it.",
+  "kind": "link",
+  "citation": "FeatFlow, CFD Benchmarking Project, 'DFG flow around cylinder benchmark 2D-3, fixed time interval (Re=100)', Lehrstuhl III Angewandte Mathematik und Numerik, Technische Universitaet Dortmund",
+  "location": {
+    "url": "https://wwwold.mathematik.tu-dortmund.de/~featflow/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark3_re100.html"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-19T16:29:00Z",
+    "content_hash": "sha256:5275756482a88ffcd5867d48b59bce7a918d22f5b2ad6a1a69aadc525f531751",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261119-1",
+  "access": "a university group's page; anonymous, read-only, no login",
+  "how_found": "searched by the benchmark's name and the quantity (the maximal drag coefficient of the DFG 2D-3 case and its published values) for tasks/028; earlier builds of tasks/019 took this page's level-6 row as their reference (meta_agent/failures.jsonl cfd-17), and no file of this inbox recorded the page",
+  "licence": "not read for a licence; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "task": "028, the span of the maximal drag coefficient of the DFG 2D-3 case",
+      "locus": "section 'Exemplary Results', the first table, the row of level 6 (time step 1/1600, 667264 degrees of freedom): the maximal drag coefficient 2.9437637214 at the time 3.9365625; section 'Test configuration': Q2/P1disc in space, Crank-Nicolson in time",
+      "gives": {
+        "quantity": "the maximal drag coefficient of the page's problem on its finest level",
+        "data_type": "a number with its unit, one row of a table of six refinement levels",
+        "value": "2.9437637214",
+        "unit": "1",
+        "source_kind": "literature",
+        "value_kind": "computed",
+        "how_obtained": "computed by the page's authors; the page states no error for it, and its rows of levels 1 to 5 are coarser runs of the same computation, which the page does not give as its result and which are not taken here"
+      }
+    },
+    {
+      "task": "028, the span of the time of the maximal drag coefficient",
+      "locus": "the same row: the time of the maximal drag coefficient, 3.9365625",
+      "gives": {
+        "quantity": "the time at which the drag coefficient is largest",
+        "data_type": "a number with its unit",
+        "value": "3.9365625",
+        "unit": "s",
+        "source_kind": "literature",
+        "value_kind": "computed",
+        "how_obtained": "computed by the page's authors; a multiple of the time step 1/1600 s"
+      }
+    },
+    {
+      "task": "028",
+      "locus": "section 'Boundary conditions': on the right edge a do-nothing condition defines the outflow; section 'Important numerical quantities': the coefficients are normalised with the mean velocity 1.0 and the diameter 0.1"
+    }
+  ],
+  "compares": {
+    "with": "tasks/019, the CFD test: the maximal drag coefficient of the DFG 2D-3 flow around a cylinder over 0 to 8 s, computed by a FEniCSx agent (build dfg-cylinder-flow/0001 of run cfd/20261118-7) from the FEniCSx tutorial's set-up, whose outlet is left free with the pressure zero there",
+    "written_by": "meta-macbook-20261119-1, after classify-knowledge, 2026-11-19",
+    "system": "the same: the channel, the cylinder, the viscosity, the inflow of case 2D-3 and a do-nothing outflow, as the tutorial's free outlet is read to be",
+    "quantity": "the same by definition: the largest value of the drag coefficient over 0 to 8 s, and the time it is reached",
+    "engine": "another: FEATFLOW, Q2/P1disc elements, Crank-Nicolson; not FEniCSx",
+    "conditions": "the row is the finest of six levels and the page gives no estimate of what remains; its values still move from level 5 to level 6",
+    "kind": "inferred: read from the page and from the tutorial's set-up as tasks/019 records it; not shown by a run"
+  },
+  "state": "queued",
+  "registered": "the person's word, not given"
+}

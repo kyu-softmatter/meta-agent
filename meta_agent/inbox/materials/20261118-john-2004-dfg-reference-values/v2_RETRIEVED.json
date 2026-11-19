@@ -1,0 +1,66 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human (asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json); this file becomes a queued card when check 17 allows it.",
+  "revises": "RETRIEVED.json of this folder: the same document, read again for tasks/028, with what it gives and how it compares written out; nothing of that file is changed",
+  "kind": "paper",
+  "citation": "V. John, Reference values for drag and lift of a two-dimensional time-dependent flow around a cylinder, International Journal for Numerical Methods in Fluids 44 (2004) 777-788, doi:10.1002/fld.679",
+  "location": {
+    "url": "https://wias-berlin.de/people/john/ELECTRONIC_PAPERS/Joh04.IJNMF.pdf"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-19T16:29:00Z",
+    "content_hash": "sha256:953f4cdd9b06a2f29471af88bf5f08fdcb098eae316511dceae56ee790d412e3",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261119-1",
+  "access": "anonymous, read-only, no login; the author's own institute's page; the content hash equals the one meta-macbook-20261117-2 recorded on 2026-11-18",
+  "how_found": "already recorded in this folder; read again for tasks/028, the span of branch 3 of the person's standing rule for tolerances",
+  "licence": "the pages carry 'Copyright 2004 John Wiley & Sons, Ltd.'; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "task": "028, the span of the maximal drag coefficient of the DFG 2D-3 case",
+      "locus": "section 4, equation (8), printed page 784: the reference value of the maximal drag coefficient, 2.950921575, the average of the four values of the finest discretizations of Tables III to VI, at the time 3.93625; the sentence after it: its error to the true value is deduced to be less than 5e-7",
+      "gives": {
+        "quantity": "the maximal drag coefficient of the paper's problem",
+        "data_type": "a number with its unit; an error bound in words beside it, which is not a stated range",
+        "value": "2.950921575",
+        "unit": "1",
+        "source_kind": "literature",
+        "value_kind": "computed",
+        "how_obtained": "computed in this paper: the mean of four runs on the finest level, two time-stepping schemes on two finite element pairs"
+      }
+    },
+    {
+      "task": "028, the span of the time of the maximal drag coefficient",
+      "locus": "section 4, equation (8), printed page 784: the time of the maximal drag coefficient, 3.93625 s; Tables III to VI: the four finest runs, time step 0.00125 s, all give it at 3.93625",
+      "gives": {
+        "quantity": "the time at which the drag coefficient is largest",
+        "data_type": "a number with its unit",
+        "value": "3.93625",
+        "unit": "s",
+        "source_kind": "literature",
+        "value_kind": "computed",
+        "how_obtained": "computed in this paper; it is a multiple of the time step 0.00125 s, so it is known no finer than that step"
+      }
+    },
+    {
+      "task": "028",
+      "locus": "section 4, printed page 783: the reference intervals of Reference [6] (Schaefer and Turek 1996) as quoted, the maximal drag coefficient in [2.93, 2.97]; the same edges as Table 5 of that paper, read in meta_agent/inbox/materials/20261118-schaefer-turek-1996-dfg-benchmark/v2_RETRIEVED.json, so the quotation is not a second range"
+    },
+    {
+      "task": "028",
+      "locus": "section 2, printed page 779: the inflow profile is prescribed at the outflow as well, u(t;0,y) = u(t;2.2,y); the coefficients are normalised with the largest mean inflow velocity, 1 m/s"
+    }
+  ],
+  "compares": {
+    "with": "tasks/019, the CFD test: the maximal drag coefficient of the DFG 2D-3 flow around a cylinder over 0 to 8 s, computed by a FEniCSx agent (build dfg-cylinder-flow/0001 of run cfd/20261118-7) from the FEniCSx tutorial's set-up, whose outlet is left free with the pressure zero there",
+    "written_by": "meta-macbook-20261119-1, after classify-knowledge, 2026-11-19",
+    "system": "similar, not the same: the same channel, cylinder, viscosity and inflow, but the velocity profile is prescribed at the outflow too, where the tutorial leaves the outlet free (meta_agent/failures.jsonl cfd-26)",
+    "quantity": "the same by definition: the largest value of the drag coefficient over 0 to 8 s, and the time it is reached",
+    "engine": "another: the author's finite element code, Q2/P1disc and P2/P1 elements, fractional-step theta and Crank-Nicolson schemes; not FEniCSx",
+    "conditions": "the outflow condition differs; whether that moves the maximal drag coefficient or its time was not shown by any run here",
+    "kind": "inferred: read from the paper and from the tutorial's set-up as tasks/019 records it; not shown by a run"
+  },
+  "state": "queued",
+  "registered": "the person's word, not given"
+}

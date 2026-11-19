@@ -1,0 +1,50 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human (asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json); this file becomes a queued card when check 17 allows it.",
+  "revises": "RETRIEVED.json of this folder, which held the paper for want of a copy that needs no login; this version reads another copy and changes nothing of that file",
+  "kind": "paper",
+  "citation": "M. Schaefer, S. Turek, with F. Durst, E. Krause, R. Rannacher, Benchmark computations of laminar flow around a cylinder, in E. H. Hirschel (ed.), Flow Simulation with High-Performance Computers II, Notes on Numerical Fluid Mechanics 48, Vieweg 1996, 547-566, doi:10.1007/978-3-322-89849-4_39; read in a copy of the authors' manuscript that a university lecturer's course page carries (its pages are numbered 1 to 19, not 547 to 566)",
+  "location": {
+    "url": "https://www.karlin.mff.cuni.cz/~hron/NMMO403/dfg_benchmark_results.pdf"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-19T16:29:00Z",
+    "content_hash": "sha256:e020ab261b2d3a0675edb89c9c5af8b1383ee0584d89f12e3a7dce988be5465b",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261119-1",
+  "access": "a course page of a university department; anonymous, read-only, no login; not the publisher's copy, and whether it is word for word the printed chapter was not checked against the publisher's, which needs a login",
+  "how_found": "searched by the benchmark's name and the quantity (the maximal drag coefficient of the DFG 2D-3 case and its published values) for tasks/028, the span of branch 3 of the person's standing rule for tolerances",
+  "licence": "not read for a licence; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "task": "028, the span of the maximal drag coefficient of the DFG 2D-3 case",
+      "locus": "Table 5, 'Results for unsteady test case 2D-3', its last two rows, 'lower bound' and 'upper bound', column cDmax: 2.9300 and 2.9700; section 4, first paragraph: the last row of each table holds estimated intervals for the 'exact' results, suggested by the authors on the basis of the obtained solutions",
+      "gives": {
+        "quantity": "the maximal drag coefficient cDmax of test case 2D-3",
+        "data_type": "a range, two edges as the table prints them",
+        "low": "2.9300",
+        "high": "2.9700",
+        "unit": "1",
+        "source_kind": "literature",
+        "value_kind": "estimated",
+        "how_obtained": "estimated by the paper's authors from the solutions the participating groups computed; the groups' own rows of Table 5 lie inside and outside it and are not this range"
+      }
+    },
+    {
+      "task": "028",
+      "locus": "section 2.2, '2D Cases', and its test case c) 2D-3: the geometry, the inflow profile with Um = 1.5 m/s times sin(pi t/8) over 0 to 8 s, the drag coefficient as twice the drag force over density, the square of the mean velocity and the diameter, and the sentence that the outflow condition can be chosen by the user"
+    }
+  ],
+  "compares": {
+    "with": "tasks/019, the CFD test: the maximal drag coefficient of the DFG 2D-3 flow around a cylinder over 0 to 8 s, computed by a FEniCSx agent (build dfg-cylinder-flow/0001 of run cfd/20261118-7) from the FEniCSx tutorial's set-up, whose outlet is left free with the pressure zero there",
+    "written_by": "meta-macbook-20261119-1, after classify-knowledge, 2026-11-19",
+    "system": "the same: this paper defines the case the tutorial sets up (channel 2.2 m by 0.41 m, cylinder of diameter 0.1 m, kinematic viscosity 1e-3 m2/s, the inflow of case 2D-3)",
+    "quantity": "the same by definition: the largest value of the drag coefficient over 0 to 8 s",
+    "engine": "not one engine: the range rests on the solutions of several groups with different codes and discretizations, none of them FEniCSx",
+    "conditions": "the paper leaves the outflow condition to the user, so the range covers the tutorial's free outlet as much as any other",
+    "kind": "inferred: read from the paper's definitions and the tutorial's set-up as tasks/019 records it; not shown by a run"
+  },
+  "state": "queued",
+  "registered": "the person's word, not given"
+}
