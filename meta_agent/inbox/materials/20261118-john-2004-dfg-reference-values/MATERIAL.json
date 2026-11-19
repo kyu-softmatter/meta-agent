@@ -1,0 +1,75 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261118-john-2004-dfg-reference-values",
+  "revision": 1,
+  "author": "meta-macbook-20261119-1",
+  "created_at": "2026-11-19T17:28:46Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "First found by the search of meta-macbook-20261117-2 on 2026-11-18 (RETRIEVED.json of this folder); read again and used by this seat, with the same content hash. What it was read for, what it gives and how its system compares with the task's are in v2_RETRIEVED.json of this folder, written before check 17 took a seat's card (c84bd5e). Read for meta_agent/tasks/028, the span of branch 3 of the person's standing rule for tolerances; it is a material of the worked cases of meta_agent/skills/data_analysis/literature_span@v1, whose entries name the reading record of this folder.",
+  "kind": "paper",
+  "about": {
+    "name": {
+      "value": "V. John, Reference values for drag and lift of a two-dimensional time-dependent flow around a cylinder (2004)",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261118-john-2004-dfg-reference-values",
+          "locus": "the title and the author on the first page, printed page 777"
+        }
+      ]
+    },
+    "role": {
+      "value": null,
+      "state": "unknown",
+      "note": "a paper that computes reference values of a benchmark with its author's own finite element code; it documents no engine, instrument, platform or analysis software"
+    },
+    "methods": {
+      "value": [
+        "cfd"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261118-john-2004-dfg-reference-values",
+          "locus": "the summary on the first page: reference values for the maximal drag and lift coefficient of a flow around a cylinder"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://wias-berlin.de/people/john/ELECTRONIC_PAPERS/Joh04.IJNMF.pdf"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-19T16:29:00Z",
+    "content_hash": "sha256:953f4cdd9b06a2f29471af88bf5f08fdcb098eae316511dceae56ee790d412e3",
+    "archived": null
+  },
+  "added_by": "meta-macbook-20261119-1",
+  "added_at": "2026-11-19",
+  "entry_path": "search",
+  "license_note": {
+    "value": "copyright 2004 John Wiley & Sons, Ltd.; no licence to copy is stated",
+    "state": "inferred",
+    "evidence": [
+      {
+        "source_ref": "mat-20261118-john-2004-dfg-reference-values",
+        "locus": "the foot of each page: 'Copyright 2004 John Wiley & Sons, Ltd.'"
+      }
+    ]
+  },
+  "may_quote": "unknown",
+  "state": "queued",
+  "state_reason": null,
+  "questions": [
+    "registered: may this source, found by a seat's search for the benchmark's reference values, be registered?",
+    "may_quote: may an excerpt of it be kept? Its pages carry the publisher's copyright."
+  ]
+}

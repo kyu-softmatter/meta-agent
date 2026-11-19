@@ -1,0 +1,80 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261119-mdtutorials-lysozyme-03-solvate",
+  "revision": 1,
+  "author": "meta-macbook-20261119-1",
+  "created_at": "2026-11-19T17:28:46Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "First found by the search of meta-macbook-20261117-8 on 2026-11-19 (RETRIEVED.json of this folder); read again and used by this seat, with the same content hash. What it was read for, what it gives and how its system compares with the task's are in v2_RETRIEVED.json of this folder, written before check 17 took a seat's card (c84bd5e). That seat's record says the person said on 2026-11-18 that the tutorial may be registered and quoted ('Yes, all of that', meta_agent/tasks/017); this seat did not hear those words, so the card stays queued and registering it is left to the person or to the seat that holds that record. Read for meta_agent/tasks/028, the span of branch 3 of the person's standing rule for tolerances; it is a material of the worked cases of meta_agent/skills/data_analysis/literature_span@v1, whose entries name the reading record of this folder.",
+  "kind": "link",
+  "about": {
+    "name": {
+      "value": "J. Lemkul, GROMACS tutorial 'Lysozyme in Water', Step Three: Defining the Unit Cell & Adding Solvent",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261119-mdtutorials-lysozyme-03-solvate",
+          "locus": "the page's headings"
+        }
+      ]
+    },
+    "role": {
+      "value": "engine",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261119-mdtutorials-lysozyme-03-solvate",
+          "locus": "the page's heading 'GROMACS Tutorial' and its commands, which are the engine's (gmx editconf, gmx solvate); one author's tutorial, not the maker's documentation"
+        }
+      ]
+    },
+    "methods": {
+      "value": [
+        "molecular dynamics"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261119-mdtutorials-lysozyme-03-solvate",
+          "locus": "the page's first paragraph: building a simple aqueous system for simulation"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "http://www.mdtutorials.com/gmx/lysozyme/03_solvate.html"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-19T16:29:00Z",
+    "content_hash": "sha256:339901a29ff6f219167c00a5f925b7946e9b32948a1b973e51fe9c2a2ea0982b",
+    "archived": null
+  },
+  "added_by": "meta-macbook-20261119-1",
+  "added_at": "2026-11-19",
+  "entry_path": "search",
+  "license_note": {
+    "value": "site design and content copyright Justin Lemkul; no licence to copy is stated",
+    "state": "inferred",
+    "evidence": [
+      {
+        "source_ref": "mat-20261119-mdtutorials-lysozyme-03-solvate",
+        "locus": "the foot of the page: 'Site design and content copyright Justin Lemkul'"
+      }
+    ]
+  },
+  "may_quote": "unknown",
+  "state": "queued",
+  "state_reason": null,
+  "questions": [
+    "registered: may this page be registered? The record of meta_agent/tasks/017 says the person allowed the tutorial to be registered and quoted on 2026-11-18; does that word cover this page?",
+    "may_quote: does that word cover an excerpt of this page?"
+  ]
+}

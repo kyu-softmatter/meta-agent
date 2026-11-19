@@ -1,0 +1,74 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261119-featflow-dfg-2d3-results",
+  "revision": 1,
+  "author": "meta-macbook-20261119-1",
+  "created_at": "2026-11-19T17:28:46Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "A source this seat found by its own search and read. What it was read for, what it gives and how its system compares with the task's are in RETRIEVED.json of this folder, written before check 17 took a seat's card (c84bd5e). Read for meta_agent/tasks/028, the span of branch 3 of the person's standing rule for tolerances; it is a material of the worked cases of meta_agent/skills/data_analysis/literature_span@v1, whose entries name the reading record of this folder.",
+  "kind": "link",
+  "about": {
+    "name": {
+      "value": "FeatFlow, CFD Benchmarking Project: DFG flow around cylinder benchmark 2D-3, fixed time interval (Re=100)",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261119-featflow-dfg-2d3-results",
+          "locus": "the page's title and its heading"
+        }
+      ]
+    },
+    "role": {
+      "value": "engine",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261119-featflow-dfg-2d3-results",
+          "locus": "the page's header and menu: the site of the flow solver FEATFLOW, under Benchmarks, CFD Benchmarking Project; section 'Test configuration' gives the solver's discretization for the results it tabulates"
+        }
+      ]
+    },
+    "methods": {
+      "value": [
+        "cfd"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261119-featflow-dfg-2d3-results",
+          "locus": "section 'Test configuration': finite elements in space, Crank-Nicolson in time"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://wwwold.mathematik.tu-dortmund.de/~featflow/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark3_re100.html"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-19T16:29:00Z",
+    "content_hash": "sha256:5275756482a88ffcd5867d48b59bce7a918d22f5b2ad6a1a69aadc525f531751",
+    "archived": null
+  },
+  "added_by": "meta-macbook-20261119-1",
+  "added_at": "2026-11-19",
+  "entry_path": "search",
+  "license_note": {
+    "value": null,
+    "state": "unknown"
+  },
+  "may_quote": "unknown",
+  "state": "queued",
+  "state_reason": null,
+  "questions": [
+    "registered: may this page, found by the seat's own search for a published value to compare a result with, be registered?",
+    "may_quote: may an excerpt of it be kept? No licence was read on the page."
+  ]
+}
