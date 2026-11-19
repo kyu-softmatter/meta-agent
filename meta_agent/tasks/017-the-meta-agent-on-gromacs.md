@@ -230,3 +230,29 @@ What this settles: round two's bundle runs the whole tutorial, from fetching the
 - round three (a reference for the atom count and the box; hydrogen bonds and secondary structure reported with no verdict; the water counts as a difference only; a reference for the production averages);
 - whether the person's "pass" covers the water count after genion;
 - the removal of run `20261118-1`, which waits on the design role's reading.
+
+## Round three: the person's choices (2026-11-19)
+
+Asked by this seat whether to propose round three, the person answered "Yes, propose it". Two questions were then put to the person, each as written here.
+
+The first: "GROMACS 3라운드 진행 순서를 정해 주세요. 2라운드에서 드러난 템플릿 결함이 있습니다. 실행 중 멈추면 결과를 잃는 문제(gmx-24, 26)와 판정 출력·안내문 불일치(gmx-21, 22, 27)입니다. 이것을 먼저 새 템플릿 버전에서 고친 뒤 블라인드 클론으로 3라운드를 돌릴까요?" ("Fix those first in a new template version, then run round three as a blind clone?"). The person answered:
+
+> 템플릿 먼저, 그다음 클론 (Recommended)
+
+("Template first, then the clone (recommended).")
+
+The second: "3라운드 빌드 에이전트는 시뮬레이션을 어디까지 돌려야 할까요? 2라운드 production 10 ns에 이 컴퓨터로 약 16시간 걸렸습니다." ("How far should round three's built agent run the simulation? Round two's 10 ns of production took about 16 hours on this computer."). The person answered:
+
+> 평형까지만, production 생략
+
+("Only to equilibration; skip production." The option read: set-up, minimisation, NVT and NPT; production was already shown running to its end in round two, so this time the new comparisons are checked.)
+
+What the words settle:
+- A new template version comes first. It fixes the stage runner on a stop from outside or a TERM (gmx-24, gmx-26), and the bundle's account of a real fail and of what `validate_tasks.py` prints (gmx-21, gmx-22, gmx-27). Its version number is to be agreed with the other meta seats, which are also making template versions.
+- Round three then runs as a blind clone on that version, and only after the hub's "go".
+- Round three's built agent runs the set-up, minimisation, NVT and NPT, and not production. For round three only, this replaces "Tutorial's own lengths" of 2026-11-18.
+- The round-three asks stay those listed under "Production finished": a reference for the atom count and the box; hydrogen bonds and secondary structure reported with no verdict; the water counts as a difference only; chloride and charge exact; a reference for the production averages, or a record that the source gives none.
+
+Not settled:
+- Since production is skipped, whether the reference for the production averages (gmx-25) and the hydrogen-bond and secondary-structure reports are still asked of round three, since they come from a production trajectory, or are left for a later round. This seat will put this to the person when the clone's brief is written.
+- The count after genion.
