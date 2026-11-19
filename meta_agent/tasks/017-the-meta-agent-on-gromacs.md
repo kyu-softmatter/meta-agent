@@ -201,3 +201,32 @@ Asked by this seat whether that covers both water counts of sci-1 (after solvate
 What the words settle: the person judges run `20261118-1`'s water count after solvate a pass. That is the person's own verdict, and it does not rewrite what the bundle printed: the build's own line `fail sci-1` stays on the record as what it judged under the rule of its day, and this verdict stands beside it. Not settled: whether the count after genion, and so sci-1 as a whole, also reads pass. Until the person says so, the bundle's own fail stands for that row. Nothing here sets a tolerance: from round three the water counts are reported as a difference with no verdict ("차이만 보고, 판정 없음 (추천)"), until a span is derived from suitable materials (tasks/028, the person's words of 2026-11-19 at 98ed9a2).
 
 At the time, production stood at step 3,555,000 of 5,000,000, or 7.11 ns of 10 ns, by the engine's log at 10:24 local. The last checkpoint was written at 10:21. Session `a5773ade` is still running.
+
+## Production finished (2026-11-19, 15:29 local)
+
+Session `a5773ade` exited 0 at 15:29 local, on its own (`terminal_reason: completed`). It continued production from the checkpoint at step 129360 in 16 calls of `max_hours` 1 and ran no earlier stage again. `read_stage` reports 5000000 of 5000000 steps, completed. The hub was told it ended, and no gmx process remains. The run is collected as `collect-4` of run `20261118-1`. Over the night and day the machine's load average went from about 2 to 77, and production slowed from about 15 to about 12.5 ns/day by the engine's log.
+
+Read off `runs/session-4/` of the run (the analysis tool's output and four `measurement_error@v1` records). The session gave no verdict, as the brief asked:
+
+| quantity | this run | tutorial | difference |
+|---|---|---|---|
+| backbone RMSD, production (nm) | 0.1054378 (sd 0.01476071) | 0.09 | +0.0154378 |
+| radius of gyration, production (nm) | 1.413775 (sd 0.00885851) | 1.409 | +0.004775 |
+| NPT pressure (bar) | −8.64309 | −3 | −5.64309 |
+| NPT density (kg/m³) | 1024.81 | 1025.3 | −0.49 |
+
+For the production averages, the session reported T 298.025 K, P 1.74288 bar, ρ 1024.89 kg/m³ and potential −534141 kJ/mol. The build carries no tutorial value for these, so none was compared (gmx-25). The bundle's own validation printed the same before and after production: `gates: interface pass, scientific fail; overall fail`, the fail being sci-1 on the two water counts. The session still put sci-1 to the person, since it cannot know the person's verdict of earlier today ("통과로 변경", above).
+
+New faults recorded:
+- gmx-25: no reference for the production averages.
+- gmx-26: a TERM-ended stage call is returned as `retryable: false`, though calling again resumes from the checkpoint.
+- gmx-27: `validate_tasks.py` prints no values for undecided tasks, contrary to the bundle's CLAUDE.md.
+
+Two things are noted and not judged:
+- The session wrote that its effort was low, though it was started at `high` (the collector reads `high`).
+- The collector counts one `measurement_error@v1` run for the session, where its folder holds four records. That count is the test tool's, which is the design role's path.
+
+What this settles: round two's bundle runs the whole tutorial, from fetching the inputs to production and its analysis, in unattended sessions, and survives a stop and a resume from a checkpoint. Not settled:
+- round three (a reference for the atom count and the box; hydrogen bonds and secondary structure reported with no verdict; the water counts as a difference only; a reference for the production averages);
+- whether the person's "pass" covers the water count after genion;
+- the removal of run `20261118-1`, which waits on the design role's reading.
