@@ -153,3 +153,13 @@ In the status-report session (`local_2f39e32b`, no seat), about the table of rou
 ("It will differ from system to system; look up papers and check how much error other people usually allow.")
 
 What the words settle: this seat searches the published sources for how far a set-up count (the water molecules a solvation adds, and the counts after ions) is allowed to differ between runs, versions or machines, writes each source it uses as a `queued` material card, and puts what it found to the person as a recommendation. Not settled: the tolerance itself, which stays the person's; until the person chooses, the exact rule of "No, keep exact" stands and sci-1 of run `20261118-1` stays a fail.
+
+What this seat found (2026-11-19), from sources read and written as `queued` files under `../inbox/materials/20261119-*`:
+
+- No paper or manual this seat found states a tolerance for the number of water molecules a solvation adds. The reproducibility literature it searched (a reporting checklist for MD, a cross-engine reproducibility study) speaks of replicates and of observables, not of set-up counts. This is a search that found nothing, not a finding that nothing exists.
+- The maker (gmx solvate help, GROMACS 2025.2): the count follows from the van der Waals radii database, `-scale`, `-radius` and the solvent's coordinate file, so it changes with any of them.
+- The maker ("Managing long simulations"): precision, the number of cores, the processor and the compiler change a run's output; an individual trajectory is not reproducible, while its observables converge and are.
+- The tutorial's author (its solvation page): minor variations in computer architecture and compilers may give very slight differences in the number of water molecules added in that step. No number is given.
+- The standing rule of 2026-11-18 would give half a unit of the tutorial's last printed digit (the count is printed as a whole number), which a difference of one water still fails; the person's own tolerance overrides the rule in any case.
+
+So the recommendation put to the person is a choice among forms, not a value from a source.
