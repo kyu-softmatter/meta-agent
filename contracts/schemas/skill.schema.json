@@ -135,6 +135,18 @@
           "meaning": {
             "type": "string",
             "minLength": 1
+          },
+          "unit_of": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$",
+            "description": "the input whose unit this output takes, where the skill measures in its readings' unit and its manifest cannot name it (meta_agent/failures.jsonl rheotool-27); the output's unit is then '1' and a reader follows the input to what was handed (check 22)"
+          },
+          "unit_of_part": {
+            "enum": [
+              "variable",
+              "value"
+            ],
+            "description": "where that input is a series of pairs: whether the output is in the unit of the independent variable or of the value; only beside unit_of"
           }
         },
         "required": [

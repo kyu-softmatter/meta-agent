@@ -35,6 +35,7 @@ REASONS = {
     "check22_estimate_one_worked_case": ("scans_for_signal_to_noise@v1", "an estimate skill carries two worked cases"),
     "check22_diagnostic_without_an_undecided_case": ("series_settled@v1", "a worked case that expects state undecided"),
     "check22_common_skill_shown_on_one_kind": ("series_settled@v1", "shown on at least two unrelated kinds of system"),
+    "check22_output_takes_the_unit_of_an_input_it_does_not_have": ("series_settled@v1", "which is not an input of the skill"),
 }
 
 
@@ -91,6 +92,31 @@ class Reading(unittest.TestCase):
         self.assertTrue(skills._same({"a": [1, {"b": None}]}, {"a": [1, {"b": None}]}, 1e-9))
 
 
+
+
+
+class OutputTakesTheUnitOfAnInput(unittest.TestCase):
+    def test_an_output_names_the_input_whose_unit_it_takes(self):
+        # two unrelated kinds: the largest value of a flow run's series, and the error of a balance's reading
+        series = {"inputs": [{"name": "series", "unit": "1", "meaning": "pairs"}],
+                  "outputs": [{"name": "maximum", "unit": "1", "meaning": "largest", "unit_of": "series", "unit_of_part": "value"},
+                              {"name": "at", "unit": "1", "meaning": "where", "unit_of": "series", "unit_of_part": "variable"},
+                              {"name": "points", "unit": "count", "meaning": "how many"}]}
+        reading = {"inputs": [{"name": "value", "unit": "1", "meaning": "read"}, {"name": "reference", "unit": "1", "meaning": "ref"}],
+                   "outputs": [{"name": "magnitude", "unit": "1", "meaning": "error", "unit_of": "value"}]}
+        self.assertEqual(skills.output_unit_problems(series), [])
+        self.assertEqual(skills.output_unit_problems(reading), [])
+
+    def test_an_input_that_is_not_there_a_stated_unit_and_a_part_alone_are_refused(self):
+        m = {"inputs": [{"name": "value", "unit": "1", "meaning": "read"}],
+             "outputs": [{"name": "a", "unit": "1", "meaning": "x", "unit_of": "readings"},
+                         {"name": "b", "unit": "m/s", "meaning": "x", "unit_of": "value"},
+                         {"name": "c", "unit": "1", "meaning": "x", "unit_of_part": "value"}]}
+        found = skills.output_unit_problems(m)
+        self.assertEqual(len(found), 3)
+        self.assertIn("not an input", found[0])
+        self.assertIn("states '1'", found[1])
+        self.assertIn("names no input", found[2])
 
 
 class Common(unittest.TestCase):

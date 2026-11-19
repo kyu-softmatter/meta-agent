@@ -446,6 +446,29 @@ def bound_problems(skill_dir, manifest):
     return out
 
 
+def output_unit_problems(manifest):
+    """An output a skill gives in the unit of its readings names the input it takes that unit from (`unit_of`),
+    since no manifest of a skill for any kind of system can name the unit itself; a reader then follows the input
+    to what was handed. The name is one of the manifest's inputs, the output's own unit is '1', and
+    `unit_of_part` (the variable or the value of a series of pairs) stands only beside `unit_of`."""
+    out = []
+    inputs = {i.get("name") for i in manifest.get("inputs") or [] if isinstance(i, dict)}
+    for o in manifest.get("outputs") or []:
+        if not isinstance(o, dict):
+            continue
+        of = o.get("unit_of")
+        if of is None:
+            if o.get("unit_of_part") is not None:
+                out.append("output %s says unit_of_part and names no input under unit_of" % o.get("name"))
+            continue
+        if of not in inputs:
+            out.append("output %s takes the unit of %r, which is not an input of the skill" % (o.get("name"), of))
+        if o.get("unit") != "1":
+            out.append("output %s takes the unit of an input and also states the unit %r; it states '1'"
+                       % (o.get("name"), o.get("unit")))
+    return out
+
+
 def common_problems(skill_dir, manifest):
     """A common skill, which every simulation bundle carries (the person, 2026-11-18, docs/ideas/20261118.md;
     meta_agent/tasks/025), applies to no particular engine, instrument or parameter, and its worked cases name
@@ -529,6 +552,7 @@ def problems(skill_dir, kinds, schema_errors=None):
         return out
     out.extend(bound_problems(skill_dir, manifest))
     out.extend(common_problems(skill_dir, manifest))
+    out.extend(output_unit_problems(manifest))
     src = source_problems(skill_dir, manifest)
     out.extend(src)
     if not src and not any(o.startswith(("no ", "entry script")) for o in out):
