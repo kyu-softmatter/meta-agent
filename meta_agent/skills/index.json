@@ -992,6 +992,68 @@
       "sha256": "sha256:699341463f3c58401b9b0a44ba367659ef9e51a469344a068c6dcd1963fd8897"
     },
     {
+      "ref": "literature_span@v2",
+      "id": "literature_span",
+      "version": 2,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the span of one quantity across suitable materials, branch 3 of the person's standing rule for tolerances: the interval from the lowest to the highest of the values and stated error ranges the materials give, a value stated with an uncertainty entering as the value less and plus that uncertainty, each entry naming its material and how its system compares; no span from fewer than two values and no stated range",
+      "description": "The span of one quantity across suitable materials, as the person's standing rule for tolerances takes it where a reference states no uncertainty: the interval from the lowest to the highest of the values and stated error ranges that published studies of the same or a similar system and the maker's manuals give for that quantity, each entry naming its material and saying how its system compares, a value its material states with an uncertainty entering as the range that uncertainty gives about it. Take it when a result is to be judged, its reference states no uncertainty, the person gave no tolerance, and materials that give the quantity were found and read.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "entries",
+          "unit": "1",
+          "meaning": "a list, one entry for each value or stated error range of the one quantity, every number in the quantity's unit. An entry is an object: material, the material card the number was read from (its path or id); compares, in words, how that material's system, quantity and engine compare with the task's, as written after classify-knowledge, and, where an uncertainty is given, what kind of uncertainty the material states (a standard deviation, an expanded uncertainty, a bound); and either value, one value the material gives for the quantity, with uncertainty beside it where the material states one for that value (a finite number not below zero, in the quantity's unit, as the material states it), or low and high, the two edges of one error range the material states, as it writes them"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "low",
+          "unit": "1",
+          "meaning": "the lowest of the values and range edges, in the quantity's unit: as its entry gave it, or the entry's value less its uncertainty; null, with why, where there is no span"
+        },
+        {
+          "name": "high",
+          "unit": "1",
+          "meaning": "the highest of the values and range edges, in the quantity's unit: as its entry gave it, or the entry's value plus its uncertainty; null where there is no span"
+        },
+        {
+          "name": "lowest_from",
+          "unit": "1",
+          "meaning": "the material of the entry that gave the lowest; where two entries hold it, the first handed"
+        },
+        {
+          "name": "highest_from",
+          "unit": "1",
+          "meaning": "the material of the entry that gave the highest; where two entries hold it, the first handed"
+        },
+        {
+          "name": "values",
+          "unit": "count",
+          "meaning": "how many entries gave one value with no uncertainty"
+        },
+        {
+          "name": "ranges",
+          "unit": "count",
+          "meaning": "how many entries gave a stated range: two edges, or one value with its stated uncertainty"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why there is no span; else null"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/literature_span@v2",
+      "sha256": "sha256:74365ad67fb9e8baef0f8a7c546591b8da6f5f9a0836986760ca8ac8ef522388"
+    },
+    {
       "ref": "measurement_error@v1",
       "id": "measurement_error",
       "version": 1,
