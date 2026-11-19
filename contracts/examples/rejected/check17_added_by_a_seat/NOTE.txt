@@ -1,0 +1,1 @@
+A material a seat added that says it came by a person's path (entry_path links_md). A seat may add a source it found by its own search and used, queued (the person, 2026-11-17; 2026-11-19, 'Yes, fix the gate', docs/ideas/20261119.md); such a card's entry_path is search. The other entry paths are how a person drops material.

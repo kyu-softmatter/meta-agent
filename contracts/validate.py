@@ -985,8 +985,25 @@ def check17(cards, c, report, tree):
         role = about.get("role") if isinstance(about.get("role"), dict) else None
         if role and role.get("state") in ("confirmed", "inferred") and role.get("value") not in roles:
             report.fail(17, r, "about.role value %r is not one of %s" % (role.get("value"), sorted(roles)))
-        if d.get("added_by") != "human":
-            report.fail(17, r, "added_by %r is not human: only a person drops material" % d.get("added_by"))
+        added_by = d.get("added_by")
+        by_seat = isinstance(added_by, str) and bool(SEAT_RE.match(added_by))
+        if added_by != "human" and not by_seat:
+            report.fail(17, r, "added_by %r is neither human nor a seat" % added_by)
+        # a source a seat found by its own search and used is a card that seat writes (the person, 2026-11-17 and
+        # 2026-11-19, 'Yes, fix the gate'); registering it stays the person's word, which the card then names
+        if by_seat:
+            if added_by != d.get("author"):
+                report.fail(17, r, "added_by %r is a seat other than the card's author %r: a seat adds only what it "
+                                   "found itself" % (added_by, d.get("author")))
+            if d.get("entry_path") != "search":
+                report.fail(17, r, "entry_path %r on a material a seat added: a seat's material comes by its own "
+                                   "search" % d.get("entry_path"))
+            if d.get("state") in ("registered", "distilled") and not (
+                    isinstance(d.get("state_reason"), str) and d["state_reason"].strip()):
+                report.fail(17, r, "state %s on a material a seat added, without state_reason: registering is the "
+                                   "person's word, and the card says where it is recorded" % d.get("state"))
+        elif added_by == "human" and d.get("entry_path") == "search":
+            report.fail(17, r, "entry_path search on a material a person added: a search is a seat's")
         if not (isinstance(d.get("author"), str) and SEAT_RE.match(d["author"])):
             report.fail(17, r, "author %r is not the intake seat" % d.get("author"))
         snap = d.get("source_snapshot") if isinstance(d.get("source_snapshot"), dict) else {}

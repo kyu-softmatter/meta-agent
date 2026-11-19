@@ -1,0 +1,1 @@
+A material whose added_by is a seat other than the card's author. A seat adds only a source it found itself, so added_by and author are the same seat.
