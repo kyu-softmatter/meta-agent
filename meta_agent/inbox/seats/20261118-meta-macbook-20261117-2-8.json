@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "019",
+  "answers": null,
+  "text": "Relayed to this seat by the status-report session (local_2f39e32b-c7ca-45ec-9e38-f8d7c66827c0, no seat), 2026-11-19: the person pasted three rows of round four's table (run cfd/20261118-7: the maximal drag coefficient 2.92089 against John 2.950921575, the interval's lower edge 2.93, a fail about 0.030 low; the time of the maximal drag 3.938125 s against 3.93625 s, three steps late; the time of the maximal lift 5.700625 s against 5.693125 s, twelve steps late) and wrote: '이것도 맞다고 보는게 맞을듯' [I think it is right to regard these as correct too]. The day before: '최대항력계수, 항력시각, 양력시각은통과일거 같은데' [I think the maximal drag coefficient, the drag time and the lift time are passes]. Asked: record these words verbatim in docs/ideas/20261119.md as that session's relay. What they do not settle, and this seat does not read into them: a tolerance or an interval for any of the three; whether they judge round four's build alone or set the tolerance of later builds; how they stand beside 'Yes, refine and derive' (the run's own error, now runnable through template v25's third run). This seat puts the concrete form to the person in its own session and records the answer through you.",
+  "written_at": "2026-11-18T23:20:10-08:00"
+}
