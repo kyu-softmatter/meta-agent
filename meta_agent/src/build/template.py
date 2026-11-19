@@ -175,6 +175,13 @@ v25 changes one script of the checks and TEMPLATE.json (cfd-25; the intake card'
     judges the finest, and tells the rule's skill three_or_more_grids, so that no
     factor enters. The builder checks the third run's rows (bundle.py).
 
+v26 changes one script of the checks and TEMPLATE.json (rheotool-28; the design
+    role's reply f071852): a task marks a reference its source gives as exact
+    (measure.exact), src/validate_tasks.py hands the mark to the rule's skill,
+    now tolerance_from_reference@v4, and the half-digit branch does not apply to
+    it: the run's own error alone gives the tolerance. The builder hands the
+    mark too, and refuses it under a template whose rule's skill cannot take it.
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -200,8 +207,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v22": os.path.join(HERE, "template_v22"),
            "v23": os.path.join(HERE, "template_v23"),
            "v24": os.path.join(HERE, "template_v24"),
-           "v25": os.path.join(HERE, "template_v25")}
-LATEST = "v25"
+           "v25": os.path.join(HERE, "template_v25"),
+           "v26": os.path.join(HERE, "template_v26")}
+LATEST = "v26"
 SOURCE = SOURCES[LATEST]
 
 

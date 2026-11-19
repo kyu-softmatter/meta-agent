@@ -91,7 +91,7 @@ class AThirdRun(unittest.TestCase):
 class TheVersion(unittest.TestCase):
     def test_v25_is_the_latest_and_changes_one_script_and_its_card(self):
         v24 = template_mod.SOURCES["v24"]
-        self.assertEqual(template_mod.LATEST, "v25")
+        self.assertIn("v25", template_mod.SOURCES)                  # v26 is the latest since the exact reference
         changed = sorted(r for r in cards.tree_files(v24) if cards.sha256_file(os.path.join(v24, r)) != cards.sha256_file(os.path.join(V25, r)))
         self.assertEqual(changed, ["TEMPLATE.json", "src/validate_tasks.py"])
         meta = cards.load_json(os.path.join(V25, "TEMPLATE.json"))

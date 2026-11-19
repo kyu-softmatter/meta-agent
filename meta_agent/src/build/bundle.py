@@ -704,6 +704,14 @@ def stated_unit(task, tools, skills):
     return "1"
 
 
+def rule_takes_exact(rule):
+    """Whether the rule's skill a template names takes the mark of an exact reference (tolerance_from_reference@v4 on)."""
+    from ..skills import catalogue as catalogue_mod
+    folder = catalogue_mod.find((rule or {}).get("skill") or "") if rule else None
+    names = {i.get("name") for i in (cards.load_json(os.path.join(folder, "skill.json")).get("inputs") or [])} if folder else set()
+    return "exact" in names
+
+
 def with_rule_tolerance(task, rule, tools, skills):
     """The task with a tolerance derived by the person's standing rule of 2026-11-18, where the person gave none and the
     task states one field (a tolerance judges one field): the rule's skill runs through the runner on the reference as
@@ -733,6 +741,10 @@ def with_rule_tolerance(task, rule, tools, skills):
         inputs["run_numerical_error"] = None
     if "run_error_from" in names:
         inputs["run_error_from"] = None      # no run's error at build time, so nothing says how one was estimated
+    if "exact" in names:
+        # an exact reference has no printed digit to be uncertain in, and before any run there is no run's error: the
+        # rule gives no tolerance at build time, and the task's tolerance is the run's own error where it refines (v26)
+        inputs["exact"] = ((task.get("measure") or {}).get("exact") or {}).get(field)
     record = runner_mod.run(rule["skill"], inputs)
     out = record.get("outputs") or {}
     if record.get("verdict") != "ran" or out.get("tolerance") is None:
@@ -795,6 +807,10 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
         raise ValueError("an adaptation of a common skill is built only into a simulation bundle of a template that carries "
                          "the common set")
     rule = (cards.load_json(meta).get("tolerance_rule") if os.path.isfile(meta) else None) or None
+    marked = [t.get("id") for t in scientific_tasks or [] if any(((t.get("measure") or {}).get("exact") or {}).values())]
+    if marked and not rule_takes_exact(rule):
+        raise ValueError("scientific task(s) %s mark a reference exact, which the rule's skill of this template (%s) does "
+                         "not take; it needs v26 or later" % (", ".join(map(str, marked)), (rule or {}).get("skill")))
     if rule and scientific_tasks:
         scientific_tasks = [with_rule_tolerance(t, rule, tools, skills) for t in scientific_tasks]
     rows = check_drawing(skills, subagents, {t["name"]: t["contract"].get("side_effects") for t in tools}, template_path)
