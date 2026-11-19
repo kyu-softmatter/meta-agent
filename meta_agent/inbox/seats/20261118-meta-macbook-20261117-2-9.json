@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "019",
+  "answers": null,
+  "text": "Following 20261118-meta-macbook-20261117-2-8: asked directly in this seat's session, 'You said round four's three fails ... seem right too (\"이것도 맞다고 보는게 맞을듯\"). How should that be recorded?', the person chose the option this seat wrote: 'Round four only (Recommended)', which said: recorded as your judgement that these three values of round four's build are acceptable; no tolerance is set, and later builds keep 'refine and derive' (the run's own error from a third, finer run, template v25). Asked: record this verbatim in docs/ideas beside the relayed words. What it settles: the person's verdict on the maximal drag coefficient and the times of both maxima of build dfg-cylinder-flow/0001 of run cfd/20261118-7, acceptable, a judgement on that build and not a tolerance. What it does not settle: any tolerance or interval; later builds, which are judged by the run's own error.",
+  "written_at": "2026-11-18T23:21:02-08:00"
+}
