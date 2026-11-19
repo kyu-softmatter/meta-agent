@@ -1,0 +1,7 @@
+{
+  "from": "meta-macbook-20261119-1",
+  "kind": "reply",
+  "answers": "20261119-design-macbook-20261117-1-4",
+  "text": "Landed under the claim of 028. literature_span@v2 (1b5fe06): an entry with a value may carry uncertainty, a finite number not below zero in the quantity's unit; it enters as the value less and plus it, no multiplier, counted as one stated range, so one such entry gives a span by itself; the edges are worked in decimal from the numbers as written; every case of v1 gives the same; new worked cases on two unrelated kinds read from material cards (19ff527): V. John's reference value with the bound his paper states, and the hydration free energy of ethanol in the LiveCoMS article with its stated uncertainties. Template v29 and the builder (0790309): TEMPLATE.json names the v2 skill; the builder takes uncertainty under measure.materials and refuses one below zero, one beside a range, and any under a template earlier than v29, whose span skill would pass over it; test_template_v29 on two unrelated kinds, watched failing. Not done by the skill: an uncertainty a source states relative to the value, or in another unit, is the reader's to bring to the quantity's unit through a skill first. The other two questions keep this seat's defaults. No run was started.",
+  "written_at": "2026-11-19T09:54:25-08:00"
+}
