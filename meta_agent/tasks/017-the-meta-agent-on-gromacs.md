@@ -139,3 +139,7 @@ The person said, relayed by the cleanup session (`design-macbook-20261117-3`): "
 How far the tutorial got, read from the session's own text and the engine's log: minimisation converged (the engine reported 490 steps); NVT ran all 50000 steps in one call; NPT ran all 250000 steps over five one-hour calls, each continuing from its checkpoint; production stopped at step 112480 of 5000000 (about 225 ps of 10 ns), with a checkpoint from which it could continue. The session had begun reading the finished stages (`read_stage`, `read_energy_averages`, kept in the bundle's `runs/session-2`) but had not reported them; no average is reported here. The engine's speed fell from call to call while other test sessions ran beside it (the session read a load average of about 70), which is how NPT took five calls.
 
 Watched: the session's text, the engine's log, the stop. Not watched: the averages and structural readings, which the session had not reported; production past 225 ps. Run `20261118-1` stands, stopped, until the design role has read `collect-2`.
+
+## Production resumed on the person's word (2026-11-19)
+
+The person said, in the status-report session (`local_2f39e32b`, no seat), relayed here: "그로맥스 계속 진행" ("continue GROMACS"). Production of run `20261118-1` is resumed from its checkpoint (`md_0_10.cpt`, step 112480 of 5000000) by a fresh unattended session in the bundle's folder, brief `../eval/briefs/gromacs-lysozyme-resume.txt`, on `claude-opus-5-5` at `high`, one-hour calls (the person's "1 hour per call"). Its earlier stages are not run again.
