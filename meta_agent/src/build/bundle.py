@@ -727,7 +727,10 @@ def materials_problems(tasks, template_path):
     tolerances, branch 3; meta_agent/tasks/028): a template that names no span skill, materials on a task that does not
     state one field, or an entry that does not name its material, does not say how the material's system, quantity and
     engine compare with the task's, or gives neither one value nor the two edges of one range. Which materials are
-    suitable is never left unsaid, so such an entry is refused here and not passed over."""
+    suitable is never left unsaid, so such an entry is refused here and not passed over. An entry that gives a value may
+    carry the uncertainty its material states for it (the person, 2026-11-19, 'Widen by uncertainty'; template v29): a
+    number not below zero, beside a value and never beside a range; under a template earlier than v29, whose span skill
+    would pass over it and give a span the person's word does not, it is refused."""
     meta = os.path.join(template_path, "TEMPLATE.json")
     m = cards.load_json(meta) if os.path.isfile(meta) else {}
     out = []
@@ -735,6 +738,10 @@ def materials_problems(tasks, template_path):
     if carrying and not m.get("span_skill"):
         out.append("the template %s takes no span of materials; it needs v28 or later" % m.get("version"))
     number = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool)
+    try:
+        widens = int(str(m.get("version") or "v0")[1:]) >= 29      # its span skill takes a value's stated uncertainty
+    except ValueError:
+        widens = False
     for t in carrying:
         tid, stated = t.get("id"), (t.get("measure") or {}).get("stated")
         if not isinstance(stated, dict) or len(stated) != 1:
@@ -757,6 +764,14 @@ def materials_problems(tasks, template_path):
                 if value == edges or (value and not number(e["value"])) or (
                         edges and not (number(e.get("low")) and number(e.get("high")))):
                     out.append("%s gives neither one value nor the two edges of one range" % where)
+                if e.get("uncertainty") is not None:
+                    if not widens:
+                        out.append("%s gives an uncertainty, which the span skill of the template %s does not take; it "
+                                   "needs v29 or later" % (where, m.get("version")))
+                    elif not value or edges:
+                        out.append("%s gives an uncertainty that stands beside no single value" % where)
+                    elif not number(e["uncertainty"]) or e["uncertainty"] < 0:
+                        out.append("%s gives an uncertainty that is not a number at or above zero" % where)
     return out
 
 

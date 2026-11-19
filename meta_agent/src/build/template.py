@@ -202,6 +202,14 @@ v28 changes one script of the checks and text, on the person's amended and
     for a task that names no refinement and refuses entries that do not name
     their material or say how it compares.
 
+v29 changes text and the template's card, on the person's word that a
+    source's stated uncertainty widens the span ('Widen by uncertainty',
+    2026-11-19; tasks/028): an entry of measure.materials that gives a value
+    may carry the uncertainty its material states for it, and the span's
+    skill, now literature_span@v2, takes it as the value less and plus that
+    uncertainty, one stated range. The builder refuses an uncertainty that is
+    negative or stands beside a range, and any under an earlier template.
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -230,8 +238,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v25": os.path.join(HERE, "template_v25"),
            "v26": os.path.join(HERE, "template_v26"),
            "v27": os.path.join(HERE, "template_v27"),
-           "v28": os.path.join(HERE, "template_v28")}
-LATEST = "v28"
+           "v28": os.path.join(HERE, "template_v28"),
+           "v29": os.path.join(HERE, "template_v29")}
+LATEST = "v29"
 SOURCE = SOURCES[LATEST]
 
 

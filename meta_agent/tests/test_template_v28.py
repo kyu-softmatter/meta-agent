@@ -208,7 +208,7 @@ class TheBuilder(unittest.TestCase):
 
 class TheVersion(unittest.TestCase):
     def test_v28_is_the_latest_and_changes_one_script_its_card_and_two_texts(self):
-        self.assertEqual(template_mod.LATEST, "v28")
+        self.assertIn("v28", template_mod.SOURCES)                  # v29 is the latest since a stated uncertainty widens the span
         changed = sorted(r for r in cards.tree_files(V27) if cards.sha256_file(os.path.join(V27, r)) != cards.sha256_file(os.path.join(V28, r)))
         self.assertEqual(changed, ["CLAUDE.md", "TEMPLATE.json", "src/validate_tasks.py", "tasks/001-start.md"])
         self.assertEqual(sorted(cards.tree_files(V27)), sorted(cards.tree_files(V28)))
