@@ -1,0 +1,27 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human (asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json); this file becomes a queued card when check 17 allows it.",
+  "kind": "paper",
+  "citation": "'Membrane Potential: Accuracy and Reproducibility of Molecular Dynamics Simulations', Membranes 16 (2026), article 226, doi:10.3390/membranes16070226; read in its PubMed Central copy PMC13414296",
+  "location": {
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13414296/",
+    "doi": "10.3390/membranes16070226"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-19T07:45:00Z",
+    "content_hash": "sha256:3beec8c080d266a644fc2ed4489b93e287aeb1822e0c962a74fdf5e7c2a8afc0",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261117-8",
+  "access": "an open-access article in PubMed Central; anonymous, read-only, no login",
+  "how_found": "searched for how far a set-up count (the water molecules gmx solvate adds) is allowed to differ between runs, versions or machines, on the person's question of 2026-11-19 (tasks/017); the person asked for papers as well ('논문도 너가 찾아봐야지', 2026-11-19)",
+  "licence": "not read for a licence; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "question": "tasks/017, the tolerance of a set-up count",
+      "locus": "section 3.1, 'Sensitivity of Membrane Electrostatics to System Composition', first paragraph: controlling the number of water molecules or ions exactly can be hard when a system is assembled by hand, and there is no strict standard for the volume of the aqueous phase; no tolerance on a count is stated"
+    }
+  ],
+  "state": "queued",
+  "registered": "the person's word, not given"
+}
