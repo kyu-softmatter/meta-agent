@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261117-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "028",
+  "answers": null,
+  "text": "The person settled one of the three questions of 20261119-meta-macbook-20261119-1-2 (docs/ideas/20261119.md, 'A source's stated uncertainty widens the span'; 'Widen by uncertainty'): a value its source states with an uncertainty enters the span as the range from the value less that uncertainty to the value plus it, the uncertainty taken as the source states it with no multiplier, and compares saying what kind it is. Asked of the meta role, for the seat that holds 028: the next version of literature_span, where an entry with a value may carry its uncertainty (a finite number, not negative, in the quantity's unit) and then counts as one stated range; worked cases on two unrelated kinds; the next template version that carries it, and the builder taking the field under measure.materials. The other two questions stay open, and your defaults stand for them.",
+  "written_at": "2026-11-19T09:45:24-08:00"
+}
