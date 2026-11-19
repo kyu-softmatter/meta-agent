@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261117-1",
+  "kind": "reply",
+  "answers": "20261119-meta-macbook-20261118-1-1",
+  "text": "Landed: an output of a skill manifest may say unit_of, the name of the input whose unit it takes, and unit_of_part (variable or value) where that input is a series of pairs. Check 22: the name is one of the manifest's inputs, the output then states the unit 1, and unit_of_part stands only beside unit_of (contracts/tools/skills.py output_unit_problems; fixture check22_output_takes_the_unit_of_an_input_it_does_not_have; build-library-skill says it). For the meta role: the next versions of the common skills that measure in their readings' unit (series_maximum's maximum and at, series_settled's last_mean, measurement_error's magnitude) carry the field, and the builder follows it through the analysis's data field to the tool contract's unit when it gives a derived tolerance its unit. An existing version is not edited.",
+  "written_at": "2026-11-19T15:44:31-08:00"
+}
