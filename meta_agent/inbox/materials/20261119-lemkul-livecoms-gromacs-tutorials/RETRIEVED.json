@@ -1,0 +1,27 @@
+{
+  "what": "a source a seat found by search and read",
+  "why_not_a_card": "Not a material card yet: check 17 fails a material whose added_by is not human (asked of the design role in meta_agent/inbox/seats/20261117-meta-macbook-20261116-1-14.json); this file becomes a queued card when check 17 allows it.",
+  "kind": "paper",
+  "citation": "J. A. Lemkul, 'From Proteins to Perturbed Hamiltonians: A Suite of Tutorials for the GROMACS-2025 Molecular Simulation Package', Living Journal of Computational Molecular Science (LiveCoMS); the author's source of the article in its public repository",
+  "location": {
+    "url": "https://raw.githubusercontent.com/jalemkul/gmx_tutorials_livecoms/master/gmx_tutorials.tex",
+    "repository": "https://github.com/jalemkul/gmx_tutorials_livecoms"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-19T07:40:00Z",
+    "content_hash": "sha256:b897f7d37cbd0f09f54584df87ced3f54ce89cafac5daf9a81592ed14ad4183c",
+    "archived": null
+  },
+  "retrieved_by": "meta-macbook-20261117-8",
+  "access": "a public repository of the author's; anonymous, read-only, no login",
+  "how_found": "searched for how far a set-up count (the water molecules gmx solvate adds) is allowed to differ between runs, versions or machines, on the person's question of 2026-11-19 (tasks/017); the person asked for papers as well ('논문도 너가 찾아봐야지', 2026-11-19)",
+  "licence": "not read for a licence; no copy is kept here, since may_quote is the person's to set",
+  "read_for": [
+    {
+      "question": "tasks/017, the tolerance of a set-up count",
+      "locus": "section on the lysozyme tutorial, the paragraphs on solvate and genion: solvate writes the count of water molecules it added to the topology; the placement of the chloride ions differs in every system; no tolerance on a count is stated"
+    }
+  ],
+  "state": "queued",
+  "registered": "the person's word, not given"
+}
