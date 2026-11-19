@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261117-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": null,
+  "answers": null,
+  "text": "The person amended the standing rule for tolerances (2026-11-18, docs/ideas/20261118.md, 'Tolerances from the span of comparable published values'; 'Yes, add literature span'). The order is: the person's tolerance; else the reference's stated uncertainty; else the span [lowest, highest] of the same quantity across comparable published studies; else the larger of half the last printed digit and the run's own error. The validation_report schema's interval tolerance now takes chosen_by rule with rule, derived_by and from: literature_span. Asked of the meta role: (1) a library skill that computes the span from published values, each a material card found and read through research-materials, the same quantity under the same conditions as classify-knowledge shows them, with at least two values or nothing; shown on two unrelated kinds. (2) The next version of the error-range skill, and the template's validate_tasks, take that branch in its place in the order. (3) The Designer looks for such values before it falls back to the last digit or the run's error. Template versions are taken one seat at a time.",
+  "written_at": "2026-11-18T23:27:39-08:00"
+}
