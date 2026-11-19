@@ -354,6 +354,18 @@
       ],
       "depends_on": [],
       "opened": "2026-11-18"
+    },
+    {
+      "id": "028",
+      "file": "028-a-span-from-suitable-materials.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-19",
+      "design_part": "landed"
     }
   ]
 }
