@@ -777,7 +777,25 @@ def bundle_changes(item, path, dest):
     left = _copy_into(path, added + changed, os.path.join(dest, "files"))
     return {"name": item["name"], "kind": "bundle", "added": added, "changed": changed, "removed": removed,
             "not_copied": left, "needed": needed_lines(path) if "failures.jsonl" in added + changed else [],
+            "skill_runs_recorded": skill_runs_recorded(path, added + changed),
             "digest_made": item["bundle_sha256"], "digest_now": tree_digest(cur)}
+
+
+def skill_runs_recorded(bundle, rels):
+    """{skill ref: n} over the records a bundle's skill runner wrote among the files added or changed since the
+    bundle was made. A session's commands undercount: one command that runs a skill in a loop is one command and
+    several runs (run molecular-dynamics/20261118-1, collect-4). The records are the item's, over all its sessions."""
+    out = {}
+    for rel_path in rels:
+        if not rel_path.endswith(".json"):
+            continue
+        try:
+            d = read_json(os.path.join(bundle, *rel_path.split("/")))
+        except (OSError, ValueError):
+            continue
+        if isinstance(d, dict) and d.get("record") == "skill_run" and isinstance(d.get("ref"), str):
+            out[d["ref"]] = out.get(d["ref"], 0) + 1
+    return out
 
 
 def needed_lines(bundle):
@@ -872,7 +890,7 @@ def report_collection(run, dest, sessions, items):
                  s["calls_in_error"], ", ".join(s["skills_loaded"]) or "none", len(s["files_written"]), len(s["written_outside"])))
         ran = s.get("library_skills_run") or {}
         look = s.get("looked_for_sources") or {}
-        print("  %s  %s  library skills run: %s; asked the person %d time(s); web searches %d, web fetches %d, "
+        print("  %s  %s  library skills named in its commands: %s; asked the person %d time(s); web searches %d, web fetches %d, "
               "shell fetches %d"
               % (s["item"], s["session"][:8], ", ".join("%s x%d" % kv for kv in sorted(ran.items())) or "none",
                  s.get("asked_the_person", 0), look.get("web_search", 0), look.get("web_fetch", 0), look.get("shell_fetch", 0)))
@@ -881,6 +899,10 @@ def report_collection(run, dest, sessions, items):
             print("%-11s %s  its folder is gone; transcripts only" % (it["name"], it["kind"]))
         elif it["kind"] == "bundle":
             print("%-11s bundle  %d added, %d changed, %d removed" % (it["name"], len(it["added"]), len(it["changed"]), len(it["removed"])))
+            rec = it.get("skill_runs_recorded") or {}
+            if rec:
+                print("%-11s         skill runs recorded by the runner, over all its sessions: %s"
+                      % ("", ", ".join("%s x%d" % kv for kv in sorted(rec.items()))))
             for need in it.get("needed") or []:
                 print("%-11s         needed: %s" % ("", need[:160]))
             for d, n in sorted(it.get("not_copied", {}).items()):

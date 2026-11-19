@@ -486,6 +486,26 @@ class LibrarySkillsRun(unittest.TestCase):
         self.assertEqual(tf.library_skills_run([{"command": "python src/run_tool.py render"}]), {})
 
 
+class SkillRunsRecorded(unittest.TestCase):
+    def test_the_records_the_runner_wrote_are_counted_whatever_the_command_looked_like(self):
+        # a command that runs a skill in a loop is one command and several runs (run molecular-dynamics/20261118-1,
+        # collect-4: four records, one command). Two unrelated kinds: an instrument's limit, an engine run's error.
+        import tempfile
+        with tempfile.TemporaryDirectory() as top:
+            put(top, "runs/a/limit.record.json", '{"record": "skill_run", "ref": "shear_rate_max_from_max_speed@v1"}\n')
+            for q in ("density", "pressure", "rmsd"):
+                put(top, "runs/b/me_%s.record.json" % q, '{"record": "skill_run", "ref": "measurement_error@v1"}\n')
+            put(top, "runs/b/out.json", '{"record": "tool_run", "ref": "measurement_error@v1"}\n')     # not a skill run
+            put(top, "runs/b/broken.record.json", "{")                                                  # not read
+            put(top, "runs/b/list.json", "[1]\n")
+            rels = ["runs/a/limit.record.json", "runs/b/me_density.record.json", "runs/b/me_pressure.record.json",
+                    "runs/b/me_rmsd.record.json", "runs/b/out.json", "runs/b/broken.record.json", "runs/b/list.json",
+                    "runs/b/gone.json", "runs/b/notes.txt"]
+            self.assertEqual(tf.skill_runs_recorded(top, rels),
+                             {"measurement_error@v1": 3, "shear_rate_max_from_max_speed@v1": 1})
+            self.assertEqual(tf.skill_runs_recorded(top, []), {})
+
+
 class SourcesLookedFor(unittest.TestCase):
     def test_searches_and_fetches_are_counted_from_a_sessions_calls(self):
         # a paper searched for and read, and a repository cloned (the person, 2026-11-17)
