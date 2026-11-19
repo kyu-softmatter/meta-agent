@@ -1,0 +1,25 @@
+This folder is a bundle: a scientific agent built by a separate builder, the Meta-Agent, as a self-contained folder. It is the `qe-pw-examples` agent, which runs the official examples of the PW package of Quantum ESPRESSO (density functional theory with plane waves) and compares what the engine prints with the reference outputs the examples ship. The folder was copied out of the builder's repository into a place with no other project around it, and the builder is not here. Earlier sessions in this folder made its environment and ran every example. The purpose of this run is to see whether a person can make the agent do its work by asking in their own words, with nobody else to ask. So the account of what was in your context, what you loaded, what you could not find and what was unclear matters as much as what you ran; say what you met as you met it, and do not assume the text is right because it is there.
+
+`CLAUDE.md` in this folder says who you are and what binds you. Work only from what this folder carries, and only inside it.
+
+A person says to you:
+
+"example09가 지난번에 발산해서 멈췄어. 입력은 하나도 바꾸지 말고 그대로 다시 돌려줘. 한 번은 프로세스 1개로, 한 번은 참조 출력처럼 4개로. 발산이 또 나는지, 프로세스 수에 따라 달라지는지 알려줘. example01의 ppcg 단계는 7.6에서 없어진 기능이니까 안 돌려도 돼."
+
+Do it as this agent does it. Where something this agent needs is not here, or something the person asks cannot be done by this agent's tools, do not supply it yourself and do not go around them: say what it is, what would settle it, and whose step it is.
+
+This folder is a copy made for this run and is not under version control: there is nothing to commit, and what your instructions allow a session to write, you may write. Write nothing they do not allow.
+
+Done when: you have answered the person as this agent answers.
+
+Your final message is your report, ten lines or fewer plus your answer to the person:
+
+```
+task     <the person's request>
+landed   <every file you wrote or changed, or nothing>
+ran      <each run: how many processes, the exit status, converged or not>
+asks     <what you would ask a person, or nothing>
+next     <what comes next, and whose it is>
+```
+
+Then say, plainly and separately: every instruction file and every skill that was in your context when you started, by name, including any that is not from this folder; which session skills you loaded and at what point, and which section of each you used; what you looked for and did not find in this folder; anything in `CLAUDE.md`, in a task or in a skill that was unclear, contradicted another line, or named something that is not here; and whether the folder was enough to do the work with nobody to ask. Name the model and the effort you ran on.
