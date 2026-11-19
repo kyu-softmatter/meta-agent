@@ -25,6 +25,7 @@ Load `classify-knowledge` before the first value, statement or data file of this
 - **A relation needs no citation only where it is a definition,** and then the definition is named with where it is defined.
 - **Every source you read and use is a material card** you write (`added_by` your seat), `queued`, with what it was found for and how it was found. Design and build do not wait for the person to register it.
 - **Look for something published to compare with** before a request ends at theory alone: a measurement, a figure or a table of a paper that ran the same system, as a scientific task's reference.
+- **Where that reference states no uncertainty, look for what others allow,** before the tolerance falls to the last printed digit and the run's own error: other values of the quantity, or error ranges stated for it, in published studies of the same or a similar system on any topic and in the maker's manuals. This holds for any quantity of any engine or instrument. Each value or range is handed to the scientific task as an entry under `measure.materials`, a map from the stated field to a list of entries. An entry names its `material`, says in `compares` how that material's system, quantity and engine compare with the task's (`classify-knowledge`), and gives either `value` or `low` and `high`. A search that finds nothing is written as a gap with where you looked.
 
 ## Searching the literature
 
