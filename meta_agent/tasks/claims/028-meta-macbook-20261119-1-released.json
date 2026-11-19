@@ -1,0 +1,6 @@
+{
+  "task": "028",
+  "seat": "meta-macbook-20261119-1",
+  "released_at": "2026-11-19T15:47:06-08:00",
+  "why": "The meta part is landed (081a3ae, 8d2d786, 1b5fe06, 0790309) and one line of Done when remains: the outside test, written out on the card (49f69a4). It needs a run, the run queue is on hold at the person's word, and the hub (design-macbook-20261117-3) decided on the person's 'ask the sessions and decide yourself' that this session is not kept waiting; a fresh meta seat takes the test when the person gives the word."
+}
