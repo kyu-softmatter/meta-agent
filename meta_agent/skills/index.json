@@ -930,6 +930,68 @@
       "sha256": "sha256:328f7b2f9b9f30a036f4b85cf91156ea3ccc38faec48822b9f271b3b2b2e88a3"
     },
     {
+      "ref": "literature_span@v1",
+      "id": "literature_span",
+      "version": 1,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the span of one quantity across suitable materials, branch 3 of the person's standing rule for tolerances: the interval from the lowest to the highest of the values and stated error ranges the materials give, each entry naming its material and how its system compares; no span from fewer than two values and no stated range",
+      "description": "The span of one quantity across suitable materials, as the person's standing rule for tolerances takes it where a reference states no uncertainty: the interval from the lowest to the highest of the values and stated error ranges that published studies of the same or a similar system and the maker's manuals give for that quantity, each entry naming its material and saying how its system compares. Take it when a result is to be judged, its reference states no uncertainty, the person gave no tolerance, and materials that give the quantity were found and read.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "entries",
+          "unit": "1",
+          "meaning": "a list, one entry for each value or stated error range of the one quantity, every number in the quantity's unit. An entry is an object: material, the material card the number was read from (its path or id); compares, in words, how that material's system, quantity and engine compare with the task's, as written after classify-knowledge; and either value, one value the material gives for the quantity, or low and high, the two edges of one error range the material states, as it writes them"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "low",
+          "unit": "1",
+          "meaning": "the lowest of the values and range edges handed, in the quantity's unit, as its entry gave it; null, with why, where there is no span"
+        },
+        {
+          "name": "high",
+          "unit": "1",
+          "meaning": "the highest of the values and range edges handed, in the quantity's unit, as its entry gave it; null where there is no span"
+        },
+        {
+          "name": "lowest_from",
+          "unit": "1",
+          "meaning": "the material of the entry that gave the lowest; where two entries hold it, the first handed"
+        },
+        {
+          "name": "highest_from",
+          "unit": "1",
+          "meaning": "the material of the entry that gave the highest; where two entries hold it, the first handed"
+        },
+        {
+          "name": "values",
+          "unit": "count",
+          "meaning": "how many entries gave one value"
+        },
+        {
+          "name": "ranges",
+          "unit": "count",
+          "meaning": "how many entries gave a stated range"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why there is no span; else null"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/literature_span@v1",
+      "sha256": "sha256:699341463f3c58401b9b0a44ba367659ef9e51a469344a068c6dcd1963fd8897"
+    },
+    {
       "ref": "measurement_error@v1",
       "id": "measurement_error",
       "version": 1,
@@ -1520,6 +1582,98 @@
       "uses_skills": [],
       "path": "data_analysis/tolerance_from_reference@v4",
       "sha256": "sha256:2873a5a0b41c83c14adf28507cbd0a1fa54553e56ebd51299afb9163d1bd7ca2"
+    },
+    {
+      "ref": "tolerance_from_reference@v5",
+      "id": "tolerance_from_reference",
+      "version": 5,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "a scientific task's tolerance by the person's standing rule, its branches in order: the reference's stated uncertainty; else the span of the quantity across suitable materials, as an acceptance interval; else the larger of half a unit in its last printed digit and the run's own numerical error, a two-grid estimate of that error entering three times over; for a reference the source gives as exact, the run's own error alone in that last branch",
+      "description": "A scientific task's tolerance by the person's standing rule, from the reference as its source gives it: the uncertainty the source states, otherwise the span of the quantity across suitable materials where one was derived, as an interval the measured value is to lie in, otherwise the larger of half a unit in the last digit the reference prints and the run's own numerical error where that was estimated, a two-grid estimate of it entering three times over; for a reference the source gives as exact, the run's own error alone. Take it when a scientific task compares a measured value with a reference and the person has given no tolerance for it.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "printed",
+          "unit": "1",
+          "meaning": "the reference value as its source prints it, as text, its last digit kept as printed (a trailing zero included); in the quantity's unit; it may be null for a reference marked exact"
+        },
+        {
+          "name": "stated_uncertainty",
+          "unit": "1",
+          "meaning": "the uncertainty the source states for that value, in the quantity's unit, or null where it states none"
+        },
+        {
+          "name": "run_numerical_error",
+          "unit": "1",
+          "meaning": "the run's own numerical error of the quantity, in its unit, as an estimating skill gave it through the runner (the difference between two resolutions, or the standard error of a series the run produced); null where it was not estimated"
+        },
+        {
+          "name": "run_error_from",
+          "unit": "1",
+          "meaning": "how the run's own error was estimated: two_grids (two resolutions, as discretization_error_from_two_resolutions gives it), three_or_more_grids, or series_standard_error; null where the run's error is null"
+        },
+        {
+          "name": "exact",
+          "unit": "1",
+          "meaning": "true where the source gives the reference as exact (an analytic value of the case's own settings, a defined constant), so that it has no printed digit to be uncertain in and the half-digit branch does not apply; false or null otherwise"
+        },
+        {
+          "name": "span_low",
+          "unit": "1",
+          "meaning": "the low edge of the span of the quantity across suitable materials, in the quantity's unit, as the span's skill gave it through the runner; null where it gave none or no material was handed"
+        },
+        {
+          "name": "span_high",
+          "unit": "1",
+          "meaning": "the high edge of that span, in the quantity's unit; null where there is none"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "tolerance",
+          "unit": "1",
+          "meaning": "the tolerance about the reference, in the quantity's unit; null where the span gave an interval in its place, and null, with why, where the inputs give none"
+        },
+        {
+          "name": "interval_low",
+          "unit": "1",
+          "meaning": "the low edge of the acceptance interval, in the quantity's unit, where the span gave it: the measured value is to lie between the two edges, the edges as handed; else null"
+        },
+        {
+          "name": "interval_high",
+          "unit": "1",
+          "meaning": "the high edge of that interval; else null"
+        },
+        {
+          "name": "from",
+          "unit": "1",
+          "meaning": "stated_uncertainty, literature_span, last_printed_digit or run_numerical_error: which of the rule's ways gave it; null where none did"
+        },
+        {
+          "name": "run_error_estimated",
+          "unit": "1",
+          "meaning": "true when a run's numerical error was handed and weighed, false when it was not estimated and the half-digit branch alone applied, null where the stated uncertainty or the span was taken"
+        },
+        {
+          "name": "factor",
+          "unit": "1",
+          "meaning": "the factor the run's own error entered with: 3 for a two-grid estimate, 1 for three or more grids or a series' standard error; null where no run error was weighed"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why no tolerance was given, or that the run's error was not estimated; else null"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/tolerance_from_reference@v5",
+      "sha256": "sha256:6d23997efa0a04f5be140b5e0c14b269fe9dee188c812c5e6ba973d76989b3d3"
     },
     {
       "ref": "diffusive_regime_from_msd@v1",
