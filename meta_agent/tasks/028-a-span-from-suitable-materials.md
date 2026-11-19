@@ -1,6 +1,6 @@
 # 028 — A tolerance from the span of suitable materials
 
-**Status:** open. Opened by `design-macbook-20261117-1` on 2026-11-19 from the person's standing rule for tolerances, branch 3, as amended (`../../docs/ideas/20261118.md`, "Tolerances from the span of comparable published values"; `../../docs/ideas/20261119.md`, "What the literature-span skill is for, and what it may draw on"). Held by `meta-macbook-20261119-1` (claim `affd098`); its meta part landed on 2026-11-19 except the outside test (see "The meta part" below). It takes over what the design role asked of the meta role in `../inbox/seats/20261118-design-macbook-20261117-1-16.json`, which no meta seat took up.
+**Status:** open. Opened by `design-macbook-20261117-1` on 2026-11-19 from the person's standing rule for tolerances, branch 3, as amended (`../../docs/ideas/20261118.md`, "Tolerances from the span of comparable published values"; `../../docs/ideas/20261119.md`, "What the literature-span skill is for, and what it may draw on"). Nobody holds it: `meta-macbook-20261119-1` held it (claim `affd098`), landed its meta part on 2026-11-19 except the outside test, and released it the same day on the hub's decision, since the run queue is on hold and the session is not kept waiting. What remains is "The outside test" at the end of this card, for a fresh meta seat when the person gives the word for a run. It takes over what the design role asked of the meta role in `../inbox/seats/20261118-design-macbook-20261117-1-16.json`, which no meta seat took up.
 
 **What the person said it is for:** a skill that can check the cases a person passed by judgement, by working out an error range from suitable materials. Those cases are CFD round four's maximal drag and its two peak times (run `cfd/20261118-7`) and the GROMACS water count (run `molecular-dynamics/20261118-1`). For the water count, the person said a paper on a similar solvation will do: the solute need not be a protein, the solvent need not be water, and the engine need not be GROMACS.
 
@@ -31,7 +31,7 @@
 - *The water count of the lysozyme solvation:* one value, the tutorial's own. Nothing was found that gives a second published value of this count for this set-up, or a range for how far a solvation's count may differ. Looked in: the tutorial's page and its article (LiveCoMS), the `gmx solvate` help, the Solv-eze preprint, and searches for comparisons of water counts between solvation tools, between computers and versions, and between independently prepared replicas. The tutorial says the count may differ very slightly between computers and gives no number. With one value and no stated range the skill gives nothing, which is its fourth worked case. The person's "차이만 보고, 판정 없음" stands.
 - *A third kind,* the viscosity of liquid water at 25 °C from two reference works already in the inbox, shows the skill on a measured property.
 
-**Not done:** the test of a built bundle deriving a span from cards it was not handed. It needs a run, and a run waits for the hub's word while GROMACS production holds the computer.
+**Not done:** the test of a built bundle deriving a span from cards it was not handed. It needs a run. See "The outside test" at the end of this card.
 
 **Open, and whose:**
 - *Settled on 2026-11-19 ("Widen by uncertainty"):* whether a value a source gives with an uncertainty enters as a range. See "A stated uncertainty widens the span" below.
@@ -57,3 +57,30 @@ The person answered "Widen by uncertainty" (`../../docs/ideas/20261119.md`, "A s
 - The hydration free energy of ethanol in the LiveCoMS article of GROMACS tutorials: the article's own result with the error its analysis prints, and two values it quotes from other papers, one with an uncertainty. The quoted values were not followed to those papers, and each entry says so.
 
 **Still open:** the outside test; which of a source's numbers is its value for the quantity; whether a span of two values known no finer than their sources' time steps should judge. An uncertainty a source states relative to the value, or in another unit, is not converted by the skill: the reader brings it to the quantity's unit through a skill first.
+
+## The outside test: what it is and what it needs
+
+This is the one line of **Done when** that is still open: "a test shows a built bundle deriving a span from cards it was not handed". Everything else on this card is landed. No part of this test has been run, and no brief for it has been written.
+
+**What it is.** A test outside the repository, run as `../../.claude/skills/test-outside-the-repository/SKILL.md` says. It has two halves, and each is read from its own collection.
+
+1. *The builder finds the materials itself.* A fresh, unattended clone session is given a request for an agent on an engine. The request has a scientific task whose reference states no uncertainty, and the person gave no tolerance for it. The brief hands the session no material and no value to compare with, and it does not name the span, the skill or `measure.materials`. Read in the collection:
+   - whether the session looked for what others allow before the rule's last branch, through `research-materials`, searching by the quantity, the method or the tool alone;
+   - whether every source it used is a `MATERIAL.json` card (`added_by` and `author` its seat, `entry_path: search`, `queued`);
+   - whether the task carries `measure.materials`, each entry with `material`, `compares`, and `value` (with `uncertainty` where the source states one) or `low` and `high`;
+   - whether the built task's tolerance is the interval, `chosen_by: rule`, `from: literature_span`, `derived_by` the span's skill, with the span's run under `tolerance_derivation`;
+   - or, where the sources give no value and no range, whether the session said so plainly and the next branch applied. A search that found nothing is a result.
+2. *The bundle judges by it, standing alone.* The built bundle's own session runs `src/validate_tasks.py` and reports what it printed: the tolerance line, the line "span of the materials" with the material that gave each edge, and the verdict. For a task that names a refinement the bundle derives the span itself when the check runs, and makes no finer run. Read in the collection: whether the session added no entry, left none out and typed no result.
+
+Across both halves: no value recalled from memory, no statistic or multiplier, and no pass the person gave by judgement overturned.
+
+**What it needs.**
+- *The person's word for a run.* The run queue is on hold.
+- *A meta seat that claims this task.* `python contracts/tools/tasks.py claim 028 --seat <name>`.
+- *A brief under `../eval/briefs/`.* None exists for this test. The `clone-*-bare.txt` briefs there are the form of a brief without answers. Which engine and which quantity the request names is the person's or the hub's to say. The skill serves any quantity of any engine or instrument, so the test is not shaped around the drag coefficient or solvation: those two are worked cases only (the person, 2026-11-19).
+- *A template that carries the span.* `../src/build/template_v29` or later, at the committed head.
+- *Anonymous, read-only access to the network* for the clone session's search.
+- *The engine's environment, for the second half only.* The bundle's check judges a measured value, so the task's call must run. The first half needs no engine: the builder derives the span through its own runner.
+- *The test folder and the log folder* that `git config meta-agent.testfolder` and `git config meta-agent.testlogs` name, the permission mode `auto`, and, when the test has been read, the removal of the run.
+
+**What comes back.** A failure line or a case for each fault, written by the seat that owns the path, naming the run and the collection. When both halves have been read, the task's row in `index.json` is the design role's to close.
