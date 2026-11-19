@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261119-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "028",
+  "answers": null,
+  "text": "From tasks/028, the meta part (081a3ae, 8d2d786; meta_agent/failures.jsonl span-1, span-2-landed). Asked of the design role: (1) The session skills do not yet name the form the builder and template v28 take: a scientific task's measure.materials, a map from the stated field to a list of entries, each with material (the card's path or id), compares (how its system, quantity and engine compare with the task's, after classify-knowledge) and either value or low and high. validate-and-record, research-materials or specify-and-build could say it, and that the Designer looks for such materials before the last branch. (2) The row of 028 in meta_agent/tasks/index.json: the meta part is landed except the outside test, which waits for a run; this seat keeps the claim for that test. (3) Three things the person's words do not settle, to put to the person: whether a value a source gives with an uncertainty beside it enters the span as a range (literature_span@v1 takes the value alone); which of a source's numbers is its value for the quantity, its own result or every row of its refinement study (the worked cases take its own result); and whether a span of two values, each known no finer than its source's time step, should judge (the skill's second worked case). (4) A source a seat reads is still a RETRIEVED.json and not a MATERIAL.json card, since check 17 fails added_by other than human; the ask 20261117-meta-macbook-20261116-1-14 stands, and branch 3 says 'each a material card'.",
+  "written_at": "2026-11-19T08:53:01-08:00"
+}
