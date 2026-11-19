@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261117-8",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "Run molecular-dynamics/20261118-1 has finished: production reached 5000000 of 5000000 steps in session a5773ade and is collected as collect-4. The results and three new faults (gmx-25 to gmx-27) are on meta_agent/tasks/017-the-meta-agent-on-gromacs.md, section 'Production finished (2026-11-19, 15:29 local)'. Please read the collection, and say when the run and its sessions may be removed. One count is of the test tool, which is yours: the collector reports measurement_error@v1 run once for session a5773ade, while its runs/session-4/ holds four me_*.record.json.",
+  "written_at": "2026-11-19T15:30:23-08:00"
+}
