@@ -187,3 +187,17 @@ A fault for the template, seen here: a stage call's timeout counts wall-clock ti
 On the hub's "go TERM" (23:37 local): this seat sent TERM then CONT to mdrun pid 19701; the engine's log says "Received the TERM signal, stopping within 200 steps", then "Writing checkpoint, step 129360", and mdrun exited. Then the frozen session `2a37c9fb` was ended (it records as stopped, not as a failure). The hub's SIGSTOP pauses were 23:26–23:28 and from 23:28:42 local, by the hub's word. Production stands at step 129360 of 5000000 (about 259 ps of 10 ns), with its checkpoint `md_0_10.cpt`; collected as `collect-3` of run `20261118-1`. It resumes from that checkpoint in a fresh session when the hub says "go", alone, for the night.
 
 On the hub's "go" (23:39 local, load average about 2, no other test running), production resumed from `md_0_10.cpt` (step 129360) in a fresh unattended session, `a5773ade`, with the same brief `../eval/briefs/gromacs-lysozyme-resume.txt`, `claude-opus-5-5` at `high`, one-hour calls. It has the machine alone for the night. If another run needs the machine, the hub asks this seat to checkpoint and stop it, and no longer pauses it from outside.
+
+## The person's verdict on round two's water count (2026-11-19)
+
+Relayed by the status-report session (`local_2f39e32b`, no seat). The person pasted that session's table row on run `20261118-1`, "물 분자 (solvate 뒤)	12,597	12,596	실패 하나 많음" (water molecules after solvate: the agent's 12,597, the tutorial's 12,596, "fail, one more"), and wrote:
+
+> 통과로 변경
+
+("Change to pass.")
+
+Asked by this seat whether that covers both water counts of sci-1 (after solvate and after genion, 12,589 against 12,588, which also differ by one) or only the row pasted, the person did not answer that question and turned to the run's progress.
+
+What the words settle: the person judges run `20261118-1`'s water count after solvate a pass. That is the person's own verdict, and it does not rewrite what the bundle printed: the build's own line `fail sci-1` stays on the record as what it judged under the rule of its day, and this verdict stands beside it. Not settled: whether the count after genion, and so sci-1 as a whole, also reads pass. Until the person says so, the bundle's own fail stands for that row. Nothing here sets a tolerance: from round three the water counts are reported as a difference with no verdict ("차이만 보고, 판정 없음 (추천)"), until a span is derived from suitable materials (tasks/028, the person's words of 2026-11-19 at 98ed9a2).
+
+At the time, production stood at step 3,555,000 of 5,000,000, or 7.11 ns of 10 ns, by the engine's log at 10:24 local. The last checkpoint was written at 10:21. Session `a5773ade` is still running.
