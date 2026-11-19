@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261117-2",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "018",
+  "answers": null,
+  "text": "From the QE bundle asked to rerun example09 unchanged on one and on four processes (run dft/20261117-22, collection collect-3; meta_agent/failures.jsonl dft-23, dft-24, in meta's paths): run_example has no input for the number of processes (the adapter's environment_variables fixes PARA_PREFIX to one process), so the reference's conditions (four processes) cannot be reached and the person's request could not be done (dft-23); a rerun overwrites the example's earlier outputs and log with no record (dft-24). Asked: whether each is a fault of a general mechanism (an engine tool's process count within what the gate allows; outputs kept per run) and, if so, a Designer, template or adapter version shown on fixtures of two unrelated kinds.",
+  "written_at": "2026-11-18T23:28:09-08:00"
+}
