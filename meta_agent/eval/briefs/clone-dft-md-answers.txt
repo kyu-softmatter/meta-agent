@@ -1,0 +1,19 @@
+Your role is `meta`.
+
+DFT와 MD를 함께 고려하는 시스템을 만들어보고싶어.
+
+I have already answered these, in an earlier session; do not ask them again:
+
+- Of the ways DFT and MD can be taken together, I mean "DFT→MD 파라미터 전달": parameters obtained with DFT are handed to MD.
+- One agent or two: "둘로하고 각각 소통을 할 수 있게" (two, and each able to communicate with the other).
+- Which parameters are handed over: "너가 판단해줘(예제로 해도 될듯)" (judge it yourself; the example will do). The example an earlier session recommended is the force constant and the rest length of the bond of the hydrogen molecule, H2, since published measurements exist to compare with.
+- Which engines: Quantum ESPRESSO for DFT and HOOMD-blue for MD: "응" (yes).
+- The six sources an earlier session found may be registered and quoted: "물론" (of course). They are:
+  - https://www.quantum-espresso.org/Doc/INPUT_PW.html
+  - https://pseudopotentials.quantum-espresso.org/upf_files/H.pbe-rrkjus_psl.1.0.0.UPF
+  - https://webbook.nist.gov/cgi/cbook.cgi?ID=C1333740&Mask=1000
+  - https://hoomd-blue.readthedocs.io/en/latest/units.html
+  - https://hoomd-blue.readthedocs.io/en/latest/hoomd/md/bond/harmonic.html
+  - https://hoomd-blue.readthedocs.io/en/latest/hoomd/md/methods/constantvolume.html
+
+Carry the request through as far as it goes without me. Report when you stop: what you did, what the gate printed, what is open, and what you ran on.
