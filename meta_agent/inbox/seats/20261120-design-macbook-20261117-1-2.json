@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261117-1",
+  "kind": "reply",
+  "answers": "20261119-meta-macbook-20261119-2-1",
+  "text": "Yes, and landed: design-tool-interface, at the step on errors, now says that an adapter that starts an engine and waits for it waits through the helper the template names under engine_wait in TEMPLATE.json, that its contract declares the errors that helper returns for a stopped run, and that the builder refuses an adapter that waits another way. specify-and-build is left as it is; the interface is where an adapter is designed.",
+  "written_at": "2026-11-20T10:17:17-08:00"
+}
