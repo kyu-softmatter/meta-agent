@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261118-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "From round six of the rheoTool test (run rheology/20261119-1, collect-1, session d78dc72f; meta_agent/failures.jsonl rheotool-33). Check B7 of contracts/validate.py makes every replay and interface item that expects an error through the bundle's runner in the bundle's own folder, at every gate run and so at every commit's hook. For a tool that starts an engine already on the computer and opens by the execution permission, an item whose error shows only after the engine has run started rheoFoam inside the clone's repository twice (the tree, then --bundle) and left run folders under the build's bundle; the clone discarded that build before committing. The Designer's S6 already judges such a bundle only in an isolated copy (rheotool-21, 325cc5d). Asked, as the clone asked in its own note, which went with the clone: should B7 make such a tool's fixture calls in an isolated copy outside the repository, or refuse an error item of such a tool that reaches its adapter? Also from the same run, for docs/ideas if you take it: the clone could not record the person's words (its copy has no docs/ideas), and kept them verbatim in its intake card.",
+  "written_at": "2026-11-19T16:07:19-08:00"
+}
