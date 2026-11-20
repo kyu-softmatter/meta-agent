@@ -327,7 +327,7 @@ class TheTexts(unittest.TestCase):
 
 class TheVersion(unittest.TestCase):
     def test_v30_is_the_latest_adds_one_script_and_changes_one_script_its_card_and_two_texts(self):
-        self.assertEqual(template_mod.LATEST, "v30")
+        self.assertIn("v30", template_mod.SOURCES)                  # v31 is the latest since the skills name their unit
         both = set(cards.tree_files(V29)) & set(cards.tree_files(V30))
         changed = sorted(r for r in both if cards.sha256_file(os.path.join(V29, r)) != cards.sha256_file(os.path.join(V30, r)))
         self.assertEqual(changed, ["CLAUDE.md", "TEMPLATE.json", "src/validate_tasks.py", "tasks/001-start.md"])

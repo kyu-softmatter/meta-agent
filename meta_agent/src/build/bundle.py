@@ -719,9 +719,26 @@ def refinement_problems(tasks, tools, envelope, template_path):
     return out
 
 
+def contract_output_unit(task, tools, field):
+    """The unit the called tool's contract declares for one of its outputs, or None."""
+    tool = ((task.get("call") or {}).get("tool"))
+    for t in tools:
+        if t["name"] == tool:
+            prop = (((t["contract"].get("outputs") or {}).get("properties") or {}).get(field) or {})
+            if prop.get("unit"):
+                return prop["unit"]
+    return None
+
+
 def stated_unit(task, tools, skills):
     """The unit of the one field a scientific task states: the analysis skill's output unit where the task measures
-    through one, else the unit the called tool's contract declares for that output, else '1'."""
+    through one, else the unit the called tool's contract declares for that output, else '1'.
+
+    An output the skill gives in the unit of one of its inputs names that input (unit_of; the design role's 7a4b9fc,
+    rheotool-27): where the input is the one the analysis hands the tool's output field, the unit is the one the tool's
+    contract declares for that field, which for a series of pairs is the unit of its values, so an output that takes
+    the unit of the pairs' independent variable (unit_of_part variable), which no contract names, stays '1'; an input
+    the analysis hands from a row stays '1' too."""
     stated = (task.get("measure") or {}).get("stated") or {}
     field = next(iter(stated))
     analysis = task.get("analysis") if isinstance(task.get("analysis"), dict) else None
@@ -729,15 +746,16 @@ def stated_unit(task, tools, skills):
         for r in skills:
             if r.get("ref") == analysis.get("skill"):
                 for o in r.get("outputs") or []:
-                    if o.get("name") == field and o.get("unit"):
+                    if o.get("name") != field:
+                        continue
+                    if o.get("unit_of") is not None:
+                        data = analysis.get("data") if isinstance(analysis.get("data"), dict) else {}
+                        if o["unit_of"] == data.get("input") and o.get("unit_of_part") in (None, "value"):
+                            return contract_output_unit(task, tools, data.get("field")) or "1"
+                        return "1"
+                    if o.get("unit"):
                         return o["unit"]
-    tool = ((task.get("call") or {}).get("tool"))
-    for t in tools:
-        if t["name"] == tool:
-            prop = (((t["contract"].get("outputs") or {}).get("properties") or {}).get(field) or {})
-            if prop.get("unit"):
-                return prop["unit"]
-    return "1"
+    return contract_output_unit(task, tools, field) or "1"
 
 
 def rule_takes_exact(rule):

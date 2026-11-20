@@ -46,8 +46,10 @@ FOR_THE_RHEOMETER = ["bring_to_ready@v1", "calibrate@v1", "find_and_identify@v1"
 SEED = sorted(FOR_THE_RHEOMETER + NOT_FOR_THE_RHEOMETER)
 SESSION_SKILLS = ["choose-session-level", "classify-knowledge", "run-skill"]
 # the skill the latest template puts into every bundle with a scientific task, for its agreement (tasks/019, cfd-7;
-# the common measurement_error@v2 from template v20, tasks/025)
-AGREEMENT = "measurement_error@v2"
+# the common measurement_error@v2 from template v20, tasks/025; @v3, whose outputs name their unit's input, from v31),
+# read off the latest template's card
+from meta_agent.src.build import template as _template_mod  # noqa: E402
+AGREEMENT = cards.load_json(os.path.join(_template_mod.SOURCE, "TEMPLATE.json"))["agreement_skill"]
 ENV = dict({k: v for k, v in os.environ.items() if k != "PYTHONPATH"}, PYTHONUTF8="1", PYTHONDONTWRITEBYTECODE="1")
 
 

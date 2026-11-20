@@ -222,6 +222,11 @@ v30 adds src/engine_wait.py and changes one script of the checks and two
     the agreement skill and takes it for a task the rule left undecided;
     tasks/001-start.md says what a scientific fail is once the call was made.
 
+v31 changes TEMPLATE.json alone (rheotool-27; unit_of, 7a4b9fc): the
+    agreement skill and the common set take the versions of measurement_error,
+    series_maximum and series_settled whose outputs name the input whose unit
+    they take, which the builder follows to the tool contract's unit.
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -252,8 +257,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v27": os.path.join(HERE, "template_v27"),
            "v28": os.path.join(HERE, "template_v28"),
            "v29": os.path.join(HERE, "template_v29"),
-           "v30": os.path.join(HERE, "template_v30")}
-LATEST = "v30"
+           "v30": os.path.join(HERE, "template_v30"),
+           "v31": os.path.join(HERE, "template_v31")}
+LATEST = "v31"
 SOURCE = SOURCES[LATEST]
 
 
