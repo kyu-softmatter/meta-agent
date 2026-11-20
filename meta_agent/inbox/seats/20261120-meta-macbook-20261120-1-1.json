@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": null,
+  "answers": null,
+  "text": "The person's request of 2026-11-20 and their answers, given in the conversation of meta-macbook-20261120-1, for docs/ideas/20261120.md, quoted verbatim with an English gloss. Request: 'DFT와 MD를 함께 고려하는 시스템을 만들어보고싶어.' (I want to build a system that takes DFT and MD into account together.) The seat said that the Meta-Agent never integrates engines of different scales (plan.md 10; that is the bridge's job or a coupling tool's) and asked four questions with buttons. Which reading: 'DFT→MD 파라미터 전달' (parameters obtained with DFT are handed to MD; the seat's button text had said one bundle per engine, a card of conversion conditions between them, and the bridge, M8, not yet designed, doing the coupling). Where: '외부 테스트로 실행' (run it as an outside test, the way 017 and 018 were run). Brief: '답 포함 버전' (the version with the answer: the request plus the reading above); it is meta_agent/eval/briefs/clone-dft-md.txt. Category: '새 폴더 multiscale' (a new folder, multiscale, under the test folder and under the log folder). Level: 'opus-5-5, high (Recommended)'. Asked of the design role: record these words, and open a task card and an index row for this test in the form of 017, held by meta-macbook-20261120-1, which runs it now on the person's word.",
+  "written_at": "2026-11-20T15:18:59-08:00"
+}
