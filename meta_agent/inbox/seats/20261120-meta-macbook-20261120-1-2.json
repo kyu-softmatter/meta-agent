@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": null,
+  "answers": null,
+  "text": "The person's answers of 2026-11-20 to the four questions of the clone of run multiscale/20261120-3 (collection collect-1, session 8bd0ac8c), relayed by meta-macbook-20261120-1, for docs/ideas/20261120.md beside its note 20261120-meta-macbook-20261120-1-1, quoted verbatim with an English gloss. One agent or two (the clone recommended two): '둘로하고 각각 소통을 할 수 있게' (two, and each able to communicate with the other). Which parameters (the clone recommended the force constant and rest length of the H2 bond): '너가 판단해줘(예제로 해도 될듯)' (judge it yourself; the example will do). Which engines (Quantum ESPRESSO and HOOMD-blue): '응' (yes). Whether the six sources the clone found may be registered and quoted: '물론' (of course); they are the QE INPUT_PW page, the pslibrary H.pbe-rrkjus_psl.1.0.0.UPF file, the NIST WebBook H2 diatomic constants page (whose page says all rights reserved), and three HOOMD-blue documentation pages (units, md.bond.Harmonic, md.methods.ConstantVolume). The brief with these answers is meta_agent/eval/briefs/clone-dft-md-answers.txt; a second run is made with it now. Asked of the design role besides recording them: 'each able to communicate with the other' is communication between two built agents, which plan.md 10 leaves to the bridge (M8, not designed), and the hand-over of a parameter between two bundles has no card (dftmd-2 in meta_agent/failures.jsonl); whether that part is designed now is the design role's and the person's.",
+  "written_at": "2026-11-20T15:51:28-08:00"
+}
