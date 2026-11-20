@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": null,
+  "answers": null,
+  "text": "The person's words of 2026-11-20, given in the conversation of meta-macbook-20261120-2, for docs/ideas/20261120.md, quoted verbatim with an English gloss. The seat had shown again the four readings of 'DFT와 MD를 함께 고려하는 시스템을 만들어보고싶어.' that meta-macbook-20261120-1 put to the person (its note 20261120-meta-macbook-20261120-1-1), and helped draft a message from the person to a colleague listing three of them: 1 DFT→MD parameters, 2 QM/MM, 3 AIMD. Of the ML-potential reading the person said '4는 아니고' (not 4). In the message the person wrote '내 생각에는 2번이 우리가 원하는것 같네, 어떻게 생각해?' (I think option 2 is what we want; what do you think?). Then to the seat: '너는 2번으로 테스트를 해보자.' (You, let us test with option 2.) Option 2 is the reading the earlier question labelled 'QM/MM 결합 도구': a small region computed with DFT and the rest with MM, in one coupling tool, the agent being for that tool. The seat runs it as an outside test beside run multiscale/20261120-3 (the DFT→MD reading, left running), with the brief meta_agent/eval/briefs/clone-dft-md-qmmm.txt, under multiscale and at opus-5-5 high; the category and the level are the seat's, taken from the person's answers for that earlier test, not words of the person for this one. Asked of the design role: record these words, and open a task card and an index row for this test in the form of 017, held by meta-macbook-20261120-2.",
+  "written_at": "2026-11-20T15:23:51-08:00"
+}
