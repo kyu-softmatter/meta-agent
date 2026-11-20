@@ -1,0 +1,6 @@
+{
+  "task": "017",
+  "seat": "meta-macbook-20261117-8",
+  "released_at": "2026-11-20T10:16:15-08:00",
+  "why": "Round two read, committed and removed; template v30 landed; round three's brief written (v2_clone-gromacs.txt, 93a8bd3) and queued with the hub. Released at the person's '완료된 세션 정리' via the hub, so that round three starts in a fresh session and seat on the person's go."
+}
