@@ -75,6 +75,18 @@ What to watch for in each engine:
 - every tolerance a comparison needs;
 - whether the candidates that were not chosen are ever tested.
 
+## Open with the person when the seat that wrote this plan closed (2026-11-20)
+
+Left by `design-macbook-20261117-1` for the design seat that comes next. Each is the person's to answer, and none is decided here.
+
+- **Task `026`:** whether it is started. Until its rule lands, a gate run in a clone may start an engine that is already installed (`../../tasks/026-what-an-interface-call-shows-in-the-builders-tree.md`, four cases).
+- **`em-3`** (`../../failures.jsonl`): whether a scientific task's analysis may chain library skills, so that one skill need not repeat what another computes.
+- **The span of task `028`,** two questions on its card (`../../tasks/028-a-span-from-suitable-materials.md`, "Open, and whose"): which of a source's numbers is its value for the quantity, and whether a span of two values, each known no finer than its source's time step, should judge. Until answered, the skill takes a source's own result and its spans judge no build.
+- **The outside test of task `028`:** a built bundle deriving a span from cards it was not handed. It needs a run, and a run waits for the person's word.
+- **GROMACS round two:** whether the person's "통과로 변경" covers the water count after genion as well (`../../../docs/ideas/20261119.md`).
+- **How far "suitable" stretches** for the materials of a span, beyond the person's example of a similar solvation (`../../../docs/ideas/20261119.md`).
+- **Task `022`** has no seat and its design part is open.
+
 ## To check later
 
 - **QuTiP** (`https://qutip.org`, the quantum toolbox in Python): named by the person on 2026-11-18 as something to check later (`../../../docs/ideas/20261118.md`; a row of `../../inbox/materials/LINKS.md`). No brief, task or run is made for it until the person says to begin.
