@@ -264,3 +264,23 @@ The hub relayed the person's word "완료된 세션 정리". This seat had alrea
 Environments: the run's environment (`runs/env`, pixi) was inside the run and went with it. This seat built none outside the test folder, and no environment remains in the temporary folder.
 
 The design role had been asked to read collect-4 (note 825166f) before the removal. The collection is still there for it to read.
+
+## Round three: template v30 landed and the brief written (2026-11-19)
+
+Template v30 was landed by the side session `meta-macbook-20261119-2` (5b461a1; note to the design role ab4a0c8). It fixes gmx-21, gmx-22, gmx-24, gmx-26 and gmx-27, and the failure lines show each as `-landed`. This seat checked the commit and the five lines, and the gate printed VERDICT PASS at head ab4a0c8. Still open: gmx-23 and gmx-25, and the parameter question of gmx-22. The side session has also asked the design role whether a session skill should name the new helper `engine_wait`.
+
+Asked by this seat "3라운드는 production 없이 NPT 평형까지만 돕니다. 수소결합, 이차구조, production 평균값 비교는 production 궤적이 있어야 하는 분석입니다. 이번에는 어떻게 할까요?" ("Round three runs only to NPT equilibration, without production. Hydrogen bonds, secondary structure and the production averages need a production trajectory. What should this round do?"), the person answered:
+
+> 나중 라운드로 미룸 (Recommended)
+
+("Leave them for a later round." The option read: round three checks template v30. The atom count and the box are compared against a reference found. The water counts are reported as a difference only. Chloride and the charge are compared exactly. The NPT pressure and density are reported as a difference only. Hydrogen bonds, secondary structure and the production averages wait for a round that runs production.)
+
+The brief for round three's blind clone is `../eval/briefs/v2_clone-gromacs.txt`. It carries `clone-gromacs.txt` forward with these changes:
+- the person's later answers on the counts, which replace "The set-up's counts … are compared … exactly";
+- the atom count and the box against a reference found, with no verdict;
+- the lengths of this round (set-up to NPT, no production);
+- the newest template.
+
+What is open:
+- The run waits on the hub's "go". The engine queue is on hold at the person's word.
+- The count after genion in round two.
