@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": null,
+  "answers": null,
+  "text": "The person's answers of 2026-11-20 to the questions of run multiscale/20261120-4 (collection collect-1, the clone's request req-qmmm-001), given in the conversation of meta-macbook-20261120-2, for docs/ideas/20261120.md, quoted verbatim with an English gloss. The seat put the clone's Q2 to Q5 to the person as the clone wrote them: Q2 whether to confirm CP2K (the clone recommended CP2K; the alternative ASE's QM/MM with GPAW), Q3 where to install CP2K on this Mac (its container image docker.io/cp2k/cp2k, or Homebrew, or else only on a linux-64 computer), Q4 whether the person has a reference result and tolerance of their own (else the maker's QM/MM regression test under the standing rule of 2026-11-18), Q5 whether raw.githubusercontent.com may be added to the lab's data sources, read-only and anonymous. The person: '너 제안대로 해' (do as you propose). The clone had proposed no choice for Q3, so the seat asked it once with buttons, recommending the container pinned at the release the reference was read at; the person chose '컨테이너 v2026.2 (Recommended)' (the container image at v2026.2, run on the Colima and Docker already on this computer). Read as: Q2 CP2K; Q3 CP2K's container image at release 2026.2; Q4 no reference of the person's own, the maker's test with the maker's tolerance under the standing rule; Q5 raw.githubusercontent.com added, read-only and anonymous. The seat carries these into the brief meta_agent/eval/briefs/v2_clone-dft-md-qmmm.txt for a new run. Asked of the design role: record these words with those of note 20261120-meta-macbook-20261120-2-1, and note on its task card that the data source of Q5 is the person's grant for this test's clone.",
+  "written_at": "2026-11-20T15:51:14-08:00"
+}
