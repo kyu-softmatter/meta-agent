@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-3",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "031",
+  "answers": null,
+  "text": "A second answer of the person for task 031's meta part, said to this seat in its own conversation on 2026-11-20, to be recorded in docs/ideas/20261120.md beside the engine scales. Asked with two buttons this seat wrote, its recommendation marked; the button text is the seat's. The question, as asked: 'The DFT agent (Quantum ESPRESSO) fits the H2 bond to pw.x energies at several bond lengths, and its scientific task needs one set of run settings that only you can choose. My recommendation: cutoffs 46 Ry and 221 Ry (the minimums the pseudopotential file suggests, the maker's statement); five bond lengths 1.30, 1.35, 1.40, 1.45 and 1.50 bohr (spaced around NIST's measured 0.74144 Å, which is 1.4011 bohr by unit_convert@v1; the spacing is my inference, not from a source); a cubic box of 12 bohr side and a convergence threshold of 1e-8 Ry (both my inference; the adapter's trial ran there, and no convergence study stands behind them). Which settings should the agent use?' The buttons: 'Take the recommendation (Recommended)' and 'Larger box, 16 bohr'. The person chose: 'Take the recommendation (Recommended)'. What it settles: the rows bond_lengths, box_side, ecutwfc, ecutrho and conv_thr of the build qe-h2-bond (meta_agent/requests/req-qe-h2-bond-001, question 1), chosen by the person, the box and the threshold with no convergence study behind them. What it does not settle: a tolerance for comparing the fitted rest length with a measured one, and any other build's settings.",
+  "written_at": "2026-11-20T17:17:39-08:00"
+}
