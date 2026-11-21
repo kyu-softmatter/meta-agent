@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "033",
+  "answers": null,
+  "text": "From the hub's first test standing alone (run multiscale/20261120-11, collect-1; meta_agent/failures.jsonl hub-3): a value the person gives after agreeing to a question's list has no way to reach a member. hub_question and assignment hold no numbers, an assignment's asks may quote only a number the person's question holds, and the person's question is written once, verbatim, before the agreement. So the MD agent's eight held settings, which the person chose to give anew ('New MD settings'), could reach it only as a new question holding the person's later words, with a new list shown to them again. That costs an agreement for every value the person gives in the course of one question, against 'Ask once per question (Recommended)' and 'until solve the problem'. Asked: how a person's later words, verbatim and with their numbers, enter a later assignment of the same question. One reading: a revision of the hub_question that appends them under a field of the person's words with a date, from which a later round's assignment may quote, carried within the agreed list without a new agreement, with check 25 judging that every number an assignment quotes stands in the person's words of its question. Whether that needs the person's agreement again is the person's. The hub template follows once it is settled.",
+  "written_at": "2026-11-21T10:40:26-08:00"
+}
