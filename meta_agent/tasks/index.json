@@ -418,14 +418,15 @@
     {
       "id": "033",
       "file": "033-a-hub-agent-and-a-session-per-engine.md",
-      "status": "open",
+      "status": "done",
       "roles": [
         "design",
         "meta"
       ],
       "depends_on": [],
       "opened": "2026-11-20",
-      "design_part": "landed"
+      "design_part": "landed",
+      "done_commit": "3139025"
     },
     {
       "id": "034",
