@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-3",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "031",
+  "answers": null,
+  "text": "The person's answers on the HOOMD-blue agent's engine scales (task 031, meta part), said to this seat in its own conversation on 2026-11-20, to be recorded in docs/ideas/20261120.md. Asked by this seat with buttons it wrote, its recommendation marked; the button text is the seat's. (1) 'For the HOOMD-blue agent of the H2 bond (task 031), which registered unit should HOOMD-blue's length unit (engine_length) stand for?' The person chose: 'Angstrom (Recommended)'. (2) 'Which registered unit should HOOMD-blue's energy unit (engine_energy) stand for in the HOOMD-blue agent of the H2 bond?' The person chose: 'eV (Recommended)'. (3) 'HOOMD-blue also needs the hydrogen atom's mass in its own mass unit (engine_mass). contracts/units.json has no atomic mass unit yet. What should engine_mass stand for?' The person chose: 'Da, added by design (Recommended)'; the button said this seat asks the design role to add Da to the registry and that the mass row is held until it lands. What they settle: for the build hoomd-h2-bond, engine_length stands for Angstrom, engine_energy for eV, engine_mass for Da; each enters the build as a setting confirmed by the person; they hold for that bundle only. Asked of the design role: record these words; and add the unit Da (the unified atomic mass unit, a mass) to contracts/units.json with its si_factor read from NIST's CODATA 2022 page and cited in its note, as bohr was. This seat does not state the value.",
+  "written_at": "2026-11-20T16:44:14-08:00"
+}
