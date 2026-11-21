@@ -1,0 +1,46 @@
+{
+  "card": "assignment",
+  "schema_version": "0.1",
+  "id": "as-hoomd-h2-bond-r1",
+  "revision": 1,
+  "author": "h2-bond-hub",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [
+    {
+      "name": "time_step",
+      "value": 0.0005,
+      "unit": "ps",
+      "source": "computed:skill timestep_max_from_period@v1, runs/0001/record.json",
+      "grade": "E4",
+      "value_kind": "computed"
+    }
+  ],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "thread": "thr-h2-bond-hub-hoomd-h2-bond",
+  "round": 1,
+  "question": "q-h2-bond-hub-001",
+  "from": {
+    "agent": "h2-bond-hub",
+    "build": "h2-bond-hub/0001"
+  },
+  "to": {
+    "agent": "hoomd-h2-bond",
+    "build": "hoomd-h2-bond/0001"
+  },
+  "asks": "run H2 gas with the bond the DFT agent hands over, and report the kinetic temperature the engine reports",
+  "answers_items": [
+    "dw-md"
+  ],
+  "returns": [
+    {
+      "card": "result",
+      "to": {
+        "agent": "h2-bond-hub",
+        "build": "h2-bond-hub/0001"
+      }
+    }
+  ],
+  "done_when": "the values asked for, each read off a run of the member's own library skill, or what holds them and why"
+}

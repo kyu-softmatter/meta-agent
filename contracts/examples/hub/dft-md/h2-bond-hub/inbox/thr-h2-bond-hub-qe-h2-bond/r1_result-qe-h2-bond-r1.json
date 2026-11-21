@@ -1,0 +1,67 @@
+{
+  "card": "result",
+  "schema_version": "0.1",
+  "id": "res-qe-h2-bond-r1",
+  "revision": 1,
+  "author": "qe-h2-bond",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [
+    {
+      "name": "h2_bond_force_constant",
+      "value": 0.37,
+      "unit": "Ry/bohr^2",
+      "source": "computed:skill harmonic_well_fit@v1, runs/0001/record.json",
+      "grade": "E4",
+      "value_kind": "computed",
+      "uncertainty": null,
+      "conditions": {
+        "engine": "quantum_espresso pw.x",
+        "xc_functional": "PBE",
+        "pseudopotential": "H.pbe-rrkjus_psl.1.0.0.UPF",
+        "system": "one H2 molecule in a periodic box",
+        "fit": "total energy at displaced bond lengths, fitted near its minimum"
+      }
+    },
+    {
+      "name": "h2_bond_rest_length",
+      "value": 1.42,
+      "unit": "bohr",
+      "source": "computed:skill harmonic_well_fit@v1, runs/0001/record.json",
+      "grade": "E4",
+      "value_kind": "computed",
+      "uncertainty": null,
+      "conditions": {
+        "engine": "quantum_espresso pw.x",
+        "xc_functional": "PBE",
+        "pseudopotential": "H.pbe-rrkjus_psl.1.0.0.UPF",
+        "system": "one H2 molecule in a periodic box",
+        "fit": "total energy at displaced bond lengths, fitted near its minimum"
+      }
+    }
+  ],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "thread": "thr-h2-bond-hub-qe-h2-bond",
+  "round": 1,
+  "from": {
+    "agent": "qe-h2-bond",
+    "build": "qe-h2-bond/0001"
+  },
+  "to": {
+    "agent": "h2-bond-hub",
+    "build": "h2-bond-hub/0001"
+  },
+  "answers": {
+    "assignment": "as-qe-h2-bond-r1",
+    "envelope": "inbox/thr-h2-bond-hub-qe-h2-bond/r1_envelope.json"
+  },
+  "state": "answered",
+  "produced_by": [
+    {
+      "skill": "harmonic_well_fit@v1",
+      "record": "runs/0001/record.json"
+    }
+  ],
+  "held": []
+}

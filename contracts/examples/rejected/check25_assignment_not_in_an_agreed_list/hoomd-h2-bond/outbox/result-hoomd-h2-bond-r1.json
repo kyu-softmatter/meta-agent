@@ -1,0 +1,35 @@
+{
+  "card": "result",
+  "schema_version": "0.1",
+  "id": "res-hoomd-h2-bond-r1",
+  "revision": 1,
+  "author": "hoomd-h2-bond",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "thread": "thr-h2-bond-hub-hoomd-h2-bond",
+  "round": 1,
+  "from": {
+    "agent": "hoomd-h2-bond",
+    "build": "hoomd-h2-bond/0001"
+  },
+  "to": {
+    "agent": "h2-bond-hub",
+    "build": "h2-bond-hub/0001"
+  },
+  "answers": {
+    "assignment": "as-hoomd-h2-bond-r1",
+    "envelope": "inbox/thr-h2-bond-hub-hoomd-h2-bond/r1_envelope.json"
+  },
+  "state": "held",
+  "produced_by": [],
+  "held": [
+    {
+      "what": "the MD run with the DFT bond",
+      "reason": "the bond's force constant and rest length have not arrived: a hand-over from the DFT agent crosses only on the person's word",
+      "needs": "the DFT agent's hand-over carried by the person into inbox/<thread>/, used as the build declares"
+    }
+  ]
+}

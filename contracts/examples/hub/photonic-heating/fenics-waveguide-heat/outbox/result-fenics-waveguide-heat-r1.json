@@ -1,0 +1,35 @@
+{
+  "card": "result",
+  "schema_version": "0.1",
+  "id": "res-fenics-waveguide-heat-r1",
+  "revision": 1,
+  "author": "fenics-waveguide-heat",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "thread": "thr-waveguide-heating-hub-fenics-waveguide-heat",
+  "round": 1,
+  "from": {
+    "agent": "fenics-waveguide-heat",
+    "build": "fenics-waveguide-heat/0001"
+  },
+  "to": {
+    "agent": "waveguide-heating-hub",
+    "build": "waveguide-heating-hub/0001"
+  },
+  "answers": {
+    "assignment": "as-fenics-waveguide-heat-r1",
+    "envelope": "inbox/thr-waveguide-heating-hub-fenics-waveguide-heat/r1_envelope.json"
+  },
+  "state": "held",
+  "produced_by": [],
+  "held": [
+    {
+      "what": "the temperature rise",
+      "reason": "the absorbed power has not arrived: a hand-over from the FDTD agent crosses only on the person's word",
+      "needs": "the FDTD agent's hand-over carried by the person, used as the build declares"
+    }
+  ]
+}

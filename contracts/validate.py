@@ -837,6 +837,105 @@ def check12(cards, c, report, tree):
                     label, agr.get("unit"), unit))
 
 
+CARRIED_CARDS = ("handover", "assignment", "result")
+
+
+def _check25_trigger(env, payload, r, report):
+    """On the hub's trigger the bridge carries an assignment or a result, never a hand-over between two members,
+    and the hub releases it and its session runs the tool; on the person's word the person releases it (the
+    person, 2026-11-20, 'Assign freely, carry on my word (Recommended)'; tasks/033)."""
+    trigger, released = env.get("trigger"), env.get("released_by")
+    by = (env.get("ran_by") or {}).get("by") if isinstance(env.get("ran_by"), dict) else None
+    if trigger == "hub":
+        if payload.get("card") == "handover":
+            report.fail(25, r, "a hand-over carried on the hub's trigger: a card of values crosses between two agents "
+                               "only on the person's word")
+        if released != "hub" or by != "hub":
+            report.fail(25, r, "on the hub's trigger the hub releases the card and its session runs the bridge; "
+                               "released_by %r, ran_by %r" % (released, by))
+    elif trigger == "human" and (released != "human" or by not in ("person", "session")):
+        report.fail(25, r, "on the person's word the person releases the card, and the person or a session on the "
+                           "person's words runs the bridge; released_by %r, ran_by %r" % (released, by))
+
+
+def _hub_root(folder):
+    """The folder's hub_members card when the folder is a hub's (members.json beside it), else None."""
+    path = os.path.join(folder, "members.json")
+    if not os.path.isfile(path):
+        return None
+    try:
+        data = load_json(path)
+    except (ValueError, UnicodeDecodeError):
+        return None
+    return data if isinstance(data, dict) and data.get("card") == "hub_members" else None
+
+
+def _check25_hub_card(path, data, name, here, r, envelopes_by_dir, report):
+    """An assignment is written in a hub's assignments/, to one of its members and inside a question whose list
+    the person agreed to once, or carried into the member's inbox/<thread>/ beside its envelope; a result is
+    written in a member's outbox/, or carried into the hub's inbox/<thread>/, where it answers an assignment of
+    that hub, made to the member that returns it (tasks/033; the person, 2026-11-20, 'A hub bundle
+    (Recommended)', 'Ask once per question (Recommended)')."""
+    parent = os.path.basename(here)
+    in_inbox = os.path.basename(os.path.dirname(here)) == "inbox" and parent == data.get("thread")
+    if in_inbox:
+        if not any(isinstance(e.get("payload"), dict) and e["payload"].get("file") == os.path.basename(path)
+                   for e in envelopes_by_dir.get(here, [])):
+            report.fail(25, r, "a%s %s in inbox/%s/ arrived with no envelope naming it" % (
+                "n" if name == "assignment" else "", name, parent))
+    home = "assignments" if name == "assignment" else "outbox"
+    if not in_inbox and parent != home:
+        report.fail(25, r, "a%s %s is written in its bundle's %s/, or carried into inbox/<thread>/ with its envelope" % (
+            "n" if name == "assignment" else "", name, home))
+        return
+    if name == "assignment" and parent == "assignments":
+        hub = os.path.dirname(here)
+        members = _hub_root(hub)
+        if members is None:
+            report.fail(25, r, "an assignment is written by a hub, beside its members.json")
+            return
+        if not _agents_equal(data.get("from"), members.get("hub")):
+            report.fail(25, r, "the assignment's from is not the hub its members.json names")
+        if not any(_agents_equal(m, data.get("to")) for m in members.get("members") or []):
+            report.fail(25, r, "the assignment goes to %r, which is not a member of the hub" % (
+                (data.get("to") or {}).get("agent") if isinstance(data.get("to"), dict) else data.get("to")))
+        agreed = False
+        qdir = os.path.join(hub, "question")
+        for qn in sorted(os.listdir(qdir)) if os.path.isdir(qdir) else []:
+            try:
+                q = load_json(os.path.join(qdir, qn))
+            except (ValueError, UnicodeDecodeError, OSError):
+                continue
+            if isinstance(q, dict) and q.get("card") == "hub_question" and q.get("id") == data.get("question") \
+                    and data.get("id") in (q.get("assignments") or []) \
+                    and isinstance(q.get("agreed"), dict) and str(q["agreed"].get("words") or "").strip():
+                agreed = True
+        if not agreed:
+            report.fail(25, r, "the assignment is in no question of the hub whose list of assignments the person "
+                               "agreed to; a new assignment is a new list, shown to the person again")
+    if name == "result" and in_inbox:
+        hub = os.path.dirname(os.path.dirname(here))
+        if _hub_root(hub) is None:
+            return
+        aid = (data.get("answers") or {}).get("assignment") if isinstance(data.get("answers"), dict) else None
+        found = None
+        adir = os.path.join(hub, "assignments")
+        for an in sorted(os.listdir(adir)) if os.path.isdir(adir) else []:
+            try:
+                a = load_json(os.path.join(adir, an))
+            except (ValueError, UnicodeDecodeError, OSError):
+                continue
+            if isinstance(a, dict) and a.get("card") == "assignment" and a.get("id") == aid:
+                found = a
+        if found is None:
+            report.fail(25, r, "the result answers %r, which is no assignment of this hub" % aid)
+            return
+        if found.get("thread") != data.get("thread"):
+            report.fail(25, r, "the result's thread %r is not its assignment's %r" % (data.get("thread"), found.get("thread")))
+        if not _agents_equal(found.get("to"), data.get("from")):
+            report.fail(25, r, "the result comes from another agent than the one its assignment went to")
+
+
 def check25(cards, c, report, tree):
     """A hand-over is written in its bundle's outbox/ and carried, byte for byte, into the receiver's
     inbox/<thread>/ beside an envelope that states its hash; each value it hands over has the conditions it
@@ -895,9 +994,12 @@ def check25(cards, c, report, tree):
                 p = load_json(ppath)
             except (ValueError, UnicodeDecodeError):
                 continue
-            if not isinstance(p, dict) or p.get("card") != "handover":
-                report.fail(25, r, "the payload %s is not a handover card" % pfile)
+            if not isinstance(p, dict) or p.get("card") not in CARRIED_CARDS:
+                report.fail(25, r, "the payload %s is not a handover, an assignment or a result" % pfile)
                 continue
+            if p.get("card") != pl.get("card"):
+                report.fail(25, r, "the payload is a %s; the envelope says %s" % (p.get("card"), pl.get("card")))
+            _check25_trigger(data, p, r, report)
             if p.get("id") != pl.get("id"):
                 report.fail(25, r, "the payload's id %r is not the envelope's %r" % (p.get("id"), pl.get("id")))
             if p.get("thread") != thread:
@@ -907,6 +1009,8 @@ def check25(cards, c, report, tree):
                     report.fail(25, r, "the payload's %r is not the envelope's" % side)
             if sorted(p.get("degraded") or []) != sorted(data.get("degraded") or []):
                 report.fail(25, r, "the envelope drops or adds to the payload's degraded %s" % (p.get("degraded") or []))
+        elif name in ("assignment", "result"):
+            _check25_hub_card(path, data, name, here, r, envelopes_by_dir, report)
         elif name == "handover_receipt":
             if os.path.basename(here) != "received":
                 report.fail(25, r, "a receipt is written in its bundle's received/")

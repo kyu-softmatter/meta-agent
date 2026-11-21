@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/hub_members.schema.json",
+  "title": "hub_members",
+  "description": "The bundles a hub agent coordinates (meta_agent/tasks/033; the person, 2026-11-20, 'A hub bundle (Recommended)'). Written by the builder at members.json in the hub's folder; the hub carries no instrument or engine tool and reaches its members only through the bridge. No numbers.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "hub_members"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "maxItems": 0,
+      "description": "none: what is asked is in words, and every value stays in a card a member wrote"
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "hub": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent",
+        "build"
+      ],
+      "properties": {
+        "agent": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the agent's name, as its bundle's CLAUDE.md names it"
+        },
+        "build": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the build that made the bundle, <name>/<NNNN> (its build card)"
+        }
+      },
+      "description": "the hub agent itself"
+    },
+    "members": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "agent",
+          "build",
+          "folder",
+          "build_card_sha256"
+        ],
+        "properties": {
+          "agent": {
+            "type": "string",
+            "minLength": 1,
+            "description": "the member's name, as its bundle's CLAUDE.md names it"
+          },
+          "build": {
+            "type": "string",
+            "minLength": 1,
+            "description": "<name>/<NNNN>, its build card"
+          },
+          "folder": {
+            "type": "string",
+            "minLength": 1,
+            "description": "the member's folder, relative to the hub's"
+          },
+          "build_card_sha256": {
+            "$ref": "common.schema.json#/$defs/sha256",
+            "description": "of the member's build card when the hub was built"
+          }
+        }
+      },
+      "description": "one entry per engine or instrument agent, two at least"
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "hub",
+    "members"
+  ],
+  "additionalProperties": false
+}

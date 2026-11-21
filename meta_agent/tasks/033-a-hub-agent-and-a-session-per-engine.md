@@ -1,6 +1,6 @@
 # 033 — A hub agent and a session per engine
 
-**Status:** open, 2026-11-20. Opened by `design-macbook-20261120-3` on the person's words of 2026-11-20 (`../../docs/ideas/20261120.md`, "Several engines or instruments: a hub session that assigns, and a session per engine"): "여러 시뮬레이션 엔진 또는 하드웨어를 운영하고자 하는 경우에는 전체 질문을 받고 업무를 배정하는 세션(연 세션)과 개별 엔진을 관리하는 세션을 추가로 열어서(fork 또는 fresh) 세션간 메세지로 세션간 소통을 할 수 있게 하자." (when several engines or pieces of hardware are to be operated, let the session opened take the whole question and assign the work, open further sessions each looking after one engine, as a fork or fresh, and let them talk by messages between sessions), and the four answers recorded there. Plan: §14-41.
+**Status:** open, 2026-11-20; the design part landed the same day (section below), the meta part waits for a `meta-…` seat. Opened by `design-macbook-20261120-3` on the person's words of 2026-11-20 (`../../docs/ideas/20261120.md`, "Several engines or instruments: a hub session that assigns, and a session per engine"): "여러 시뮬레이션 엔진 또는 하드웨어를 운영하고자 하는 경우에는 전체 질문을 받고 업무를 배정하는 세션(연 세션)과 개별 엔진을 관리하는 세션을 추가로 열어서(fork 또는 fresh) 세션간 메세지로 세션간 소통을 할 수 있게 하자." (when several engines or pieces of hardware are to be operated, let the session opened take the whole question and assign the work, open further sessions each looking after one engine, as a fork or fresh, and let them talk by messages between sessions), and the four answers recorded there. Plan: §14-41.
 
 **Seat:** the design part (the cards, the check, the fixtures, the plan, the hub template's drawing) is the design role's and lands first. The meta part, the hub template and the builder that makes a hub bundle beside its engine bundles, is a `meta-…` seat's once `design_part` is `landed` in `index.json`.
 
@@ -14,7 +14,7 @@
 
 **Must not:** build a bundle; run an engine; let the hub carry a value card between engine agents without the person's word; let a message carry a value or a decision; let the hub compute, convert or judge a value; infer a round limit, a stopping rule, a model, an effort or a permission mode; push.
 
-## Design (proposed by `design-macbook-20261120-3`, 2026-11-20; nothing landed yet)
+## Design (proposed by `design-macbook-20261120-3`, 2026-11-20; as landed, it is the section after this one)
 
 ### The hub bundle
 
@@ -56,6 +56,14 @@ The role of this seat, "Design seat (Recommended)"; the hub's form, "A hub bundl
 
 - what the hub does when a round adds nothing (recommended: stop and report, which sets no number);
 - the model, effort and permission mode of the hub's and each member's session (a cost and a permission; `choose-session-level` recommends).
+
+## The design part, landed (2026-11-20, `design-macbook-20261120-3`)
+
+- **Four cards:** `contracts/schemas/hub_members.schema.json` (the hub and two members at least, each by build, folder and build card hash; no numbers), `hub_question.schema.json` (the person's question verbatim, `done_when` items, the list of assignments, and `agreed`, the person's words agreeing to it, absent until given), `assignment.schema.json` (thread, round, question, from the hub, to a member, `asks` in words, `answers_items`, `returns`, `done_when`; `numbers` must be empty) and `result.schema.json` (from a member to its hub, `answers` naming the assignment and the envelope that carried it, `state` answered, held or partly held, a held state with at least one `held` entry saying what, why and what it needs, an answered one with none). plan.md 6.1 lists them. Two cards rather than the one `question/` folder of the proposal: the person's agreement once per question needed a card to stand in.
+- **The bridge, the hub's trigger:** `bridge.py carry --trigger hub --released-by hub --ran-by hub --session ID` carries an assignment from a hub's `assignments/` into the member its `to` names, at the folder `members.json` gives, only when the assignment is in a `hub_question` with the person's agreement; and a result from a member's `outbox/` into its hub, only when `members.json` there lists the member at that folder. On that trigger it refuses a hand-over. The person's word (`--trigger human`, the default) carries any of the three cards, as before. The envelope schema takes `trigger` human or hub, `released_by` human or hub, `ran_by` `{by: hub, session}`, and a payload of any of the three cards, with `origin` in `assignments/` or `outbox/`.
+- **Check 25** (plan.md 8): the trigger agrees with who released and who ran; on the hub's trigger no hand-over; an assignment stands in its hub's `assignments/`, from that hub, to a listed member, inside an agreed list, or in an `inbox/<thread>/` beside its envelope; a result stands in an `outbox/` or in its hub's `inbox/<thread>/`, answering an assignment of that hub on the same thread, made to the agent that returns it. Rejected fixtures: `check25_hub_carries_a_handover`, `check25_hub_trigger_released_by_the_person`, `check25_assignment_to_a_non_member`, `check25_assignment_not_in_an_agreed_list`, `check25_assignment_outside_assignments`, `check25_result_answers_no_assignment`, and `check01_assignment_with_a_number`, drawn from both kinds. Each check-25 fixture was watched accepted with the new parts of check 25 left out and rejected with them, for the reason it was written for; the check-1 fixture accepted with the assignment's `numbers` unbounded and rejected as landed.
+- **Two kinds:** `contracts/examples/hub/dft-md/` (a hub over `qe-h2-bond` and `hoomd-h2-bond`) and `contracts/examples/hub/photonic-heating/` (a hub over a mode solver, an FDTD engine and a heat-conduction engine, the three the seat chose for the person's "Three engines, one hub"). Their copies and envelopes were made by running `bridge.py carry --trigger hub` on these folders. Tests: `contracts/tests/test_hub.py`, on both kinds.
+- **Not changed:** the agent template, the builder, and the repository's own session skills. The hub template, its session skill (`run-hub`: take the question, split it, show the list once, carry the assignments, open each member's session fresh in the member's folder, read the results against their cards, go on until solved or until what is left is the person's, report) and the builder that writes `members.json` are the meta part.
 
 ## The meta part (for a `meta-…` seat, once the design part has landed)
 

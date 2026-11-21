@@ -1,0 +1,35 @@
+{
+  "card": "bridge_envelope",
+  "schema_version": "0.1",
+  "id": "env-thr-h2-bond-hub-hoomd-h2-bond-r1",
+  "revision": 1,
+  "author": "bridge",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [],
+  "degraded": [],
+  "status": "draft",
+  "thread": "thr-h2-bond-hub-hoomd-h2-bond",
+  "round": 1,
+  "from": {
+    "agent": "h2-bond-hub",
+    "build": "h2-bond-hub/0001"
+  },
+  "to": {
+    "agent": "hoomd-h2-bond",
+    "build": "hoomd-h2-bond/0001"
+  },
+  "payload": {
+    "file": "r1_as-hoomd-h2-bond-r1.json",
+    "card": "assignment",
+    "id": "as-hoomd-h2-bond-r1",
+    "sha256": "sha256:67e9986f5f332fa251beaa49d1890e6e4251e4a40023111a5f34181981bb18b1",
+    "origin": "assignments/as-hoomd-h2-bond-r1.json"
+  },
+  "trigger": "hub",
+  "released_by": "hub",
+  "released_at": "2026-11-20T12:00:00Z",
+  "ran_by": {
+    "by": "hub",
+    "session": "fixture-hub-session"
+  }
+}

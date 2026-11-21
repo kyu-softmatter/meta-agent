@@ -1,0 +1,37 @@
+{
+  "card": "assignment",
+  "schema_version": "0.1",
+  "id": "as-qe-h2-bond-r1",
+  "revision": 1,
+  "author": "h2-bond-hub",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "thread": "thr-h2-bond-hub-qe-h2-bond",
+  "round": 1,
+  "question": "q-h2-bond-hub-001",
+  "from": {
+    "agent": "h2-bond-hub",
+    "build": "h2-bond-hub/0001"
+  },
+  "to": {
+    "agent": "qe-h2-bond",
+    "build": "qe-h2-bond/0001"
+  },
+  "asks": "fit the harmonic bond of H2 to total energies at displaced bond lengths",
+  "answers_items": [
+    "dw-bond"
+  ],
+  "returns": [
+    {
+      "card": "result",
+      "to": {
+        "agent": "h2-bond-hub",
+        "build": "h2-bond-hub/0001"
+      }
+    }
+  ],
+  "done_when": "the values asked for, each read off a run of the member's own library skill, or what holds them and why"
+}

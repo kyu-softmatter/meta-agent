@@ -1,0 +1,31 @@
+{
+  "card": "hub_question",
+  "schema_version": "0.1",
+  "id": "q-h2-bond-hub-001",
+  "revision": 1,
+  "author": "h2-bond-hub",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "question": "fixture question: from DFT, the harmonic bond of H2, and an MD run of H2 gas with that bond",
+  "done_when": [
+    {
+      "id": "dw-bond",
+      "what": "the H2 bond's force constant and rest length, from DFT"
+    },
+    {
+      "id": "dw-md",
+      "what": "an MD run of H2 gas with that bond, its kinetic temperature as the engine reports it"
+    }
+  ],
+  "assignments": [
+    "as-qe-h2-bond-r1",
+    "as-hoomd-h2-bond-r1"
+  ],
+  "agreed": {
+    "words": "fixture words of the person agreeing to this list",
+    "at": "2026-11-20T12:00:00Z"
+  }
+}

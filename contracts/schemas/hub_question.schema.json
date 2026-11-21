@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/hub_question.schema.json",
+  "title": "hub_question",
+  "description": "The person's whole question to a hub agent, the items that say it is solved, and the list of assignments the hub split it into, which the person agreed to once (the person, 2026-11-20, 'Ask once per question (Recommended)' and 'until solve the problem'; meta_agent/tasks/033). Written by the hub in its question/. No numbers: a value the question gives is a card of its own.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "hub_question"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "maxItems": 0,
+      "description": "none: what is asked is in words, and every value stays in a card a member wrote"
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "question": {
+      "type": "string",
+      "minLength": 1,
+      "description": "the person's question, verbatim"
+    },
+    "done_when": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "what"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "what": {
+            "type": "string",
+            "minLength": 1,
+            "description": "what must be answered, in words; answered only by a result card that is not held"
+          }
+        }
+      },
+      "description": "the question is solved when every item is answered by a result that is not held (the seat's reading of 'until solve the problem')"
+    },
+    "assignments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "common.schema.json#/$defs/id"
+      },
+      "description": "the ids of the assignments the person agreed to; an assignment outside this list is a new list, shown to the person again"
+    },
+    "agreed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "words",
+        "at"
+      ],
+      "properties": {
+        "words": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the person's words agreeing to this list, verbatim"
+        },
+        "at": {
+          "$ref": "common.schema.json#/$defs/datetime"
+        }
+      },
+      "description": "the person's agreement to the list, once for the question; absent until given, and nothing is carried on the hub's trigger before it"
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "question",
+    "done_when",
+    "assignments"
+  ],
+  "additionalProperties": false
+}

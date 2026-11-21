@@ -1,0 +1,36 @@
+{
+  "card": "hub_members",
+  "schema_version": "0.1",
+  "id": "members-waveguide-heating-hub",
+  "revision": 1,
+  "author": "builder",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "hub": {
+    "agent": "waveguide-heating-hub",
+    "build": "waveguide-heating-hub/0001"
+  },
+  "members": [
+    {
+      "agent": "mpb-waveguide-mode",
+      "build": "mpb-waveguide-mode/0001",
+      "folder": "../mpb-waveguide-mode",
+      "build_card_sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "agent": "meep-waveguide-absorption",
+      "build": "meep-waveguide-absorption/0001",
+      "folder": "../meep-waveguide-absorption",
+      "build_card_sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "agent": "fenics-waveguide-heat",
+      "build": "fenics-waveguide-heat/0001",
+      "folder": "../fenics-waveguide-heat",
+      "build_card_sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}

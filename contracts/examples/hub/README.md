@@ -1,0 +1,8 @@
+# contracts/examples/hub
+
+A hub agent and its members, of two unrelated kinds (meta_agent/tasks/033; the person, 2026-11-20, "A hub bundle (Recommended)" and "Three engines, one hub"):
+
+- `dft-md/`: a hub over a Quantum ESPRESSO agent and a HOOMD-blue agent. The DFT agent answers with the H2 bond's force constant and rest length; the MD agent holds, since the bond is a hand-over from the DFT agent and crosses only on the person's word.
+- `photonic-heating/`: a hub over three engines, a mode solver (MPB) giving a waveguide's effective index, an FDTD engine (Meep) giving the power absorbed in a section, and a heat-conduction engine (FEniCS) giving its temperature rise. The first two answer; the heat agent holds for the same reason.
+
+In each, the hub's `members.json` names its members by build and folder (the build card hashes are fixture zeros), its `question/` holds the person's question, the items that say it is solved and the list of assignments with fixture words of the person agreeing to it, and its `assignments/` one assignment per member. The copies in each member's `inbox/<thread>/` and in the hub's, and their envelopes, were made by running `contracts/tools/bridge.py carry --trigger hub` on these folders, so their hashes are read off that run and `ran_by` names a fixture session. Every value is a fixture and nothing more (`../README.md`). Check 25 judges these folders with the repository.

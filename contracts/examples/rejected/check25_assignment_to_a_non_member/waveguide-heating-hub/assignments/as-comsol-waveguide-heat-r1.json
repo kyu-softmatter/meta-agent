@@ -1,0 +1,37 @@
+{
+  "card": "assignment",
+  "schema_version": "0.1",
+  "id": "as-comsol-waveguide-heat-r1",
+  "revision": 1,
+  "author": "waveguide-heating-hub",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "thread": "thr-waveguide-heating-hub-comsol-waveguide-heat",
+  "round": 1,
+  "question": "q-waveguide-heating-hub-001",
+  "from": {
+    "agent": "waveguide-heating-hub",
+    "build": "waveguide-heating-hub/0001"
+  },
+  "to": {
+    "agent": "comsol-waveguide-heat",
+    "build": "comsol-waveguide-heat/0001"
+  },
+  "asks": "solve steady heat conduction with the absorbed power as the source and give the section's temperature rise",
+  "answers_items": [
+    "dw-heat"
+  ],
+  "returns": [
+    {
+      "card": "result",
+      "to": {
+        "agent": "waveguide-heating-hub",
+        "build": "waveguide-heating-hub/0001"
+      }
+    }
+  ],
+  "done_when": "the values asked for, each read off a run of the member's own library skill, or what holds them and why"
+}

@@ -1,0 +1,49 @@
+{
+  "card": "result",
+  "schema_version": "0.1",
+  "id": "res-meep-waveguide-absorption-r1",
+  "revision": 1,
+  "author": "meep-waveguide-absorption",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [
+    {
+      "name": "absorbed_power",
+      "value": 0.0012,
+      "unit": "W",
+      "source": "computed:skill flux_absorbed_power@v1, runs/0001/record.json",
+      "grade": "E4",
+      "value_kind": "computed",
+      "uncertainty": null,
+      "conditions": {
+        "engine": "meep",
+        "structure": "the same waveguide with an absorbing section, fixture geometry",
+        "source": "the fundamental mode at the fixture wavelength"
+      }
+    }
+  ],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "thread": "thr-waveguide-heating-hub-meep-waveguide-absorption",
+  "round": 1,
+  "from": {
+    "agent": "meep-waveguide-absorption",
+    "build": "meep-waveguide-absorption/0001"
+  },
+  "to": {
+    "agent": "waveguide-heating-hub",
+    "build": "waveguide-heating-hub/0001"
+  },
+  "answers": {
+    "assignment": "as-meep-waveguide-absorption-r1",
+    "envelope": "inbox/thr-waveguide-heating-hub-meep-waveguide-absorption/r1_envelope.json"
+  },
+  "state": "answered",
+  "produced_by": [
+    {
+      "skill": "flux_absorbed_power@v1",
+      "record": "runs/0001/record.json"
+    }
+  ],
+  "held": []
+}
