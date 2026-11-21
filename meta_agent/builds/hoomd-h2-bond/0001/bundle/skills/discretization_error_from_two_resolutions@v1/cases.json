@@ -1,0 +1,49 @@
+[
+  {
+    "name": "a drag coefficient on a mesh and on one twice as coarse, a second-order scheme",
+    "system": "a fluid flow simulation",
+    "inputs": {
+      "fine": 2.95,
+      "coarse": 2.92,
+      "refinement_ratio": 2.0,
+      "order": 2.0
+    },
+    "expect": {
+      "estimated": true,
+      "error": 0.01,
+      "extrapolated": 2.96
+    },
+    "worked": "r^p - 1 = 4 - 1 = 3; (2.95 - 2.92) / 3 = 0.01; 2.95 + 0.01 = 2.96"
+  },
+  {
+    "name": "a transmission at two grid resolutions a ratio of 1.5 apart, a second-order scheme, the finer value lower",
+    "system": "an electromagnetic fdtd simulation",
+    "inputs": {
+      "fine": 0.1472,
+      "coarse": 0.15,
+      "refinement_ratio": 1.5,
+      "order": 2.0
+    },
+    "expect": {
+      "estimated": true,
+      "error": 0.00224,
+      "signed_correction": -0.00224,
+      "extrapolated": 0.14496
+    },
+    "worked": "r^p - 1 = 2.25 - 1 = 1.25; (0.1472 - 0.15) / 1.25 = -0.00224; its magnitude 0.00224; 0.1472 - 0.00224 = 0.14496"
+  },
+  {
+    "name": "a refinement ratio of 1 gives no estimate",
+    "system": "a fluid flow simulation",
+    "inputs": {
+      "fine": 1.0,
+      "coarse": 1.1,
+      "refinement_ratio": 1.0,
+      "order": 2.0
+    },
+    "expect": {
+      "estimated": false
+    },
+    "worked": "r^p - 1 = 0, so the relation gives nothing"
+  }
+]

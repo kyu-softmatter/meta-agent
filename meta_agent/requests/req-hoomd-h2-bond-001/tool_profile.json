@@ -1,0 +1,96 @@
+{
+  "card": "tool_profile",
+  "schema_version": "0.1",
+  "id": "tp-hoomd-h2-bond-001",
+  "rid": "req-hoomd-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:17:02Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "tool": {
+    "name": "HOOMD-blue",
+    "kind": "engine",
+    "registry_id": "hoomd_blue",
+    "source": "https://hoomd-blue.readthedocs.io/en/latest/ (units, md.bond.Harmonic, md.methods.ConstantVolume), read on the day their material cards name; the release they document is a row of values_read",
+    "language": "Python package over a C++ core",
+    "version": "conda-forge's hoomd for osx-arm64 at the version values_read names, the one the adapter was tried on",
+    "license": "BSD-3-Clause, as conda-forge states it for hoomd"
+  },
+  "analysis_permission": null,
+  "claims": [
+    {
+      "claim": "HOOMD-blue adopts no system of units: it follows a self-consistent one on three base units, energy, length and mass, from which time, force and pressure are derived",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_HOOMD-blue",
+          "locus": "Units, sections Base Units and Unit Conversion (mat-20261120-hoomd-7.2.2-units)"
+        }
+      ],
+      "capability": "io_format"
+    },
+    {
+      "claim": "md.bond.Harmonic gives each bond the energy U(r) = k (r - r0)^2 / 2, with k the potential constant in energy per length squared and r0 the rest length, set per bond type in params",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_HOOMD-blue",
+          "locus": "hoomd.md.bond.Harmonic, the formula and params (mat-20261120-hoomd-7.2.2-bond-harmonic)"
+        }
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "md.methods.ConstantVolume integrates by velocity Verlet and, with a thermostat, samples a canonical ensemble; with none, constant energy",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_HOOMD-blue",
+          "locus": "hoomd.md.methods.ConstantVolume (mat-20261120-hoomd-7.2.2-methods-constantvolume)"
+        }
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "hoomd from conda-forge, at the version values_read names, ran the adapter's script on molecules with a harmonic bond and reported the bonds' energy, the potential energy and the kinetic temperature",
+      "kind": "observed",
+      "basis": "run_record",
+      "evidence": [
+        {
+          "source_ref": "doc_HOOMD-blue",
+          "locus": "the adapter's trial under TMPDIR, result.json and run.log of a run (evidence for the adapter only; no value of it enters a card)"
+        }
+      ],
+      "capability": "observable"
+    }
+  ],
+  "parameter_candidates": [
+    "bond_k",
+    "bond_r0",
+    "box_side",
+    "budget_s",
+    "dt",
+    "kT",
+    "log_every",
+    "n_molecules",
+    "particle_mass",
+    "seed",
+    "steps"
+  ],
+  "gaps": [],
+  "material_refs": [
+    "mat-20261120-hoomd-7.2.2-units",
+    "mat-20261120-hoomd-7.2.2-bond-harmonic",
+    "mat-20261120-hoomd-7.2.2-methods-constantvolume"
+  ]
+}

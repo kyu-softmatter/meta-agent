@@ -1,0 +1,24 @@
+This folder is a bundle: a scientific agent built by a separate builder, the Meta-Agent, as a self-contained folder. It is the `qe-h2-bond` agent, which runs Quantum ESPRESSO's pw.x (density functional theory with plane waves) on one H2 molecule and hands the bond it fits to another agent, an MD agent in a folder of its own beside this one. The folder was copied out of the builder's repository into a place with no other project around it, and the builder is not here. Nothing has been run in it yet. The purpose of this run is to see whether a person can make the agent do its work by asking in their own words, with nobody else to ask. So the account of what was in your context, what you loaded, what you could not find and what was unclear matters as much as what you ran; say what you met as you met it, and do not assume the text is right because it is there.
+
+`CLAUDE.md` in this folder says who you are and what binds you. Work only from what this folder carries, and only inside it.
+
+A person says to you:
+
+"H2 결합을 DFT로 맞춰서 MD 에이전트한테 넘겨줄 준비를 해줘. 설정은 내가 전에 고른 그대로 쓰고. 넘기는 건 내가 직접 할게."
+
+(Fit the H2 bond with DFT and get it ready to hand to the MD agent. Use the settings I chose before. I will do the handing over myself.)
+
+Do it as this agent does it. Where something this agent needs is not here, or something the person asks cannot be done by this agent's tools, do not supply it yourself and do not go around them: say what it is, what would settle it, and whose step it is.
+
+This folder is a copy made for this run and is not under version control: there is nothing to commit, and what your instructions allow a session to write, you may write. Write nothing they do not allow.
+
+Done when: you have answered the person as this agent answers.
+
+Your final message is your report, ten lines or fewer plus your answer to the person:
+
+```
+task     <the person's request>
+landed   <every file you wrote or changed, or nothing>
+ran      <each tool call and skill run, and what it returned>
+open     <what is not done, and whose step it is>
+```

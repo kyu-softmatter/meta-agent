@@ -1,0 +1,51 @@
+{
+  "schema_version": "0.1",
+  "agent": "hoomd-h2-bond",
+  "tool": "HOOMD-blue",
+  "source": "the documentation of HOOMD-blue (latest (units, md.bond.Harmonic, md.methods.ConstantVolume), read on the day their material cards name; the release they document is a row of values_read), as the builder read it; the document is not in this directory",
+  "observed": [
+    {
+      "claim": "HOOMD-blue adopts no system of units: it follows a self-consistent one on three base units, energy, length and mass, from which time, force and pressure are derived",
+      "capability": "io_format",
+      "evidence": [
+        "Units, sections Base Units and Unit Conversion (mat-20261120-hoomd-7.2.2-units)"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "md.bond.Harmonic gives each bond the energy U(r) = k (r - r0)^2 / 2, with k the potential constant in energy per length squared and r0 the rest length, set per bond type in params",
+      "capability": "parameter",
+      "evidence": [
+        "hoomd.md.bond.Harmonic, the formula and params (mat-20261120-hoomd-7.2.2-bond-harmonic)"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "md.methods.ConstantVolume integrates by velocity Verlet and, with a thermostat, samples a canonical ensemble; with none, constant energy",
+      "capability": "parameter",
+      "evidence": [
+        "hoomd.md.methods.ConstantVolume (mat-20261120-hoomd-7.2.2-methods-constantvolume)"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "hoomd from conda-forge, at the version values_read names, ran the adapter's script on molecules with a harmonic bond and reported the bonds' energy, the potential energy and the kinetic temperature",
+      "capability": "observable",
+      "evidence": [
+        "the adapter's trial under TMPDIR, result.json and run.log of a run (evidence for the adapter only; no value of it enters a card)"
+      ],
+      "kind": "observed"
+    }
+  ],
+  "derived": [],
+  "unverified": [],
+  "gaps": [],
+  "held": [
+    {
+      "item": "the comparison of the MD bond's vibration with H2's measured vibrational constant",
+      "reason": "no library skill measures a vibration frequency from a run"
+    }
+  ],
+  "tool_kind": "engine",
+  "engine": "hoomd_blue"
+}

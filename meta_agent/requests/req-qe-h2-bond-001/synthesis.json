@@ -1,0 +1,32 @@
+{
+  "card": "synthesis",
+  "schema_version": "0.1",
+  "id": "syn-qe-h2-bond-001",
+  "rid": "req-qe-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:15:32Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis_refs": [
+    "spec_a1.json",
+    "spec_a2.json",
+    "spec_a3.json",
+    "spec_a4.json",
+    "spec_a5.json",
+    "spec_a6.json"
+  ],
+  "conflicts": [],
+  "held": [
+    {
+      "item": "the comparison of the fitted rest length with NIST's measured r_e as a scientific task",
+      "reason": "the standing rule needs suitable materials (published PBE values for H2) for a span; none was searched in this build"
+    }
+  ]
+}

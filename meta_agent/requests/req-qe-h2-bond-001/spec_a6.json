@@ -1,0 +1,37 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-qe-h2-bond-001-a6",
+  "rid": "req-qe-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:15:32Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A6",
+  "title": "Validation",
+  "content": {
+    "interface": [
+      "a scan with no input is refused by the runner's input check",
+      "bond lengths given in words are refused by the runner's input check"
+    ],
+    "scientific": [
+      "the rest length fitted to one scan against the measured internuclear distance of H2's ground state"
+    ],
+    "completion": "every interface task passes and every scientific task passes against a person's tolerance",
+    "refusal": "an error contract or a gate refusal is reported as such; not_run and undecided are not passes"
+  },
+  "reads": [
+    "goal-qe-h2-bond-001",
+    "tp-qe-h2-bond-001",
+    "kb-brief-qe-h2-bond-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

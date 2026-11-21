@@ -1,0 +1,41 @@
+{
+  "card": "build",
+  "schema_version": "0.1",
+  "id": "build-hoomd-h2-bond-0001",
+  "rid": "req-hoomd-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:17:02Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "spec_ref": "spec-hoomd-h2-bond-001",
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "template_version": "agent@ef0ba0f2f60d",
+  "diff_from_template": "diff_from_template.txt",
+  "bundle_path": "meta_agent/builds/hoomd-h2-bond/0001/bundle",
+  "bundle_sha256": "sha256:4b047175d0d9872015f120cebdcc5f492e13ff883ba6f9f6fac170da40f72b9c",
+  "held": [
+    {
+      "item": "the comparison of the MD bond's vibration with H2's measured vibrational constant",
+      "reason": "no library skill measures a vibration frequency from a run"
+    }
+  ],
+  "gate_verdict": {
+    "interface": "pass",
+    "scientific": "not_run",
+    "validation_report_ref": "vr-hoomd-h2-bond-0001"
+  },
+  "lineage": {
+    "parent_build": null,
+    "candidate_of": 1,
+    "k": 1
+  },
+  "landed_at": null,
+  "note": "replay: 1 item(s), all as expected; hand-over (landed_at) is the person's"
+}

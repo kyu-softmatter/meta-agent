@@ -1,0 +1,41 @@
+{
+  "card": "knowledge_brief",
+  "schema_version": "0.1",
+  "id": "kb-brief-qe-h2-bond-001",
+  "rid": "req-qe-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:15:32Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "validated",
+  "need": [
+    "what each line pw.x prints means: the total energy, the convergence line, JOB DONE, the cutoffs, the functional and the pseudopotential read",
+    "the harmonic form an MD engine's bond takes, so that the fitted constants mean what the receiving engine means"
+  ],
+  "kb_version": "kb@e3b0c44298fc",
+  "entries": [],
+  "gaps": [
+    {
+      "what": "what each line pw.x prints means: the total energy, the convergence line, JOB DONE, the cutoffs, the functional and the pseudopotential read",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    },
+    {
+      "what": "the harmonic form an MD engine's bond takes, so that the fitted constants mean what the receiving engine means",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    }
+  ]
+}

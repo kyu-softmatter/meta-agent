@@ -1,0 +1,368 @@
+[
+ {
+  "name": "a temperature printed as a whole number, the run's error not estimated: half a kelvin, and said so",
+  "system": "a chemical equilibrium computation",
+  "inputs": {
+   "printed": "1066",
+   "stated_uncertainty": null,
+   "run_numerical_error": null,
+   "run_error_from": null,
+   "exact": null,
+   "span_low": null,
+   "span_high": null
+  },
+  "expect": {
+   "tolerance": 0.5,
+   "from": "last_printed_digit",
+   "run_error_estimated": false,
+   "factor": null,
+   "interval_low": null,
+   "interval_high": null
+  },
+  "worked": "no run error was handed; the last printed digit is a unit of 1, half of it 0.5"
+ },
+ {
+  "name": "a drag coefficient printed to ten decimals and a run that resolves far less, its error from three or more grids: the run's error as it is",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "printed": "2.9437637214",
+   "stated_uncertainty": null,
+   "run_numerical_error": 0.002,
+   "run_error_from": "three_or_more_grids",
+   "exact": null,
+   "span_low": null,
+   "span_high": null
+  },
+  "expect": {
+   "tolerance": 0.002,
+   "from": "run_numerical_error",
+   "run_error_estimated": true,
+   "factor": 1.0,
+   "interval_low": null,
+   "interval_high": null
+  },
+  "worked": "half the last printed digit is 5e-11; the run's error 0.002, estimated over three or more grids, enters with factor 1 and is larger, so it is the tolerance"
+ },
+ {
+  "name": "the same drag coefficient with its error from two grids: three times the run's error",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "printed": "2.9437637214",
+   "stated_uncertainty": null,
+   "run_numerical_error": 0.002,
+   "run_error_from": "two_grids",
+   "exact": null,
+   "span_low": null,
+   "span_high": null
+  },
+  "expect": {
+   "tolerance": 0.006,
+   "from": "run_numerical_error",
+   "run_error_estimated": true,
+   "factor": 3.0,
+   "interval_low": null,
+   "interval_high": null
+  },
+  "worked": "a two-grid estimate enters three times over: 3 x 0.002 = 0.006, larger than half the last printed digit 5e-11, so 0.006 is the tolerance"
+ },
+ {
+  "name": "a wavelength printed to one decimal and a run more precise than that, over three or more grids: half the digit",
+  "system": "a spectrometer reading",
+  "inputs": {
+   "printed": "502.3",
+   "stated_uncertainty": null,
+   "run_numerical_error": 0.01,
+   "run_error_from": "three_or_more_grids",
+   "exact": null,
+   "span_low": null,
+   "span_high": null
+  },
+  "expect": {
+   "tolerance": 0.05,
+   "from": "last_printed_digit",
+   "run_error_estimated": true,
+   "factor": 1.0,
+   "interval_low": null,
+   "interval_high": null
+  },
+  "worked": "half the last printed digit is 0.05; the run's error 0.01 enters with factor 1 and is smaller, so 0.05 is the tolerance"
+ },
+ {
+  "name": "a transmission printed to two decimals and a two-grid error whose triple outweighs half the digit",
+  "system": "an electromagnetic fdtd simulation",
+  "inputs": {
+   "printed": "0.15",
+   "stated_uncertainty": null,
+   "run_numerical_error": 0.002,
+   "run_error_from": "two_grids",
+   "exact": null,
+   "span_low": null,
+   "span_high": null
+  },
+  "expect": {
+   "tolerance": 0.006,
+   "from": "run_numerical_error",
+   "run_error_estimated": true,
+   "factor": 3.0,
+   "interval_low": null,
+   "interval_high": null
+  },
+  "worked": "half the last printed digit is 0.005; the two-grid error 0.002 alone would lose to it, but it enters three times over, 0.006, which is larger, so 0.006 is the tolerance"
+ },
+ {
+  "name": "a standard error of a series keeps no factor",
+  "system": "a molecular dynamics simulation",
+  "inputs": {
+   "printed": "0.4",
+   "stated_uncertainty": null,
+   "run_numerical_error": 0.07,
+   "run_error_from": "series_standard_error",
+   "exact": null,
+   "span_low": null,
+   "span_high": null
+  },
+  "expect": {
+   "tolerance": 0.07,
+   "from": "run_numerical_error",
+   "run_error_estimated": true,
+   "factor": 1.0,
+   "interval_low": null,
+   "interval_high": null
+  },
+  "worked": "half the last printed digit is 0.05; a series' standard error 0.07 enters with factor 1 and is larger, so 0.07 is the tolerance"
+ },
+ {
+  "name": "a stated uncertainty is taken before the digits and the run's error",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "printed": "0.47795",
+   "stated_uncertainty": 0.0001,
+   "run_numerical_error": 0.003,
+   "run_error_from": "three_or_more_grids",
+   "exact": null,
+   "span_low": null,
+   "span_high": null
+  },
+  "expect": {
+   "tolerance": 0.0001,
+   "from": "stated_uncertainty",
+   "factor": null,
+   "interval_low": null,
+   "interval_high": null
+  },
+  "worked": "the source states 0.0001, so that is the tolerance, whatever the digits or the run"
+ },
+ {
+  "name": "a reference that is not a number gives none",
+  "system": "a spectrometer reading",
+  "inputs": {
+   "printed": "about three",
+   "stated_uncertainty": null,
+   "run_numerical_error": null,
+   "run_error_from": null,
+   "exact": null,
+   "span_low": null,
+   "span_high": null
+  },
+  "expect": {
+   "tolerance": null,
+   "from": null,
+   "factor": null,
+   "interval_low": null,
+   "interval_high": null
+  },
+  "worked": "the text is not a number, so no way of the rule gives a tolerance"
+ },
+ {
+  "name": "a run's error handed without saying how it was estimated gives none",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "printed": "2.9437637214",
+   "stated_uncertainty": null,
+   "run_numerical_error": 0.002,
+   "run_error_from": null,
+   "exact": null,
+   "span_low": null,
+   "span_high": null
+  },
+  "expect": {
+   "tolerance": null,
+   "from": null,
+   "interval_low": null,
+   "interval_high": null
+  },
+  "worked": "the factor depends on how the error was estimated, and nothing says, so no way of the rule gives a tolerance"
+ },
+ {
+  "name": "an analytic centreline velocity, exact, its run's error from two grids: three times the run's error, no half digit",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "printed": "1.5",
+   "stated_uncertainty": null,
+   "run_numerical_error": 0.0002,
+   "run_error_from": "two_grids",
+   "exact": true,
+   "span_low": null,
+   "span_high": null
+  },
+  "expect": {
+   "tolerance": 0.0006000000000000001,
+   "from": "run_numerical_error",
+   "run_error_estimated": true,
+   "factor": 3.0,
+   "interval_low": null,
+   "interval_high": null
+  },
+  "worked": "the reference is exact, so half its last printed digit (0.05) does not apply; 3 * 0.0002 = 0.0006"
+ },
+ {
+  "name": "an exact spectral line of a defined transition, its run's error from three grids: the run's error as it is",
+  "system": "a spectral computation",
+  "inputs": {
+   "printed": null,
+   "stated_uncertainty": null,
+   "run_numerical_error": 0.03,
+   "run_error_from": "three_or_more_grids",
+   "exact": true,
+   "span_low": null,
+   "span_high": null
+  },
+  "expect": {
+   "tolerance": 0.03,
+   "from": "run_numerical_error",
+   "run_error_estimated": true,
+   "factor": 1.0,
+   "interval_low": null,
+   "interval_high": null
+  },
+  "worked": "exact, no printed form needed; 1 * 0.03 = 0.03"
+ },
+ {
+  "name": "an exact reference with no run error estimated: no tolerance, and said why",
+  "system": "a chemical equilibrium computation",
+  "inputs": {
+   "printed": "1066",
+   "stated_uncertainty": null,
+   "run_numerical_error": null,
+   "run_error_from": null,
+   "exact": true,
+   "span_low": null,
+   "span_high": null
+  },
+  "expect": {
+   "tolerance": null,
+   "from": null,
+   "run_error_estimated": false,
+   "factor": null,
+   "interval_low": null,
+   "interval_high": null
+  },
+  "worked": "exact, so the half digit (0.5) does not apply, and no run error was handed: nothing gives a tolerance"
+ },
+ {
+  "name": "no stated uncertainty and a span from materials: the span is the acceptance interval, before the digits",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "printed": "2.950921575",
+   "stated_uncertainty": null,
+   "run_numerical_error": null,
+   "run_error_from": null,
+   "exact": null,
+   "span_low": 2.93,
+   "span_high": 2.97
+  },
+  "expect": {
+   "tolerance": null,
+   "interval_low": 2.93,
+   "interval_high": 2.97,
+   "from": "literature_span",
+   "run_error_estimated": null,
+   "factor": null,
+   "why": null
+  },
+  "worked": "no uncertainty is stated and a span [2.93, 2.97] is handed: it is given as the interval, and half the last printed digit, 5e-10, is not reached"
+ },
+ {
+  "name": "a span is taken before a run's error that was estimated",
+  "system": "a spectrometer reading",
+  "inputs": {
+   "printed": "502.3",
+   "stated_uncertainty": null,
+   "run_numerical_error": 0.01,
+   "run_error_from": "three_or_more_grids",
+   "exact": null,
+   "span_low": 502.1,
+   "span_high": 502.6
+  },
+  "expect": {
+   "tolerance": null,
+   "interval_low": 502.1,
+   "interval_high": 502.6,
+   "from": "literature_span",
+   "run_error_estimated": null,
+   "factor": null
+  },
+  "worked": "the span [502.1, 502.6] comes before the last branch, so the run's error 0.01 and the half digit 0.05 are not weighed"
+ },
+ {
+  "name": "a stated uncertainty is taken before a span",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "printed": "0.47795",
+   "stated_uncertainty": 0.0001,
+   "run_numerical_error": null,
+   "run_error_from": null,
+   "exact": null,
+   "span_low": 0.47,
+   "span_high": 0.49
+  },
+  "expect": {
+   "tolerance": 0.0001,
+   "interval_low": null,
+   "interval_high": null,
+   "from": "stated_uncertainty",
+   "factor": null
+  },
+  "worked": "the source states 0.0001, which is the tolerance; the span [0.47, 0.49] is not reached"
+ },
+ {
+  "name": "a span with one edge is no span and gives none",
+  "system": "a molecular dynamics simulation",
+  "inputs": {
+   "printed": "0.4",
+   "stated_uncertainty": null,
+   "run_numerical_error": null,
+   "run_error_from": null,
+   "exact": null,
+   "span_low": 0.3,
+   "span_high": null
+  },
+  "expect": {
+   "tolerance": null,
+   "interval_low": null,
+   "interval_high": null,
+   "from": null
+  },
+  "worked": "only the low edge 0.3 is handed: a span has two edges, so nothing is given, and no later branch is taken in its place"
+ },
+ {
+  "name": "an exact reference with a span: the span, since it comes before the last branch",
+  "system": "a chemical equilibrium computation",
+  "inputs": {
+   "printed": "1066",
+   "stated_uncertainty": null,
+   "run_numerical_error": null,
+   "run_error_from": null,
+   "exact": true,
+   "span_low": 1064.0,
+   "span_high": 1069.0
+  },
+  "expect": {
+   "tolerance": null,
+   "interval_low": 1064.0,
+   "interval_high": 1069.0,
+   "from": "literature_span"
+  },
+  "worked": "the span [1064, 1069] is handed and comes before the branch where an exact reference takes the run's error alone"
+ }
+]

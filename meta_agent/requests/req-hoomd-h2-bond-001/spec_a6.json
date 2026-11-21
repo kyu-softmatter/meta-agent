@@ -1,0 +1,37 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-hoomd-h2-bond-001-a6",
+  "rid": "req-hoomd-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:17:02Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A6",
+  "title": "Validation",
+  "content": {
+    "interface": [
+      "a run with no input is refused by the runner's input check",
+      "a force constant given in words is refused by the runner's input check"
+    ],
+    "scientific": [
+      "the bond's vibration in an MD run with the received constants against the measured vibrational constant of H2's ground state"
+    ],
+    "completion": "every interface task passes and every scientific task passes against a person's tolerance",
+    "refusal": "an error contract or a gate refusal is reported as such; not_run and undecided are not passes"
+  },
+  "reads": [
+    "goal-hoomd-h2-bond-001",
+    "tp-hoomd-h2-bond-001",
+    "kb-brief-hoomd-h2-bond-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

@@ -1,0 +1,73 @@
+{
+  "schema_version": "0.1",
+  "id": "unit_convert",
+  "version": 1,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the factor between two registered units of one dimension, and a value converted by it, into an engine's own unit only through the unit a scale says it stands for",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "value",
+      "unit": "1",
+      "meaning": "the value to convert, in from_unit"
+    },
+    {
+      "name": "from_unit",
+      "unit": "1",
+      "meaning": "the registry's entry of the value's unit: name, si_factor and dim, as the registry holds them"
+    },
+    {
+      "name": "to_unit",
+      "unit": "1",
+      "meaning": "the registry's entry of the unit the value is wanted in"
+    },
+    {
+      "name": "stands_for",
+      "unit": "1",
+      "meaning": "where to_unit has no si_factor, the registry's entry of the registered unit a confirmed scale says it stands for; null otherwise"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "state",
+      "unit": "1",
+      "meaning": "converted | not_convertible"
+    },
+    {
+      "name": "factor",
+      "unit": "1",
+      "meaning": "si_factor(from) over si_factor(to, or the unit its scale stands for); null when not convertible"
+    },
+    {
+      "name": "converted",
+      "unit": "1",
+      "meaning": "the value times the factor, in to_unit; null when not convertible"
+    },
+    {
+      "name": "value",
+      "unit": "1",
+      "meaning": "the value handed, unchanged, in from_unit"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why no factor exists; absent when converted"
+    }
+  ],
+  "entry": {
+    "script": "scripts/analysis.py",
+    "function": "analysis"
+  },
+  "validity": "multiplicative units only, as the registry holds them; offset units (Celsius) are not registered and a temperature is carried in kelvin",
+  "source": {
+    "citation": "contracts/units.json, the registry's note (a definition: multiplicative units, si_factor converts to SI base units, dim is the dimension vector); the Bohr radius in metres, CODATA 2022, as the registry's entry of bohr cites it (https://physics.nist.gov/cgi-bin/cuu/Value?bohrrada0, read by the design role 2026-11-20)",
+    "locus": "the note at the head of contracts/units.json; the entries bohr, Angstrom, Ry/bohr^2, eV/Angstrom^2, Pa.s and mPa.s"
+  },
+  "note": "Written for meta_agent/tasks/031: a bundle that receives a hand-over converts each value only through this skill, its caller (the bundle's src/handover.py) reading the registry the bundle carries and handing the entries, since a skill opens nothing. The factor is a definition, so no value of a source stands behind the cases but the si_factors themselves, which are the registry's as it stood on 2026-11-20; each case's arithmetic is in its worked field. Its cases are worked on two unrelated kinds of system.",
+  "cases": "cases.json"
+}

@@ -1,0 +1,711 @@
+{
+  "card": "intake",
+  "schema_version": "0.1",
+  "id": "intake-hoomd-h2-bond-001",
+  "rid": "req-hoomd-h2-bond-001",
+  "revision": 3,
+  "supersedes": "intake-hoomd-h2-bond-001",
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:16:54Z",
+  "numbers": [],
+  "degraded": [],
+  "status": "draft",
+  "stage": "specified",
+  "revision_note": "the person's answer to question 2, in the person's words",
+  "agent_name": "hoomd-h2-bond",
+  "requested_by": "human",
+  "request_source": "the person's request of 2026-11-20 for a system that takes DFT and MD together, read as two agents that hand values to each other (docs/ideas/20261120.md); the meta part of meta_agent/tasks/031, which builds the DFT agent and the MD agent on the bridge",
+  "persons_words": {
+    "verbatim": "DFT와 MD를 함께 고려하는 시스템을 만들어보고싶어. / 둘로하고 각각 소통을 할 수 있게 / 너가 판단해줘(예제로 해도 될듯) / 응 / Design a bridge now",
+    "gloss": "I want to build a system that takes DFT and MD into account together. / Two, and each able to communicate with the other. / Judge it yourself (the example will do). / Yes (to Quantum ESPRESSO and HOOMD-blue). / Design a bridge now.",
+    "with": "six sources registered on the person's word '물론' (of course), recorded in docs/ideas/20261120.md",
+    "date": "2026-11-20"
+  },
+  "paragraph": "An agent that controls HOOMD-blue in words for H2 molecules held together by a harmonic bond: it takes the bond's force constant and rest length that the DFT agent handed over, once the person has carried the card with the bridge, converts each into HOOMD-blue's own units through the unit registry and the scales the person confirmed, and holds any value its build did not declare or whose scale is not confirmed; asked for a run, it runs constant-volume dynamics with that bond and reports what HOOMD-blue reports.",
+  "reading": {
+    "taken": "two agents, one per engine; this is the MD one, and what it takes is the force constant and the rest length of the H2 bond into HOOMD-blue's harmonic bond",
+    "why": "the person chose two agents that communicate and said the example will do (docs/ideas/20261120.md)",
+    "other_readings": [
+      "one agent driving both engines, which the person did not choose"
+    ]
+  },
+  "science_task": "molecular dynamics of H2 molecules with a harmonic bond whose constants come from a DFT agent, in units the person confirmed",
+  "tool": {
+    "name": "HOOMD-blue",
+    "kind": "engine",
+    "registry_id": "hoomd_blue",
+    "material_refs": [
+      "mat-20261120-hoomd-7.2.2-units",
+      "mat-20261120-hoomd-7.2.2-bond-harmonic",
+      "mat-20261120-hoomd-7.2.2-methods-constantvolume"
+    ],
+    "documentation": "https://hoomd-blue.readthedocs.io/en/latest/ (units, md.bond.Harmonic, md.methods.ConstantVolume), read on the day their material cards name; the release they document is a row of values_read",
+    "language": "Python package over a C++ core",
+    "version": "conda-forge's hoomd for osx-arm64 at the version values_read names, the one the adapter was tried on",
+    "license": "BSD-3-Clause, as conda-forge states it for hoomd"
+  },
+  "methods": [
+    "md"
+  ],
+  "executes": "engine",
+  "must_not": [
+    "touch an instrument",
+    "reach a network host other than the package source the lab's permission lists",
+    "write in the DFT agent's folder, or into its own inbox, which the bridge alone writes",
+    "use a value handed over that its build did not declare, or one into an engine unit whose scale the person has not confirmed",
+    "convert a unit by hand",
+    "invent a number or choose a setting"
+  ],
+  "knowledge_needs": [
+    "what HOOMD-blue's units are: three base units the person names, every other derived from them",
+    "the harmonic bond's form and its parameters",
+    "what constant-volume dynamics with a thermostat does"
+  ],
+  "parameter_scope": [
+    "bond_k",
+    "bond_r0",
+    "particle_mass",
+    "n_molecules",
+    "box_side",
+    "kT",
+    "dt",
+    "steps"
+  ],
+  "destination": "this computer (macOS on arm64), in a folder the person chooses beside the DFT agent's folder; the bundle stops at meta_agent/builds/ until the person moves it",
+  "priorities": [
+    "a value handed over is used only as declared and converted through the registry",
+    "an engine unit takes a value only through a scale the person confirmed; otherwise the value is held",
+    "the agent stands alone: without the bridge it still runs, the bond's constants then being the person's to give"
+  ],
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "gui_choice": "none",
+  "analysis_permission": null,
+  "tool_reading": [
+    {
+      "claim": "HOOMD-blue adopts no system of units: it follows a self-consistent one on three base units, energy, length and mass, from which time, force and pressure are derived",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "Units, sections Base Units and Unit Conversion (mat-20261120-hoomd-7.2.2-units)"
+      ],
+      "capability": "io_format"
+    },
+    {
+      "claim": "md.bond.Harmonic gives each bond the energy U(r) = k (r - r0)^2 / 2, with k the potential constant in energy per length squared and r0 the rest length, set per bond type in params",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "hoomd.md.bond.Harmonic, the formula and params (mat-20261120-hoomd-7.2.2-bond-harmonic)"
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "md.methods.ConstantVolume integrates by velocity Verlet and, with a thermostat, samples a canonical ensemble; with none, constant energy",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "hoomd.md.methods.ConstantVolume (mat-20261120-hoomd-7.2.2-methods-constantvolume)"
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "hoomd from conda-forge, at the version values_read names, ran the adapter's script on molecules with a harmonic bond and reported the bonds' energy, the potential energy and the kinetic temperature",
+      "kind": "observed",
+      "basis": "run_record",
+      "loci": [
+        "the adapter's trial under TMPDIR, result.json and run.log of a run (evidence for the adapter only; no value of it enters a card)"
+      ],
+      "capability": "observable"
+    }
+  ],
+  "values_read": [
+    {
+      "name": "hoomd_docs_release",
+      "value": "7.2.2",
+      "unit": "1",
+      "locus": "the head of each HOOMD-blue page read: 'HOOMD-blue 7.2.2 documentation'",
+      "role": "the release the pages document"
+    },
+    {
+      "name": "hoomd_version_conda_forge",
+      "value": "7.2.2",
+      "unit": "1",
+      "locus": "pixi search -c conda-forge -p osx-arm64 hoomd, 2026-11-21 UTC",
+      "role": "the engine version the package source offers"
+    }
+  ],
+  "environment_read": {
+    "os": "macOS on arm64",
+    "pixi": "pixi on PATH",
+    "hoomd": "not installed for the agent; it makes its own environment",
+    "trial": "the adapters were tried under TMPDIR in an environment of conda-forge's hoomd made with pixi, as the lab's permission allows"
+  },
+  "notes": {
+    "parameter_rows": "bond_k and bond_r0 take the DFT agent's hand-over; the scale rows are the person's three answers and the force constant's scale that follows from two of them; every other row is the person's to give when asking for a run",
+    "scientific_tasks": "one task, not run in this build: no library skill measures a bond's vibration from a run, so the MD bond is not compared with the measured vibrational constant of H2"
+  },
+  "questions_for_the_person": [
+    {
+      "n": 1,
+      "needed_before": "the build: the scales enter it as settings the person confirmed",
+      "question": "For the HOOMD-blue agent of the H2 bond (task 031), which registered unit should HOOMD-blue's length unit (engine_length) stand for?",
+      "how": "one of the buttons, the recommendation marked",
+      "answer": {
+        "verbatim": "Angstrom (Recommended)",
+        "date": "2026-11-20",
+        "gloss": "the button this seat wrote, its recommendation",
+        "recorded_in": "docs/ideas/20261120.md"
+      }
+    },
+    {
+      "n": 2,
+      "needed_before": "the build: the scales enter it as settings the person confirmed",
+      "question": "Which registered unit should HOOMD-blue's energy unit (engine_energy) stand for in the HOOMD-blue agent of the H2 bond?",
+      "how": "one of the buttons, the recommendation marked",
+      "answer": {
+        "verbatim": "eV (Recommended)",
+        "date": "2026-11-20",
+        "gloss": "the button this seat wrote, its recommendation",
+        "recorded_in": "docs/ideas/20261120.md"
+      }
+    },
+    {
+      "n": 3,
+      "needed_before": "the build: the scales enter it as settings the person confirmed",
+      "question": "HOOMD-blue also needs the hydrogen atom's mass in its own mass unit (engine_mass). contracts/units.json has no atomic mass unit yet. What should engine_mass stand for?",
+      "how": "one of the buttons, the recommendation marked"
+    }
+  ],
+  "tools": [
+    {
+      "contract": {
+        "artifact": "tool_contract",
+        "schema_version": "0.1",
+        "name": "install_environment",
+        "description": "make this agent's own environment once, before the first run: the package hoomd (HOOMD-blue) at the version conda-forge offered when the agent was built, with its Python, installed with pixi from conda-forge into runs/env; the runner points pixi's caches at runs/cache",
+        "inputs": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "installed": {
+              "type": "boolean"
+            },
+            "python": {
+              "type": "string",
+              "description": "the path of the environment's interpreter, relative to this directory"
+            },
+            "package": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string",
+              "description": "the version of hoomd the environment holds, read from its conda-meta record"
+            },
+            "platform": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "installed",
+            "python",
+            "package",
+            "version",
+            "platform"
+          ]
+        },
+        "errors": [
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "unsupported_target"
+        ],
+        "side_effects": "network",
+        "safety_gate": {
+          "required": true,
+          "place": "src/gate.py, consulted by src/run_tool.py before the call",
+          "opens_by": "execution_permission"
+        },
+        "idempotent": true,
+        "timeout_s": null,
+        "installs_from": {
+          "installer": "pixi",
+          "channel": "conda-forge"
+        }
+      },
+      "adapter_source": "requests/req-hoomd-h2-bond-001/adapters/install_environment.py",
+      "error_contracts": [
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "HOOMD-INSTALL-001",
+          "category": "execution_failure",
+          "message": "pixi install of hoomd from conda-forge did not give its interpreter",
+          "retryable": true,
+          "remediation": {
+            "action": "read the evidence; a network or channel problem may pass on a retry"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "HOOMD-INSTALL-002",
+          "category": "unsupported_target",
+          "message": "conda-forge offers no hoomd for this platform",
+          "retryable": false,
+          "remediation": {
+            "action": "run this agent on osx-arm64, osx-64, linux-64 or linux-aarch64"
+          }
+        }
+      ]
+    },
+    {
+      "contract": {
+        "artifact": "tool_contract",
+        "schema_version": "0.1",
+        "name": "run_h2_md",
+        "description": "run HOOMD-blue on H2 molecules placed on a simple cubic grid in a cubic box, each held together by a harmonic bond, md.bond.Harmonic, with no force between molecules; momenta drawn at kT and constant-volume dynamics with the Bussi thermostat at kT; every value is in HOOMD-blue's own units, whose scales envelope/handovers.json records; a new folder under runs/md for each run; returns what HOOMD-blue reports: the bonds' energy, the potential energy and the kinetic temperature at the end, and the kinetic temperature and potential energy logged along the run",
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "bond_k": {
+              "type": "number",
+              "unit": "engine_energy/engine_length^2",
+              "row": "bond_k",
+              "description": "the bond's potential constant k; the value src/handover.py values prints for the row bond_k",
+              "minimum": 0
+            },
+            "bond_r0": {
+              "type": "number",
+              "unit": "engine_length",
+              "row": "bond_r0",
+              "description": "the bond's rest length r0; the value src/handover.py values prints for the row bond_r0",
+              "minimum": 0
+            },
+            "particle_mass": {
+              "type": "number",
+              "unit": "engine_mass",
+              "row": "particle_mass",
+              "description": "the mass of each hydrogen atom",
+              "minimum": 0
+            },
+            "n_molecules": {
+              "type": "integer",
+              "unit": "count",
+              "minimum": 0,
+              "row": "n_molecules",
+              "description": "how many molecules"
+            },
+            "box_side": {
+              "type": "number",
+              "unit": "engine_length",
+              "row": "box_side",
+              "description": "the side of the cubic box",
+              "minimum": 0
+            },
+            "kT": {
+              "type": "number",
+              "unit": "engine_energy",
+              "row": "kT",
+              "description": "the thermal energy the momenta are drawn at and the thermostat holds",
+              "minimum": 0
+            },
+            "dt": {
+              "type": "number",
+              "unit": "engine_time",
+              "row": "dt",
+              "description": "the integration step",
+              "minimum": 0
+            },
+            "steps": {
+              "type": "integer",
+              "unit": "count",
+              "minimum": 0,
+              "row": "steps",
+              "description": "how many steps the run takes"
+            },
+            "log_every": {
+              "type": "integer",
+              "unit": "count",
+              "minimum": 0,
+              "row": "log_every",
+              "description": "how many steps between two logged values"
+            },
+            "seed": {
+              "type": "integer",
+              "unit": "id",
+              "minimum": 0,
+              "row": "seed",
+              "description": "the random seed of the momenta and the thermostat"
+            },
+            "budget_s": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "unit": "s",
+              "minimum": 0,
+              "default": null,
+              "description": "the running time the run may take before the call gives up on it, counted while it runs and not while it is paused; no limit when null"
+            }
+          },
+          "required": [
+            "bond_k",
+            "bond_r0",
+            "particle_mass",
+            "n_molecules",
+            "box_side",
+            "kT",
+            "dt",
+            "steps",
+            "log_every",
+            "seed"
+          ]
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "hoomd_version": {
+              "type": "string"
+            },
+            "steps_run": {
+              "type": "integer",
+              "unit": "count"
+            },
+            "bond_energy": {
+              "type": "number",
+              "unit": "engine_energy",
+              "description": "the bonds' energy HOOMD-blue reports at the end, md.bond.Harmonic's energy"
+            },
+            "potential_energy": {
+              "type": "number",
+              "unit": "engine_energy",
+              "description": "the potential energy HOOMD-blue reports at the end"
+            },
+            "kinetic_temperature": {
+              "type": "number",
+              "unit": "engine_energy",
+              "description": "the kinetic temperature HOOMD-blue reports at the end, as an energy"
+            },
+            "series": {
+              "type": "object",
+              "description": "step, kinetic_temperature and potential_energy as HOOMD-blue reported them at each logged step"
+            },
+            "run_dir": {
+              "type": "string"
+            },
+            "inputs": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "hoomd_version",
+            "steps_run",
+            "bond_energy",
+            "potential_energy",
+            "kinetic_temperature",
+            "series",
+            "run_dir"
+          ]
+        },
+        "errors": [
+          "invalid_input",
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "timeout",
+          "cancelled"
+        ],
+        "side_effects": "runs_process",
+        "safety_gate": {
+          "required": true,
+          "place": "src/gate.py, consulted by src/run_tool.py before the call",
+          "opens_by": "execution_permission"
+        },
+        "idempotent": false,
+        "timeout_s": null
+      },
+      "adapter_source": "requests/req-hoomd-h2-bond-001/adapters/run_h2_md.py",
+      "error_contracts": [
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "HOOMD-RUN-INPUT-001",
+          "category": "invalid_input",
+          "message": "a value the run needs is missing or not one the contract takes",
+          "retryable": false,
+          "remediation": {
+            "action": "give every value; bond_k and bond_r0 are what src/handover.py values prints for their rows, and a row no hand-over filled is the person's to give"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "HOOMD-ENV-001",
+          "category": "unavailable",
+          "message": "this agent's environment is not made",
+          "retryable": true,
+          "remediation": {
+            "action": "call install_environment first, then this call again"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "HOOMD-RUN-INPUT-002",
+          "category": "invalid_input",
+          "message": "the rest length is not shorter than the box side",
+          "retryable": false,
+          "remediation": {
+            "action": "give a box side longer than the rest length"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "HOOMD-RUN-002",
+          "category": "execution_failure",
+          "message": "the run ended with a failure status or wrote no result",
+          "retryable": false,
+          "remediation": {
+            "action": "read run.err in the run folder"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RUN_H2_MD-GAVE-UP",
+          "category": "timeout",
+          "message": "the call gave up on the run after its budget of running time and stopped it",
+          "retryable": true,
+          "remediation": {
+            "action": "call again with a larger budget_s, or none"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RUN_H2_MD-STOPPED",
+          "category": "cancelled",
+          "message": "the run was stopped from outside",
+          "retryable": true,
+          "remediation": {
+            "action": "call again with the same input to start the run over"
+          }
+        }
+      ]
+    }
+  ],
+  "skills": [],
+  "parameter_rows": [
+    {
+      "name": "bond_k",
+      "value": null,
+      "unit": "engine_energy/engine_length^2",
+      "handover": {
+        "takes": {
+          "name": "h2_bond_force_constant",
+          "thread": "thr-h2-bond",
+          "from_agent": "qe-h2-bond"
+        }
+      }
+    },
+    {
+      "name": "bond_r0",
+      "value": null,
+      "unit": "engine_length",
+      "handover": {
+        "takes": {
+          "name": "h2_bond_rest_length",
+          "thread": "thr-h2-bond",
+          "from_agent": "qe-h2-bond"
+        }
+      }
+    },
+    {
+      "name": "particle_mass",
+      "value": null,
+      "unit": "engine_mass",
+      "note": "the hydrogen atom's mass, in engine_mass, which stands for Da; no source for it was read in this build, so the person gives it"
+    },
+    {
+      "name": "n_molecules",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "box_side",
+      "value": null,
+      "unit": "engine_length",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "kT",
+      "value": null,
+      "unit": "engine_energy",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "dt",
+      "value": null,
+      "unit": "engine_time",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it; engine_time's scale follows from the three base scales and is not registered"
+    },
+    {
+      "name": "steps",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "log_every",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "seed",
+      "value": null,
+      "unit": "id",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "scale_engine_length",
+      "engine_scale": {
+        "unit": "engine_length",
+        "stands_for": "Angstrom",
+        "state": "confirmed",
+        "confirmed_by": "human",
+        "evidence": [
+          "the person, 2026-11-20, answering meta-macbook-20261120-3's question with the button 'Angstrom (Recommended)'; recorded in docs/ideas/20261120.md, section 'The HOOMD-blue agent's engine scales: three answers'"
+        ]
+      }
+    },
+    {
+      "name": "scale_engine_energy",
+      "engine_scale": {
+        "unit": "engine_energy",
+        "stands_for": "eV",
+        "state": "confirmed",
+        "confirmed_by": "human",
+        "evidence": [
+          "the person, 2026-11-20, answering meta-macbook-20261120-3's question with the button 'eV (Recommended)'; recorded in docs/ideas/20261120.md, section 'The HOOMD-blue agent's engine scales: three answers'"
+        ]
+      }
+    },
+    {
+      "name": "scale_engine_mass",
+      "engine_scale": {
+        "unit": "engine_mass",
+        "stands_for": "Da",
+        "state": "confirmed",
+        "confirmed_by": "human",
+        "evidence": [
+          "the person, 2026-11-20, answering meta-macbook-20261120-3's question with the button 'Da, added by design (Recommended)'; recorded in docs/ideas/20261120.md, section 'The HOOMD-blue agent's engine scales: three answers'"
+        ]
+      }
+    },
+    {
+      "name": "scale_engine_energy_per_engine_length2",
+      "engine_scale": {
+        "unit": "engine_energy/engine_length^2",
+        "stands_for": "eV/Angstrom^2",
+        "state": "confirmed",
+        "confirmed_by": "human",
+        "evidence": [
+          "follows from the person's two scales of 2026-11-20, engine_energy for eV ('eV (Recommended)') and engine_length for Angstrom ('Angstrom (Recommended)'), as the recording seat read them in docs/ideas/20261120.md"
+        ],
+        "rests_on": [
+          "engine_energy",
+          "engine_length"
+        ]
+      }
+    }
+  ],
+  "interface_tasks": [
+    {
+      "id": "if-1",
+      "name": "a run with no input is refused by the runner's input check",
+      "call": {
+        "tool": "run_h2_md",
+        "input": {}
+      },
+      "expected": {
+        "error": {
+          "category": "invalid_input",
+          "code": "HOOMD-RUN-INPUT-001"
+        }
+      },
+      "expected_verdict": "pass"
+    },
+    {
+      "id": "if-2",
+      "name": "a force constant given in words is refused by the runner's input check",
+      "call": {
+        "tool": "run_h2_md",
+        "input": {
+          "bond_k": "the received one"
+        }
+      },
+      "expected": {
+        "error": {
+          "category": "invalid_input",
+          "code": "HOOMD-RUN-INPUT-001"
+        }
+      },
+      "expected_verdict": "pass"
+    }
+  ],
+  "scientific_tasks": [
+    {
+      "id": "sci-1",
+      "name": "the bond's vibration in an MD run with the received constants against the measured vibrational constant of H2's ground state",
+      "call": {
+        "tool": "run_h2_md",
+        "input": {}
+      },
+      "measure": {
+        "output_field": "series",
+        "reference_function": "h2_ground_state_omega_e"
+      },
+      "reference": {
+        "kind": "source",
+        "ref": "NIST Chemistry WebBook, H2, Constants of diatomic molecules, the row X 1Σg+, omega_e in cm-1 (mat-20261120-nist-webbook-h2-diatomic-constants)"
+      },
+      "tolerance": null,
+      "expected_verdict": "not_run",
+      "note": "not run in this build: no library skill measures a vibration frequency from a run, and the run's inputs are the hand-over's and the person's. not_run is not a pass."
+    }
+  ],
+  "replay_items": [
+    {
+      "id": "rp-001",
+      "name": "a run with no input is refused with HOOMD-RUN-INPUT-001",
+      "call": {
+        "tool": "run_h2_md",
+        "input": {}
+      },
+      "expected": {
+        "error": {
+          "category": "invalid_input",
+          "code": "HOOMD-RUN-INPUT-001"
+        }
+      },
+      "expected_verdict": "pass"
+    }
+  ],
+  "held": [
+    {
+      "item": "the comparison of the MD bond's vibration with H2's measured vibrational constant",
+      "reason": "no library skill measures a vibration frequency from a run"
+    }
+  ],
+  "workflow": [
+    "install_environment",
+    "run_h2_md"
+  ]
+}

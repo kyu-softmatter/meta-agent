@@ -1,0 +1,114 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-qe-h2-bond-001-a2",
+  "rid": "req-qe-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:15:32Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A2",
+  "title": "Interface",
+  "content": {
+    "cards_in": [
+      "tasks/*.md"
+    ],
+    "cards_out": [
+      "the printed reports of src/replay.py and src/validate_tasks.py",
+      "failures.jsonl lines"
+    ],
+    "callable_tools": [
+      {
+        "name": "install_environment",
+        "inputs": [],
+        "outputs": [
+          "installed",
+          "package",
+          "platform",
+          "pw_x",
+          "version"
+        ],
+        "errors": [
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "unsupported_target"
+        ],
+        "side_effects": "network"
+      },
+      {
+        "name": "fetch_pseudopotential",
+        "inputs": [],
+        "outputs": [
+          "fetched",
+          "file",
+          "sha256"
+        ],
+        "errors": [
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "invalid_input"
+        ],
+        "side_effects": "network"
+      },
+      {
+        "name": "scan_h2_bond",
+        "inputs": [
+          "bond_lengths",
+          "box_side",
+          "budget_s",
+          "conv_thr",
+          "ecutrho",
+          "ecutwfc",
+          "n_processes",
+          "pseudo_dir"
+        ],
+        "outputs": [
+          "box_side",
+          "energy_curve",
+          "inputs",
+          "n_processes",
+          "points",
+          "printed_conditions",
+          "program_version",
+          "run_dir"
+        ],
+        "errors": [
+          "invalid_input",
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "timeout",
+          "cancelled"
+        ],
+        "side_effects": "runs_process"
+      }
+    ],
+    "gui_fields": [],
+    "skills": [
+      {
+        "ref": "harmonic_well_fit@v1",
+        "kind": "data_analysis",
+        "side_effect": "none",
+        "status": "usable",
+        "calls_tools": []
+      }
+    ],
+    "subagents": []
+  },
+  "reads": [
+    "goal-qe-h2-bond-001",
+    "tp-qe-h2-bond-001",
+    "kb-brief-qe-h2-bond-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

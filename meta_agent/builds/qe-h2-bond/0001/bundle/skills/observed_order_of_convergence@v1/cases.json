@@ -1,0 +1,46 @@
+[
+  {
+    "name": "a drag coefficient on three meshes, each twice as fine, converging at second order",
+    "system": "a fluid flow simulation",
+    "inputs": {
+      "coarse": 2.902,
+      "medium": 2.938,
+      "fine": 2.947,
+      "refinement_ratio": 2.0
+    },
+    "expect": {
+      "observed": true,
+      "order": 2.0
+    },
+    "worked": "(2.902 - 2.938) / (2.938 - 2.947) = -0.036 / -0.009 = 4; ln 4 / ln 2 = 2"
+  },
+  {
+    "name": "a transmission on three grids a ratio of 3 apart, converging at first order",
+    "system": "an electromagnetic fdtd simulation",
+    "inputs": {
+      "coarse": 0.18,
+      "medium": 0.15,
+      "fine": 0.14,
+      "refinement_ratio": 3.0
+    },
+    "expect": {
+      "observed": true,
+      "order": 1.0
+    },
+    "worked": "(0.18 - 0.15) / (0.15 - 0.14) = 0.03 / 0.01 = 3; ln 3 / ln 3 = 1"
+  },
+  {
+    "name": "results that turn back give no order",
+    "system": "a fluid flow simulation",
+    "inputs": {
+      "coarse": 2.9,
+      "medium": 2.95,
+      "fine": 2.93,
+      "refinement_ratio": 2.0
+    },
+    "expect": {
+      "observed": false
+    },
+    "worked": "(2.90 - 2.95) / (2.95 - 2.93) = -0.05 / 0.02 < 0: not monotone"
+  }
+]

@@ -1,0 +1,74 @@
+{
+  "schema_version": "0.1",
+  "id": "discretization_error_from_two_resolutions",
+  "version": 1,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "common": true,
+  "summary": "the discretization error of a run's finer result, from the same quantity at two resolutions, and the value extrapolated to zero spacing",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "fine",
+      "unit": "1",
+      "meaning": "the quantity from the run at the finer resolution, in its unit"
+    },
+    {
+      "name": "coarse",
+      "unit": "1",
+      "meaning": "the same quantity from the run at the coarser resolution, in the same unit"
+    },
+    {
+      "name": "refinement_ratio",
+      "unit": "1",
+      "meaning": "the coarse spacing over the fine one (a mesh size, a time step, a grid cell), above 1"
+    },
+    {
+      "name": "order",
+      "unit": "1",
+      "meaning": "the order of convergence of the scheme, the formal one or one observed over three resolutions; a row with its own source"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "estimated",
+      "unit": "1",
+      "meaning": "true when an error was estimated; false, with why, when the inputs do not allow it"
+    },
+    {
+      "name": "error",
+      "unit": "1",
+      "meaning": "the estimated discretization error of the finer result, its magnitude, in the quantity's unit: the run's own numerical error the tolerance rule weighs"
+    },
+    {
+      "name": "signed_correction",
+      "unit": "1",
+      "meaning": "the finer result's difference from the extrapolated value, with its sign"
+    },
+    {
+      "name": "extrapolated",
+      "unit": "1",
+      "meaning": "the value extrapolated to zero spacing"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why no error was estimated, or null"
+    }
+  ],
+  "entry": {
+    "script": "scripts/analysis.py",
+    "function": "analysis"
+  },
+  "validity": "two runs of one scheme on the same problem in its asymptotic range, the quantity converging monotonically with the spacing at the order handed; higher-order terms are neglected, so the estimate is as good as that range holds. It says nothing of a modelling error, and judges nothing",
+  "source": {
+    "citation": "NASA Glenn Research Center, NPARC Alliance CFD Verification and Validation, Examining Spatial (Grid) Convergence (read 2026-11-18, https://www.grc.nasa.gov/www/wind/valid/tutorial/spatconv.html; meta_agent/inbox/materials/20261118-nasa-grc-spatial-convergence), after P. J. Roache's book it cites",
+    "locus": "section Richardson Extrapolation: the generalized equation for a p-th order method and a grid ratio r = h2/h1, f(h=0) = f1 + (f1 - f2)/(r^p - 1), read off its image eq_rich2.gif; and the passage that takes its second term as an error estimator of f1"
+  },
+  "note": "Made for the person's amended tolerance rule of 2026-11-18 ('Yes, run's own error', docs/ideas/20261118.md: the run's own numerical error, estimated from two resolutions or from a series' standard error), as a common skill of meta_agent/tasks/025; the series' standard error is standard_error_of_independent_estimates. No value of the source stands behind the worked cases: each is worked by hand in its worked field.",
+  "cases": "cases.json"
+}

@@ -1,0 +1,90 @@
+{
+  "card": "agent_goal",
+  "schema_version": "0.1",
+  "id": "goal-qe-h2-bond-001",
+  "rid": "req-qe-h2-bond-001",
+  "revision": 2,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:15:32Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [
+    {
+      "what": "what each line pw.x prints means: the total energy, the convergence line, JOB DONE, the cutoffs, the functional and the pseudopotential read",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    },
+    {
+      "what": "the harmonic form an MD engine's bond takes, so that the fitted constants mean what the receiving engine means",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    }
+  ],
+  "case_refs": [],
+  "case_gaps": [
+    {
+      "what": "a prior case for this goal's signature",
+      "searched": [
+        "meta_agent/cases/index.json (223 case(s) read)",
+        "level 1, the signature: science_task=the harmonic force constant and rest length of the h2 bond from pbe total energies, handed to an md agent; executes=engine; engine=quantum_espresso; methods=dft; parameter_names=bond_lengths, box_side, conv_thr, ecutrho, ecutwfc",
+        "level 2 not searched: the signature states no cause_class"
+      ],
+      "reason": "no case shares an identifying field with the signature",
+      "requires": "a case written from this agent's first incidents, validation failures or the person's interventions"
+    }
+  ],
+  "degraded": [],
+  "status": "validated",
+  "purpose": "An agent that controls Quantum ESPRESSO's pw.x in words for one H2 molecule: asked to fit the H2 bond, it computes the total energy at the bond lengths the person named, fits the harmonic bond's force constant and rest length to that energy curve with a library skill, and writes both as one hand-over card in its outbox for the HOOMD-blue agent, each value with the conditions pw.x printed. It never carries the card itself: the person starts the bridge that does.",
+  "science_task": "the harmonic force constant and rest length of the H2 bond from PBE total energies, handed to an MD agent",
+  "tool": {
+    "name": "Quantum ESPRESSO pw.x (PWscf)",
+    "kind": "engine",
+    "registry_id": "quantum_espresso",
+    "material_refs": [
+      "mat-20261120-qe-7.5-input-pw",
+      "mat-20261120-pslibrary-h-pbe-rrkjus-upf"
+    ]
+  },
+  "methods": [
+    "dft"
+  ],
+  "executes": "engine",
+  "must_not": [
+    "touch an instrument",
+    "reach a network host other than the package source and the pseudopotential host the lab's permission lists",
+    "write in the MD agent's folder or carry a hand-over card itself",
+    "hand over a value read off runs under different conditions, or one the fit did not give",
+    "invent a number, choose a setting or a tolerance",
+    "compute again a value pw.x itself reports"
+  ],
+  "knowledge_needs": [
+    "what each line pw.x prints means: the total energy, the convergence line, JOB DONE, the cutoffs, the functional and the pseudopotential read",
+    "the harmonic form an MD engine's bond takes, so that the fitted constants mean what the receiving engine means"
+  ],
+  "parameter_scope": [
+    "bond_lengths",
+    "box_side",
+    "ecutwfc",
+    "ecutrho",
+    "conv_thr"
+  ],
+  "destination": "this computer (macOS on arm64), in a folder the person chooses beside the HOOMD-blue agent's folder; the bundle stops at meta_agent/builds/ until the person moves it",
+  "priorities": [
+    "a value is handed over only as the fit's output on one scan's energy curve, with the conditions pw.x printed",
+    "nothing is reached but pw.x, the agent's own folders and the sources the permission names",
+    "the agent stands alone: without the bridge it still scans and fits"
+  ],
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "gui_choice": "none",
+  "analysis_permission": null,
+  "requested_by": "human",
+  "supersedes": "goal-qe-h2-bond-001"
+}

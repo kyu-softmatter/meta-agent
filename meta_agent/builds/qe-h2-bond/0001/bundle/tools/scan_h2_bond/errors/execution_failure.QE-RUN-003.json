@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "QE-RUN-003",
+  "category": "execution_failure",
+  "message": "pw.x printed different conditions for the points of one scan",
+  "retryable": false,
+  "remediation": {
+    "action": "read result.json in the scan folder; no energy curve is handed on from runs under different conditions"
+  }
+}

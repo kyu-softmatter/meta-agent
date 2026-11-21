@@ -1,0 +1,64 @@
+{
+  "note": "what this agent gives to another agent and takes from one, written by its build from the request's parameter rows (template v32); src/handover.py reads it, and a value for a row not listed under takes is held",
+  "agent": {
+    "agent": "hoomd-h2-bond",
+    "build": "hoomd-h2-bond/0001"
+  },
+  "gives": [],
+  "takes": [
+    {
+      "row": "bond_k",
+      "name": "h2_bond_force_constant",
+      "thread": "thr-h2-bond",
+      "from_agent": "qe-h2-bond"
+    },
+    {
+      "row": "bond_r0",
+      "name": "h2_bond_rest_length",
+      "thread": "thr-h2-bond",
+      "from_agent": "qe-h2-bond"
+    }
+  ],
+  "engine_scales": [
+    {
+      "unit": "engine_length",
+      "stands_for": "Angstrom",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "evidence": [
+        "the person, 2026-11-20, answering meta-macbook-20261120-3's question with the button 'Angstrom (Recommended)'; recorded in docs/ideas/20261120.md, section 'The HOOMD-blue agent's engine scales: three answers'"
+      ]
+    },
+    {
+      "unit": "engine_energy",
+      "stands_for": "eV",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "evidence": [
+        "the person, 2026-11-20, answering meta-macbook-20261120-3's question with the button 'eV (Recommended)'; recorded in docs/ideas/20261120.md, section 'The HOOMD-blue agent's engine scales: three answers'"
+      ]
+    },
+    {
+      "unit": "engine_mass",
+      "stands_for": "Da",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "evidence": [
+        "the person, 2026-11-20, answering meta-macbook-20261120-3's question with the button 'Da, added by design (Recommended)'; recorded in docs/ideas/20261120.md, section 'The HOOMD-blue agent's engine scales: three answers'"
+      ]
+    },
+    {
+      "unit": "engine_energy/engine_length^2",
+      "stands_for": "eV/Angstrom^2",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "evidence": [
+        "follows from the person's two scales of 2026-11-20, engine_energy for eV ('eV (Recommended)') and engine_length for Angstrom ('Angstrom (Recommended)'), as the recording seat read them in docs/ideas/20261120.md"
+      ],
+      "rests_on": [
+        "engine_energy",
+        "engine_length"
+      ]
+    }
+  ]
+}

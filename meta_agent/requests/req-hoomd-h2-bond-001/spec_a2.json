@@ -1,0 +1,91 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-hoomd-h2-bond-001-a2",
+  "rid": "req-hoomd-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:17:02Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A2",
+  "title": "Interface",
+  "content": {
+    "cards_in": [
+      "tasks/*.md"
+    ],
+    "cards_out": [
+      "the printed reports of src/replay.py and src/validate_tasks.py",
+      "failures.jsonl lines"
+    ],
+    "callable_tools": [
+      {
+        "name": "install_environment",
+        "inputs": [],
+        "outputs": [
+          "installed",
+          "package",
+          "platform",
+          "python",
+          "version"
+        ],
+        "errors": [
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "unsupported_target"
+        ],
+        "side_effects": "network"
+      },
+      {
+        "name": "run_h2_md",
+        "inputs": [
+          "bond_k",
+          "bond_r0",
+          "box_side",
+          "budget_s",
+          "dt",
+          "kT",
+          "log_every",
+          "n_molecules",
+          "particle_mass",
+          "seed",
+          "steps"
+        ],
+        "outputs": [
+          "bond_energy",
+          "hoomd_version",
+          "inputs",
+          "kinetic_temperature",
+          "potential_energy",
+          "run_dir",
+          "series",
+          "steps_run"
+        ],
+        "errors": [
+          "invalid_input",
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "timeout",
+          "cancelled"
+        ],
+        "side_effects": "runs_process"
+      }
+    ],
+    "gui_fields": []
+  },
+  "reads": [
+    "goal-hoomd-h2-bond-001",
+    "tp-hoomd-h2-bond-001",
+    "kb-brief-hoomd-h2-bond-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

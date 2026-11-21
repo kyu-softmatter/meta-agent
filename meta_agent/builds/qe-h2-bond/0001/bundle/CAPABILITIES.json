@@ -1,0 +1,83 @@
+{
+  "schema_version": "0.1",
+  "agent": "qe-h2-bond",
+  "tool": "Quantum ESPRESSO pw.x (PWscf)",
+  "source": "the documentation of Quantum ESPRESSO pw.x (PWscf) (INPUT_PW.html, read on the day its material card names; the release it documents is a row of values_read), as the builder read it; the document is not in this directory",
+  "observed": [
+    {
+      "claim": "pw.x reads namelists &CONTROL, &SYSTEM and &ELECTRONS and the cards ATOMIC_SPECIES, ATOMIC_POSITIONS and K_POINTS; quantities whose dimensions are not stated are in Rydberg atomic units",
+      "capability": "io_format",
+      "evidence": [
+        "INPUT_PW.html, INTRODUCTION: 'All quantities whose dimensions are not explicitly specified are in RYDBERG ATOMIC UNITS'"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "ecutwfc and ecutrho are the kinetic energy cutoffs in Ry for wavefunctions and for charge density; with ultrasoft pseudopotentials an ecutrho larger than four times ecutwfc is often desirable",
+      "capability": "parameter",
+      "evidence": [
+        "INPUT_PW.html, &SYSTEM, ecutwfc and ecutrho"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "celldm(1) is the lattice parameter in bohr; with ibrav 1 the cell is simple cubic",
+      "capability": "parameter",
+      "evidence": [
+        "INPUT_PW.html, &SYSTEM, celldm(i)"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "assume_isolated 'martyna-tuckerman' corrects the total energy and the self-consistent potential of a molecule in a 3D supercell",
+      "capability": "parameter",
+      "evidence": [
+        "INPUT_PW.html, &SYSTEM, assume_isolated"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "the species mass in ATOMIC_SPECIES is used only for molecular dynamics or damped dynamics, not in an scf run",
+      "capability": "parameter",
+      "evidence": [
+        "INPUT_PW.html, ATOMIC_SPECIES, Mass_X"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "the pseudopotential H.pbe-rrkjus_psl.1.0.0.UPF is ultrasoft, for the PBE functional, and states suggested minimum cutoffs for wavefunctions and charge density",
+      "capability": "parameter",
+      "evidence": [
+        "H.pbe-rrkjus_psl.1.0.0.UPF, PP_INFO lines 6 to 10"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "pw.x from conda-forge, at the version values_read names, ran an scf of one H2 molecule from the adapter's input, printed the total energy on its line starting with an exclamation mark, the convergence line and JOB DONE, and, given a species mass of zero, printed the mass it took from its own table",
+      "capability": "observable",
+      "evidence": [
+        "the adapter's trial under TMPDIR, pw.out of each point of a scan (evidence for the adapter only; no value of it enters a card)"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "with n_processes two, pw.x ran through the environment's mpirun and printed the number of MPI processes",
+      "capability": "execution",
+      "evidence": [
+        "the adapter's trial under TMPDIR, pw.out"
+      ],
+      "kind": "observed"
+    }
+  ],
+  "derived": [],
+  "unverified": [],
+  "gaps": [],
+  "held": [
+    {
+      "item": "the comparison of the fitted rest length with NIST's measured r_e as a scientific task",
+      "reason": "the standing rule needs suitable materials (published PBE values for H2) for a span; none was searched in this build"
+    }
+  ],
+  "tool_kind": "engine",
+  "engine": "quantum_espresso"
+}

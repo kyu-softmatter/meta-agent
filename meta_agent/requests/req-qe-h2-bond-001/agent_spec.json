@@ -1,0 +1,39 @@
+{
+  "card": "agent_spec",
+  "schema_version": "0.1",
+  "id": "spec-qe-h2-bond-001",
+  "rid": "req-qe-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:15:32Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "held",
+  "axis_refs": {
+    "A1": "spec_a1.json",
+    "A2": "spec_a2.json",
+    "A3": "spec_a3.json",
+    "A4": "spec_a4.json",
+    "A5": "spec_a5.json",
+    "A6": "spec_a6.json"
+  },
+  "synthesis_ref": "synthesis.json",
+  "goal_ref": "goal-qe-h2-bond-001",
+  "tool_profile_ref": "tp-qe-h2-bond-001",
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "held": [
+    {
+      "item": "the comparison of the fitted rest length with NIST's measured r_e as a scientific task",
+      "reason": "the standing rule needs suitable materials (published PBE values for H2) for a span; none was searched in this build"
+    }
+  ],
+  "skills": [
+    "harmonic_well_fit@v1"
+  ],
+  "subagents": []
+}

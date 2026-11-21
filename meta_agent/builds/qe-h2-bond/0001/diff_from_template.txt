@@ -1,0 +1,586 @@
+# diff from template
+# template: agent@ef0ba0f2f60d
+
+added     .claude/skills/run-skill/library/discretization_error_from_two_resolutions@v1.md
+added     .claude/skills/run-skill/library/harmonic_well_fit@v1.md
+added     .claude/skills/run-skill/library/literature_span@v2.md
+added     .claude/skills/run-skill/library/measurement_error@v3.md
+added     .claude/skills/run-skill/library/observed_order_of_convergence@v1.md
+added     .claude/skills/run-skill/library/power_law_exponent_along_sweep@v3.md
+added     .claude/skills/run-skill/library/series_maximum@v3.md
+added     .claude/skills/run-skill/library/series_settled@v5.md
+added     .claude/skills/run-skill/library/series_within_window@v3.md
+added     .claude/skills/run-skill/library/standard_error_of_independent_estimates@v2.md
+added     .claude/skills/run-skill/library/tolerance_from_reference@v5.md
+added     envelope/execution_permission.json
+added     envelope/handovers.json
+added     envelope/units.json
+added     inbox/.gitkeep
+added     outbox/.gitkeep
+added     received/.gitkeep
+added     replay/rp-001.json
+added     skills/discretization_error_from_two_resolutions@v1/SKILL.md
+added     skills/discretization_error_from_two_resolutions@v1/cases.json
+added     skills/discretization_error_from_two_resolutions@v1/scripts/analysis.py
+added     skills/discretization_error_from_two_resolutions@v1/skill.json
+added     skills/harmonic_well_fit@v1/SKILL.md
+added     skills/harmonic_well_fit@v1/cases.json
+added     skills/harmonic_well_fit@v1/scripts/analysis.py
+added     skills/harmonic_well_fit@v1/skill.json
+added     skills/literature_span@v2/SKILL.md
+added     skills/literature_span@v2/cases.json
+added     skills/literature_span@v2/scripts/analysis.py
+added     skills/literature_span@v2/skill.json
+added     skills/measurement_error@v3/SKILL.md
+added     skills/measurement_error@v3/cases.json
+added     skills/measurement_error@v3/scripts/analysis.py
+added     skills/measurement_error@v3/skill.json
+added     skills/observed_order_of_convergence@v1/SKILL.md
+added     skills/observed_order_of_convergence@v1/cases.json
+added     skills/observed_order_of_convergence@v1/scripts/analysis.py
+added     skills/observed_order_of_convergence@v1/skill.json
+added     skills/power_law_exponent_along_sweep@v3/SKILL.md
+added     skills/power_law_exponent_along_sweep@v3/cases.json
+added     skills/power_law_exponent_along_sweep@v3/scripts/diagnostic.py
+added     skills/power_law_exponent_along_sweep@v3/skill.json
+added     skills/series_maximum@v3/SKILL.md
+added     skills/series_maximum@v3/cases.json
+added     skills/series_maximum@v3/scripts/analysis.py
+added     skills/series_maximum@v3/skill.json
+added     skills/series_settled@v5/SKILL.md
+added     skills/series_settled@v5/cases.json
+added     skills/series_settled@v5/scripts/diagnostic.py
+added     skills/series_settled@v5/skill.json
+added     skills/series_within_window@v3/SKILL.md
+added     skills/series_within_window@v3/cases.json
+added     skills/series_within_window@v3/scripts/diagnostic.py
+added     skills/series_within_window@v3/skill.json
+added     skills/standard_error_of_independent_estimates@v2/SKILL.md
+added     skills/standard_error_of_independent_estimates@v2/cases.json
+added     skills/standard_error_of_independent_estimates@v2/scripts/analysis.py
+added     skills/standard_error_of_independent_estimates@v2/skill.json
+added     skills/tolerance_from_reference@v5/SKILL.md
+added     skills/tolerance_from_reference@v5/cases.json
+added     skills/tolerance_from_reference@v5/scripts/analysis.py
+added     skills/tolerance_from_reference@v5/skill.json
+added     tools/fetch_pseudopotential/adapter.py
+added     tools/fetch_pseudopotential/errors/execution_failure.json
+added     tools/fetch_pseudopotential/errors/invalid_input.json
+added     tools/fetch_pseudopotential/errors/unavailable.json
+added     tools/fetch_pseudopotential/tool.json
+added     tools/install_environment/adapter.py
+added     tools/install_environment/errors/execution_failure.json
+added     tools/install_environment/errors/unsupported_target.json
+added     tools/install_environment/tool.json
+added     tools/scan_h2_bond/adapter.py
+added     tools/scan_h2_bond/errors/cancelled.json
+added     tools/scan_h2_bond/errors/execution_failure.QE-RUN-003.json
+added     tools/scan_h2_bond/errors/execution_failure.json
+added     tools/scan_h2_bond/errors/invalid_input.json
+added     tools/scan_h2_bond/errors/timeout.json
+added     tools/scan_h2_bond/errors/unavailable.QE-ENV-002.json
+added     tools/scan_h2_bond/errors/unavailable.QE-PSEUDO-001.json
+added     tools/scan_h2_bond/errors/unavailable.json
+added     tools/scan_h2_bond/tool.json
+added     validation/interface/if-1.json
+added     validation/interface/if-2.json
+added     validation/scientific/sci-1.json
+removed   replay/.gitkeep
+removed   skills/.gitkeep
+removed   tools/.gitkeep
+removed   validation/interface/.gitkeep
+removed   validation/scientific/.gitkeep
+modified  .claude/skills/run-skill/library/index.md
+modified  CAPABILITIES.json
+modified  CLAUDE.md
+modified  TEMPLATE.json
+modified  envelope/parameters.json
+modified  envelope/snapshot.json
+
+--- template/.claude/skills/run-skill/library/index.md
++++ bundle/.claude/skills/run-skill/library/index.md
+@@ -1,3 +1,15 @@
+ # Library skills of this agent
+ 
+-This agent has no library skill. When a build gives it one, the skill is listed here with its page.
++Rendered by the build from the manifests under `skills/`; never edited by hand. Each skill has a page beside this file, named after it.
++
++- `harmonic_well_fit@v1` (data_analysis, none, usable): the potential constant, the rest position and the well's energy of a harmonic well fitted by least squares to energies at positions about a minimum. Page: `harmonic_well_fit@v1.md`.
++- `measurement_error@v3` (data_analysis, none, usable): the measurement error of a measured value against a reference value, and its magnitude. Page: `measurement_error@v3.md`.
++- `tolerance_from_reference@v5` (data_analysis, none, usable): a scientific task's tolerance by the person's standing rule, its branches in order: the reference's stated uncertainty; else the span of the quantity across suitable materials, as an acceptance interval; else the larger of half a unit in its last printed digit and the run's own numerical error, a two-grid estimate of that error entering three times over; for a reference the source gives as exact, the run's own error alone in that last branch. Page: `tolerance_from_reference@v5.md`.
++- `series_maximum@v3` (data_analysis, none, usable): the largest value of a sampled series and the independent variable at which it is first reached. Page: `series_maximum@v3.md`.
++- `series_settled@v5` (diagnostic, none, usable): whether a series of readings has settled, by the change between the means of its last two windows. Page: `series_settled@v5.md`.
++- `series_within_window@v3` (diagnostic, none, usable): whether the mean of a series' last readings lies inside a band, between a lowest and a highest value it is handed. Page: `series_within_window@v3.md`.
++- `standard_error_of_independent_estimates@v2` (data_analysis, none, usable): the mean of independent estimates of one quantity, their standard deviation and the standard error of the mean. Page: `standard_error_of_independent_estimates@v2.md`.
++- `power_law_exponent_along_sweep@v3` (diagnostic, none, usable): whether a quantity changes along a sweep, by the exponent of a power law fitted to it and that exponent's standard error, against a tolerance and a multiple it is handed. Page: `power_law_exponent_along_sweep@v3.md`.
++- `discretization_error_from_two_resolutions@v1` (data_analysis, none, usable): the discretization error of a run's finer result, from the same quantity at two resolutions, and the value extrapolated to zero spacing. Page: `discretization_error_from_two_resolutions@v1.md`.
++- `observed_order_of_convergence@v1` (data_analysis, none, usable): the observed order of convergence of a quantity from three runs at a constant refinement ratio. Page: `observed_order_of_convergence@v1.md`.
++- `literature_span@v2` (data_analysis, none, usable): the span of one quantity across suitable materials, branch 3 of the person's standing rule for tolerances: the interval from the lowest to the highest of the values and stated error ranges the materials give, a value stated with an uncertainty entering as the value less and plus that uncertainty, each entry naming its material and how its system compares; no span from fewer than two values and no stated range. Page: `literature_span@v2.md`.
+
+--- template/CAPABILITIES.json
++++ bundle/CAPABILITIES.json
+@@ -1,10 +1,83 @@
+ {
+   "schema_version": "0.1",
+-  "agent": null,
+-  "tool": null,
+-  "source": null,
+-  "observed": [],
++  "agent": "qe-h2-bond",
++  "tool": "Quantum ESPRESSO pw.x (PWscf)",
++  "source": "the documentation of Quantum ESPRESSO pw.x (PWscf) (INPUT_PW.html, read on the day its material card names; the release it documents is a row of values_read), as the builder read it; the document is not in this directory",
++  "observed": [
++    {
++      "claim": "pw.x reads namelists &CONTROL, &SYSTEM and &ELECTRONS and the cards ATOMIC_SPECIES, ATOMIC_POSITIONS and K_POINTS; quantities whose dimensions are not stated are in Rydberg atomic units",
++      "capability": "io_format",
++      "evidence": [
++        "INPUT_PW.html, INTRODUCTION: 'All quantities whose dimensions are not explicitly specified are in RYDBERG ATOMIC UNITS'"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "ecutwfc and ecutrho are the kinetic energy cutoffs in Ry for wavefunctions and for charge density; with ultrasoft pseudopotentials an ecutrho larger than four times ecutwfc is often desirable",
++      "capability": "parameter",
++      "evidence": [
++        "INPUT_PW.html, &SYSTEM, ecutwfc and ecutrho"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "celldm(1) is the lattice parameter in bohr; with ibrav 1 the cell is simple cubic",
++      "capability": "parameter",
++      "evidence": [
++        "INPUT_PW.html, &SYSTEM, celldm(i)"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "assume_isolated 'martyna-tuckerman' corrects the total energy and the self-consistent potential of a molecule in a 3D supercell",
++      "capability": "parameter",
++      "evidence": [
++        "INPUT_PW.html, &SYSTEM, assume_isolated"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "the species mass in ATOMIC_SPECIES is used only for molecular dynamics or damped dynamics, not in an scf run",
++      "capability": "parameter",
++      "evidence": [
++        "INPUT_PW.html, ATOMIC_SPECIES, Mass_X"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "the pseudopotential H.pbe-rrkjus_psl.1.0.0.UPF is ultrasoft, for the PBE functional, and states suggested minimum cutoffs for wavefunctions and charge density",
++      "capability": "parameter",
++      "evidence": [
++        "H.pbe-rrkjus_psl.1.0.0.UPF, PP_INFO lines 6 to 10"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "pw.x from conda-forge, at the version values_read names, ran an scf of one H2 molecule from the adapter's input, printed the total energy on its line starting with an exclamation mark, the convergence line and JOB DONE, and, given a species mass of zero, printed the mass it took from its own table",
++      "capability": "observable",
++      "evidence": [
++        "the adapter's trial under TMPDIR, pw.out of each point of a scan (evidence for the adapter only; no value of it enters a card)"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "with n_processes two, pw.x ran through the environment's mpirun and printed the number of MPI processes",
++      "capability": "execution",
++      "evidence": [
++        "the adapter's trial under TMPDIR, pw.out"
++      ],
++      "kind": "observed"
++    }
++  ],
+   "derived": [],
+   "unverified": [],
+-  "gaps": []
++  "gaps": [],
++  "held": [
++    {
++      "item": "the comparison of the fitted rest length with NIST's measured r_e as a scientific task",
++      "reason": "the standing rule needs suitable materials (published PBE values for H2) for a span; none was searched in this build"
++    }
++  ],
++  "tool_kind": "engine",
++  "engine": "quantum_espresso"
+ }
+
+--- template/CLAUDE.md
++++ bundle/CLAUDE.md
+@@ -1,6 +1,6 @@
+-# {{agent_name}} — a scientific agent
++# qe-h2-bond — a scientific agent
+ 
+-Built by the Meta-Agent from template `{{template}}` for request `{{rid}}`. You are this agent; the Meta-Agent is not here. Everything you need to run, validate and report is in this directory.
++Built by the Meta-Agent from template `agent@ef0ba0f2f60d` for request `req-qe-h2-bond-001`. You are this agent; the Meta-Agent is not here. Everything you need to run, validate and report is in this directory.
+ 
+ Two files here are not rules and not tasks. `README.md` says what each folder is, for a person who opens the directory, and `TEMPLATE.json` records the template this agent was built from. What binds you is this file.
+ 
+@@ -10,13 +10,41 @@
+ 
+ ## Role
+ 
+-{{purpose}}
++An agent that controls Quantum ESPRESSO's pw.x in words for one H2 molecule: asked to fit the H2 bond, it computes the total energy at the bond lengths the person named, fits the harmonic bond's force constant and rest length to that energy curve with a library skill, and writes both as one hand-over card in its outbox for the HOOMD-blue agent, each value with the conditions pw.x printed. It never carries the card itself: the person starts the bridge that does.
+ 
+-Science task: {{science_task}}
++Science task: the harmonic force constant and rest length of the H2 bond from PBE total energies, handed to an MD agent
+ 
+ ## Tools
+ 
+-{{tools_section}}
++### `install_environment`
++
++make this agent's own environment once, before the first scan: the package qe (Quantum ESPRESSO) at the version conda-forge offered when the agent was built, installed with pixi from conda-forge into runs/env; the runner points pixi's caches at runs/cache
++
++- input: none
++- output: `installed` (boolean), `package` (string), `platform` (string), `pw_x` (string; the path of pw.x, relative to this directory), `version` (string; the version of qe the environment holds, read from its conda-meta record)
++- errors it may return: `unavailable`, `refused_by_safety`, `execution_failure`, `unsupported_target`
++- side effects: network; idempotent: yes
++- gate: asked of every call, at src/gate.py, consulted by src/run_tool.py before the call; opened by the lab's execution permission in `envelope/execution_permission.json`, as the one install, where it lists this tool's installer and channel under `package_sources`; the installer `pixi` must already be on the computer, and putting it there is the person's step
++
++### `fetch_pseudopotential`
++
++fetch the hydrogen pseudopotential the scans use, PSLibrary's H.pbe-rrkjus_psl.1.0.0.UPF, anonymously and read-only from pseudopotentials.quantum-espresso.org into runs/inputs/pseudo, and keep it only when its bytes are the ones the builder read; a file already there with those bytes is not fetched again
++
++- input: none
++- output: `fetched` (boolean; false where the file was there already with those bytes), `file` (string; the pseudopotential's path, relative to this directory), `sha256` (string; its content hash, the one the builder read)
++- errors it may return: `unavailable`, `refused_by_safety`, `execution_failure`, `invalid_input`
++- side effects: network; idempotent: yes
++- gate: asked of every call, at src/gate.py, consulted by src/run_tool.py before the call; opened by the lab's execution permission in `envelope/execution_permission.json`, as a read of data, where it lists every host this tool fetches from (`pseudopotentials.quantum-espresso.org`) under `data_sources` with the same access
++
++### `scan_h2_bond`
++
++run one self-consistent pw.x calculation of one H2 molecule at each bond length named, in a cubic box at the gamma point with the Martyna-Tuckerman correction, each in its own folder of a new scan folder under runs/scan, and return the energy curve: each pair a bond length as given and the total energy pw.x printed for it, with the conditions pw.x printed, which must be the same for every point; a point that did not converge or did not end with JOB DONE ends the scan with an error
++
++- input: `bond_lengths` (array, bohr, required; the bond lengths to compute, each once), `box_side` (number, bohr, required; the side of the cubic box, the first of the celldm constants), `budget_s` (['number', 'null'], s; the running time each pw.x may take before the call gives up on it, counted while it runs and not while it is paused; no limit when null; left out, it is the default its contract states), `conv_thr` (number, Ry, required; the convergence threshold of the self-consistent loop), `ecutrho` (number, Ry, required; the kinetic energy cutoff for charge density and potential), `ecutwfc` (number, Ry, required; the kinetic energy cutoff for wavefunctions), `n_processes` (['integer', 'null'], count; how many MPI processes each pw.x runs on, a positive count, through the environment's mpirun; null starts pw.x directly, without mpirun; left out, it is the default its contract states), `pseudo_dir` (string; the folder that holds the pseudopotential; left out, it is `runs/inputs/pseudo`)
++- output: `box_side` (number, bohr), `energy_curve` (array, Ry; pairs of a bond length in bohr, as given, and the total energy pw.x printed for it, in Ry), `inputs` (object; the call's inputs, as given), `n_processes` (['integer', 'null'], count), `points` (array; each point's bond length, folder, total energy, iterations and convergence as pw.x printed them), `printed_conditions` (object; what pw.x printed of the conditions, the same for every point: the cutoffs, the lattice parameter, the threshold, the processes, the exchange-correlation functional, the pseudopotential file, the species mass it used and the isolated-system correction), `program_version` (string; the version pw.x printed), `run_dir` (string; the scan folder, relative to this directory)
++- errors it may return: `invalid_input`, `unavailable`, `refused_by_safety`, `execution_failure`, `timeout`, `cancelled`
++- side effects: runs_process; idempotent: no
++- gate: required, at src/gate.py, consulted by src/run_tool.py before the call; opened by the lab's execution permission in `envelope/execution_permission.json`
+ 
+ Call a tool only through the runner, which applies the gate, checks the input against the tool's contract and returns either the output or an error contract:
+ 
+@@ -32,13 +60,13 @@
+ 
+ ## Workflow
+ 
+-{{workflow_section}}
++The workflow calls the tools in this order, each through the runner and each once the one before it has answered: `install_environment`, then `fetch_pseudopotential`, then `scan_h2_bond`. The order is the one the request this agent was built for gave. A task or the person may ask for part of it, and a step may be called again on its own.
+ 
+ ## Decisions
+ 
+ A decision a run calls for while it runs (whether a quantity has settled, whether it stays in its band, how a count moves) is taken by a diagnostic library skill, on the data a tool returned and on a criterion a row of `envelope/parameters.json` hands it; never by eye and never on a criterion of your own. Where the row's value is `null`, the skill says `undecided` and the decision is the person's: you report the data and the skill's answer, and you go no further on that decision.
+ 
+-{{decisions_section}}
++The request this agent was built for named no decision of this kind. Where a run calls for one, and no diagnostic skill here takes it on a row's criterion, you report the data and say that the decision is the person's.
+ 
+ ## Procedure
+ 
+@@ -70,11 +98,20 @@
+ 
+ `write` makes one hand-over card in `outbox/` from a record of the library skill the build named, written by `src/run_skill.py --record`, and from the tool results its inputs were taken from, in their order. It refuses a record of another skill, one that did not run, one whose inputs are not those results' fields, and results that state different conditions; each value it hands over is the skill's output as recorded, in the unit and with the grade the build declared, with the conditions the results state. `receive` reads what the bridge delivered into `inbox/`, refuses a card that is not the bytes its envelope states, and writes one receipt per value in `received/`: `used` only where `envelope/handovers.json` declares the value's row and its unit converts into the row's unit through the library skill the build put here for it and the registry it carried, `envelope/units.json`, into one of the engine's own units only through a scale a person confirmed; `held` with its reason otherwise. A held value is not used, and you report it with its reason. `values` prints what each declared row has received, read off the record of its conversion: that is the value a tool's input naming the row is given, with that record as its source. `board` prints what is in the three folders.
+ 
+-{{handovers_section}}
++This agent gives, over the thread `thr-h2-bond`, to `hoomd-h2-bond` (build `hoomd-h2-bond/0001`): the harmonic bond of H2 fitted to PBE total energies, for the MD agent's bond potential. Each value is the output of `harmonic_well_fit@v1` named below, read off its record:
++- `h2_bond_force_constant`, the output `force_constant`, handed over in `Ry/bohr^2`.
++- `h2_bond_rest_length`, the output `rest_position`, handed over in `bohr`.
++The skill's inputs are taken from the tool result named with `--runs`: `points` from the result's `energy_curve`.
++The conditions each value holds under are the results' `printed_conditions`, which must be the same in every result.
+ 
+ ## What this agent does not do
+ 
+-{{must_not}}
++- Touch an instrument.
++- Reach a network host other than the package source and the pseudopotential host the lab's permission lists.
++- Write in the MD agent's folder or carry a hand-over card itself.
++- Hand over a value read off runs under different conditions, or one the fit did not give.
++- Invent a number, choose a setting or a tolerance.
++- Compute again a value pw.x itself reports.
+ 
+ - Write outside this directory, or into `envelope/safety.json`, `envelope/execution_permission.json`, `CLAUDE.md` or `.claude/`.
+ - Write into `inbox/`, which the bridge alone writes, or into `outbox/` or `received/` other than through `src/handover.py`; change a card there; or use a value handed over that `src/handover.py` did not mark `used`.
+@@ -104,12 +141,22 @@
+ 
+ An input that nothing here gives is treated the same way. When a skill needs an input and no run, source or file of this agent gives it, you supply no value for it: you say what the task needed and what would settle it, as one line in `failures.jsonl`, and report it.
+ 
+-{{skills_section}}
++- `harmonic_well_fit@v1`: The potential constant, the rest position and the energy at the minimum of a harmonic well, fitted by least squares to energies computed or measured at several positions about a minimum, with the residual and whether the minimum lies inside the points. Take it when a bond, a trap or any well is to be handed on as the harmonic potential an engine takes.
++- `measurement_error@v3`: The measurement error of a measured value against a reference value, and its magnitude. Take it whenever a measured value is compared with a reference value of the same quantity, as a scientific task's agreement is.
++- `tolerance_from_reference@v5`: A scientific task's tolerance by the person's standing rule, from the reference as its source gives it: the uncertainty the source states, otherwise the span of the quantity across suitable materials where one was derived, as an interval the measured value is to lie in, otherwise the larger of half a unit in the last digit the reference prints and the run's own numerical error where that was estimated, a two-grid estimate of it entering three times over; for a reference the source gives as exact, the run's own error alone. Take it when a scientific task compares a measured value with a reference and the person has given no tolerance for it.
++- `series_maximum@v3`: The largest value of a sampled series and the value of the independent variable at which it is first reached, with its place in the series. Take it when a run or a measurement gives a series against time, wavelength or another variable and the question is its peak and where the peak falls, as a benchmark's largest coefficient and its instant are.
++- `series_settled@v5`: Whether a series of readings has settled, by comparing the means of its last two windows against a relative tolerance it is handed. Any run or measurement that reports a quantity over time, an engine's acceptance ratio or an instrument's sample temperature alike.
++- `series_within_window@v3`: Whether the recent readings of a series lie inside a window, a lowest and a highest value it is handed, by the mean of its last readings. Any run or measurement that must keep a quantity in a band, an engine's acceptance ratio or an instrument's sample temperature alike.
++- `standard_error_of_independent_estimates@v2`: The mean of several independent estimates of one quantity, with their standard deviation and the standard error of the mean. Take it when a coefficient was fitted once per block of a run, per subset of particles, per replicate or per subset of scans, and its uncertainty is wanted.
++- `power_law_exponent_along_sweep@v3`: Whether a quantity changes along a sweep of another, by the exponent of a power law fitted through it and that exponent's standard error, judged against a tolerance and a multiple it is handed. Take it when a person asks whether something changes with size, with a setting or with time, a diffusivity along the particles' diameters or a peak's width along the integration time alike.
++- `discretization_error_from_two_resolutions@v1`: The discretization error of a run's finer result, estimated from the same quantity at two resolutions and the scheme's order of convergence, with the value extrapolated to zero spacing. Take it when a run was made at two resolutions of a mesh, a grid or a time step and its own numerical error is wanted, as the tolerance rule weighs it.
++- `observed_order_of_convergence@v1`: The observed order of convergence of a quantity from three runs, each finer than the last by the same refinement ratio. Take it when a run's own numerical error is to be estimated from a refinement and no source gives the scheme's order, or when the order a source gives is to be checked against the runs.
++- `literature_span@v2`: The span of one quantity across suitable materials, as the person's standing rule for tolerances takes it where a reference states no uncertainty: the interval from the lowest to the highest of the values and stated error ranges that published studies of the same or a similar system and the maker's manuals give for that quantity, each entry naming its material and saying how its system compares, a value its material states with an uncertainty entering as the range that uncertainty gives about it. Take it when a result is to be judged, its reference states no uncertainty, the person gave no tolerance, and materials that give the quantity were found and read.
+ 
+ ## Subagents
+ 
+-{{subagents_section}}
++This agent has no subagents.
+ 
+ ## Seat
+ 
+-Commits from this directory are made as the seat the person assigns, in the form `{{seat_form}}`.
++Commits from this directory are made as the seat the person assigns, in the form `qe-h2-bond-<machine>-<YYYYMMDD>-<n>`.
+
+--- template/TEMPLATE.json
++++ bundle/TEMPLATE.json
+@@ -54,5 +54,163 @@
+   "order_skill": "observed_order_of_convergence@v1",
+   "engine_wait": "src/engine_wait.py",
+   "unit_skill": "unit_convert@v1",
+-  "handover_script": "src/handover.py"
++  "handover_script": "src/handover.py",
++  "builder_records": [
++    {
++      "path": "meta_agent/tasks/010",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/015",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261112-meta-macbook-20261112-1-5.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261113-meta-macbook-20261112-1-1.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261113-design-macbook-20261112-1-1.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/016",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261116-design-macbook-20261116-1-2.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261116-design-macbook-20261116-1-8.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "docs/ideas/20261116.md",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261116-design-macbook-20261116-1-9.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261116-design-macbook-20261116-1-10.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261117-design-macbook-20261116-1-1.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261117-design-macbook-20261116-1-4.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "docs/ideas/20261117.md",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261117-design-macbook-20261116-1-8.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261117-design-macbook-20261116-1-10.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/021",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/failures.jsonl",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/023",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/019",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "docs/ideas/20261118.md",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/025",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "docs/ideas/20261119.md",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/028",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/017",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/031",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    }
++  ]
+ }
+
+--- template/envelope/parameters.json
++++ bundle/envelope/parameters.json
+@@ -1,4 +1,68 @@
+ {
+-  "schema_version": "0.1",
+-  "rows": []
++  "rows": [
++    {
++      "name": "bond_lengths",
++      "value": [
++        1.3,
++        1.35,
++        1.4,
++        1.45,
++        1.5
++      ],
++      "unit": "bohr",
++      "chosen_by": "human",
++      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
++      "note": "spaced around NIST's measured r_e converted to bohr by unit_convert@v1; the spacing was this seat's inference, which the person took"
++    },
++    {
++      "name": "box_side",
++      "value": 12.0,
++      "unit": "bohr",
++      "chosen_by": "human",
++      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
++      "note": "no convergence study stands behind it"
++    },
++    {
++      "name": "ecutwfc",
++      "value": 46.0,
++      "unit": "Ry",
++      "chosen_by": "human",
++      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
++      "note": "the pseudopotential's suggested minimum for wavefunctions (mat-20261120-pslibrary-h-pbe-rrkjus-upf, PP_INFO)"
++    },
++    {
++      "name": "ecutrho",
++      "value": 221.0,
++      "unit": "Ry",
++      "chosen_by": "human",
++      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
++      "note": "the pseudopotential's suggested minimum for charge density (mat-20261120-pslibrary-h-pbe-rrkjus-upf, PP_INFO)"
++    },
++    {
++      "name": "conv_thr",
++      "value": 1e-08,
++      "unit": "Ry",
++      "chosen_by": "human",
++      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
++      "note": "no convergence study stands behind it"
++    }
++  ],
++  "builder_records": [
++    {
++      "card": "mat-20261120-pslibrary-h-pbe-rrkjus-upf",
++      "in_this_bundle": false,
++      "whose": "a card of the builder's repository, named by its id; it is not in this bundle and is not looked for here"
++    },
++    {
++      "question": 1,
++      "in_this_bundle": false,
++      "whose": "a question the builder put to the person in its intake, which is not in this bundle",
++      "asked": "The DFT agent (Quantum ESPRESSO) fits the H2 bond to pw.x energies at several bond lengths, and its scientific task needs one set of run settings that only you can choose. My recommendation: cutoffs 46 Ry and 221 Ry (the minimums the pseudopotential file suggests, the maker's statement); five bond lengths 1.30, 1.35, 1.40, 1.45 and 1.50 bohr (spaced around NIST's measured 0.74144 Å, which is 1.4011 bohr by unit_convert@v1; the spacing is my inference, not from a source); a cubic box of 12 bohr side and a convergence threshold of 1e-8 Ry (both my inference; the adapter's trial ran there, and no convergence study stands behind them). Which settings should the agent use?",
++      "answer": {
++        "verbatim": "Take the recommendation (Recommended)",
++        "date": "2026-11-20",
++        "gloss": "the button this seat wrote: cutoffs 46/221 Ry, bond lengths 1.30-1.50 bohr in steps of 0.05, box 12 bohr, conv_thr 1e-8 Ry, the box and the threshold marked as having no convergence study"
++      }
++    }
++  ]
+ }
+
+--- template/envelope/snapshot.json
++++ bundle/envelope/snapshot.json
+@@ -1,6 +1,5 @@
+ {
+-  "schema_version": "0.1",
+-  "kb_version": null,
++  "kb_version": "kb@e3b0c44298fc",
+   "entries": [],
+   "numbers": []
+ }
+

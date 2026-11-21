@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "HOOMD-RUN-INPUT-001",
+  "category": "invalid_input",
+  "message": "a value the run needs is missing or not one the contract takes",
+  "retryable": false,
+  "remediation": {
+    "action": "give every value; bond_k and bond_r0 are what src/handover.py values prints for their rows, and a row no hand-over filled is the person's to give"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "rows": [
+    {
+      "name": "bond_lengths",
+      "value": [
+        1.3,
+        1.35,
+        1.4,
+        1.45,
+        1.5
+      ],
+      "unit": "bohr",
+      "chosen_by": "human",
+      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+      "note": "spaced around NIST's measured r_e converted to bohr by unit_convert@v1; the spacing was this seat's inference, which the person took"
+    },
+    {
+      "name": "box_side",
+      "value": 12.0,
+      "unit": "bohr",
+      "chosen_by": "human",
+      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+      "note": "no convergence study stands behind it"
+    },
+    {
+      "name": "ecutwfc",
+      "value": 46.0,
+      "unit": "Ry",
+      "chosen_by": "human",
+      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+      "note": "the pseudopotential's suggested minimum for wavefunctions (mat-20261120-pslibrary-h-pbe-rrkjus-upf, PP_INFO)"
+    },
+    {
+      "name": "ecutrho",
+      "value": 221.0,
+      "unit": "Ry",
+      "chosen_by": "human",
+      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+      "note": "the pseudopotential's suggested minimum for charge density (mat-20261120-pslibrary-h-pbe-rrkjus-upf, PP_INFO)"
+    },
+    {
+      "name": "conv_thr",
+      "value": 1e-08,
+      "unit": "Ry",
+      "chosen_by": "human",
+      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+      "note": "no convergence study stands behind it"
+    }
+  ],
+  "builder_records": [
+    {
+      "card": "mat-20261120-pslibrary-h-pbe-rrkjus-upf",
+      "in_this_bundle": false,
+      "whose": "a card of the builder's repository, named by its id; it is not in this bundle and is not looked for here"
+    },
+    {
+      "question": 1,
+      "in_this_bundle": false,
+      "whose": "a question the builder put to the person in its intake, which is not in this bundle",
+      "asked": "The DFT agent (Quantum ESPRESSO) fits the H2 bond to pw.x energies at several bond lengths, and its scientific task needs one set of run settings that only you can choose. My recommendation: cutoffs 46 Ry and 221 Ry (the minimums the pseudopotential file suggests, the maker's statement); five bond lengths 1.30, 1.35, 1.40, 1.45 and 1.50 bohr (spaced around NIST's measured 0.74144 Å, which is 1.4011 bohr by unit_convert@v1; the spacing is my inference, not from a source); a cubic box of 12 bohr side and a convergence threshold of 1e-8 Ry (both my inference; the adapter's trial ran there, and no convergence study stands behind them). Which settings should the agent use?",
+      "answer": {
+        "verbatim": "Take the recommendation (Recommended)",
+        "date": "2026-11-20",
+        "gloss": "the button this seat wrote: cutoffs 46/221 Ry, bond lengths 1.30-1.50 bohr in steps of 0.05, box 12 bohr, conv_thr 1e-8 Ry, the box and the threshold marked as having no convergence study"
+      }
+    }
+  ]
+}

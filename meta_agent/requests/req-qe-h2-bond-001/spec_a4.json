@@ -1,0 +1,144 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-qe-h2-bond-001-a4",
+  "rid": "req-qe-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:15:32Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [
+    {
+      "what": "a prior case for this agent's parameters",
+      "searched": [
+        "meta_agent/cases/index.json (223 case(s) read)",
+        "level 1, the signature: science_task=the harmonic force constant and rest length of the h2 bond from pbe total energies, handed to an md agent; executes=engine; engine=quantum_espresso; methods=dft; parameter_names=bond_lengths, box_side, budget_s, conv_thr, ecutrho, ecutwfc, h2_bond_force_constant, h2_bond_rest_length, n_processes, pseudo_dir",
+        "level 2 not searched: the signature states no cause_class"
+      ],
+      "reason": "no case shares an identifying field with the signature",
+      "requires": "a case written from this agent's first incidents, validation failures or the person's interventions"
+    }
+  ],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A4",
+  "title": "Parameters",
+  "content": {
+    "rows": [
+      {
+        "name": "bond_lengths",
+        "value": [
+          1.3,
+          1.35,
+          1.4,
+          1.45,
+          1.5
+        ],
+        "unit": "bohr",
+        "chosen_by": "human",
+        "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+        "note": "spaced around NIST's measured r_e converted to bohr by unit_convert@v1; the spacing was this seat's inference, which the person took"
+      },
+      {
+        "name": "box_side",
+        "value": 12.0,
+        "unit": "bohr",
+        "chosen_by": "human",
+        "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+        "note": "no convergence study stands behind it"
+      },
+      {
+        "name": "ecutwfc",
+        "value": 46.0,
+        "unit": "Ry",
+        "chosen_by": "human",
+        "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+        "note": "the pseudopotential's suggested minimum for wavefunctions (mat-20261120-pslibrary-h-pbe-rrkjus-upf, PP_INFO)"
+      },
+      {
+        "name": "ecutrho",
+        "value": 221.0,
+        "unit": "Ry",
+        "chosen_by": "human",
+        "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+        "note": "the pseudopotential's suggested minimum for charge density (mat-20261120-pslibrary-h-pbe-rrkjus-upf, PP_INFO)"
+      },
+      {
+        "name": "conv_thr",
+        "value": 1e-08,
+        "unit": "Ry",
+        "chosen_by": "human",
+        "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+        "note": "no convergence study stands behind it"
+      },
+      {
+        "name": "h2_bond_force_constant",
+        "value": null,
+        "unit": "Ry/bohr^2",
+        "handover": {
+          "gives": {
+            "thread": "thr-h2-bond",
+            "to_agent": "hoomd-h2-bond",
+            "to_build": "hoomd-h2-bond/0001",
+            "skill": "harmonic_well_fit@v1",
+            "record_inputs": {
+              "points": "energy_curve"
+            },
+            "record_inputs_from": "one_result",
+            "conditions_field": "printed_conditions",
+            "conditions": {
+              "engine": "Quantum ESPRESSO pw.x from conda-forge's qe",
+              "system": "one H2 molecule at the centre of a cubic box, gamma point, Martyna-Tuckerman correction",
+              "fit": "harmonic_well_fit@v1 over the energy curve of one scan"
+            },
+            "accept_states": [
+              "fitted"
+            ],
+            "what": "the harmonic bond of H2 fitted to PBE total energies, for the MD agent's bond potential",
+            "output": "force_constant"
+          }
+        }
+      },
+      {
+        "name": "h2_bond_rest_length",
+        "value": null,
+        "unit": "bohr",
+        "handover": {
+          "gives": {
+            "thread": "thr-h2-bond",
+            "to_agent": "hoomd-h2-bond",
+            "to_build": "hoomd-h2-bond/0001",
+            "skill": "harmonic_well_fit@v1",
+            "record_inputs": {
+              "points": "energy_curve"
+            },
+            "record_inputs_from": "one_result",
+            "conditions_field": "printed_conditions",
+            "conditions": {
+              "engine": "Quantum ESPRESSO pw.x from conda-forge's qe",
+              "system": "one H2 molecule at the centre of a cubic box, gamma point, Martyna-Tuckerman correction",
+              "fit": "harmonic_well_fit@v1 over the energy curve of one scan"
+            },
+            "accept_states": [
+              "fitted"
+            ],
+            "what": "the harmonic bond of H2 fitted to PBE total energies, for the MD agent's bond potential",
+            "output": "rest_position"
+          }
+        }
+      }
+    ],
+    "note": "rows come from the parameter sheet; a tool without physical parameters has none"
+  },
+  "reads": [
+    "goal-qe-h2-bond-001",
+    "tp-qe-h2-bond-001",
+    "kb-brief-qe-h2-bond-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

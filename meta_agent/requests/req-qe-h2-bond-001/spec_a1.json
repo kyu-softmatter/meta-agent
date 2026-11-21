@@ -1,0 +1,51 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-qe-h2-bond-001-a1",
+  "rid": "req-qe-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:15:32Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A1",
+  "title": "Boundary",
+  "content": {
+    "directory": "meta_agent/builds/qe-h2-bond/0001/bundle",
+    "writes": [
+      "failures.jsonl",
+      "runs/"
+    ],
+    "reads": [
+      "envelope/",
+      "tools/",
+      "validation/",
+      "replay/",
+      "tasks/"
+    ],
+    "forbidden": [
+      "envelope/safety.json",
+      "envelope/execution_permission.json",
+      "CLAUDE.md",
+      ".claude/",
+      "any path outside the bundle",
+      "network hosts",
+      "credentials"
+    ],
+    "seat": "Quantum ESPRESSO pw.x (PWscf)-<machine>-<YYYYMMDD>-<n>",
+    "tier": 0
+  },
+  "reads": [
+    "goal-qe-h2-bond-001",
+    "tp-qe-h2-bond-001",
+    "kb-brief-qe-h2-bond-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

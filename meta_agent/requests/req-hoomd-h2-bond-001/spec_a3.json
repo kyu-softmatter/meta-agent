@@ -1,0 +1,35 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-hoomd-h2-bond-001-a3",
+  "rid": "req-hoomd-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:17:02Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A3",
+  "title": "Knowledge",
+  "content": {
+    "snapshot": [],
+    "kb_version": "kb@e3b0c44298fc",
+    "gaps": [
+      "what HOOMD-blue's units are: three base units the person names, every other derived from them",
+      "the harmonic bond's form and its parameters",
+      "what constant-volume dynamics with a thermostat does"
+    ]
+  },
+  "reads": [
+    "goal-hoomd-h2-bond-001",
+    "tp-hoomd-h2-bond-001",
+    "kb-brief-hoomd-h2-bond-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

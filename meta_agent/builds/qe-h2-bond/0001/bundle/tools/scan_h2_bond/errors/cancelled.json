@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "SCAN_H2_BOND-STOPPED",
+  "category": "cancelled",
+  "message": "a pw.x run was stopped from outside",
+  "retryable": true,
+  "remediation": {
+    "action": "call again with the same input to start the scan over"
+  }
+}

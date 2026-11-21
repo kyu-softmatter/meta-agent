@@ -1,0 +1,50 @@
+{
+  "card": "knowledge_brief",
+  "schema_version": "0.1",
+  "id": "kb-brief-hoomd-h2-bond-001",
+  "rid": "req-hoomd-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:17:02Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "validated",
+  "need": [
+    "what HOOMD-blue's units are: three base units the person names, every other derived from them",
+    "the harmonic bond's form and its parameters",
+    "what constant-volume dynamics with a thermostat does"
+  ],
+  "kb_version": "kb@e3b0c44298fc",
+  "entries": [],
+  "gaps": [
+    {
+      "what": "what HOOMD-blue's units are: three base units the person names, every other derived from them",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    },
+    {
+      "what": "the harmonic bond's form and its parameters",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    },
+    {
+      "what": "what constant-volume dynamics with a thermostat does",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    }
+  ]
+}

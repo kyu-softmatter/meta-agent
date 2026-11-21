@@ -1,0 +1,24 @@
+This folder is a bundle: a scientific agent built by a separate builder, the Meta-Agent, as a self-contained folder. It is the `hoomd-h2-bond` agent, which runs HOOMD-blue (molecular dynamics) on H2 molecules held together by a harmonic bond, and takes the bond's constants from another agent, a DFT agent in a folder of its own beside this one. The folder was copied out of the builder's repository into a place with no other project around it, and the builder is not here. The person has carried what the DFT agent handed over into this folder. The purpose of this run is to see whether a person can make the agent do its work by asking in their own words, with nobody else to ask. So the account of what was in your context, what you loaded, what you could not find and what was unclear matters as much as what you ran; say what you met as you met it, and do not assume the text is right because it is there.
+
+`CLAUDE.md` in this folder says who you are and what binds you. Work only from what this folder carries, and only inside it.
+
+A person says to you:
+
+"DFT 에이전트가 보낸 결합 상수를 방금 넘겨놨어. 받아서 어떤 값을 쓸 수 있는지, 네 단위로 얼마인지 알려줘. MD는 아직 돌리지 마."
+
+(I just carried over the bond constants the DFT agent sent. Take them, and tell me which values you can use and what they are in your units. Do not run the MD yet.)
+
+Do it as this agent does it. Where something this agent needs is not here, or something the person asks cannot be done by this agent's tools, do not supply it yourself and do not go around them: say what it is, what would settle it, and whose step it is.
+
+This folder is a copy made for this run and is not under version control: there is nothing to commit, and what your instructions allow a session to write, you may write. Write nothing they do not allow.
+
+Done when: you have answered the person as this agent answers.
+
+Your final message is your report, ten lines or fewer plus your answer to the person:
+
+```
+task     <the person's request>
+landed   <every file you wrote or changed, or nothing>
+ran      <each command, and what it printed>
+open     <what is not done, and whose step it is>
+```

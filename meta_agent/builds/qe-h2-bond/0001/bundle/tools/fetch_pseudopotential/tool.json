@@ -1,0 +1,53 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "fetch_pseudopotential",
+  "description": "fetch the hydrogen pseudopotential the scans use, PSLibrary's H.pbe-rrkjus_psl.1.0.0.UPF, anonymously and read-only from pseudopotentials.quantum-espresso.org into runs/inputs/pseudo, and keep it only when its bytes are the ones the builder read; a file already there with those bytes is not fetched again",
+  "inputs": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "file": {
+        "type": "string",
+        "description": "the pseudopotential's path, relative to this directory"
+      },
+      "sha256": {
+        "type": "string",
+        "description": "its content hash, the one the builder read"
+      },
+      "fetched": {
+        "type": "boolean",
+        "description": "false where the file was there already with those bytes"
+      }
+    },
+    "required": [
+      "file",
+      "sha256",
+      "fetched"
+    ]
+  },
+  "errors": [
+    "unavailable",
+    "refused_by_safety",
+    "execution_failure",
+    "invalid_input"
+  ],
+  "side_effects": "network",
+  "safety_gate": {
+    "required": true,
+    "place": "src/gate.py, consulted by src/run_tool.py before the call",
+    "opens_by": "execution_permission"
+  },
+  "idempotent": true,
+  "timeout_s": null,
+  "fetches_from": [
+    {
+      "host": "pseudopotentials.quantum-espresso.org",
+      "access": "read_only_anonymous"
+    }
+  ]
+}
