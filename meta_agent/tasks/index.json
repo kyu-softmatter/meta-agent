@@ -407,12 +407,13 @@
     {
       "id": "032",
       "file": "032-who-ran-the-bridge-and-two-held-comparisons.md",
-      "status": "open",
+      "status": "done",
       "roles": [
         "design"
       ],
       "depends_on": [],
-      "opened": "2026-11-20"
+      "opened": "2026-11-20",
+      "done_commit": "e678716"
     }
   ]
 }
