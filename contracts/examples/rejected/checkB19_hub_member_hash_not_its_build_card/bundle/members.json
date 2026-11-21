@@ -1,0 +1,30 @@
+{
+  "card": "hub_members",
+  "schema_version": "0.1",
+  "id": "members-h2-bond-hub",
+  "revision": 1,
+  "author": "builder",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "hub": {
+    "agent": "h2-bond-hub",
+    "build": "h2-bond-hub/0001"
+  },
+  "members": [
+    {
+      "agent": "qe-h2-bond",
+      "build": "qe-h2-bond/0003",
+      "folder": "../qe-h2-bond-0003",
+      "build_card_sha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    {
+      "agent": "hoomd-h2-bond",
+      "build": "hoomd-h2-bond/0003",
+      "folder": "../hoomd-h2-bond-0003",
+      "build_card_sha256": "sha256:78712ff0dd9f928ea5829bd56c04360c15f12fc9d0095529704616ebce7f860e"
+    }
+  ]
+}

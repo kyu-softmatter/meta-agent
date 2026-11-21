@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(members.json)",
+      "Write(members.json)",
+      "Edit(TEMPLATE.json)",
+      "Write(TEMPLATE.json)",
+      "Edit(inbox/**)",
+      "Write(inbox/**)",
+      "Edit(src/**)",
+      "Write(src/**)",
+      "Edit(.claude/**)",
+      "Write(.claude/**)",
+      "Bash(git push*)",
+      "PowerShell(git push*)"
+    ]
+  }
+}

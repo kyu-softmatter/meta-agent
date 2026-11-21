@@ -1,0 +1,3 @@
+check B19
+
+The hub's settings no longer deny a session's edit of members.json, which the builder writes.

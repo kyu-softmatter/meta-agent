@@ -1317,7 +1317,7 @@ def check17(cards, c, report, tree):
 # B checks: one built bundle (plan.md 5.1 S5, 8). Run with --bundle PATH, on every
 # bundle a build card points at, and on <fixture>/bundle/ under --expect-fail.
 # ----------------------------------------------------------------------------
-B_IMPLEMENTED = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B11", "B15", "B16", "B17", "B18"]  # a plain list literal: a test of the meta role reads it from this source
+B_IMPLEMENTED = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B11", "B15", "B16", "B17", "B18", "B19"]  # a plain list literal: a test of the meta role reads it from this source
 BUNDLE_FILES = ["CLAUDE.md", ".claude/settings.json", "CAPABILITIES.json", "envelope/safety.json",
                 "envelope/snapshot.json", "envelope/parameters.json", "failures.jsonl",
                 "src/gate.py", "src/run_tool.py", "src/replay.py", "src/validate_tasks.py"]
@@ -1835,11 +1835,126 @@ def checkB17(bundle, label, report):
         report.fail("B17", relpath, msg)
 
 
-def run_bundle_checks(bundle, c, report, checks, knowledge_root, label=None):
+# ----------------------------------------------------------------------------
+# B19: a bundle of the hub template (meta_agent/tasks/033; the person, 2026-11-20, 'A hub bundle (Recommended)')
+# ----------------------------------------------------------------------------
+HUB_FILES = ["CLAUDE.md", "README.md", "TEMPLATE.json", "members.json", "failures.jsonl", ".claude/settings.json",
+             ".claude/skills/run-hub/SKILL.md", "src/hub.py", "src/bridge.py"]
+HUB_DIRS = ["question", "assignments", "inbox"]
+HUB_ABSENT = ["tools", "skills", "envelope", "src/run_tool.py", "src/gate.py", "src/run_skill.py"]
+HUB_DENIED = ["members.json", "TEMPLATE.json", "inbox/**", "src/**", ".claude/**"]
+
+
+def is_hub_bundle(bundle):
+    try:
+        t = load_json(os.path.join(bundle, "TEMPLATE.json"))
+    except (OSError, ValueError, UnicodeDecodeError):
+        return False
+    return isinstance(t, dict) and t.get("template") == "hub"
+
+
+def _build_of(build):
+    """<agent>/<NNNN> of a build card, read off its bundle_path meta_agent/builds/<agent>/<NNNN>/bundle."""
+    parts = str((build or {}).get("bundle_path") or "").split("/")
+    return "/".join(parts[-3:-1]) if len(parts) >= 3 and parts[-1] == "bundle" else None
+
+
+def _in_tree(tree, relpath):
+    for base in [b for b in (tree, REPO) if b]:
+        p = os.path.join(base, *relpath.split("/"))
+        if os.path.exists(p):
+            return p
+    return None
+
+
+def checkB19(bundle, label, report, c, build=None, tree=None):
+    """A hub bundle carries no instrument or engine tool, no library skill, no envelope and no runner; it carries
+    its members, its question, assignments and inbox folders, one session skill run-hub, src/hub.py and a copy of
+    the bridge; its CLAUDE.md holds no number; its settings deny a session's edit of what the builder and the
+    bridge write; members.json names the hub's own build and members whose build cards it hashes (tasks/033, at
+    the meta role's ask 20261120-meta-macbook-20261120-4-1)."""
+    for f in HUB_FILES:
+        if not os.path.isfile(os.path.join(bundle, *f.split("/"))):
+            report.fail("B19", label, "a hub carries %s; it is missing" % f)
+    for d in HUB_DIRS:
+        if not os.path.isdir(os.path.join(bundle, d)):
+            report.fail("B19", label, "a hub carries %s/; it is missing" % d)
+    for x in HUB_ABSENT:
+        if os.path.exists(os.path.join(bundle, *x.split("/"))):
+            report.fail("B19", label, "a hub carries no %s: it reaches no instrument or engine and computes nothing" % x)
+    claude = os.path.join(bundle, "CLAUDE.md")
+    if os.path.isfile(claude):
+        text = open(claude, encoding="utf-8").read()
+        if "{{" in text:
+            report.fail("B19", label, "CLAUDE.md still carries a template placeholder")
+        for num in bundle_text_numbers(text):
+            report.fail("B19", label, "CLAUDE.md: number %s; a hub's CLAUDE.md holds no number, its values being in "
+                                      "its members' cards" % num)
+    settings = bundle_json(bundle, ".claude/settings.json", report, "B19") \
+        if os.path.isfile(os.path.join(bundle, ".claude", "settings.json")) else None
+    deny = set(((settings or {}).get("permissions") or {}).get("deny") or []) if isinstance(settings, dict) else set()
+    if settings is not None:
+        for p in HUB_DENIED:
+            for tool in ("Edit", "Write"):
+                if "%s(%s)" % (tool, p) not in deny:
+                    report.fail("B19", label, ".claude/settings.json does not deny %s(%s)" % (tool, p))
+    sdir = os.path.join(bundle, ".claude", "skills")
+    for d in session_skill_rules.skill_dirs(sdir) if os.path.isdir(sdir) else []:
+        rp = ".claude/skills/%s" % os.path.basename(d)
+        if os.path.isfile(os.path.join(d, "skill.json")):
+            report.fail("B19", rp, "a library skill sits where a session loads skills, and a hub carries none")
+            continue
+        for msg in session_skill_rules.problems(bundle, d):
+            report.fail("B19", rp, msg)
+    mpath = os.path.join(bundle, "members.json")
+    if os.path.isfile(mpath):
+        try:
+            members = load_json(mpath)
+        except (ValueError, UnicodeDecodeError):
+            members = None
+        errors = list(c.validator("hub_members").iter_errors(members)) if isinstance(members, dict) else ["not an object"]
+        for e in errors[:3]:
+            report.fail("B19", label, "members.json is not a hub_members card: %s" % (getattr(e, "message", e),))
+        if isinstance(members, dict) and not errors:
+            own = _build_of(build)
+            if own and (members.get("hub") or {}).get("build") != own:
+                report.fail("B19", label, "members.json names the hub's build %r; this is build %s" % (
+                    (members.get("hub") or {}).get("build"), own))
+            for m in members.get("members") or []:
+                want = "../" + str(m.get("build", "")).replace("/", "-")
+                if m.get("folder") != want:
+                    report.fail("B19", label, "member %s: its folder is %s, the name a run gives the bundle of build "
+                                              "%s; members.json says %r" % (m.get("agent"), want, m.get("build"), m.get("folder")))
+                card = _in_tree(tree, "meta_agent/builds/%s/build.json" % m.get("build"))
+                if card is None:
+                    report.pending("B19", label, "member %s: the build card of %s is not in the judged tree, so its "
+                                                 "hash is not compared" % (m.get("agent"), m.get("build")))
+                elif "sha256:" + sha256_of(card) != m.get("build_card_sha256"):
+                    report.fail("B19", label, "member %s: build_card_sha256 is not the hash of %s's build card" % (
+                        m.get("agent"), m.get("build")))
+    copy = os.path.join(bundle, "src", "bridge.py")
+    if os.path.isfile(copy):
+        tv = (build or {}).get("template_version")
+        ref = _in_tree(tree, "meta_agent/templates/%s/src/bridge.py" % tv) if tv else None
+        ref = ref or _in_tree(tree, "contracts/tools/bridge.py")
+        if ref and sha256_of(ref) != sha256_of(copy):
+            report.fail("B19", label, "src/bridge.py is not the bytes of %s: the hub carries the bridge unchanged" %
+                        ("its template's src/bridge.py" if tv and "templates" in ref else "contracts/tools/bridge.py"))
+
+
+def run_bundle_checks(bundle, c, report, checks, knowledge_root, label=None, build=None, tree=None):
     bundle = os.path.abspath(bundle)
     label = label or rel(bundle, REPO)
     if not os.path.isdir(bundle):
         report.fail("B1", label, "bundle directory does not exist")
+        report.ran.update(ch for ch in checks if isinstance(ch, str))
+        return
+    if is_hub_bundle(bundle):
+        # a hub is judged by B19 and B2 in place of B1-B18 (tasks/033)
+        if "B2" in checks:
+            checkB2(bundle, label, report)
+        if "B19" in checks:
+            checkB19(bundle, label, report, c, build, tree)
         report.ran.update(ch for ch in checks if isinstance(ch, str))
         return
     if "B1" in checks:
@@ -1893,7 +2008,7 @@ def bundles_of(cards, tree):
         bp = data["bundle_path"]
         candidates = [os.path.join(tree, *bp.split("/")), os.path.join(REPO, *bp.split("/"))]
         found = next((p for p in candidates if os.path.isdir(p)), candidates[0])
-        out.append((rel(path, tree) + " -> " + bp, found))
+        out.append((rel(path, tree) + " -> " + bp, found, data))
     return out
 
 
@@ -2225,8 +2340,8 @@ def main(argv=None):
     if 6 in checks and tree == REPO:
         check6_table(c.seats, report, "contracts/seats.json")
     bundles = bundles_of(cards, tree)
-    for label, path in bundles:
-        run_bundle_checks(path, c, report, checks, knowledge_root_for(tree), label=label)
+    for label, path, build in bundles:
+        run_bundle_checks(path, c, report, checks, knowledge_root_for(tree), label=label, build=build, tree=tree)
     n_changes = n_commits = None
     if args.staged and (6 in checks or 7 in checks or 20 in checks or 21 in checks):
         n_changes = run_staged(c, report, checks)
