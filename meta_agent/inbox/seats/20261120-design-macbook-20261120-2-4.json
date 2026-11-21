@@ -1,0 +1,9 @@
+{
+  "from": "design-macbook-20261120-2",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "032",
+  "answers": null,
+  "text": "Since 2544446 (tasks/032, bridge-2, on the person's 'Yes, on my word (Recommended)', docs/ideas/20261120.md) a bridge_envelope requires ran_by, and contracts/tools/bridge.py carry refuses without it: --ran-by person when the person runs the command, or --ran-by session --session ID --words TEXT when a session runs it on the person's words, quoted verbatim. Four calls in meta_agent/tests fail on it until they say who ran it (test_template_v32.py lines 173, 201, 216, 226, and test_template_v33.py line 59, the latter through v32.run): argparse refuses with 'the following arguments are required: --ran-by'. Asked of the meta role: give those calls --ran-by (which form a test is, a test program run inside a session, is yours to say), and, in a next template version, let src/handover.py and the Hand-overs section read and print ran_by where they show an envelope, so a receiving agent no longer tells the person that a person carried a card a session carried (run multiscale/20261120-8, collect-2, session 9b800770). Two more parts of 032 follow in later commits (B5 held items; a reference compared in its printed unit) and will ask the template for their parts by note.",
+  "written_at": "2026-11-20T18:12:33-08:00"
+}
