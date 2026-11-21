@@ -1,0 +1,29 @@
+{
+  "card": "handover_receipt",
+  "schema_version": "0.1",
+  "id": "rc-eta0-001",
+  "revision": 1,
+  "author": "rheology-engine-couette",
+  "created_at": "2026-11-20T12:30:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "envelope": "inbox/thr-fixture-oil/r1_envelope.json",
+  "payload_sha256": "sha256:69032f18bbad0e22ffbd45b67010764fb2523bdd458deb37108957f554d5ceb3",
+  "handover": "ho-zero-shear-viscosity-001",
+  "name": "zero_shear_viscosity",
+  "row": "eta0",
+  "declared_in": "envelope/handovers.json",
+  "conversion": {
+    "from_unit": "Pa.s",
+    "to_unit": "mPa.s",
+    "factor": 1000.0,
+    "by": "unit_convert@v1"
+  },
+  "state": "used"
+}

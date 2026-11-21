@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "note": "Authoritative unit registry, in soft-matter-agents' shape: multiplicative, si_factor converts to SI base units, dim is the dimension vector (L length, T time, M mass, Th temperature, A angle, N count, I electric current). Offset units (Celsius, Fahrenheit) are not registered: temperature is carried in kelvin and a reading given in Celsius is noted on the number. Rheology units (Pa, Pa.s, 1/s, N.m, rad/s) are here from the start because the first testbed is the rheometer and a rheology engine (plan.md 10). kDa is 1000 g/mol, so its si_factor is 1.0 kg/mol. Added 2026-11-16 (tasks/016), asked twice by sessions that built an engine agent: engine_length, for an engine's own lengths, and id, for a number that names and does not measure; neither has an si_factor. Added 2026-11-17 (tasks/016, run 20261117-4): engine_length^3, a volume in the engine's own units. Added 2026-11-17 (tasks/016, the person's word relayed from the clone of run 20261117-3): engine_energy, engine_time, engine_mass, engine_drag, engine_viscosity and engine_diffusivity, an engine's own units of each, none with an si_factor. engine_length^2 added the same day, for a mean squared displacement. Added 2026-11-17 (tasks/021, failure em-4; the paper-reproduction clone of run 20261117-11 asked for a speed): 1/engine_time, 1/engine_length and engine_length/engine_time, none with an si_factor. Added 2026-11-17 (tasks/018, dft-1, on the person's word '여기서 진행'): eV and Ry, the energies Quantum ESPRESSO's pw.x prints, each with its factor to joules read from NIST's CODATA 2022 values and cited in its own note. Added 2026-11-17 (tasks/017, failure gmx-1, run molecular-dynamics/20261117-16): ps, bar, 1/bar, kJ/(mol.nm), kJ/(mol.nm^2) and e, each with its exact factor.",
+  "note": "Authoritative unit registry, in soft-matter-agents' shape: multiplicative, si_factor converts to SI base units, dim is the dimension vector (L length, T time, M mass, Th temperature, A angle, N count, I electric current). Offset units (Celsius, Fahrenheit) are not registered: temperature is carried in kelvin and a reading given in Celsius is noted on the number. Rheology units (Pa, Pa.s, 1/s, N.m, rad/s) are here from the start because the first testbed is the rheometer and a rheology engine (plan.md 10). kDa is 1000 g/mol, so its si_factor is 1.0 kg/mol. Added 2026-11-16 (tasks/016), asked twice by sessions that built an engine agent: engine_length, for an engine's own lengths, and id, for a number that names and does not measure; neither has an si_factor. Added 2026-11-17 (tasks/016, run 20261117-4): engine_length^3, a volume in the engine's own units. Added 2026-11-17 (tasks/016, the person's word relayed from the clone of run 20261117-3): engine_energy, engine_time, engine_mass, engine_drag, engine_viscosity and engine_diffusivity, an engine's own units of each, none with an si_factor. engine_length^2 added the same day, for a mean squared displacement. Added 2026-11-17 (tasks/021, failure em-4; the paper-reproduction clone of run 20261117-11 asked for a speed): 1/engine_time, 1/engine_length and engine_length/engine_time, none with an si_factor. Added 2026-11-17 (tasks/018, dft-1, on the person's word '여기서 진행'): eV and Ry, the energies Quantum ESPRESSO's pw.x prints, each with its factor to joules read from NIST's CODATA 2022 values and cited in its own note. Added 2026-11-17 (tasks/017, failure gmx-1, run molecular-dynamics/20261117-16): ps, bar, 1/bar, kJ/(mol.nm), kJ/(mol.nm^2) and e, each with its exact factor. Added 2026-11-20 (tasks/031, the bridge; failure dftmd-1, run multiscale/20261120-3): Angstrom, bohr (CODATA 2022, cited in its note) and 1/cm; Ry/bohr, Ry/bohr^2 and eV/Angstrom^2, each a derived unit that names its parts under derived_from, its si_factor and dim computed from them by contracts/tools/units.py and recomputed by its check; and engine_energy/engine_length^2, with no si_factor. A value goes from one unit to another only through contracts/tools/units.py, between units of one dimension; into an engine's own unit only through a scale the person confirmed.",
   "dimensions": {
     "L": "length",
     "T": "time",
@@ -563,6 +563,72 @@
         "T": 1
       },
       "note": "the elementary charge, a charge in coulombs exact by the SI's definition (the same constant as the eV's entry, read from NIST's CODATA 2022 values); molecular engines state partial charges in it"
+    },
+    "Angstrom": {
+      "si_factor": 1e-10,
+      "dim": {
+        "L": 1
+      },
+      "note": "the angstrom, 10^-10 m exactly by its definition; published bond lengths and HOOMD-blue's length scales are often stated in it (tasks/031, dftmd-1)"
+    },
+    "bohr": {
+      "si_factor": 5.29177210544e-11,
+      "dim": {
+        "L": 1
+      },
+      "note": "the Bohr radius, the atomic unit of length, read from NIST's CODATA 2022 recommended values (https://physics.nist.gov/cgi-bin/cuu/Value?bohrrada0, read 2026-11-20): 5.291 772 105 44(82) x 10^-11 m, relative standard uncertainty 1.6e-10. Quantum ESPRESSO's pw.x states positions and the cell in it (tasks/031, dftmd-1)"
+    },
+    "1/cm": {
+      "si_factor": 100.0,
+      "dim": {
+        "L": -1
+      },
+      "note": "the wavenumber, exactly 100 per metre; spectroscopic constants of a diatomic molecule (a vibrational frequency) are published in it (tasks/031, dftmd-1)"
+    },
+    "Ry/bohr": {
+      "si_factor": 4.119361751920623e-08,
+      "dim": {
+        "M": 1,
+        "L": 1,
+        "T": -2
+      },
+      "derived_from": {
+        "Ry": 1,
+        "bohr": -1
+      },
+      "note": "a force in atomic units, as Quantum ESPRESSO's pw.x prints forces; its factor and dimension are its parts', recomputed by contracts/tools/units.py check (tasks/031, dftmd-1)"
+    },
+    "Ry/bohr^2": {
+      "si_factor": 778.4465524669654,
+      "dim": {
+        "M": 1,
+        "T": -2
+      },
+      "derived_from": {
+        "Ry": 1,
+        "bohr": -2
+      },
+      "note": "a force constant in atomic units, the curvature of a pw.x energy along a bond; its factor and dimension are its parts', recomputed by contracts/tools/units.py check (tasks/031, dftmd-1)"
+    },
+    "eV/Angstrom^2": {
+      "si_factor": 16.02176634,
+      "dim": {
+        "M": 1,
+        "T": -2
+      },
+      "derived_from": {
+        "eV": 1,
+        "Angstrom": -2
+      },
+      "note": "a force constant in electron volts per square angstrom, the unit an MD engine's bond constant stands for when its energy scale is the eV and its length scale the angstrom; its factor and dimension are its parts', recomputed by contracts/tools/units.py check (tasks/031)"
+    },
+    "engine_energy/engine_length^2": {
+      "si_factor": null,
+      "dim": {
+        "M": 1,
+        "T": -2
+      },
+      "note": "a force constant in an engine's own self-consistent units (HOOMD-blue's md.bond.Harmonic k); no factor until a scale the person confirmed for the bundle says which registered unit it stands for (tasks/031)"
     }
   }
 }

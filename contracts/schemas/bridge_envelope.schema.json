@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/bridge_envelope.schema.json",
+  "title": "bridge_envelope",
+  "description": "What the bridge writes beside the copy of a hand-over card in the receiver's inbox/<thread>/ (meta_agent/tasks/031; SMA's envelope, docs/reference/sma_read_20261108.md 6). It authors nothing: numbers is empty, author is bridge, the payload is the producer's file byte for byte and its hash is stated here. A card crosses only on the person's word (the person, 2026-11-20, 'Only on my word').",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "bridge_envelope"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "const": "bridge"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "thread": {
+      "$ref": "common.schema.json#/$defs/id",
+      "description": "the thread between the two agents; the receiver's inbox/<thread>/ is named by it"
+    },
+    "round": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "from": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent",
+        "build"
+      ],
+      "properties": {
+        "agent": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the agent's name, as its bundle's CLAUDE.md names it"
+        },
+        "build": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the build that made the bundle, <name>/<NNNN> (its build card)"
+        }
+      },
+      "description": "the producing agent, as the payload names it"
+    },
+    "to": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent",
+        "build"
+      ],
+      "properties": {
+        "agent": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the agent's name, as its bundle's CLAUDE.md names it"
+        },
+        "build": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the build that made the bundle, <name>/<NNNN> (its build card)"
+        }
+      },
+      "description": "the receiving agent, as the payload names it"
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file",
+        "card",
+        "id",
+        "sha256",
+        "origin"
+      ],
+      "properties": {
+        "file": {
+          "type": "string",
+          "pattern": "^r[0-9]+_[A-Za-z0-9._-]+\\.json$",
+          "description": "the copy's file name beside this envelope"
+        },
+        "card": {
+          "const": "handover"
+        },
+        "id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256",
+          "description": "of the bytes of the producer's file, which the copy must equal"
+        },
+        "origin": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the producer's file, relative to the producing bundle (outbox/<name>.json)"
+        }
+      }
+    },
+    "trigger": {
+      "enum": [
+        "human"
+      ],
+      "description": "the person's word; no other trigger is settled"
+    },
+    "released_by": {
+      "const": "human"
+    },
+    "released_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "thread",
+    "round",
+    "from",
+    "to",
+    "payload",
+    "trigger",
+    "released_by",
+    "released_at"
+  ],
+  "additionalProperties": false
+}

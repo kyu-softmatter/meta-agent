@@ -14,7 +14,7 @@
 
 **Must not:** build either bundle; run either engine; let the bridge change, merge, convert or author a card; let a receiving bundle use a value its build did not declare; infer a policy, a permission or an engine's unit scale; push.
 
-## Design (proposed by `design-macbook-20261120-1`, 2026-11-20; the choices marked "put to the person" wait for their word)
+## Design (proposed by `design-macbook-20261120-1`, 2026-11-20; as landed, it is the section after this one)
 
 ### Three cards
 
@@ -30,9 +30,26 @@ A received value is converted only through `contracts/units.json`: the factor is
 
 Proposed: an envelope stands in a folder `inbox/<thread>/` named by its `thread`, its payload beside it with the hash it states (unchanged); the payload is a `handover` whose `thread`, `from`, `to` and `degraded` are the envelope's; every value handed over has conditions and a unit with an `si_factor`; a receipt's factor is the registry's, between units of one dimension; a `used` receipt names its declaration and, into an engine's unit, a scale confirmed by the person; a `used` receipt names an envelope that is there. Each part lands with a rejected fixture under `contracts/examples/rejected/check25_…`.
 
-### Put to the person
+### Put to the person, and answered (2026-11-20)
 
-- where the bridge runs and who starts it;
-- when a card crosses (SMA: a result crosses only on the person's word);
-- whether a receiving bundle uses a declared value without asking, or holds every received value until the person opens it;
-- the second kind of fixture, not DFT→MD.
+Asked by this seat with buttons it wrote, each with its recommendation marked; the person chose the recommended button every time (`../../docs/ideas/20261120.md`, "The bridge: four choices, answered"): where it runs, "Small tool, I start it (Recommended)"; when a card crosses, "Only on my word (Recommended)"; what a receiving agent does, "Use if declared (Recommended)"; the second fixture kind, "Rheometer → rheology engine (Recommended)".
+
+## The design part, landed (2026-11-20, `design-macbook-20261120-1`)
+
+- **Cards:** `contracts/schemas/handover.schema.json`, `bridge_envelope.schema.json` (`author: bridge`, `numbers` empty, `trigger: human`, `released_by: human`) and `handover_receipt.schema.json` (a held receipt says why; a used one does not). plan.md 6.1 lists them.
+- **The bridge:** `contracts/tools/bridge.py carry --card <producer>/outbox/<name>.json --to <receiver> --released-by human` copies the card byte for byte to `inbox/<thread>/r<N>_<name>.json` and writes `r<N>_envelope.json` beside it, round N one more than the thread's last; it refuses anything but a `handover` in an `outbox/`, and refuses without `--released-by human`. `bridge.py board <bundle>` reads a bundle's outbox, inbox and receipts and says whether each copy is the bytes its envelope states. The person starts it.
+- **Units (dftmd-1):** `contracts/units.json` gains `Angstrom`, `bohr` (CODATA 2022, read off NIST's page on 2026-11-20 and cited in its note), `1/cm`, the derived `Ry/bohr`, `Ry/bohr^2` and `eV/Angstrom^2` (each names its parts under `derived_from`, its factor computed from them by `contracts/tools/units.py`, which recomputes it in `check`), and `engine_energy/engine_length^2`, with no factor. `units.py factor` gives `si_factor(from) / si_factor(to)` between units of one dimension and nothing else; into an engine's own unit only with `--stands-for`, a registered unit of its dimension, which in a bundle is a scale the person confirmed.
+- **The declaration:** a receiving build lists the rows that take a hand-over in `envelope/handovers.json`, `takes[]` of `{row, name, thread, from_agent}`. A receipt is `used` only for a row listed there; anything else is `held` with a reason.
+- **Check 25** (plan.md 8): as proposed above, in `contracts/validate.py`. Its rejected fixtures, ten under `contracts/examples/rejected/check25_…`, and two of check 1 on the new schemas (`check01_bridge_envelope_that_authors`, `check01_handover_receipt_held_without_a_reason`), drawn from both kinds. All ten check-25 fixtures were watched accepted with check 25 left out, then rejected with it, each for the reason it was written for.
+- **Two kinds:** `contracts/examples/bridge/dft-md/` (Quantum ESPRESSO → HOOMD-blue, the H2 bond's force constant and rest length, both used into HOOMD-blue's own units through scales marked as the person's) and `contracts/examples/bridge/rheometer-engine/` (a rheometer → a rheology engine, a measured viscosity used in the engine's unit, the sample's temperature held as undeclared). Their inbox copies and envelopes were made by running `bridge.py carry` on these fixture folders, so the envelope's `released_by: human` there is a fixture value: this seat ran the tool. Tests: `contracts/tests/test_units.py` and `test_bridge.py`, on both kinds.
+- **Not changed:** the agent template. A build adds `outbox/`, `inbox/`, `received/` and `envelope/handovers.json` as it adds tools; if the first builds show the template should carry them, or that a bundle's own gate should run check 25, that is a new template version, asked of the design role by a note.
+
+## The meta part (for a `meta-…` seat)
+
+**Goal:** two bundles that use the bridge, the first case of this task. A Quantum ESPRESSO bundle whose library skill fits the H2 bond's force constant and rest length from pw.x energies and writes them as a `handover` in its `outbox/`, each value with its conditions and in a unit with an `si_factor`; and a HOOMD-blue bundle that declares `bond_k` and `bond_r0` in `envelope/handovers.json`, converts a received value only by a library skill that reads the registry the bundle carries, writes one `handover_receipt` per value in `received/`, and holds a value whose engine scale the person has not confirmed.
+
+**Inputs:** this card; `../../contracts/examples/bridge/dft-md/` as the shape of both bundles' folders; `../../docs/ideas/20261120.md`; `../failures.jsonl` `dftmd-1` to `dftmd-9`; the six sources the person registered for the DFT→MD test.
+
+**Done when (read off a run):** both builds pass their gates; `python contracts/validate.py <a folder holding copies of both bundles> --checks 1,2,25` passes after the person has carried the hand-over with `bridge.py`; the HOOMD-blue bundle's scales of `engine_energy` and `engine_length` were put to the person and their answer is recorded; a test of the two bundles standing alone was made as `../../.claude/skills/test-outside-the-repository/SKILL.md` says.
+
+**Must not:** carry a card itself (the person starts the bridge); infer an engine's unit scale; convert a value by hand or outside the registry; let either bundle write in the other's folder; run an engine but as the trial of an adapter (meta_agent/CLAUDE.md, Tier 0); change `../../contracts/`, which is the design role's (ask by a note); push.

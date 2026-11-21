@@ -1,0 +1,58 @@
+{
+  "card": "handover",
+  "schema_version": "0.1",
+  "id": "ho-zero-shear-viscosity-001",
+  "revision": 1,
+  "author": "rheometer-fluid",
+  "created_at": "2026-11-20T12:00:00Z",
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "thread": "thr-fixture-oil",
+  "from": {
+    "agent": "rheometer-fluid",
+    "build": "rheometer-fluid/0001"
+  },
+  "to": {
+    "agent": "rheology-engine-couette",
+    "build": "rheology-engine-couette/0001"
+  },
+  "numbers": [
+    {
+      "name": "zero_shear_viscosity",
+      "value": 0.89,
+      "unit": "Pa.s",
+      "source": "measured:run-fixture-0003",
+      "grade": "E1",
+      "value_kind": "measured",
+      "uncertainty": null,
+      "conditions": {
+        "instrument": "rheometer, cone and plate",
+        "sample": "a Newtonian fixture oil",
+        "procedure": "steady shear sweep, the plateau at low rates"
+      }
+    },
+    {
+      "name": "sample_temperature",
+      "value": 298.15,
+      "unit": "K",
+      "source": "measured:run-fixture-0003",
+      "grade": "E1",
+      "value_kind": "measured",
+      "uncertainty": null,
+      "conditions": {
+        "instrument": "rheometer, Peltier plate",
+        "procedure": "held through the sweep"
+      }
+    }
+  ],
+  "produced_by": {
+    "skill": "zero_shear_plateau@v1",
+    "record": "runs/0003/record.json"
+  },
+  "what": "the fluid's viscosity, measured, for the engine's planar Couette flow of the same fluid"
+}

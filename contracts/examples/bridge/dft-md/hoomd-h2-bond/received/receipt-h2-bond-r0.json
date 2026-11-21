@@ -1,0 +1,38 @@
+{
+  "card": "handover_receipt",
+  "schema_version": "0.1",
+  "id": "rc-h2-bond-r0-001",
+  "revision": 1,
+  "author": "hoomd-h2-bond",
+  "created_at": "2026-11-20T12:30:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "envelope": "inbox/thr-h2-bond/r1_envelope.json",
+  "payload_sha256": "sha256:e1a3778529a7fb6bb8eba523b70bc8e5de1a00c11aa2df26eb1947c5d59b8a4c",
+  "handover": "ho-h2-bond-001",
+  "name": "h2_bond_rest_length",
+  "row": "bond_r0",
+  "declared_in": "envelope/handovers.json",
+  "conversion": {
+    "from_unit": "bohr",
+    "to_unit": "engine_length",
+    "factor": 0.5291772105439999,
+    "by": "unit_convert@v1",
+    "engine_scale": {
+      "unit": "engine_length",
+      "stands_for": "Angstrom",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "evidence": [
+        "fixture: the person's word for this bundle's length scale"
+      ]
+    }
+  },
+  "state": "used"
+}

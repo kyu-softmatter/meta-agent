@@ -1,0 +1,11 @@
+{
+  "note": "the rows this build declares as taking a hand-over (meta_agent/tasks/031); a value for any other row is held",
+  "takes": [
+    {
+      "row": "eta0",
+      "name": "zero_shear_viscosity",
+      "thread": "thr-fixture-oil",
+      "from_agent": "rheometer-fluid"
+    }
+  ]
+}

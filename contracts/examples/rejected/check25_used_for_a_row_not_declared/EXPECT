@@ -1,0 +1,3 @@
+check 25
+
+The engine agent uses the sample temperature for its row temperature, which its envelope/handovers.json does not declare as taking a hand-over; undeclared is held.

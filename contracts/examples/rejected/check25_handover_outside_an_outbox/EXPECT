@@ -1,0 +1,3 @@
+check 25
+
+The DFT agent's hand-over is written in its runs/ folder, not in its outbox/, where the bridge takes it from.

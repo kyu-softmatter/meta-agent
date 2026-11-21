@@ -1,0 +1,31 @@
+{
+  "card": "bridge_envelope",
+  "schema_version": "0.1",
+  "id": "env-thr-h2-bond-r1",
+  "revision": 1,
+  "author": "bridge",
+  "created_at": "2026-11-21T00:22:11Z",
+  "numbers": [],
+  "degraded": [],
+  "status": "draft",
+  "thread": "thr-h2-bond",
+  "round": 1,
+  "from": {
+    "agent": "qe-h2-bond",
+    "build": "qe-h2-bond/0001"
+  },
+  "to": {
+    "agent": "hoomd-h2-bond",
+    "build": "hoomd-h2-bond/0001"
+  },
+  "payload": {
+    "file": "r1_handover-h2-bond.json",
+    "card": "handover",
+    "id": "ho-h2-bond-001",
+    "sha256": "sha256:af3f93ea38c7ee728d4f7c0f777d31ab967f5adec8f618c36ef931290a03d193",
+    "origin": "outbox/handover-h2-bond.json"
+  },
+  "trigger": "human",
+  "released_by": "human",
+  "released_at": "2026-11-21T00:22:11Z"
+}

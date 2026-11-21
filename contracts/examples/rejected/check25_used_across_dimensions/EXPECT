@@ -1,0 +1,3 @@
+check 25
+
+The engine agent uses the viscosity, in Pa.s, as a kinematic viscosity in m^2/s, a unit of another dimension; no factor goes through the registry.

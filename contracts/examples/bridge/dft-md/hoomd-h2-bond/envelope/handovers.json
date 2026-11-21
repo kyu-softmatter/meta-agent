@@ -1,0 +1,17 @@
+{
+  "note": "the rows this build declares as taking a hand-over (meta_agent/tasks/031); a value for any other row is held",
+  "takes": [
+    {
+      "row": "bond_k",
+      "name": "h2_bond_force_constant",
+      "thread": "thr-h2-bond",
+      "from_agent": "qe-h2-bond"
+    },
+    {
+      "row": "bond_r0",
+      "name": "h2_bond_rest_length",
+      "thread": "thr-h2-bond",
+      "from_agent": "qe-h2-bond"
+    }
+  ]
+}

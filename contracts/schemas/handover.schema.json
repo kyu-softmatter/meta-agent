@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meta-agent.invalid/schemas/handover.schema.json",
+  "title": "handover",
+  "description": "A value one built agent produces for another, written by the producing bundle in its own outbox/ and carried unchanged by the bridge into the receiver's inbox/<thread>/ (plan.md 10, M8; meta_agent/tasks/031). Every number is a number of plan.md 6.3 whose grade check 2 derives; check 25 asks that each has the conditions it holds under and a unit with an si_factor.",
+  "type": "object",
+  "properties": {
+    "card": {
+      "const": "handover"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "supersedes": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "superseded_by": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "common.schema.json#/$defs/author"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "numbers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "common.schema.json#/$defs/number"
+      }
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "kb_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "kb_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ref"
+      }
+    },
+    "case_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gap"
+      }
+    },
+    "degraded": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "note": {
+      "type": "string"
+    },
+    "thread": {
+      "$ref": "common.schema.json#/$defs/id",
+      "description": "the thread between the two agents; the receiver's inbox/<thread>/ is named by it"
+    },
+    "from": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent",
+        "build"
+      ],
+      "properties": {
+        "agent": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the agent's name, as its bundle's CLAUDE.md names it"
+        },
+        "build": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the build that made the bundle, <name>/<NNNN> (its build card)"
+        }
+      },
+      "description": "the producing agent"
+    },
+    "to": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent",
+        "build"
+      ],
+      "properties": {
+        "agent": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the agent's name, as its bundle's CLAUDE.md names it"
+        },
+        "build": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the build that made the bundle, <name>/<NNNN> (its build card)"
+        }
+      },
+      "description": "the receiving agent"
+    },
+    "produced_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "skill",
+        "record"
+      ],
+      "description": "what the values were read off: the library skill and the run record of the producing bundle",
+      "properties": {
+        "skill": {
+          "type": "string",
+          "minLength": 1,
+          "description": "<skill id>@v<n>"
+        },
+        "record": {
+          "type": "string",
+          "minLength": 1,
+          "description": "the run record's path inside the producing bundle"
+        }
+      }
+    },
+    "what": {
+      "type": "string",
+      "minLength": 1,
+      "description": "what the values are for, in words; no number"
+    }
+  },
+  "required": [
+    "card",
+    "schema_version",
+    "id",
+    "revision",
+    "author",
+    "created_at",
+    "numbers",
+    "degraded",
+    "status",
+    "thread",
+    "from",
+    "to",
+    "produced_by",
+    "what"
+  ],
+  "additionalProperties": false
+}

@@ -36,7 +36,7 @@ GIT_REPO = os.environ.get(GATE_ENV) or REPO  # where git is asked; differs from 
 EXPORTED = bool(os.environ.get(GATE_ENV))
 SCHEMAS = os.path.join(HERE, "schemas")
 REJECTED = os.path.join(HERE, "examples", "rejected")
-IMPLEMENTED = [1, 2, 3, 4, 5, 6, 7, 8, 11, 15, 16, 17, 18, 19, 20, 21, 22, 24]
+IMPLEMENTED = [1, 2, 3, 4, 5, 6, 7, 8, 11, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25]
 SKIP_DIRS = {".git", ".agent", ".venv", ".pixi", "node_modules", "__pycache__"}
 
 def judge_the_commits_tree(argv):
@@ -86,6 +86,7 @@ import skills as skill_rules  # noqa: E402  (contracts/tools/skills.py: what a s
 import session_skills as session_skill_rules  # noqa: E402  (contracts/tools/session_skills.py: a procedure a session loads)
 import sheets as sheet_rules  # noqa: E402  (contracts/tools/sheets.py: a sheet's bounds recomputed, its safety rows)
 import tool_contracts as tool_contract_rules  # noqa: E402  (contracts/tools/tool_contracts.py: a contract's required names)
+import units as unit_rules  # noqa: E402  (contracts/tools/units.py: a factor between two registered units)
 
 try:
     import jsonschema
@@ -784,6 +785,149 @@ def check24(tree, c, report, include_rejected=False):
 # ----------------------------------------------------------------------------
 # check 11: tool_profile claims
 # ----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# check 25: hand-overs between two built agents and the bridge that carries them (meta_agent/tasks/031)
+# ----------------------------------------------------------------------------
+def _agents_equal(a, b):
+    return isinstance(a, dict) and isinstance(b, dict) and \
+        (a.get("agent"), a.get("build")) == (b.get("agent"), b.get("build"))
+
+
+def check25(cards, c, report, tree):
+    """A hand-over is written in its bundle's outbox/ and carried, byte for byte, into the receiver's
+    inbox/<thread>/ beside an envelope that states its hash; each value it hands over has the conditions it
+    holds under and a unit with an si_factor; a receipt's factor is the registry's, and a value is used only
+    for a row the receiving build declared, into an engine's own unit only through a scale the person
+    confirmed (the person, 2026-11-20: 'Small tool, I start it', 'Only on my word', 'Use if declared')."""
+    envelopes_by_dir = {}
+    for path, data in cards:
+        if card_name(data) == "bridge_envelope":
+            envelopes_by_dir.setdefault(os.path.dirname(os.path.abspath(path)), []).append(data)
+    for path, data in cards:
+        name = card_name(data)
+        r = rel(path, tree)
+        here = os.path.dirname(os.path.abspath(path))
+        if name == "handover":
+            for i, n in enumerate(data.get("numbers") or []):
+                if not isinstance(n, dict):
+                    continue
+                label = "numbers[%d] (%s)" % (i, n.get("name"))
+                if not isinstance(n.get("conditions"), dict) or not n["conditions"]:
+                    report.fail(25, r, "%s: a value handed over states the conditions it holds under" % label)
+                u = c.units.get(n.get("unit"))
+                if isinstance(u, dict) and u.get("si_factor") is None:
+                    report.fail(25, r, "%s: unit %r has no si_factor; an engine's own unit means nothing "
+                                       "outside its engine" % (label, n.get("unit")))
+            parent = os.path.basename(here)
+            in_inbox = os.path.basename(os.path.dirname(here)) == "inbox" and parent == data.get("thread")
+            if in_inbox:
+                if not any(isinstance(e.get("payload"), dict) and e["payload"].get("file") == os.path.basename(path)
+                           for e in envelopes_by_dir.get(here, [])):
+                    report.fail(25, r, "a hand-over in inbox/%s/ arrived with no envelope naming it" % parent)
+            elif parent != "outbox":
+                report.fail(25, r, "a hand-over is written in its bundle's outbox/, or carried into inbox/<thread>/ "
+                                   "with its envelope")
+        elif name == "bridge_envelope":
+            thread = data.get("thread")
+            if os.path.basename(here) != thread or os.path.basename(os.path.dirname(here)) != "inbox":
+                report.fail(25, r, "an envelope stands in inbox/%s/, the folder its thread names" % thread)
+            rnd = data.get("round")
+            if isinstance(rnd, int) and os.path.basename(path) != "r%d_envelope.json" % rnd:
+                report.fail(25, r, "the envelope of round %s is r%s_envelope.json" % (rnd, rnd))
+            pl = data.get("payload") if isinstance(data.get("payload"), dict) else {}
+            pfile = pl.get("file")
+            if not isinstance(pfile, str):
+                continue
+            if isinstance(rnd, int) and not pfile.startswith("r%d_" % rnd):
+                report.fail(25, r, "the payload of round %s is named r%s_<name>.json" % (rnd, rnd))
+            ppath = os.path.join(here, pfile)
+            if not os.path.isfile(ppath):
+                report.fail(25, r, "the payload %s is not beside its envelope" % pfile)
+                continue
+            if "sha256:" + sha256_of(ppath) != pl.get("sha256"):
+                report.fail(25, r, "the payload %s is not the bytes the envelope states: it changed after the "
+                                   "producer wrote it" % pfile)
+            try:
+                p = load_json(ppath)
+            except (ValueError, UnicodeDecodeError):
+                continue
+            if not isinstance(p, dict) or p.get("card") != "handover":
+                report.fail(25, r, "the payload %s is not a handover card" % pfile)
+                continue
+            if p.get("id") != pl.get("id"):
+                report.fail(25, r, "the payload's id %r is not the envelope's %r" % (p.get("id"), pl.get("id")))
+            if p.get("thread") != thread:
+                report.fail(25, r, "the payload's thread %r is not the envelope's %r" % (p.get("thread"), thread))
+            for side in ("from", "to"):
+                if not _agents_equal(p.get(side), data.get(side)):
+                    report.fail(25, r, "the payload's %r is not the envelope's" % side)
+            if sorted(p.get("degraded") or []) != sorted(data.get("degraded") or []):
+                report.fail(25, r, "the envelope drops or adds to the payload's degraded %s" % (p.get("degraded") or []))
+        elif name == "handover_receipt":
+            if os.path.basename(here) != "received":
+                report.fail(25, r, "a receipt is written in its bundle's received/")
+                continue
+            root = os.path.dirname(here)
+            env_rel = data.get("envelope") or ""
+            env_path = os.path.join(root, *env_rel.split("/"))
+            if not os.path.isfile(env_path):
+                report.fail(25, r, "the receipt names the envelope %s, which is not there" % env_rel)
+                continue
+            try:
+                env = load_json(env_path)
+                pl = env.get("payload") or {}
+                payload = load_json(os.path.join(os.path.dirname(env_path), pl.get("file", "")))
+            except (ValueError, UnicodeDecodeError, OSError, AttributeError):
+                report.fail(25, r, "the envelope %s or its payload cannot be read" % env_rel)
+                continue
+            if pl.get("sha256") != data.get("payload_sha256") or pl.get("id") != data.get("handover"):
+                report.fail(25, r, "the receipt's hand-over (%s, %s) is not the one its envelope carries" % (
+                    data.get("handover"), data.get("payload_sha256")))
+                continue
+            number = next((n for n in payload.get("numbers") or []
+                           if isinstance(n, dict) and n.get("name") == data.get("name")), None)
+            conv = data.get("conversion") or {}
+            if number is None:
+                report.fail(25, r, "the hand-over carries no value named %r" % data.get("name"))
+                continue
+            if number.get("unit") != conv.get("from_unit"):
+                report.fail(25, r, "the conversion starts from %r; the value handed over is in %r" % (
+                    conv.get("from_unit"), number.get("unit")))
+            scale = conv.get("engine_scale") if isinstance(conv.get("engine_scale"), dict) else None
+            to_u = c.units.get(conv.get("to_unit"))
+            engine_target = isinstance(to_u, dict) and to_u.get("si_factor") is None
+            if scale is not None and scale.get("unit") != conv.get("to_unit"):
+                report.fail(25, r, "the scale is of %r, not of the unit converted into, %r" % (
+                    scale.get("unit"), conv.get("to_unit")))
+            f, why = unit_rules.factor(c.units, conv.get("from_unit"), conv.get("to_unit"),
+                                       scale.get("stands_for") if (scale and engine_target) else None)
+            stated = conv.get("factor")
+            if f is not None and stated is not None and not unit_rules.factor_matches(stated, f):
+                report.fail(25, r, "the factor %r is not the registry's, %r (contracts/tools/units.py)" % (stated, f))
+            if data.get("state") != "used":
+                continue
+            if f is None:
+                report.fail(25, r, "used, though no factor goes through the registry: %s" % why)
+            if stated is None:
+                report.fail(25, r, "used with no factor stated")
+            if engine_target and not (scale and scale.get("state") == "confirmed" and scale.get("confirmed_by") == "human"):
+                report.fail(25, r, "used into %r, an engine's own unit, without a scale the person confirmed; "
+                                   "an inferred scale is a recommendation and the value is held" % conv.get("to_unit"))
+            decl = data.get("declared_in")
+            declared = False
+            if isinstance(decl, str) and decl:
+                dpath = os.path.join(root, *decl.split("/"))
+                try:
+                    takes = load_json(dpath).get("takes") or []
+                    declared = any(isinstance(t, dict) and t.get("row") == data.get("row") and t.get("name") == data.get("name")
+                                   and t.get("thread") == env.get("thread") for t in takes)
+                except (ValueError, UnicodeDecodeError, OSError, AttributeError):
+                    declared = False
+            if not declared:
+                report.fail(25, r, "used for row %r, which the receiving build does not declare as taking %r over "
+                                   "thread %r; undeclared is held (MP10)" % (data.get("row"), data.get("name"), env.get("thread")))
+
+
 def permission_ok(p):
     return isinstance(p, dict) and p.get("granted_by") == "human" and all(
         isinstance(p.get(k), str) and p.get(k) for k in ("scope", "basis", "date"))
@@ -1791,6 +1935,8 @@ def run_static(tree, c, report, checks, include_rejected=False):
         check22(tree, c, report, include_rejected)
     if 24 in checks:
         check24(tree, c, report, include_rejected)
+    if 25 in checks:
+        check25(cards, c, report, tree)
     report.ran.update(ch for ch in checks if isinstance(ch, int))
     card_dirs = {os.path.dirname(p) for p, _ in cards}
     return len(cards), sum(len(v) for d, v in md_by_dir.items() if d in card_dirs), cards
