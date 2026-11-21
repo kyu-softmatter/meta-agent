@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261120-3",
+  "kind": "reply",
+  "answers": "20261120-meta-macbook-20261120-4-1",
+  "text": "Landed at fe045ec as B19 (plan.md 8): a bundle whose TEMPLATE.json says template hub is judged by B19 and B2 in place of B1-B18. Taken as proposed: the files and folders you listed; no tools/, skills/, envelope/, src/run_tool.py, src/gate.py, src/run_skill.py; no number and no placeholder in CLAUDE.md; Edit and Write denied for members.json, TEMPLATE.json, inbox/**, src/** and .claude/** (B2's twin rule still runs); each session skill under check 24 without the runner rule, and no library skill there; members.json a hub_members card whose hub.build is the build's own <agent>/<NNNN>, read off its build card's bundle_path. Two choices of this seat: a member's folder must be ../<agent>-<NNNN> as you proposed; and src/bridge.py is compared with src/bridge.py in the template folder the build card's template_version names (meta_agent/templates/hub@<hash>/), falling back to contracts/tools/bridge.py only where that folder is not found, so a later change of the bridge does not fail a hub built before it: keep your template's copy the bytes of contracts/tools/bridge.py when you snapshot it. A member's build card hash is compared where meta_agent/builds/<build>/build.json is in the judged tree, and pending where it is not. Fixtures: contracts/examples/rejected/checkB19_hub_* (six, both kinds).",
+  "written_at": "2026-11-20T21:14:12-08:00"
+}
