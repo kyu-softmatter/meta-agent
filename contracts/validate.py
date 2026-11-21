@@ -304,7 +304,7 @@ def check2(cards, c, report, tree):
 # ----------------------------------------------------------------------------
 # check 3: every number in an md file exists in a card of the same folder
 # ----------------------------------------------------------------------------
-NUM_RE = re.compile(r"(?<![\w./:+-])[-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?(?![\w/:%-]|\.\d)")   # 7.2.2, a version, is an identifier
+NUM_RE = re.compile(r"(?<![\w./:+@-])[-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?(?![\w/:%-]|\.\d)")   # 7.2.2, a version, and name@digits, a template's name (dftmd-15), are identifiers
 STRIP_RES = [
     re.compile(r"https?://\S+"),
     re.compile(r"^\s{0,3}#+\s+[\d.]+\s", re.M),                 # numbered headings

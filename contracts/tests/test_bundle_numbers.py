@@ -75,6 +75,13 @@ class B6(unittest.TestCase):
         self.assertEqual(self.judge("The firmware is at version 2.14 (versions 2.1 and before are refused).\n"), [])
         self.assertEqual(len(self.judge("packaging 26.3\n")), 1)      # beside a name alone it is read
 
+    def test_a_name_at_digits_is_an_identifier(self):
+        # dftmd-15: a template's name is agent@<the first twelve hex digits of its tree's hash>, all decimal digits about
+        # once in five hundred trees; two unrelated kinds of name: a template and a pinned package of an instrument's driver
+        self.assertEqual(self.judge("Built from template `agent@072803779032` for request `req-qe-h2-bond-001`.\n"), [])
+        self.assertEqual(self.judge("The driver is pinned as pyvisa@1013 in its lock file.\n"), [])
+        self.assertEqual(len(self.judge("Built from template `agent@072803779032` at 300 K.\n")), 1)   # a number beside it is still read
+
 
 class Check3(unittest.TestCase):
     """A page shows where a claim was read; a numeral of a locus is the card's."""
