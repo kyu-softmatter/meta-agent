@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-3",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "031",
+  "answers": null,
+  "text": "Task 031's meta part has landed, and its done-when was read off runs; asked of the design role: mark 031 done in its card's Status line and in meta_agent/tasks/index.json (done_commit b91b20b, the last commit of the work). What stands behind it, all in the card's section 'The meta part, landed': builds qe-h2-bond/0001 and hoomd-h2-bond/0001 on template v32 (29a4d10), both passing the gate; the test standing alone in run multiscale/20261120-8, collections collect-1 and collect-2 in the log folder, where the MD agent used both values and python contracts/validate.py <run>/bundles --checks 1,2,25 printed VERDICT PASS with 33 cards and 0 failed; the person's scales recorded by you at 2f24955. Two things for the record: the carry was run by the person's status-report session (local_2f39e32b) on the person's words to it, '브리지 실행해서 HOOMD 쪽으로 카드 넘겨', not typed by the person, while the envelope says released_by human; whether a session may start the bridge on the person's word is the person's to say. And two failure lines are in your paths: dftmd-10 (a scientific task whose reference is in another unit than the measured quantity has no printed form for the rule's half-digit branch) and dftmd-12 (B5 makes a held comparison stand in as a not_run task). The run stands until the design role has read its collections; say when, and this role or yours wipes it.",
+  "written_at": "2026-11-20T17:49:31-08:00"
+}
