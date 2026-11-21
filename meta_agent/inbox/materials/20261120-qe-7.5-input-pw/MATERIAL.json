@@ -1,0 +1,73 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261120-qe-7.5-input-pw",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T00:46:57Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "Fetched anonymously and read-only, no login, by meta-macbook-20261120-3 for meta_agent/tasks/031 (the meta part). Read for the QE agent of the H2 bond (req-qe-h2-bond-001): ecutwfc and ecutrho (kinetic energy cutoffs in Ry; ecutrho larger than four times ecutwfc is often desirable with ultrasoft pseudopotentials), celldm(1) (the lattice parameter in bohr), assume_isolated ('martyna-tuckerman' corrects energy and potential of a molecule in a 3D supercell), conv_thr, and the introduction's sentence that quantities without stated dimensions are in Rydberg atomic units. The page documents release 7.5 while conda-forge offers 7.6 for this computer (failure line dftmd-8): a statement read here holds for 7.6 only where the adapter's trial shows it.",
+  "kind": "api_doc",
+  "about": {
+    "name": {
+      "value": "pw.x / PWscf input file description, Quantum ESPRESSO, the version the page states (7.5)",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261120-qe-7.5-input-pw",
+          "locus": "the page's head: 'Program: pw.x / PWscf / Quantum ESPRESSO (version: 7.5)'"
+        }
+      ]
+    },
+    "role": {
+      "value": "engine",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261120-qe-7.5-input-pw",
+          "locus": "the page describes the input of pw.x, the plane-wave program of the engine"
+        }
+      ]
+    },
+    "methods": {
+      "value": [
+        "density functional theory"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261120-qe-7.5-input-pw",
+          "locus": "&SYSTEM and &ELECTRONS: ecutwfc, ecutrho, input_dft, conv_thr, the variables of a plane-wave DFT calculation"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://www.quantum-espresso.org/Doc/INPUT_PW.html"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-21T00:46:57Z",
+    "content_hash": "sha256:6778f93ea5bd088cd3f07ef0e686767f4cbb669f7394595ff7116e083d8c9d41",
+    "archived": null
+  },
+  "added_by": "human",
+  "added_at": "2026-11-20",
+  "entry_path": "links_md",
+  "license_note": {
+    "value": null,
+    "state": "unknown"
+  },
+  "may_quote": true,
+  "state": "registered",
+  "state_reason": "the person, 2026-11-20: asked whether the six sources an earlier session found for the DFT-to-MD test may be registered and quoted, they answered \"물론\" (\"of course\"); recorded in docs/ideas/20261120.md, section 'The DFT→MD clone's four questions, answered'",
+  "questions": [
+    "license_note: the page states no licence that this seat read; the person's word on quotation is recorded, the licence stays unknown until the person names it."
+  ]
+}

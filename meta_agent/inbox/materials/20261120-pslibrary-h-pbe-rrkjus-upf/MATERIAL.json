@@ -1,0 +1,73 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261120-pslibrary-h-pbe-rrkjus-upf",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T00:46:57Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "Fetched anonymously and read-only, no login, by meta-macbook-20261120-3 for meta_agent/tasks/031 (the meta part). Read for req-qe-h2-bond-001: the functional (PBE), the type (ultrasoft), and the generator's suggested minimum cutoffs for wavefunctions and charge density, PP_INFO lines 9 and 10, read as the maker's statement (spec). The QE agent fetches the same file by this URL and checks it against this content hash, which its build carries.",
+  "kind": "dataset",
+  "about": {
+    "name": {
+      "value": "H.pbe-rrkjus_psl.1.0.0.UPF, a PBE ultrasoft pseudopotential of hydrogen from PSLibrary 1.0.0",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261120-pslibrary-h-pbe-rrkjus-upf",
+          "locus": "the file's PP_INFO: 'Author: Lorenzo Paulatto', 'Pseudopotential type: USPP', 'Element: H', 'Functional: PBE'"
+        }
+      ]
+    },
+    "role": {
+      "value": "engine",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261120-pslibrary-h-pbe-rrkjus-upf",
+          "locus": "an input file of pw.x, read by the engine for each hydrogen atom"
+        }
+      ]
+    },
+    "methods": {
+      "value": [
+        "density functional theory"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261120-pslibrary-h-pbe-rrkjus-upf",
+          "locus": "PP_HEADER: functional=\"PBE\", pseudo_type=\"USPP\""
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://pseudopotentials.quantum-espresso.org/upf_files/H.pbe-rrkjus_psl.1.0.0.UPF"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-21T00:46:57Z",
+    "content_hash": "sha256:e03cd098d78e3eeb37cc9f790690f5827234cbc019fb621913391689a9ddacf7",
+    "archived": null
+  },
+  "added_by": "human",
+  "added_at": "2026-11-20",
+  "entry_path": "links_md",
+  "license_note": {
+    "value": null,
+    "state": "unknown"
+  },
+  "may_quote": true,
+  "state": "registered",
+  "state_reason": "the person, 2026-11-20: asked whether the six sources an earlier session found for the DFT-to-MD test may be registered and quoted, they answered \"물론\" (\"of course\"); recorded in docs/ideas/20261120.md, section 'The DFT→MD clone's four questions, answered'",
+  "questions": [
+    "license_note: the file states no licence that this seat read; the licence stays unknown until the person names it."
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261120-hoomd-7.2.2-bond-harmonic",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T00:46:57Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "Fetched anonymously and read-only, no login, by meta-macbook-20261120-3 for meta_agent/tasks/031 (the meta part). Read for the HOOMD-blue agent of the H2 bond (req-hoomd-h2-bond-001): the bond energy U(r) = 1/2 k (r - r0)^2, and its parameters k (potential constant, energy per length squared) and r0 (rest length, a length), set per bond type in params; the same form is the model the QE agent fits, so that k and r0 mean the same quantity on both sides. The page is at 'latest', which named release 7.2.2 when read; conda-forge offers hoomd 7.2.2 for this computer.",
+  "kind": "api_doc",
+  "about": {
+    "name": {
+      "value": "hoomd.md.bond.Harmonic, HOOMD-blue 7.2.2 documentation",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261120-hoomd-7.2.2-bond-harmonic",
+          "locus": "the page's title and its head: 'HOOMD-blue 7.2.2 documentation'"
+        }
+      ]
+    },
+    "role": {
+      "value": "engine",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261120-hoomd-7.2.2-bond-harmonic",
+          "locus": "the page documents HOOMD-blue, the MD engine of the request req-hoomd-h2-bond-001"
+        }
+      ]
+    },
+    "methods": {
+      "value": [
+        "molecular dynamics"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261120-hoomd-7.2.2-bond-harmonic",
+          "locus": "the page belongs to the md package of HOOMD-blue's Python API or to its guides"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://hoomd-blue.readthedocs.io/en/latest/hoomd/md/bond/harmonic.html"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-21T00:46:57Z",
+    "content_hash": "sha256:ff7b88a2a4c662e48fefa03063c99bd83db353f6ee6fd99057e3c93b76b15c1a",
+    "archived": null
+  },
+  "added_by": "human",
+  "added_at": "2026-11-20",
+  "entry_path": "links_md",
+  "license_note": {
+    "value": null,
+    "state": "unknown"
+  },
+  "may_quote": true,
+  "state": "registered",
+  "state_reason": "the person, 2026-11-20: asked whether the six sources an earlier session found for the DFT-to-MD test may be registered and quoted, they answered \"물론\" (\"of course\"); recorded in docs/ideas/20261120.md, section 'The DFT→MD clone's four questions, answered'",
+  "questions": [
+    "license_note: the page states no licence that this seat read; the licence stays unknown until the person names it."
+  ]
+}

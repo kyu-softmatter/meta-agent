@@ -11,3 +11,9 @@ One row per link. Only `url` is required. The Meta-Agent fills `card`. See READM
 | https://github.com/google-deepmind/alphafold | AlphaFold (code) | a candidate to check later | the same words of the person; the link is this seat's choice of the maker's own page, the person named no link | |
 | https://github.com/google-deepmind/alphafold3 | AlphaFold 3 (code) | a candidate to check later | the same; this seat's choice of link | |
 | https://alphafold.ebi.ac.uk | AlphaFold Protein Structure Database | a candidate to check later | the same; this seat's choice of link | |
+| https://www.quantum-espresso.org/Doc/INPUT_PW.html | pw.x input description | engine documentation | the person, 2026-11-20: one of six sources found for the DFT→MD test; "물론" ("of course") to registering and quoting them (docs/ideas/20261120.md) | mat-20261120-qe-7.5-input-pw |
+| https://pseudopotentials.quantum-espresso.org/upf_files/H.pbe-rrkjus_psl.1.0.0.UPF | H PBE ultrasoft pseudopotential, PSLibrary 1.0.0 | engine input | the same words of the person | mat-20261120-pslibrary-h-pbe-rrkjus-upf |
+| https://webbook.nist.gov/cgi/cbook.cgi?ID=C1333740&Mask=1000 | NIST WebBook, H2, constants of diatomic molecules | published measurement to compare with | the same words of the person | mat-20261120-nist-webbook-h2-diatomic-constants |
+| https://hoomd-blue.readthedocs.io/en/latest/units.html | HOOMD-blue units | engine documentation | the same words of the person | mat-20261120-hoomd-7.2.2-units |
+| https://hoomd-blue.readthedocs.io/en/latest/hoomd/md/bond/harmonic.html | hoomd.md.bond.Harmonic | engine documentation | the same words of the person | mat-20261120-hoomd-7.2.2-bond-harmonic |
+| https://hoomd-blue.readthedocs.io/en/latest/hoomd/md/methods/constantvolume.html | hoomd.md.methods.ConstantVolume | engine documentation | the same words of the person | mat-20261120-hoomd-7.2.2-methods-constantvolume |

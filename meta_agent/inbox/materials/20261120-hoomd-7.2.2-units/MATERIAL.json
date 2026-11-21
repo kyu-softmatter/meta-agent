@@ -1,0 +1,73 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261120-hoomd-7.2.2-units",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T00:46:57Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "Fetched anonymously and read-only, no login, by meta-macbook-20261120-3 for meta_agent/tasks/031 (the meta part). Read for the HOOMD-blue agent of the H2 bond (req-hoomd-h2-bond-001): that HOOMD-blue adopts no system of units and follows a self-consistent one built on three base units, energy, length and mass, every derived unit (time, force, pressure) defined from them; so a value in HOOMD-blue's units means nothing until a person says which registered unit each base unit stands for (the person, 2026-11-20: Angstrom, eV and Da, in this seat's note to the design role). The page is at 'latest', which named release 7.2.2 when read; conda-forge offers hoomd 7.2.2 for this computer.",
+  "kind": "api_doc",
+  "about": {
+    "name": {
+      "value": "Units, HOOMD-blue 7.2.2 documentation",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261120-hoomd-7.2.2-units",
+          "locus": "the page's title and its head: 'HOOMD-blue 7.2.2 documentation'"
+        }
+      ]
+    },
+    "role": {
+      "value": "engine",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261120-hoomd-7.2.2-units",
+          "locus": "the page documents HOOMD-blue, the MD engine of the request req-hoomd-h2-bond-001"
+        }
+      ]
+    },
+    "methods": {
+      "value": [
+        "molecular dynamics"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261120-hoomd-7.2.2-units",
+          "locus": "the page belongs to the md package of HOOMD-blue's Python API or to its guides"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://hoomd-blue.readthedocs.io/en/latest/units.html"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-21T00:46:57Z",
+    "content_hash": "sha256:3520c5cd611d8439e895d2ca17e48630984d0f34cb4aff01e65f60eac576f0a0",
+    "archived": null
+  },
+  "added_by": "human",
+  "added_at": "2026-11-20",
+  "entry_path": "links_md",
+  "license_note": {
+    "value": null,
+    "state": "unknown"
+  },
+  "may_quote": true,
+  "state": "registered",
+  "state_reason": "the person, 2026-11-20: asked whether the six sources an earlier session found for the DFT-to-MD test may be registered and quoted, they answered \"물론\" (\"of course\"); recorded in docs/ideas/20261120.md, section 'The DFT→MD clone's four questions, answered'",
+  "questions": [
+    "license_note: the page states no licence that this seat read; the licence stays unknown until the person names it."
+  ]
+}
