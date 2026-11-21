@@ -25,6 +25,7 @@ import shutil
 
 from .. import cards
 from . import handovers as handovers_mod
+from . import comparisons as comparisons_mod
 
 WRITER = "operator"        # the one subagent that may list write_device (plan.md 14-34(e))
 SESSION_SKILL = "run-skill"   # the one session skill that names the runner, from template v3 on (tasks/015)
@@ -742,6 +743,11 @@ def stated_unit(task, tools, skills):
     the analysis hands from a row stays '1' too."""
     stated = (task.get("measure") or {}).get("stated") or {}
     field = next(iter(stated))
+    pair = comparisons_mod.printed_units(task)
+    if pair is not None:
+        # compared in the reference's printed unit (template v34; check 12): the measured value, the rule's tolerance and
+        # the agreement are in it
+        return pair[1]
     analysis = task.get("analysis") if isinstance(task.get("analysis"), dict) else None
     if analysis:
         for r in skills:
@@ -840,7 +846,7 @@ def with_rule_tolerance(task, rule, tools, skills, span_skill=None):
     2026-11-18, 'Yes, add literature span'; 2026-11-19, 'Yes, widen it'). The task records how the tolerance came under
     tolerance_derivation. A task the rule gives no tolerance for is left as it is, undecided."""
     stated = (task.get("measure") or {}).get("stated")
-    if task.get("tolerance") or not isinstance(stated, dict) or len(stated) != 1:
+    if task.get("tolerance") or not isinstance(stated, dict) or len(stated) != 1 or comparisons_mod.is_held(task):
         return task
     if isinstance(task.get("refinement"), dict):
         # its tolerance is derived when it runs, from the run's own error (template v23); the build hands it the unit
@@ -969,6 +975,10 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
                          "not take; it needs v26 or later" % (", ".join(map(str, marked)), (rule or {}).get("skill")))
     if rule and scientific_tasks:
         scientific_tasks = [with_rule_tolerance(t, rule, tools, skills, span_skill) for t in scientific_tasks]
+    meta_c = cards.load_json(meta) if os.path.isfile(meta) else {}
+    faults = comparisons_mod.problems(scientific_tasks, {t["name"] for t in tools}, meta_c)
+    if faults:
+        raise ValueError("a scientific task cannot be built as written: " + "; ".join(faults))
     fill = dict(fill)
     handover_decl = None
     prow = (envelope.get("parameters") or {}).get("rows") or []
@@ -979,13 +989,22 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
         meta_d = cards.load_json(meta) if os.path.isfile(meta) else {}
         agent = fill.get("agent_name")
         build = "%s/%s" % (agent, os.path.basename(os.path.dirname(os.path.abspath(bundle_path))))
-        handover_decl, kept, unit_skill, fill["handovers_section"] = handovers_mod.declaration(prow, agent, build, meta_d, skills)
+        handover_decl, kept, unit_skill, fill["handovers_section"] = handovers_mod.declaration(
+            prow, agent, build, meta_d, skills, {t["name"]: t["contract"] for t in tools})
         if unit_skill and unit_skill not in {r["ref"] for r in skills}:
             from ..skills import catalogue as catalogue_mod
             skills.append(catalogue_mod.take([unit_skill])[0])
         envelope = dict(envelope, parameters=dict(envelope.get("parameters") or {}, rows=kept), handovers=handover_decl,
                         units=cards.load_json(handovers_mod.UNITS))
     fill.setdefault("handovers_section", handovers_mod.no_handovers_section())
+    if comparisons_mod.needs_units(scientific_tasks):
+        # a task compared in its reference's printed unit converts through the unit skill and the registry (v34)
+        unit_skill = meta_c.get("unit_skill")
+        if unit_skill and unit_skill not in {r["ref"] for r in skills}:
+            from ..skills import catalogue as catalogue_mod
+            skills.append(catalogue_mod.take([unit_skill])[0])
+        if "units" not in envelope:
+            envelope = dict(envelope, units=cards.load_json(handovers_mod.UNITS))
     rows = check_drawing(skills, subagents, {t["name"]: t["contract"].get("side_effects") for t in tools}, template_path)
     if skills:
         users = {r["ref"]: [a["name"] for a in subagents if r["ref"] in a["skills"]] for r in skills}

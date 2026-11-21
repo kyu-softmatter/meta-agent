@@ -292,10 +292,18 @@ def make_validation_report(report, build_id, rid, bundle_rel, seat, now=None, en
         item = {"id": t["id"], "name": t["name"], "verdict": said,
                 "reference": ref, "tolerance": t.get("tolerance"),
                 "evidence": "%s/validation/scientific/%s" % (bundle_rel, t["file"])}
+        printed = (ref.get("unit") if isinstance(ref, dict) else None) or None
+        conv = t.get("measured_converted") if isinstance(t.get("measured_converted"), dict) else None
+        if conv is not None:
+            # compared in the reference's printed unit (template v34; check 12): the value as compared, the value and unit
+            # it was converted from and the skill that converted it, whose factor check 12 recomputes
+            item["measured"] = {"value": conv["value"], "unit": conv["unit"], "converted_from": dict(conv["converted_from"]),
+                                "converted_by": conv["converted_by"]}
         if "agreement" in t:
             # the agreement is a difference of the measured quantity: it has the unit the tool's contract declares for
-            # that output; where the contract declares none, the unit the person's tolerance has, otherwise '1'
-            unit = measured_unit(bundle_path, t.get("file")) or (t.get("tolerance") or {}).get("unit") or "1"
+            # that output; where the contract declares none, the unit the person's tolerance has, otherwise '1'; and
+            # where the reference states the unit it is printed in, that unit, the comparison being made in it (v34)
+            unit = printed or measured_unit(bundle_path, t.get("file")) or (t.get("tolerance") or {}).get("unit") or "1"
             item["agreement"] = {"value": t["agreement"], "unit": unit}
             names = ref.get("number_names") or []
             if len(names) >= 2 and isinstance(t.get("reference"), (int, float)) and not isinstance(t.get("reference"), bool):
@@ -322,7 +330,7 @@ def make_validation_report(report, build_id, rid, bundle_rel, seat, now=None, en
         for field, run in runs:
             # the skill that gave the agreement, kept on the record (cfd-14, run cfd/20261117-21): each run's error is
             # a number whose source names the skill and the task, its magnitude being the task's agreement
-            unit = measured_unit(bundle_path, t.get("file")) or (t.get("tolerance") or {}).get("unit") or "1"
+            unit = printed or measured_unit(bundle_path, t.get("file")) or (t.get("tolerance") or {}).get("unit") or "1"
             vr["numbers"].append({"name": "%s.%s.error" % (t["id"], field), "value": run["outputs"]["error"], "unit": unit,
                                   "source": "computed:%s@%s/validation/scientific/%s#%s" % (run["skill"], bundle_rel, t["file"], field),
                                   "grade": "E4", "value_kind": "computed",

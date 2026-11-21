@@ -120,7 +120,7 @@ class EachValueCarriesItsDefinition(unittest.TestCase):
 
 class TheVersion(unittest.TestCase):
     def test_v33_is_the_latest_and_changes_one_script_its_text_and_its_card(self):
-        self.assertEqual(template_mod.LATEST, "v33")
+        self.assertIn("v33", template_mod.SOURCES)                  # v34 is the latest since held items and printed units
         self.assertEqual(sorted(set(cards.tree_files(V33)) ^ set(cards.tree_files(V32))), [])
         both = set(cards.tree_files(V32)) & set(cards.tree_files(V33))
         changed = sorted(r for r in both if cards.sha256_file(os.path.join(V32, r)) != cards.sha256_file(os.path.join(V33, r)))

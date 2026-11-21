@@ -5,7 +5,8 @@ The request declares it on its parameter rows, so that no card of the design rol
 - a row the agent hands over carries `handover.gives`: the thread, the receiving agent and its build, the library skill
   whose record the value is read off and the output it is, the tool output fields the skill's inputs are taken from
   (`record_inputs`), from each of several results or from one (`record_inputs_from`: each_result, the default, or
-  one_result), the field of a tool result that states the conditions (`conditions_field`), the conditions the
+  one_result), the tool whose results those are (`record_tool`, template v34: the build copies what its contract says
+  of each field into the declaration, and the card's definition names it), the field of a tool result that states the conditions (`conditions_field`), the conditions the
   request states in words (`conditions`), the skill states a hand-over is written on (`accept_states`) and what the
   values are for (`what`). The row's unit is the unit the value is handed in, and it has an si_factor: an engine's own
   unit means nothing outside its engine (check 25). The grade is derived here from contracts/grades.json for a
@@ -28,15 +29,22 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
 UNITS = os.path.join(REPO, "contracts", "units.json")
 GRADES = os.path.join(REPO, "contracts", "grades.json")
-GIVE_KEYS = ("thread", "to_agent", "to_build", "skill", "output", "record_inputs", "record_inputs_from", "conditions_field",
-             "conditions", "accept_states", "what")
-SHARED = ("to_agent", "to_build", "skill", "record_inputs", "record_inputs_from", "conditions_field", "conditions",
-          "accept_states", "what")
+GIVE_KEYS = ("thread", "to_agent", "to_build", "skill", "output", "record_inputs", "record_inputs_from", "record_tool",
+             "conditions_field", "conditions", "accept_states", "what")
+SHARED = ("to_agent", "to_build", "skill", "record_inputs", "record_inputs_from", "record_tool", "conditions_field",
+          "conditions", "accept_states", "what")
 
 
 def _load(p):
     with open(p, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def _version(template_meta):
+    try:
+        return int(str(template_meta.get("version") or "v0")[1:])
+    except ValueError:
+        return 0
 
 
 def derived_grade(source_kind, value_kind):
@@ -51,9 +59,11 @@ def declares(rows):
                for r in rows or [])
 
 
-def declaration(rows, agent, build, template_meta, skills):
+def declaration(rows, agent, build, template_meta, skills, contracts=None):
     """(handovers, parameter_rows, unit_skill or None, section) for rows that declare a hand-over; raises ValueError.
-    `skills` is the library's rows for the skills the bundle carries (each with ref and outputs)."""
+    `skills` is the library's rows for the skills the bundle carries (each with ref and outputs); `contracts` the
+    bundle's tool contracts by name, from which a named record_tool's fields are described."""
+    contracts = contracts or {}
     units = _load(UNITS)["units"]
     faults, gives, takes, scales, kept = [], {}, [], [], []
     by_ref = {s["ref"]: s for s in skills or []}
@@ -144,10 +154,30 @@ def declaration(rows, agent, build, template_meta, skills):
     if not script:
         faults.append("the parameter rows declare a hand-over and template %s has no handover_script; it needs v32 or "
                       "later" % template_meta.get("version"))
-    if faults:
-        raise ValueError("the hand-over this request declares cannot be built: " + "; ".join(faults))
     for entry in gives.values():
         entry["to"] = {"agent": entry.pop("to_agent"), "build": entry.pop("to_build")}
+        tool = entry.get("record_tool")
+        if tool is None:
+            entry.pop("record_tool", None)
+            continue
+        if _version(template_meta) < 34:
+            faults.append("thread %s names the tool its skill's inputs came from, which template %s does not carry into the "
+                          "card; it needs v34 or later" % (entry["thread"], template_meta.get("version")))
+        props = ((contracts.get(tool) or {}).get("outputs") or {}).get("properties") or {}
+        if tool not in contracts:
+            faults.append("thread %s: record_tool %r is not a tool of this bundle" % (entry["thread"], tool))
+            continue
+        fields = {}
+        for inp, field in sorted((entry.get("record_inputs") or {}).items()):
+            desc = (props.get(field) or {}).get("description")
+            if not desc:
+                faults.append("thread %s: the field %s of %s carries no description to name the input %s by" % (
+                    entry["thread"], field, tool, inp))
+                continue
+            fields[inp] = {"tool": tool, "field": field, "description": desc}
+        entry["record_fields"] = fields
+    if faults:
+        raise ValueError("the hand-over this request declares cannot be built: " + "; ".join(faults))
     decl = {"note": "what this agent gives to another agent and takes from one, written by its build from the request's "
                     "parameter rows (template v32); src/handover.py reads it, and a value for a row not listed under "
                     "takes is held",

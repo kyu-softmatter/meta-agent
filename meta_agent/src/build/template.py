@@ -242,6 +242,13 @@ v33 changes one script and the Hand-overs text, after the bridge's first test st
     and the receipt and values show it, so that the receiving agent knows what a value is a value
     of without the producer's skill; the text says what the card's draft status and its grade are.
 
+v34 changes two scripts and the text (tasks/032, at the design role's ask; dftmd-16): a held
+    scientific item, held {reason, needs}, is reported not_run with its reason and needs and
+    makes no call; a reference printed in another unit than the measured quantity is compared
+    in its printed unit, every measured value converted through the unit skill and the
+    registry before the rule and the agreement run (comparisons.py); a card's definition
+    names the tool field each of the skill's inputs came from (record_tool).
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -275,8 +282,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v30": os.path.join(HERE, "template_v30"),
            "v31": os.path.join(HERE, "template_v31"),
            "v32": os.path.join(HERE, "template_v32"),
-           "v33": os.path.join(HERE, "template_v33")}
-LATEST = "v33"
+           "v33": os.path.join(HERE, "template_v33"),
+           "v34": os.path.join(HERE, "template_v34")}
+LATEST = "v34"
 SOURCE = SOURCES[LATEST]
 
 
