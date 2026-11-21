@@ -109,8 +109,20 @@ def compose(tmp, name, rows, skills, template=V32):
 
 
 def run(argv, cwd, stdin=None):
+    if argv and argv[0] == BRIDGE and "carry" in argv:
+        argv = list(argv) + who_ran()
     p = subprocess.run([sys.executable] + argv, cwd=cwd, input=stdin, capture_output=True, text=True, encoding="utf-8")
     return p.returncode, p.stdout, p.stderr
+
+
+def who_ran():
+    """What the bridge asks of whoever runs it, where it asks (tasks/032 has it say who ran a carry): this test runs it,
+    a session's code on its own temporary folders, and no person's word is behind it but the test's."""
+    p = subprocess.run([sys.executable, BRIDGE, "carry", "--help"], capture_output=True, text=True, encoding="utf-8")
+    if "--ran-by" not in p.stdout:
+        return []
+    return ["--ran-by", "session", "--session", "meta_agent/tests/test_template_v32.py",
+            "--words", "a unit test's carry on its own temporary folders"]
 
 
 class TwoAgentsHandValuesOver(unittest.TestCase):
@@ -310,7 +322,7 @@ class TheDeclarationIsChecked(unittest.TestCase):
 
 class TheVersion(unittest.TestCase):
     def test_v32_is_the_latest_and_adds_the_script(self):
-        self.assertEqual(template_mod.LATEST, "v32")
+        self.assertIn("v32", template_mod.SOURCES)                  # v33 is the latest since a card carries each value's definition
         meta = cards.load_json(os.path.join(V32, "TEMPLATE.json"))
         self.assertEqual((meta["handover_script"], meta["unit_skill"]), ("src/handover.py", "unit_convert@v1"))
         added = sorted(set(cards.tree_files(V32)) - set(cards.tree_files(V31)))

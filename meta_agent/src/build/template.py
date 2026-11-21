@@ -236,6 +236,12 @@ v32 adds src/handover.py, a section of CLAUDE.md, three folders and the guardrai
     person starts delivered, one receipt per value, used only for a declared row through
     unit_convert@v1 and, into an engine's unit, a scale a person confirmed (handovers.py).
 
+v33 changes one script and the Hand-overs text, after the bridge's first test standing alone
+    (run multiscale/20261120-8; dftmd-13, dftmd-14): a hand-over card carries each value's
+    definition, the meaning its skill's manifest gives the output, under conditions.definition,
+    and the receipt and values show it, so that the receiving agent knows what a value is a value
+    of without the producer's skill; the text says what the card's draft status and its grade are.
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -268,8 +274,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v29": os.path.join(HERE, "template_v29"),
            "v30": os.path.join(HERE, "template_v30"),
            "v31": os.path.join(HERE, "template_v31"),
-           "v32": os.path.join(HERE, "template_v32")}
-LATEST = "v32"
+           "v32": os.path.join(HERE, "template_v32"),
+           "v33": os.path.join(HERE, "template_v33")}
+LATEST = "v33"
 SOURCE = SOURCES[LATEST]
 
 
