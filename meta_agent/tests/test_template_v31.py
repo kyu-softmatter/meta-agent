@@ -75,7 +75,7 @@ class TheUnitIsFollowed(unittest.TestCase):
 
 class TheVersion(unittest.TestCase):
     def test_v31_is_the_latest_and_changes_its_card_alone(self):
-        self.assertEqual(template_mod.LATEST, "v31")
+        self.assertIn("v31", template_mod.SOURCES)                  # v32 is the latest since two agents hand values over
         changed = sorted(r for r in cards.tree_files(V30) if cards.sha256_file(os.path.join(V30, r)) != cards.sha256_file(os.path.join(V31, r)))
         self.assertEqual(changed, ["TEMPLATE.json"])
         m = cards.load_json(os.path.join(V31, "TEMPLATE.json"))

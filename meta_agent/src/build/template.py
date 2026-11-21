@@ -227,6 +227,15 @@ v31 changes TEMPLATE.json alone (rheotool-27; unit_of, 7a4b9fc): the
     series_maximum and series_settled whose outputs name the input whose unit
     they take, which the builder follows to the tool contract's unit.
 
+v32 adds src/handover.py, a section of CLAUDE.md, three folders and the guardrails that keep
+    them, on the person's words for two agents that hand values to each other (tasks/031): a
+    build whose parameter rows declare a hand-over writes envelope/handovers.json (what it gives
+    and takes, and what its engine's own units stand for) and envelope/units.json, the registry
+    it converts by, and makes outbox/, inbox/ and received/; the script writes a hand-over card
+    from a skill's record and the tool results it was taken from, and receives what the bridge a
+    person starts delivered, one receipt per value, used only for a declared row through
+    unit_convert@v1 and, into an engine's unit, a scale a person confirmed (handovers.py).
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -258,8 +267,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v28": os.path.join(HERE, "template_v28"),
            "v29": os.path.join(HERE, "template_v29"),
            "v30": os.path.join(HERE, "template_v30"),
-           "v31": os.path.join(HERE, "template_v31")}
-LATEST = "v31"
+           "v31": os.path.join(HERE, "template_v31"),
+           "v32": os.path.join(HERE, "template_v32")}
+LATEST = "v32"
 SOURCE = SOURCES[LATEST]
 
 

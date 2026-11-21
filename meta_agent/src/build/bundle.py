@@ -24,6 +24,7 @@ import re
 import shutil
 
 from .. import cards
+from . import handovers as handovers_mod
 
 WRITER = "operator"        # the one subagent that may list write_device (plan.md 14-34(e))
 SESSION_SKILL = "run-skill"   # the one session skill that names the runner, from template v3 on (tasks/015)
@@ -968,8 +969,24 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
                          "not take; it needs v26 or later" % (", ".join(map(str, marked)), (rule or {}).get("skill")))
     if rule and scientific_tasks:
         scientific_tasks = [with_rule_tolerance(t, rule, tools, skills, span_skill) for t in scientific_tasks]
-    rows = check_drawing(skills, subagents, {t["name"]: t["contract"].get("side_effects") for t in tools}, template_path)
     fill = dict(fill)
+    handover_decl = None
+    prow = (envelope.get("parameters") or {}).get("rows") or []
+    if handovers_mod.declares(prow):
+        # what this agent gives to another agent and takes from one (template v32; tasks/031): the request declares it on
+        # its parameter rows; the build writes envelope/handovers.json and the registry it converts by, and carries the
+        # unit skill where it takes a value
+        meta_d = cards.load_json(meta) if os.path.isfile(meta) else {}
+        agent = fill.get("agent_name")
+        build = "%s/%s" % (agent, os.path.basename(os.path.dirname(os.path.abspath(bundle_path))))
+        handover_decl, kept, unit_skill, fill["handovers_section"] = handovers_mod.declaration(prow, agent, build, meta_d, skills)
+        if unit_skill and unit_skill not in {r["ref"] for r in skills}:
+            from ..skills import catalogue as catalogue_mod
+            skills.append(catalogue_mod.take([unit_skill])[0])
+        envelope = dict(envelope, parameters=dict(envelope.get("parameters") or {}, rows=kept), handovers=handover_decl,
+                        units=cards.load_json(handovers_mod.UNITS))
+    fill.setdefault("handovers_section", handovers_mod.no_handovers_section())
+    rows = check_drawing(skills, subagents, {t["name"]: t["contract"].get("side_effects") for t in tools}, template_path)
     if skills:
         users = {r["ref"]: [a["name"] for a in subagents if r["ref"] in a["skills"]] for r in skills}
         fill["skills_section"] = skills_section(
@@ -989,6 +1006,9 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     if faults:
         raise ValueError("a tool's adapter does not wait on its engine as this template's does: " + "; ".join(faults))
     shutil.copytree(template_path, bundle_path, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+    if handover_decl is not None:
+        for sub in ("outbox", "inbox", "received"):
+            cards.write_text(os.path.join(bundle_path, sub, ".gitkeep"), "")
     add_skills(bundle_path, rows, subagents)
     add_pages(bundle_path, [r["ref"] for r in skills])
     claude = cards.read_text(os.path.join(bundle_path, "CLAUDE.md"))
