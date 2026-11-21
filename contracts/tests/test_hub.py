@@ -116,6 +116,21 @@ class HubTrigger(unittest.TestCase):
         with self.assertRaisesRegex(bridge.Refused, "to its hub only"):
             bridge.carry(r, os.path.join(dest, members[1]), "hub", HUB, trigger="hub")
 
+    def test_a_later_round_within_the_agreed_list_crosses_without_a_new_agreement(self):
+        """hub-3 (the person, 2026-11-21, 'Append to the question (Recommended)'): the second-round assignment names
+        its list item and quotes the person's later words from the question's second revision."""
+        for kind, hub, members in KINDS:
+            dest = self.blank(kind, hub, members)
+            h = os.path.join(dest, hub)
+            r2 = [n for n in os.listdir(os.path.join(h, "assignments")) if n.endswith("-r2.json")]
+            self.assertEqual(len(r2), 1, kind)
+            a = load(os.path.join(h, "assignments", r2[0]))
+            self.assertTrue(a.get("list_item") and a.get("quotes"))
+            member = a["to"]["agent"]
+            bridge.carry(os.path.join(h, "assignments", a["list_item"] + ".json"), os.path.join(dest, member), "hub", HUB, trigger="hub")
+            env, _ = bridge.carry(os.path.join(h, "assignments", r2[0]), os.path.join(dest, member), "hub", HUB, trigger="hub")
+            self.assertEqual(load(env)["round"], 2)
+
 
 if __name__ == "__main__":
     unittest.main()

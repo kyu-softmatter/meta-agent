@@ -104,7 +104,7 @@ def _agreed(hub, assignment):
     for name in sorted(os.listdir(qdir)) if os.path.isdir(qdir) else []:
         q = _load(os.path.join(qdir, name))
         if isinstance(q, dict) and q.get("card") == "hub_question" and q.get("id") == assignment.get("question") \
-                and assignment.get("id") in (q.get("assignments") or []) \
+                and (assignment.get("list_item") or assignment.get("id")) in (q.get("assignments") or []) \
                 and isinstance(q.get("agreed"), dict) and str(q["agreed"].get("words") or "").strip():
             return True
     return False
