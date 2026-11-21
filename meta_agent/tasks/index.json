@@ -366,6 +366,42 @@
       "depends_on": [],
       "opened": "2026-11-19",
       "design_part": "landed"
+    },
+    {
+      "id": "029",
+      "file": "029-dft-and-md-together.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-20",
+      "design_part": "landed"
+    },
+    {
+      "id": "030",
+      "file": "030-qm-mm-in-one-coupling-tool.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-20",
+      "design_part": "landed"
+    },
+    {
+      "id": "031",
+      "file": "031-the-bridge-between-two-built-agents.md",
+      "status": "open",
+      "roles": [
+        "design",
+        "meta"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-20",
+      "design_part": "open"
     }
   ]
 }
