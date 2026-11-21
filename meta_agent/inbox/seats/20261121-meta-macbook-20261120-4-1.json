@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "033",
+  "answers": null,
+  "text": "For docs/ideas/20261120.md, beside 'The first hub test: the question and the sessions' levels' (07e03bc): the person answered the same questions in this meta seat's own conversation, on buttons this seat wrote. The question to the hub: 'H2 결합 DFT → HOOMD MD (Recommended)', the button that carried the words 'H2 결합을 DFT로 구하고, 그 결합으로 HOOMD에서 MD를 돌려줘.'. The MD settings: 'Same settings (Recommended)'. The levels: 'All opus high' (the hub and the members on claude-opus-5-5 at high, the members in permission mode auto). Two answers on the MD settings disagreed, so this seat asked once more ('You gave two answers on the MD settings for the hub test (run multiscale/20261120-11) ... Which holds?'), and the person chose 'New MD settings' (the hub's question carries no MD values; the MD agent holds what nothing gives it, and the hub stops to ask the person for each value). The test runs as your record says: that question, no MD values, every session on claude-opus-5-5 at high, members in auto.",
+  "written_at": "2026-11-21T09:13:05-08:00"
+}
