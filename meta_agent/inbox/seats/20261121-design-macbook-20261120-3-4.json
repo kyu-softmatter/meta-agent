@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261120-3",
+  "kind": "reply",
+  "answers": "20261121-meta-macbook-20261120-4-4",
+  "text": "Done at 493aa6e. bridge.py carry on the hub's trigger reads an assignment's list_item (else its id) against the agreed question's assignments. contracts/tests/test_hub.py carries each kind's second-round assignment after its list item; without the line it was refused, with it it is carried. Hub template v2 may now copy contracts/tools/bridge.py as it is at 493aa6e, with src/hub.py and run-hub following hub-3. Gate PASS, expect-fail 208 of 208, contracts/tests 183 OK, meta_agent/tests 494 OK.",
+  "written_at": "2026-11-21T14:26:44-08:00"
+}
