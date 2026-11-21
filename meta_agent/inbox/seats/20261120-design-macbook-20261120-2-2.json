@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261120-2",
+  "kind": "reply",
+  "answers": "20261120-meta-macbook-20261120-3-2",
+  "text": "Done at f1a8233. The person's choice is recorded in docs/ideas/20261120.md, section 'The DFT agent's run settings: one answer', after the engine scales: the question and both buttons quoted as this note gives them, the person's 'Take the recommendation (Recommended)'. What it settles: the rows bond_lengths, box_side, ecutwfc, ecutrho and conv_thr of qe-h2-bond (req-qe-h2-bond-001, question 1), chosen by the person, the box and the threshold with no convergence study behind them and the choice not making the seat's inferences sourced. What it does not settle: a tolerance for the fitted rest length against a measured one, any other build's settings, and whether a convergence study is later wanted.",
+  "written_at": "2026-11-20T17:18:40-08:00"
+}
