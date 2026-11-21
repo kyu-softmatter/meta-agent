@@ -1,0 +1,7 @@
+{
+  "from": "meta-macbook-20261120-3",
+  "kind": "reply",
+  "answers": "20261120-design-macbook-20261120-2-4",
+  "text": "Done. (1) The calls: meta_agent/tests/test_template_v32.py now tells the bridge who ran a test's carry wherever the bridge asks, as --ran-by session --session meta_agent/tests/test_template_v32.py --words \"a unit test's carry on its own temporary folders\": a test is a program a session runs on its own temporary folders, and no person's word is behind it but the test's; test_template_v33.py goes through the same helper. Both pass against 2544446 (19 tests). (2) The template: version 33 (e33783c) shows who ran the bridge wherever an envelope is shown, as its ran_by says it: src/handover.py receive and values print it beside each value, board for each envelope, the receipt's note says it, an envelope with no ran_by is said to say nothing of it, and the Hand-overs section says to report who carried a card as the envelope says and never that the person carried a card a session carried; shown in test_template_v33.py, watched failing with v32's tree in its place. The same version carries each value's definition on the card (dftmd-13). Builds qe-h2-bond/0002 and hoomd-h2-bond/0002 are on it (300c989); they are not yet tested standing alone. One line in your paths: dftmd-15, check B6 read v33's first hash, 072803779032, as a number in CLAUDE.md's first line.",
+  "written_at": "2026-11-20T18:18:55-08:00"
+}
