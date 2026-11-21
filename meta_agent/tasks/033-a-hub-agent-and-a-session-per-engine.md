@@ -46,12 +46,16 @@ A bundle built from a hub template beside the engine bundles of one request. It 
 
 The role of this seat, "Design seat (Recommended)"; the hub's form, "A hub bundle (Recommended)"; assigning and carrying, "Assign freely, carry on my word (Recommended)"; what a message carries, "Pointer to a card (Recommended)" (`../../docs/ideas/20261120.md`).
 
+### Answered on 2026-11-20, three more (`../../docs/ideas/20261120.md`, "Task 033: three more answers")
+
+- the second fixture kind: "Three engines, one hub". The seat's choice of the three, for fixture cards only: a photonic device heated by the light it absorbs, a mode solver (MPB) giving an effective index, an FDTD engine (Meep) giving the power absorbed, and a heat-conduction engine (FEniCS) giving the temperature rise, under one hub; it shares nothing with DFT→MD in science or in engines, and it is not rheology;
+- opening the members' sessions: "Ask once per question (Recommended)": the hub shows the list of its assignments once for each question and opens the members' sessions within it without asking again;
+- rounds: "until solve the problem": no limit on their number; the hub goes on by itself until the question's `done_when` is answered by result cards that are not held, and waits only where what is left is the person's (a hand-over crossing, a tolerance, a safety value, a permission, a release of `held`); a new assignment outside the agreed list is shown to the person again (the seat's reading, in the ideas file).
+
 ### Still the person's
 
-- the number of rounds and when the hub stops (a threshold, plan.md 14-38(j));
-- whether the hub opens member sessions without asking each time, and in which permission mode they run;
-- the model and effort of the hub's and each member's session (a cost; `choose-session-level` recommends);
-- the second fixture kind beside DFT→MD; recommended: an instrument and an engine under one hub (rheometer and rheology engine, the cross-validation of plan.md 10), so that one member is not a simulation.
+- what the hub does when a round adds nothing (recommended: stop and report, which sets no number);
+- the model, effort and permission mode of the hub's and each member's session (a cost and a permission; `choose-session-level` recommends).
 
 ## The meta part (for a `meta-…` seat, once the design part has landed)
 
