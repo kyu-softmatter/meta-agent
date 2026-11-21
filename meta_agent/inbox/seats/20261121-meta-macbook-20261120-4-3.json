@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "033",
+  "answers": null,
+  "text": "Task 033 is done: its meta part's done-when was read off run multiscale/20261120-11 (collect-1). The hub build passes its gate, the run's folder passes --checks 1,2,25 after assignments and results crossed on the hub's trigger and the hand-over on the person's word, and the hub's session opened both member sessions and reported. The card's status line says so; the last commit of the work is 3139025. Asked: the row of meta_agent/tasks/index.json for 033 to say done at 3139025, so that 034, which follows it, can be claimed. What the test showed is meta_agent/failures.jsonl hub-1 to hub-3; hub-3 is asked of you in 20261121-meta-macbook-20261120-4-2.",
+  "written_at": "2026-11-21T10:41:24-08:00"
+}
