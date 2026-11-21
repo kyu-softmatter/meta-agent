@@ -1,0 +1,59 @@
+{
+  "note": "what this agent gives to another agent and takes from one, written by its build from the request's parameter rows (template v32); src/handover.py reads it, and a value for a row not listed under takes is held",
+  "agent": {
+    "agent": "qe-h2-bond",
+    "build": "qe-h2-bond/0003"
+  },
+  "gives": [
+    {
+      "thread": "thr-h2-bond",
+      "numbers": [
+        {
+          "name": "h2_bond_force_constant",
+          "output": "force_constant",
+          "unit": "Ry/bohr^2",
+          "source_kind": "computed",
+          "value_kind": "computed",
+          "grade": "E4"
+        },
+        {
+          "name": "h2_bond_rest_length",
+          "output": "rest_position",
+          "unit": "bohr",
+          "source_kind": "computed",
+          "value_kind": "computed",
+          "grade": "E4"
+        }
+      ],
+      "skill": "harmonic_well_fit@v1",
+      "record_inputs": {
+        "points": "energy_curve"
+      },
+      "record_inputs_from": "one_result",
+      "record_tool": "scan_h2_bond",
+      "conditions_field": "printed_conditions",
+      "conditions": {
+        "engine": "Quantum ESPRESSO pw.x from conda-forge's qe",
+        "system": "one H2 molecule at the centre of a cubic box, gamma point, Martyna-Tuckerman correction",
+        "fit": "harmonic_well_fit@v1 over the energy curve of one scan"
+      },
+      "accept_states": [
+        "fitted"
+      ],
+      "what": "the harmonic bond of H2 fitted to PBE total energies, for the MD agent's bond potential",
+      "to": {
+        "agent": "hoomd-h2-bond",
+        "build": "hoomd-h2-bond/0003"
+      },
+      "record_fields": {
+        "points": {
+          "tool": "scan_h2_bond",
+          "field": "energy_curve",
+          "description": "pairs of a bond length in bohr, as given, and the total energy pw.x printed for it, in Ry"
+        }
+      }
+    }
+  ],
+  "takes": [],
+  "engine_scales": []
+}

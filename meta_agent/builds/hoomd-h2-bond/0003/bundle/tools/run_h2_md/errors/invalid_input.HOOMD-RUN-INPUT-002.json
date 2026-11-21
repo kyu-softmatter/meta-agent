@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "HOOMD-RUN-INPUT-002",
+  "category": "invalid_input",
+  "message": "the rest length is not shorter than the box side",
+  "retryable": false,
+  "remediation": {
+    "action": "give a box side longer than the rest length"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "QE-PSEUDO-001",
+  "category": "unavailable",
+  "message": "the pseudopotential is not in its folder",
+  "retryable": true,
+  "remediation": {
+    "action": "call fetch_pseudopotential first, then this call again"
+  }
+}

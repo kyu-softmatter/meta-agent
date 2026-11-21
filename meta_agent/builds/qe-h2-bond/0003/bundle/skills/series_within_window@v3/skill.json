@@ -1,0 +1,59 @@
+{
+  "schema_version": "0.1",
+  "id": "series_within_window",
+  "version": 3,
+  "kind": "diagnostic",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "whether the mean of a series' last readings lies inside a band, between a lowest and a highest value it is handed",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "series",
+      "unit": "1",
+      "meaning": "the readings in the order they were taken, all in one unit"
+    },
+    {
+      "name": "window",
+      "unit": "count",
+      "meaning": "how many of the last readings the mean takes"
+    },
+    {
+      "name": "low",
+      "unit": "1",
+      "meaning": "the lowest value inside the band, in the readings' unit; null when none is chosen"
+    },
+    {
+      "name": "high",
+      "unit": "1",
+      "meaning": "the highest value inside the band, in the readings' unit; null when none is chosen"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "state",
+      "unit": "1",
+      "meaning": "within | below | above | undecided"
+    },
+    {
+      "name": "last_mean",
+      "unit": "1",
+      "meaning": "the mean of the last window, in the readings' unit; null when there are fewer readings than the window"
+    }
+  ],
+  "entry": {
+    "script": "scripts/diagnostic.py",
+    "function": "diagnostic"
+  },
+  "validity": "readings in one unit, the band in the same unit; the edges belong to the band",
+  "source": {
+    "citation": "a definition: inclusion in a closed interval; NIST Digital Library of Mathematical Functions, Mathematical Introduction, Common Notations and Definitions (read 2026-11-17, https://dlmf.nist.gov/front/introduction; meta_agent/inbox/materials/20261117-nist-dlmf-introduction)",
+    "locus": "Common Notations and Definitions: [a,b], the closed interval; the mean of the last readings lies in [low, high], the edges included"
+  },
+  "note": "v1 with the definition it rests on named where it is defined, found by search; the code and the cases are v1's. No value of a source stands behind the worked cases: each is worked by hand in its worked field, on readings made up to show the comparison. v3 is v2 made common, unchanged in its code and its cases' values: every simulation bundle carries it (the person, 2026-11-18, docs/ideas/20261118.md; meta_agent/tasks/025), and each worked case names the kind of system it is worked on, at least two unrelated kinds. A build adapts it to an engine as a next version that names the engine and says adapted_from.",
+  "cases": "cases.json",
+  "common": true
+}

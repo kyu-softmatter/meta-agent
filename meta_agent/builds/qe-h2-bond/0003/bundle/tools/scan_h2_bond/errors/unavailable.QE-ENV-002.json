@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "QE-ENV-002",
+  "category": "unavailable",
+  "message": "processes asked for and no mpirun in this agent's environment",
+  "retryable": false,
+  "remediation": {
+    "action": "call with n_processes null, or remake the environment"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "QE-PSEUDO-003",
+  "category": "invalid_input",
+  "message": "a pseudopotential is there with other bytes",
+  "retryable": false,
+  "remediation": {
+    "action": "a person removes it or names why it differs; this agent writes no file over it"
+  }
+}

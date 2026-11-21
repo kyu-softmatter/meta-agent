@@ -1,0 +1,641 @@
+{
+  "schema_version": "0.1",
+  "note": "Authoritative unit registry, in soft-matter-agents' shape: multiplicative, si_factor converts to SI base units, dim is the dimension vector (L length, T time, M mass, Th temperature, A angle, N count, I electric current). Offset units (Celsius, Fahrenheit) are not registered: temperature is carried in kelvin and a reading given in Celsius is noted on the number. Rheology units (Pa, Pa.s, 1/s, N.m, rad/s) are here from the start because the first testbed is the rheometer and a rheology engine (plan.md 10). kDa is 1000 g/mol, so its si_factor is 1.0 kg/mol. Added 2026-11-16 (tasks/016), asked twice by sessions that built an engine agent: engine_length, for an engine's own lengths, and id, for a number that names and does not measure; neither has an si_factor. Added 2026-11-17 (tasks/016, run 20261117-4): engine_length^3, a volume in the engine's own units. Added 2026-11-17 (tasks/016, the person's word relayed from the clone of run 20261117-3): engine_energy, engine_time, engine_mass, engine_drag, engine_viscosity and engine_diffusivity, an engine's own units of each, none with an si_factor. engine_length^2 added the same day, for a mean squared displacement. Added 2026-11-17 (tasks/021, failure em-4; the paper-reproduction clone of run 20261117-11 asked for a speed): 1/engine_time, 1/engine_length and engine_length/engine_time, none with an si_factor. Added 2026-11-17 (tasks/018, dft-1, on the person's word '여기서 진행'): eV and Ry, the energies Quantum ESPRESSO's pw.x prints, each with its factor to joules read from NIST's CODATA 2022 values and cited in its own note. Added 2026-11-17 (tasks/017, failure gmx-1, run molecular-dynamics/20261117-16): ps, bar, 1/bar, kJ/(mol.nm), kJ/(mol.nm^2) and e, each with its exact factor. Added 2026-11-20 (tasks/031, the bridge; failure dftmd-1, run multiscale/20261120-3): Angstrom, bohr (CODATA 2022, cited in its note) and 1/cm; Ry/bohr, Ry/bohr^2 and eV/Angstrom^2, each a derived unit that names its parts under derived_from, its si_factor and dim computed from them by contracts/tools/units.py and recomputed by its check; and engine_energy/engine_length^2, with no si_factor. Added 2026-11-20 (tasks/031, the person's word relayed by note 20261120-meta-macbook-20261120-3-1): Da, the unified atomic mass unit, a mass (CODATA 2022, cited in its note). A value goes from one unit to another only through contracts/tools/units.py, between units of one dimension; into an engine's own unit only through a scale the person confirmed.",
+  "dimensions": {
+    "L": "length",
+    "T": "time",
+    "M": "mass",
+    "Th": "thermodynamic temperature",
+    "A": "plane angle",
+    "N": "amount or count",
+    "I": "electric current"
+  },
+  "units": {
+    "1": {
+      "si_factor": 1.0,
+      "dim": {}
+    },
+    "%": {
+      "si_factor": 0.01,
+      "dim": {}
+    },
+    "ppm": {
+      "si_factor": 1e-06,
+      "dim": {}
+    },
+    "count": {
+      "si_factor": 1.0,
+      "dim": {
+        "N": 1
+      }
+    },
+    "mol": {
+      "si_factor": 1.0,
+      "dim": {
+        "N": 1
+      }
+    },
+    "m": {
+      "si_factor": 1.0,
+      "dim": {
+        "L": 1
+      }
+    },
+    "cm": {
+      "si_factor": 0.01,
+      "dim": {
+        "L": 1
+      }
+    },
+    "mm": {
+      "si_factor": 0.001,
+      "dim": {
+        "L": 1
+      }
+    },
+    "um": {
+      "si_factor": 1e-06,
+      "dim": {
+        "L": 1
+      }
+    },
+    "nm": {
+      "si_factor": 1e-09,
+      "dim": {
+        "L": 1
+      }
+    },
+    "m^2": {
+      "si_factor": 1.0,
+      "dim": {
+        "L": 2
+      }
+    },
+    "m^3": {
+      "si_factor": 1.0,
+      "dim": {
+        "L": 3
+      }
+    },
+    "L": {
+      "si_factor": 0.001,
+      "dim": {
+        "L": 3
+      }
+    },
+    "mL": {
+      "si_factor": 1e-06,
+      "dim": {
+        "L": 3
+      }
+    },
+    "uL": {
+      "si_factor": 1e-09,
+      "dim": {
+        "L": 3
+      }
+    },
+    "s": {
+      "si_factor": 1.0,
+      "dim": {
+        "T": 1
+      }
+    },
+    "ms": {
+      "si_factor": 0.001,
+      "dim": {
+        "T": 1
+      }
+    },
+    "us": {
+      "si_factor": 1e-06,
+      "dim": {
+        "T": 1
+      }
+    },
+    "min": {
+      "si_factor": 60.0,
+      "dim": {
+        "T": 1
+      }
+    },
+    "h": {
+      "si_factor": 3600.0,
+      "dim": {
+        "T": 1
+      }
+    },
+    "kg": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1
+      }
+    },
+    "g": {
+      "si_factor": 0.001,
+      "dim": {
+        "M": 1
+      }
+    },
+    "mg": {
+      "si_factor": 1e-06,
+      "dim": {
+        "M": 1
+      }
+    },
+    "K": {
+      "si_factor": 1.0,
+      "dim": {
+        "Th": 1
+      }
+    },
+    "rad": {
+      "si_factor": 1.0,
+      "dim": {
+        "A": 1
+      }
+    },
+    "deg": {
+      "si_factor": 0.017453292519943295,
+      "dim": {
+        "A": 1
+      }
+    },
+    "Hz": {
+      "si_factor": 1.0,
+      "dim": {
+        "T": -1
+      }
+    },
+    "1/s": {
+      "si_factor": 1.0,
+      "dim": {
+        "T": -1
+      }
+    },
+    "rad/s": {
+      "si_factor": 1.0,
+      "dim": {
+        "A": 1,
+        "T": -1
+      }
+    },
+    "rpm": {
+      "si_factor": 0.10471975511965977,
+      "dim": {
+        "A": 1,
+        "T": -1
+      }
+    },
+    "m/s": {
+      "si_factor": 1.0,
+      "dim": {
+        "L": 1,
+        "T": -1
+      }
+    },
+    "m/s^2": {
+      "si_factor": 1.0,
+      "dim": {
+        "L": 1,
+        "T": -2
+      }
+    },
+    "m^2/s": {
+      "si_factor": 1.0,
+      "dim": {
+        "L": 2,
+        "T": -1
+      }
+    },
+    "kg/m^3": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": -3
+      }
+    },
+    "g/cm^3": {
+      "si_factor": 1000.0,
+      "dim": {
+        "M": 1,
+        "L": -3
+      }
+    },
+    "g/mL": {
+      "si_factor": 1000.0,
+      "dim": {
+        "M": 1,
+        "L": -3
+      }
+    },
+    "mol/L": {
+      "si_factor": 1000.0,
+      "dim": {
+        "N": 1,
+        "L": -3
+      }
+    },
+    "g/mol": {
+      "si_factor": 0.001,
+      "dim": {
+        "M": 1,
+        "N": -1
+      }
+    },
+    "kDa": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "N": -1
+      }
+    },
+    "N": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": 1,
+        "T": -2
+      }
+    },
+    "mN": {
+      "si_factor": 0.001,
+      "dim": {
+        "M": 1,
+        "L": 1,
+        "T": -2
+      }
+    },
+    "N.m": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2
+      }
+    },
+    "mN.m": {
+      "si_factor": 0.001,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2
+      }
+    },
+    "uN.m": {
+      "si_factor": 1e-06,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2
+      }
+    },
+    "Pa": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -2
+      }
+    },
+    "kPa": {
+      "si_factor": 1000.0,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -2
+      }
+    },
+    "MPa": {
+      "si_factor": 1000000.0,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -2
+      }
+    },
+    "Pa.s": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -1
+      }
+    },
+    "mPa.s": {
+      "si_factor": 0.001,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -1
+      }
+    },
+    "N/m": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "T": -2
+      }
+    },
+    "mN/m": {
+      "si_factor": 0.001,
+      "dim": {
+        "M": 1,
+        "T": -2
+      }
+    },
+    "J": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2
+      }
+    },
+    "kJ/mol": {
+      "si_factor": 1000.0,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2,
+        "N": -1
+      }
+    },
+    "kcal/mol": {
+      "si_factor": 4184.0,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2,
+        "N": -1
+      }
+    },
+    "W": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -3
+      }
+    },
+    "V": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -3,
+        "I": -1
+      }
+    },
+    "A": {
+      "si_factor": 1.0,
+      "dim": {
+        "I": 1
+      }
+    },
+    "1/K": {
+      "si_factor": 1.0,
+      "dim": {
+        "Th": -1
+      }
+    },
+    "engine_length": {
+      "si_factor": null,
+      "dim": {
+        "L": 1
+      },
+      "note": "a length in an engine's own self-consistent units (HOOMD-blue's, a Lennard-Jones sigma); it has a length's dimension and no factor to metres until a request names the length scale, and a number in it is never converted by hand"
+    },
+    "engine_length^2": {
+      "si_factor": null,
+      "dim": {
+        "L": 2
+      },
+      "note": "an area in an engine's own units, the square of engine_length (a mean squared displacement)"
+    },
+    "engine_length^3": {
+      "si_factor": null,
+      "dim": {
+        "L": 3
+      },
+      "note": "a volume in an engine's own self-consistent units, the cube of engine_length (a particle's volume in HOOMD-blue's units); like engine_length it has no factor to cubic metres until a request names the length scale"
+    },
+    "engine_energy": {
+      "si_factor": null,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2
+      },
+      "note": "an energy in an engine's own self-consistent units (HOOMD-blue's kT, a Lennard-Jones epsilon); no factor to joules until a request names the energy scale"
+    },
+    "engine_time": {
+      "si_factor": null,
+      "dim": {
+        "T": 1
+      },
+      "note": "a time in an engine's own units (a step's dt, a lag); no factor to seconds until a request names the time scale"
+    },
+    "engine_mass": {
+      "si_factor": null,
+      "dim": {
+        "M": 1
+      },
+      "note": "a mass in an engine's own units (a particle's mass); no factor to kilograms until a request names the mass scale"
+    },
+    "engine_drag": {
+      "si_factor": null,
+      "dim": {
+        "M": 1,
+        "T": -1
+      },
+      "note": "a drag coefficient in an engine's own units, mass over time (HOOMD-blue's gamma of Brownian and Langevin dynamics)"
+    },
+    "engine_viscosity": {
+      "si_factor": null,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -1
+      },
+      "note": "a viscosity in an engine's own units, mass over length and time (the eta of a Stokes drag 3 pi eta d)"
+    },
+    "engine_diffusivity": {
+      "si_factor": null,
+      "dim": {
+        "L": 2,
+        "T": -1
+      },
+      "note": "a diffusion coefficient in an engine's own units, length squared over time"
+    },
+    "id": {
+      "si_factor": null,
+      "dim": {},
+      "note": "an identifier written as a number, such as a random seed: it is set and compared, never added, scaled or converted"
+    },
+    "1/engine_time": {
+      "si_factor": null,
+      "dim": {
+        "T": -1
+      },
+      "note": "a frequency or a rate in an engine's own units, the inverse of engine_time (Meep's frequency, in units of the speed of light over its unit length)"
+    },
+    "1/engine_length": {
+      "si_factor": null,
+      "dim": {
+        "L": -1
+      },
+      "note": "a count per engine_length (Meep's resolution, pixels per unit length); no factor to inverse metres until a request names the length scale"
+    },
+    "engine_length/engine_time": {
+      "si_factor": null,
+      "dim": {
+        "L": 1,
+        "T": -1
+      },
+      "note": "a speed in an engine's own units"
+    },
+    "eV": {
+      "si_factor": 1.602176634e-19,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2
+      },
+      "note": "the electron volt; its value in joules is exact, read from NIST's CODATA 2022 recommended values (https://physics.nist.gov/cgi-bin/cuu/Value?evj, read 2026-11-17). Quantum ESPRESSO's pw.x prints the Fermi energy and the highest occupied level in it."
+    },
+    "Ry": {
+      "si_factor": 2.179872361103e-18,
+      "dim": {
+        "M": 1,
+        "L": 2,
+        "T": -2
+      },
+      "note": "the Rydberg unit of energy, the Rydberg constant times hc, read from NIST's CODATA 2022 recommended values (https://physics.nist.gov/cgi-bin/cuu/Value?rydhcj, read 2026-11-17): 2.179 872 361 1030(24) x 10^-18 J, relative standard uncertainty 1.1e-12. Quantum ESPRESSO's pw.x prints the total energy in it."
+    },
+    "ps": {
+      "si_factor": 1e-12,
+      "dim": {
+        "T": 1
+      }
+    },
+    "bar": {
+      "si_factor": 100000.0,
+      "dim": {
+        "M": 1,
+        "L": -1,
+        "T": -2
+      },
+      "note": "exactly 100000 Pa by definition"
+    },
+    "1/bar": {
+      "si_factor": 1e-05,
+      "dim": {
+        "M": -1,
+        "L": 1,
+        "T": 2
+      },
+      "note": "a compressibility per bar"
+    },
+    "kJ/(mol.nm)": {
+      "si_factor": 1000000000000.0,
+      "dim": {
+        "M": 1,
+        "L": 1,
+        "T": -2,
+        "N": -1
+      },
+      "note": "a force per mole, as GROMACS states a force"
+    },
+    "kJ/(mol.nm^2)": {
+      "si_factor": 1e+21,
+      "dim": {
+        "M": 1,
+        "T": -2,
+        "N": -1
+      },
+      "note": "a force constant per mole, as GROMACS states a bond's or a restraint's"
+    },
+    "e": {
+      "si_factor": 1.602176634e-19,
+      "dim": {
+        "I": 1,
+        "T": 1
+      },
+      "note": "the elementary charge, a charge in coulombs exact by the SI's definition (the same constant as the eV's entry, read from NIST's CODATA 2022 values); molecular engines state partial charges in it"
+    },
+    "Angstrom": {
+      "si_factor": 1e-10,
+      "dim": {
+        "L": 1
+      },
+      "note": "the angstrom, 10^-10 m exactly by its definition; published bond lengths and HOOMD-blue's length scales are often stated in it (tasks/031, dftmd-1)"
+    },
+    "bohr": {
+      "si_factor": 5.29177210544e-11,
+      "dim": {
+        "L": 1
+      },
+      "note": "the Bohr radius, the atomic unit of length, read from NIST's CODATA 2022 recommended values (https://physics.nist.gov/cgi-bin/cuu/Value?bohrrada0, read 2026-11-20): 5.291 772 105 44(82) x 10^-11 m, relative standard uncertainty 1.6e-10. Quantum ESPRESSO's pw.x states positions and the cell in it (tasks/031, dftmd-1)"
+    },
+    "1/cm": {
+      "si_factor": 100.0,
+      "dim": {
+        "L": -1
+      },
+      "note": "the wavenumber, exactly 100 per metre; spectroscopic constants of a diatomic molecule (a vibrational frequency) are published in it (tasks/031, dftmd-1)"
+    },
+    "Ry/bohr": {
+      "si_factor": 4.119361751920623e-08,
+      "dim": {
+        "M": 1,
+        "L": 1,
+        "T": -2
+      },
+      "derived_from": {
+        "Ry": 1,
+        "bohr": -1
+      },
+      "note": "a force in atomic units, as Quantum ESPRESSO's pw.x prints forces; its factor and dimension are its parts', recomputed by contracts/tools/units.py check (tasks/031, dftmd-1)"
+    },
+    "Ry/bohr^2": {
+      "si_factor": 778.4465524669654,
+      "dim": {
+        "M": 1,
+        "T": -2
+      },
+      "derived_from": {
+        "Ry": 1,
+        "bohr": -2
+      },
+      "note": "a force constant in atomic units, the curvature of a pw.x energy along a bond; its factor and dimension are its parts', recomputed by contracts/tools/units.py check (tasks/031, dftmd-1)"
+    },
+    "eV/Angstrom^2": {
+      "si_factor": 16.02176634,
+      "dim": {
+        "M": 1,
+        "T": -2
+      },
+      "derived_from": {
+        "eV": 1,
+        "Angstrom": -2
+      },
+      "note": "a force constant in electron volts per square angstrom, the unit an MD engine's bond constant stands for when its energy scale is the eV and its length scale the angstrom; its factor and dimension are its parts', recomputed by contracts/tools/units.py check (tasks/031)"
+    },
+    "engine_energy/engine_length^2": {
+      "si_factor": null,
+      "dim": {
+        "M": 1,
+        "T": -2
+      },
+      "note": "a force constant in an engine's own self-consistent units (HOOMD-blue's md.bond.Harmonic k); no factor until a scale the person confirmed for the bundle says which registered unit it stands for (tasks/031)"
+    },
+    "Da": {
+      "si_factor": 1.66053906892e-27,
+      "dim": {
+        "M": 1
+      },
+      "note": "the dalton, the unified atomic mass unit, a mass; read from NIST's CODATA 2022 recommended values (https://physics.nist.gov/cgi-bin/cuu/Value?ukg, read 2026-11-20): 1.660 539 068 92(52) x 10^-27 kg, relative standard uncertainty 3.1e-10. Unlike kDa above, which is a molar mass, Da is the mass of one particle; the HOOMD-blue agent of the H2 bond's engine_mass stands for it on the person's word (tasks/031, docs/ideas/20261120.md)"
+    }
+  }
+}

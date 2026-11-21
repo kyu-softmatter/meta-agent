@@ -1,0 +1,41 @@
+{
+  "card": "build",
+  "schema_version": "0.1",
+  "id": "build-qe-h2-bond-0003",
+  "rid": "req-qe-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T02:38:10Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "spec_ref": "spec-qe-h2-bond-001",
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "template_version": "agent@7c84b781043a",
+  "diff_from_template": "diff_from_template.txt",
+  "bundle_path": "meta_agent/builds/qe-h2-bond/0003/bundle",
+  "bundle_sha256": "sha256:6b6ef7a9b7383c9d9225f1d3ef1a7cc2c9aeac2137a8376b55071f8a7efd398f",
+  "held": [
+    {
+      "item": "the comparison of the fitted rest length with NIST's measured r_e as a scientific task",
+      "reason": "the standing rule needs suitable materials (published PBE values for H2) for a span; none was searched in this build"
+    }
+  ],
+  "gate_verdict": {
+    "interface": "pass",
+    "scientific": "not_run",
+    "validation_report_ref": "vr-qe-h2-bond-0003"
+  },
+  "lineage": {
+    "parent_build": "build-qe-h2-bond-0002",
+    "candidate_of": 1,
+    "k": 1
+  },
+  "landed_at": null,
+  "note": "replay: 1 item(s), all as expected; hand-over (landed_at) is the person's; rebuilt from spec-qe-h2-bond-001 revision 1, unchanged, and the intake's revision 4, on template agent@7c84b781043a where build-qe-h2-bond-0002 was built on agent@ca403627bcae; the specification's boundary axis still names the first build's directory"
+}

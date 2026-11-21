@@ -1,0 +1,337 @@
+[
+ {
+  "name": "a benchmark's largest drag coefficient: one range its authors state and two later computed values inside it",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "entries": [
+    {
+     "material": "meta_agent/inbox/materials/20261118-schaefer-turek-1996-dfg-benchmark/v2_RETRIEVED.json",
+     "compares": "the same system and quantity: the paper that defines the case; a range its authors estimated from several groups' codes, none the task's engine; it leaves the outflow condition to the user",
+     "low": 2.93,
+     "high": 2.97
+    },
+    {
+     "material": "meta_agent/inbox/materials/20261118-john-2004-dfg-reference-values/v2_RETRIEVED.json",
+     "compares": "a similar system, the same quantity: the same channel, cylinder and inflow with the velocity profile prescribed at the outflow too, where the task's outlet is free; another finite element code",
+     "value": 2.950921575
+    },
+    {
+     "material": "meta_agent/inbox/materials/20261119-featflow-dfg-2d3-results/RETRIEVED.json",
+     "compares": "the same system and quantity: the case with a do-nothing outflow, as the task's free outlet is read to be; another finite element code, the finest of its six levels, no error stated",
+     "value": 2.9437637214
+    }
+   ]
+  },
+  "expect": {
+   "low": 2.93,
+   "high": 2.97,
+   "lowest_from": "meta_agent/inbox/materials/20261118-schaefer-turek-1996-dfg-benchmark/v2_RETRIEVED.json",
+   "highest_from": "meta_agent/inbox/materials/20261118-schaefer-turek-1996-dfg-benchmark/v2_RETRIEVED.json",
+   "values": 2,
+   "ranges": 1,
+   "why": null
+  },
+  "worked": "the edges and values are 2.93, 2.97, 2.950921575 and 2.9437637214; the lowest is 2.93 and the highest 2.97, both edges of the stated range, and the two values lie inside it"
+ },
+ {
+  "name": "the time of that largest drag: two computed values and no stated range",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "entries": [
+    {
+     "material": "meta_agent/inbox/materials/20261118-john-2004-dfg-reference-values/v2_RETRIEVED.json",
+     "compares": "a similar system, the same quantity: the same channel, cylinder and inflow with the velocity profile prescribed at the outflow too, where the task's outlet is free; another finite element code; the time is a multiple of its time step",
+     "value": 3.93625
+    },
+    {
+     "material": "meta_agent/inbox/materials/20261119-featflow-dfg-2d3-results/RETRIEVED.json",
+     "compares": "the same system and quantity: the case with a do-nothing outflow, as the task's free outlet is read to be; another finite element code, the finest of its six levels, no error stated; the time is a multiple of its time step",
+     "value": 3.9365625
+    }
+   ]
+  },
+  "expect": {
+   "low": 3.93625,
+   "high": 3.9365625,
+   "lowest_from": "meta_agent/inbox/materials/20261118-john-2004-dfg-reference-values/v2_RETRIEVED.json",
+   "highest_from": "meta_agent/inbox/materials/20261119-featflow-dfg-2d3-results/RETRIEVED.json",
+   "values": 2,
+   "ranges": 0,
+   "why": null
+  },
+  "worked": "two values, 3.93625 and 3.9365625: the lower is the low edge and the higher the high edge"
+ },
+ {
+  "name": "a liquid's viscosity at one temperature from two reference works",
+  "system": "a measured property of a liquid",
+  "inputs": {
+   "entries": [
+    {
+     "material": "meta_agent/inbox/materials/20261109-kestin-1978-water-viscosity/RETRIEVED.json",
+     "compares": "the same system and quantity: the dynamic viscosity of liquid water at 25 degrees Celsius and essentially atmospheric pressure; a table of standard values from a correlation of measurements, no engine",
+     "value": 0.0008902
+    },
+    {
+     "material": "meta_agent/inbox/materials/20261109-iapws-sr6-08-liquid-water/RETRIEVED.json",
+     "compares": "the same system and quantity: the dynamic viscosity of liquid water at 298.15 K and 0.1 MPa; the check value of a release's formulation, no engine",
+     "value": 0.000889996774
+    }
+   ]
+  },
+  "expect": {
+   "low": 0.000889996774,
+   "high": 0.0008902,
+   "lowest_from": "meta_agent/inbox/materials/20261109-iapws-sr6-08-liquid-water/RETRIEVED.json",
+   "highest_from": "meta_agent/inbox/materials/20261109-kestin-1978-water-viscosity/RETRIEVED.json",
+   "values": 2,
+   "ranges": 0,
+   "why": null
+  },
+  "worked": "two values in Pa.s, 0.0008902 and 0.000889996774: the lower is the second, the higher the first"
+ },
+ {
+  "name": "a count a set-up tool adds, published once: one value and no stated range is no span",
+  "system": "a molecular dynamics simulation",
+  "inputs": {
+   "entries": [
+    {
+     "material": "meta_agent/inbox/materials/20261119-mdtutorials-lysozyme-03-solvate/v2_RETRIEVED.json",
+     "compares": "the same system, quantity and engine: the tutorial the task follows, one run of its author; its version and computer are not stated",
+     "value": 12596
+    }
+   ]
+  },
+  "expect": {
+   "low": null,
+   "high": null,
+   "lowest_from": null,
+   "highest_from": null,
+   "values": 1,
+   "ranges": 0
+  },
+  "worked": "one value, 12596, and no range: fewer than two values and no stated range, so nothing is given and the rule's next branch applies"
+ },
+ {
+  "name": "one stated range alone is the span",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "entries": [
+    {
+     "material": "meta_agent/inbox/materials/20261118-schaefer-turek-1996-dfg-benchmark/v2_RETRIEVED.json",
+     "compares": "the same system and quantity: the paper that defines the case; a range its authors estimated from several groups' codes, none the task's engine; it leaves the outflow condition to the user",
+     "low": 2.93,
+     "high": 2.97
+    }
+   ]
+  },
+  "expect": {
+   "low": 2.93,
+   "high": 2.97,
+   "lowest_from": "meta_agent/inbox/materials/20261118-schaefer-turek-1996-dfg-benchmark/v2_RETRIEVED.json",
+   "highest_from": "meta_agent/inbox/materials/20261118-schaefer-turek-1996-dfg-benchmark/v2_RETRIEVED.json",
+   "values": 0,
+   "ranges": 1,
+   "why": null
+  },
+  "worked": "one range and no value: its edges 2.93 and 2.97 are the span"
+ },
+ {
+  "name": "an entry that does not say how its material compares: no span at all",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "entries": [
+    {
+     "material": "meta_agent/inbox/materials/20261118-john-2004-dfg-reference-values/v2_RETRIEVED.json",
+     "compares": "a similar system, the same quantity: the same channel, cylinder and inflow with the velocity profile prescribed at the outflow too, where the task's outlet is free; another finite element code",
+     "value": 2.950921575
+    },
+    {
+     "material": "meta_agent/inbox/materials/20261119-featflow-dfg-2d3-results/RETRIEVED.json",
+     "compares": "",
+     "value": 2.9437637214
+    }
+   ]
+  },
+  "expect": {
+   "low": null,
+   "high": null,
+   "values": 0,
+   "ranges": 0
+  },
+  "worked": "the second entry's compares is empty, so nothing is counted and no span is given, though two values were handed"
+ },
+ {
+  "name": "no material found: no span",
+  "system": "a molecular dynamics simulation",
+  "inputs": {
+   "entries": []
+  },
+  "expect": {
+   "low": null,
+   "high": null,
+   "values": 0,
+   "ranges": 0
+  },
+  "worked": "no entry: fewer than two values and no stated range"
+ },
+ {
+  "name": "the largest drag coefficient again, the later reference value now with the bound its paper states: the span is still the stated range",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "entries": [
+    {
+     "material": "meta_agent/inbox/materials/20261118-schaefer-turek-1996-dfg-benchmark/MATERIAL.json",
+     "compares": "the same system and quantity: the paper that defines the case; a range its authors estimated from several groups' codes, none the task's engine; it leaves the outflow condition to the user",
+     "low": 2.93,
+     "high": 2.97
+    },
+    {
+     "material": "meta_agent/inbox/materials/20261118-john-2004-dfg-reference-values/MATERIAL.json",
+     "compares": "a similar system, the same quantity: the same channel, cylinder and inflow with the velocity profile prescribed at the outflow too, where the task's outlet is free; another finite element code; the uncertainty is a bound the paper states in words for its reference value, deduced from its four finest runs",
+     "value": 2.950921575,
+     "uncertainty": 5e-07
+    },
+    {
+     "material": "meta_agent/inbox/materials/20261119-featflow-dfg-2d3-results/MATERIAL.json",
+     "compares": "the same system and quantity: the case with a do-nothing outflow, as the task's free outlet is read to be; another finite element code, the finest of its six levels, no error stated",
+     "value": 2.9437637214
+    }
+   ]
+  },
+  "expect": {
+   "low": 2.93,
+   "high": 2.97,
+   "lowest_from": "meta_agent/inbox/materials/20261118-schaefer-turek-1996-dfg-benchmark/MATERIAL.json",
+   "highest_from": "meta_agent/inbox/materials/20261118-schaefer-turek-1996-dfg-benchmark/MATERIAL.json",
+   "values": 1,
+   "ranges": 2,
+   "why": null
+  },
+  "worked": "2.950921575 less and plus 0.0000005 is 2.950921075 and 2.950922075; with 2.93, 2.97 and 2.9437637214 the lowest is 2.93 and the highest 2.97; one value alone and two stated ranges"
+ },
+ {
+  "name": "one value with its stated bound is one stated range and gives a span by itself",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "entries": [
+    {
+     "material": "meta_agent/inbox/materials/20261118-john-2004-dfg-reference-values/MATERIAL.json",
+     "compares": "a similar system, the same quantity: the same channel, cylinder and inflow with the velocity profile prescribed at the outflow too, where the task's outlet is free; another finite element code; the uncertainty is a bound the paper states in words for its reference value, deduced from its four finest runs",
+     "value": 2.950921575,
+     "uncertainty": 5e-07
+    }
+   ]
+  },
+  "expect": {
+   "low": 2.950921075,
+   "high": 2.950922075,
+   "lowest_from": "meta_agent/inbox/materials/20261118-john-2004-dfg-reference-values/MATERIAL.json",
+   "highest_from": "meta_agent/inbox/materials/20261118-john-2004-dfg-reference-values/MATERIAL.json",
+   "values": 0,
+   "ranges": 1,
+   "why": null
+  },
+  "worked": "2.950921575 - 0.0000005 = 2.950921075 and 2.950921575 + 0.0000005 = 2.950922075"
+ },
+ {
+  "name": "a free energy quoted twice, once with an uncertainty: the uncertainty sets the low edge",
+  "system": "a molecular dynamics simulation",
+  "inputs": {
+   "entries": [
+    {
+     "material": "meta_agent/inbox/materials/20261119-lemkul-livecoms-gromacs-tutorials/MATERIAL.json",
+     "compares": "the same system and quantity by name: the hydration free energy of ethanol; a value the article quotes from another paper, which was not followed to that paper; an experimental value, given with no uncertainty",
+     "value": -5.01
+    },
+    {
+     "material": "meta_agent/inbox/materials/20261119-lemkul-livecoms-gromacs-tutorials/MATERIAL.json",
+     "compares": "the same system and quantity by name: the hydration free energy of ethanol; a value the article quotes from another paper, which was not followed to that paper; computed with another force field in another study, no engine named; the kind of its uncertainty is not said",
+     "value": -5.34,
+     "uncertainty": 0.12
+    }
+   ]
+  },
+  "expect": {
+   "low": -5.46,
+   "high": -5.01,
+   "lowest_from": "meta_agent/inbox/materials/20261119-lemkul-livecoms-gromacs-tutorials/MATERIAL.json",
+   "highest_from": "meta_agent/inbox/materials/20261119-lemkul-livecoms-gromacs-tutorials/MATERIAL.json",
+   "values": 1,
+   "ranges": 1,
+   "why": null
+  },
+  "worked": "in kcal/mol: -5.34 less 0.12 is -5.46 and plus 0.12 is -5.22; with -5.01 the lowest is -5.46 and the highest -5.01"
+ },
+ {
+  "name": "a computed free energy with the error its analysis prints: a span by itself",
+  "system": "a molecular dynamics simulation",
+  "inputs": {
+   "entries": [
+    {
+     "material": "meta_agent/inbox/materials/20261119-lemkul-livecoms-gromacs-tutorials/MATERIAL.json",
+     "compares": "the same system, quantity and engine as a task that follows this tutorial: the hydration free energy of ethanol, the article's own run analysed by the engine's own tool; the uncertainty is the error that tool prints, its kind not said in the article",
+     "value": -17.8,
+     "uncertainty": 0.2
+    }
+   ]
+  },
+  "expect": {
+   "low": -18.0,
+   "high": -17.6,
+   "lowest_from": "meta_agent/inbox/materials/20261119-lemkul-livecoms-gromacs-tutorials/MATERIAL.json",
+   "highest_from": "meta_agent/inbox/materials/20261119-lemkul-livecoms-gromacs-tutorials/MATERIAL.json",
+   "values": 0,
+   "ranges": 1,
+   "why": null
+  },
+  "worked": "in kJ/mol: -17.8 - 0.2 = -18.0 and -17.8 + 0.2 = -17.6"
+ },
+ {
+  "name": "an uncertainty below zero: no span at all",
+  "system": "a molecular dynamics simulation",
+  "inputs": {
+   "entries": [
+    {
+     "material": "meta_agent/inbox/materials/20261119-lemkul-livecoms-gromacs-tutorials/MATERIAL.json",
+     "compares": "the same system and quantity by name: the hydration free energy of ethanol; a value the article quotes from another paper, which was not followed to that paper",
+     "value": -5.01
+    },
+    {
+     "material": "meta_agent/inbox/materials/20261119-lemkul-livecoms-gromacs-tutorials/MATERIAL.json",
+     "compares": "the same system and quantity by name: the hydration free energy of ethanol; a value the article quotes from another paper, which was not followed to that paper",
+     "value": -5.34,
+     "uncertainty": -0.12
+    }
+   ]
+  },
+  "expect": {
+   "low": null,
+   "high": null,
+   "values": 0,
+   "ranges": 0
+  },
+  "worked": "the second entry's uncertainty is below zero, so nothing is counted and no span is given, though the first entry alone was sound"
+ },
+ {
+  "name": "an uncertainty beside a range belongs to no value: no span",
+  "system": "a fluid flow simulation",
+  "inputs": {
+   "entries": [
+    {
+     "material": "meta_agent/inbox/materials/20261118-schaefer-turek-1996-dfg-benchmark/MATERIAL.json",
+     "compares": "the same system and quantity: the paper that defines the case; a range its authors estimated from several groups' codes, none the task's engine; it leaves the outflow condition to the user",
+     "low": 2.93,
+     "high": 2.97,
+     "uncertainty": 0.01
+    }
+   ]
+  },
+  "expect": {
+   "low": null,
+   "high": null,
+   "values": 0,
+   "ranges": 0
+  },
+  "worked": "a range has its two edges and takes no uncertainty; nothing is given"
+ }
+]

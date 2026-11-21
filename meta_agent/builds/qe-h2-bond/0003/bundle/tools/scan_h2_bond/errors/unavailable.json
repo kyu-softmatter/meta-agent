@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "QE-ENV-001",
+  "category": "unavailable",
+  "message": "this agent's environment is not made",
+  "retryable": true,
+  "remediation": {
+    "action": "call install_environment first, then this call again"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "schema_version": "0.1",
+  "id": "literature_span",
+  "version": 2,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the span of one quantity across suitable materials, branch 3 of the person's standing rule for tolerances: the interval from the lowest to the highest of the values and stated error ranges the materials give, a value stated with an uncertainty entering as the value less and plus that uncertainty, each entry naming its material and how its system compares; no span from fewer than two values and no stated range",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "entries",
+      "unit": "1",
+      "meaning": "a list, one entry for each value or stated error range of the one quantity, every number in the quantity's unit. An entry is an object: material, the material card the number was read from (its path or id); compares, in words, how that material's system, quantity and engine compare with the task's, as written after classify-knowledge, and, where an uncertainty is given, what kind of uncertainty the material states (a standard deviation, an expanded uncertainty, a bound); and either value, one value the material gives for the quantity, with uncertainty beside it where the material states one for that value (a finite number not below zero, in the quantity's unit, as the material states it), or low and high, the two edges of one error range the material states, as it writes them"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "low",
+      "unit": "1",
+      "meaning": "the lowest of the values and range edges, in the quantity's unit: as its entry gave it, or the entry's value less its uncertainty; null, with why, where there is no span"
+    },
+    {
+      "name": "high",
+      "unit": "1",
+      "meaning": "the highest of the values and range edges, in the quantity's unit: as its entry gave it, or the entry's value plus its uncertainty; null where there is no span"
+    },
+    {
+      "name": "lowest_from",
+      "unit": "1",
+      "meaning": "the material of the entry that gave the lowest; where two entries hold it, the first handed"
+    },
+    {
+      "name": "highest_from",
+      "unit": "1",
+      "meaning": "the material of the entry that gave the highest; where two entries hold it, the first handed"
+    },
+    {
+      "name": "values",
+      "unit": "count",
+      "meaning": "how many entries gave one value with no uncertainty"
+    },
+    {
+      "name": "ranges",
+      "unit": "count",
+      "meaning": "how many entries gave a stated range: two edges, or one value with its stated uncertainty"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why there is no span; else null"
+    }
+  ],
+  "entry": {
+    "script": "scripts/analysis.py",
+    "function": "analysis"
+  },
+  "validity": "one quantity, every entry in one unit: the skill converts nothing and cannot see a unit, so an entry in another unit is the reader's to convert through a skill first. Which materials are suitable, which of a material's numbers is its value for the quantity (its own result, not every row of its refinement study or of the solutions it collects), and whether two materials mean the same quantity are the reader's to say, in each entry's compares, after classify-knowledge; the skill takes the words as handed and refuses only their absence. A value a material states with an uncertainty enters as the range from the value less that uncertainty to the value plus it (the person, 2026-11-19, 'Widen by uncertainty'): the uncertainty is taken as the material states it, with no multiplier and no change of its kind, so a standard deviation and an expanded uncertainty enter alike and the entry's compares says which it is; an uncertainty stated relative to the value, or in another unit, is the reader's to bring to the quantity's unit through a skill first; an uncertainty of zero gives a range of no width, which still counts as a stated range. One value with its uncertainty is one stated range and gives a span by itself. Two materials that quote one number are one value, which the reader leaves out, not the skill. Two equal values give a span of no width. It judges nothing: the span is an acceptance interval only as the rule's next skill and the person's standing rule take it, a tolerance the person gave overrides it, and a pass the person gave by judgement stays as it is",
+  "source": {
+    "citation": "by definition, the person's standing rule for tolerances, branch 3 (docs/ideas/20261118.md, 'Tolerances from the span of comparable published values': 'Yes, add literature span', 'Min-max of values'; docs/ideas/20261119.md, 'What the literature-span skill is for, and what it may draw on': 'Yes, widen it', and 'A source's stated uncertainty widens the span': 'Widen by uncertainty'; the root CLAUDE.md)",
+    "locus": "the span is the interval [lowest, highest] of the values or stated error ranges in suitable materials, each a material card saying how its system compares; it is not a standard deviation or any other statistic of their spread, and no multiplier enters it; where the materials give nothing the rule's next branch applies; a value its source states with an uncertainty enters as the range from the value less that uncertainty to the value plus it, the uncertainty as the source states it"
+  },
+  "note": "v1 with a value's stated uncertainty (the design role's ask 20261119-design-macbook-20261117-1-4, on the person's 'Widen by uncertainty' of 2026-11-19; meta_agent/tasks/028): an entry with a value may carry uncertainty, and then enters as the value less and plus it and counts as one stated range. Every case of v1 gives the same here. General: any quantity of any engine or instrument (the person, 2026-11-19). The values of the worked cases are read from materials, each named in its entry. Those of v1: the maximal drag coefficient of the DFG 2D-3 flow around a cylinder and its time (Schaefer and Turek 1996, Table 5; V. John 2004, equation 8; the FeatFlow page of the case, level 6), the viscosity of liquid water at 25 degrees Celsius (Kestin, Sokolov and Wakeham 1978, Table 7; IAPWS SR6-08, Table 8, as the landed worked cases of water_viscosity_kestin_1978@v1 and water_viscosity_iapws_sr6@v1 give them, in Pa.s), and the water molecules the lysozyme tutorial's solvation adds, published once. New here, on two unrelated kinds: the bound V. John 2004 states for his reference value (the sentence after equation 8: its error to the true value is less than 5e-7), and the hydration free energy of ethanol in J. A. Lemkul's LiveCoMS article of GROMACS tutorials (Tutorial 5: the article's own result with the error its analysis prints, in kJ/mol, and the two values it quotes from other papers, one with an uncertainty, in kcal/mol, which were not followed to those papers), read by this seat on 2026-11-19. The relation itself is the person's definition and no source states a value of it: each case's arithmetic is in its worked field. Common: every simulation bundle carries it, and each worked case names the kind of system it is worked on. A span these cases show is a worked example and judges no build: the passes the person gave by judgement (docs/ideas/20261119.md) stay as they are.",
+  "cases": "cases.json",
+  "common": true
+}

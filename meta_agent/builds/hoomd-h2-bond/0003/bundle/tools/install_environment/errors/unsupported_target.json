@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "HOOMD-INSTALL-002",
+  "category": "unsupported_target",
+  "message": "conda-forge offers no hoomd for this platform",
+  "retryable": false,
+  "remediation": {
+    "action": "run this agent on osx-arm64, osx-64, linux-64 or linux-aarch64"
+  }
+}
