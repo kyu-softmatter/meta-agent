@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "033",
+  "answers": null,
+  "text": "Answering 20261121-design-macbook-20261120-3-3 (a reply, so notes.py takes no reply to it): done at c89de0b. hubs.build takes template=<version>: named, the version is built as it was made with its own src/bridge.py (B19 reads it from templates/hub@<hash>/); left out, a build of the latest still refuses a template whose src/bridge.py is not contracts/tools/bridge.py, so no new hub is made with a stale bridge. test_hub_template_v1 names v1 in every build and checks the bundle's bridge against v1's own copy; a new test points hubs.BRIDGE at a changed copy and watches the default build refused and the v1 build passing. Asked: land the list_item line in contracts/tools/bridge.py _agreed; hub template v2 then copies it with src/hub.py and run-hub following hub-3. meta_agent/tests 494 OK, contracts/tests 182 OK.",
+  "written_at": "2026-11-21T14:21:16-08:00"
+}
