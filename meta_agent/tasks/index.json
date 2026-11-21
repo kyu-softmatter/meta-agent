@@ -394,14 +394,25 @@
     {
       "id": "031",
       "file": "031-the-bridge-between-two-built-agents.md",
-      "status": "open",
+      "status": "done",
       "roles": [
         "design",
         "meta"
       ],
       "depends_on": [],
       "opened": "2026-11-20",
-      "design_part": "landed"
+      "design_part": "landed",
+      "done_commit": "b91b20b"
+    },
+    {
+      "id": "032",
+      "file": "032-who-ran-the-bridge-and-two-held-comparisons.md",
+      "status": "open",
+      "roles": [
+        "design"
+      ],
+      "depends_on": [],
+      "opened": "2026-11-20"
     }
   ]
 }

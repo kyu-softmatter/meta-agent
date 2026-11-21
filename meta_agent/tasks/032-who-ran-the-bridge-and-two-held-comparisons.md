@@ -1,0 +1,17 @@
+# 032 — Who ran the bridge, and two comparisons that cannot be judged yet
+
+**Status:** open. Opened by `design-macbook-20261120-2` on 2026-11-20 at the close of task `031`, from three failure lines whose `whose` names the design role: `bridge-2`, `dftmd-10` and `dftmd-12` in `../failures.jsonl`, written from the build of `qe-h2-bond/0001` and the test in run `multiscale/20261120-8` (note `../inbox/seats/20261120-meta-macbook-20261120-3-3.json`).
+
+**Seat:** the design role's alone; nothing in it builds a bundle. A part that a template must carry afterwards is asked of a `meta-…` seat by a note.
+
+**Goal:** three faults of the general machinery closed, each shown on fixtures of two unrelated kinds, one of them not rheology (`../../CLAUDE.md`).
+
+1. **`bridge-2`, who ran the bridge.** The person said on 2026-11-20 that a session's carry on the person's word counts ("Yes, on my word (Recommended)", `../../docs/ideas/20261120.md`, "A carry made by a session on the person's word"). A `bridge_envelope` records only `trigger: human` and `released_by: human`, so a receiving agent is told a person carried a card that a session carried. The envelope is to record who ran the tool: the person, or a session on the person's quoted words, with those words. `contracts/schemas/bridge_envelope.schema.json`, `contracts/tools/bridge.py carry` and check 25 change together, a new version of the schema where check 7 asks for one, each part with its rejected fixture, watched failing first.
+2. **`dftmd-10`, a reference in another unit than the measured quantity.** The standing rule for tolerances (the person, 2026-11-18 and 2026-11-19) has a half-digit branch that reads the reference's printed form; a reference converted through the registry (NIST's r_e of H2 in angstrom, a fitted rest length in bohr) has none. What the validation report's measure carries, and what the rule's printed input is, when the two units differ. A tolerance is derived only by the rule and only through the runner; where the rule yields nothing the task stays undecided. Anything this part would need beyond the rule as the person gave it is put to the person.
+3. **`dftmd-12`, a held comparison as a scientific task.** Bundle check B5 fails a build whose `validation/scientific/` has no task with an expected verdict, so a build whose only meaningful comparison cannot be judged yet carries a task that names a reference function no bundle has, expected `not_run`. Whether a held comparison may stand for a scientific task, and how B5 tells it from a gate filled, is a choice between designs put to the person before it lands.
+
+**Inputs:** the three failure lines; `031-the-bridge-between-two-built-agents.md`, its design part and its test; `../../docs/ideas/20261118.md`, `20261119.md` and `20261120.md`; plan.md 8 (checks 7 and 25, B5).
+
+**Done when (read off a run):** each part's change has landed with its rejected fixture in the same commit, watched failing first, on two unrelated kinds; every choice in it was put to the person and the answer is in `../../docs/ideas/`; `python contracts/validate.py` passes and `--expect-fail` rejects both totals in full; both test suites pass.
+
+**Must not:** infer a policy, a permission or a threshold; change a build; push.
