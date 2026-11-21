@@ -27,5 +27,10 @@
   },
   "trigger": "human",
   "released_by": "human",
-  "released_at": "2026-11-21T00:22:11Z"
+  "released_at": "2026-11-21T00:22:11Z",
+  "ran_by": {
+    "by": "session",
+    "session": "fixture-session-1",
+    "words": "fixture words: carry the H2 bond card to the HOOMD agent"
+  }
 }

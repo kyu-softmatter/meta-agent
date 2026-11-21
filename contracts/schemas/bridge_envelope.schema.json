@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://meta-agent.invalid/schemas/bridge_envelope.schema.json",
   "title": "bridge_envelope",
-  "description": "What the bridge writes beside the copy of a hand-over card in the receiver's inbox/<thread>/ (meta_agent/tasks/031; SMA's envelope, docs/reference/sma_read_20261108.md 6). It authors nothing: numbers is empty, author is bridge, the payload is the producer's file byte for byte and its hash is stated here. A card crosses only on the person's word (the person, 2026-11-20, 'Only on my word').",
+  "description": "What the bridge writes beside the copy of a hand-over card in the receiver's inbox/<thread>/ (meta_agent/tasks/031; SMA's envelope, docs/reference/sma_read_20261108.md 6). It authors nothing: numbers is empty, author is bridge, the payload is the producer's file byte for byte and its hash is stated here. A card crosses only on the person's word (the person, 2026-11-20, 'Only on my word'). A session may run the tool on the person's word for that crossing, and the envelope then says so and quotes the words (the person, 2026-11-20, 'Yes, on my word (Recommended)'; tasks/032, bridge-2).",
   "type": "object",
   "properties": {
     "card": {
@@ -176,6 +176,47 @@
     },
     "released_at": {
       "$ref": "common.schema.json#/$defs/datetime"
+    },
+    "ran_by": {
+      "description": "who ran contracts/tools/bridge.py carry: the person, or a session on the person's word for this crossing, the words quoted as the person said them; released_by stays human, the word being the person's either way (tasks/032, bridge-2)",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "by"
+          ],
+          "properties": {
+            "by": {
+              "const": "person"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "by",
+            "session",
+            "words"
+          ],
+          "properties": {
+            "by": {
+              "const": "session"
+            },
+            "session": {
+              "type": "string",
+              "minLength": 1,
+              "description": "the session that ran the tool, by the id or the name it is known by"
+            },
+            "words": {
+              "type": "string",
+              "minLength": 1,
+              "description": "the person's words to that session for this crossing, verbatim"
+            }
+          }
+        }
+      ]
     }
   },
   "required": [
@@ -195,7 +236,8 @@
     "payload",
     "trigger",
     "released_by",
-    "released_at"
+    "released_at",
+    "ran_by"
   ],
   "additionalProperties": false
 }

@@ -27,5 +27,8 @@
   },
   "trigger": "human",
   "released_by": "human",
-  "released_at": "2026-11-21T00:21:14Z"
+  "released_at": "2026-11-21T00:21:14Z",
+  "ran_by": {
+    "by": "person"
+  }
 }

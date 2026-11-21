@@ -2,12 +2,16 @@
 # -*- coding: utf-8 -*-
 """contracts/tools/bridge.py -- the bridge between two built agents (plan.md 10, M8; meta_agent/tasks/031).
 
-  python contracts/tools/bridge.py carry --card PRODUCER/outbox/NAME.json --to RECEIVER --released-by human
+  python contracts/tools/bridge.py carry --card PRODUCER/outbox/NAME.json --to RECEIVER --released-by human --ran-by person
+  python contracts/tools/bridge.py carry --card ... --to ... --released-by human --ran-by session --session ID --words "..."
   python contracts/tools/bridge.py board BUNDLE                      read only: what is in a bundle's outbox and inbox
 
 The person starts it ("Small tool, I start it", 2026-11-20, docs/ideas/20261120.md), and a card crosses only
 on the person's word ("Only on my word"): `carry` refuses unless --released-by is human, and the envelope says
-trigger human. It carries one hand-over card from the producing bundle's outbox/ into the receiving bundle's
+trigger human. A session may run it on the person's word for that crossing ("Yes, on my word
+(Recommended)", 2026-11-20; tasks/032, bridge-2), and the envelope says who ran it: --ran-by person, or
+--ran-by session with the session's id and the person's words to it, verbatim; `carry` refuses without them.
+It carries one hand-over card from the producing bundle's outbox/ into the receiving bundle's
 inbox/<thread>/, byte for byte, as r<N>_<name>.json, and writes beside it r<N>_envelope.json: author bridge,
 no numbers, the payload's hash, and the payload's degraded. Round N is one more than the thread's last.
 
@@ -45,10 +49,28 @@ def next_round(thread_dir):
     return (max(rounds) if rounds else 0) + 1
 
 
-def carry(card_path, receiver, released_by, now=None):
+def who_ran(ran_by):
+    """The envelope's ran_by, checked: {"by": "person"} or {"by": "session", "session": ID, "words": TEXT}."""
+    if not isinstance(ran_by, dict) or ran_by.get("by") not in ("person", "session"):
+        raise Refused("say who ran the bridge: --ran-by person, or --ran-by session --session ID --words TEXT")
+    if ran_by["by"] == "person":
+        if set(ran_by) != {"by"}:
+            raise Refused("a carry the person ran names no session and quotes no words")
+        return {"by": "person"}
+    session, words = ran_by.get("session"), ran_by.get("words")
+    if not (isinstance(session, str) and session.strip() and isinstance(words, str) and words.strip()):
+        raise Refused("a session runs the bridge only on the person's word for this crossing: give --session "
+                      "and the person's words, verbatim, with --words")
+    if set(ran_by) != {"by", "session", "words"}:
+        raise Refused("ran_by holds by, session and words only")
+    return {"by": "session", "session": session, "words": words}
+
+
+def carry(card_path, receiver, released_by, ran_by=None, now=None):
     """Carry one hand-over card; returns (envelope path, payload path). Raises Refused."""
     if released_by != "human":
         raise Refused("a card crosses only on the person's word: --released-by human")
+    ran_by = who_ran(ran_by)
     card_path = os.path.abspath(card_path)
     receiver = os.path.abspath(receiver)
     outbox = os.path.dirname(card_path)
@@ -94,7 +116,7 @@ def carry(card_path, receiver, released_by, now=None):
         "thread": thread, "round": rnd, "from": card["from"], "to": card["to"],
         "payload": {"file": payload_name, "card": "handover", "id": card["id"], "sha256": digest,
                     "origin": "outbox/" + os.path.basename(card_path)},
-        "trigger": "human", "released_by": "human", "released_at": when,
+        "trigger": "human", "released_by": "human", "released_at": when, "ran_by": ran_by,
     }
     with open(envelope_path, "w", encoding="utf-8") as f:
         f.write(json.dumps(envelope, indent=2, ensure_ascii=False) + "\n")
@@ -131,8 +153,11 @@ def board(bundle):
             ppath = os.path.join(tdir, pl.get("file", ""))
             same = os.path.isfile(ppath) and sha256_file(ppath) == pl.get("sha256")
             key = "inbox/%s/%s" % (thread, name)
-            lines.append("inbox    %s  %s  from %s  %s  receipts: %s" % (
-                key, pl.get("id"), (env.get("from") or {}).get("agent"),
+            rb = env.get("ran_by") or {}
+            ran = "ran by the person" if rb.get("by") == "person" else (
+                "ran by session %s on the person's words" % rb.get("session") if rb.get("by") == "session" else "who ran it unsaid")
+            lines.append("inbox    %s  %s  from %s  %s  %s  receipts: %s" % (
+                key, pl.get("id"), (env.get("from") or {}).get("agent"), ran,
                 "unchanged" if same else "CHANGED OR MISSING", ", ".join(receipts.get(key, [])) or "none"))
     return lines
 
@@ -144,12 +169,19 @@ def main(argv=None):
     c.add_argument("--card", required=True)
     c.add_argument("--to", required=True)
     c.add_argument("--released-by", required=True)
+    c.add_argument("--ran-by", required=True, choices=("person", "session"),
+                   help="person when the person runs this command; session when a session runs it on the person's word")
+    c.add_argument("--session", help="with --ran-by session: the session's id or name")
+    c.add_argument("--words", help="with --ran-by session: the person's words to it for this crossing, verbatim")
     b = sub.add_parser("board")
     b.add_argument("bundle")
     a = ap.parse_args(argv)
     try:
         if a.cmd == "carry":
-            env, payload = carry(a.card, a.to, a.released_by)
+            ran_by = {"by": a.ran_by}
+            if a.ran_by == "session" or a.session or a.words:
+                ran_by.update({k: v for k, v in (("session", a.session), ("words", a.words)) if v is not None})
+            env, payload = carry(a.card, a.to, a.released_by, ran_by)
             print("carried  %s" % payload)
             print("envelope %s" % env)
             return 0
