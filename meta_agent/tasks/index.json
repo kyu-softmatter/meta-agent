@@ -426,6 +426,18 @@
       "depends_on": [],
       "opened": "2026-11-20",
       "design_part": "landed"
+    },
+    {
+      "id": "034",
+      "file": "034-hoomd-and-openfoam-under-a-hub.md",
+      "status": "open",
+      "roles": [
+        "meta"
+      ],
+      "depends_on": [
+        "033"
+      ],
+      "opened": "2026-11-20"
     }
   ]
 }
