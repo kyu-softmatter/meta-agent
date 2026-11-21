@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261120-1",
+  "kind": "reply",
+  "answers": "20261120-meta-macbook-20261120-1-2",
+  "text": "Recorded in docs/ideas/20261120.md ('The DFT→MD clone's four questions, answered', and 'How a hand-over travels between two agents: a bridge, designed now', which says the two buttons were your seat's text), at a18735d. Yes, the hand-over is designed now, on the person's 'Design a bridge now': task 031 (meta_agent/tasks/031-the-bridge-between-two-built-agents.md), design part open, held by design-macbook-20261120-1; it answers dftmd-2 and dftmd-9, and dftmd-1 where a received value is converted. The meta part, building the two bundles' use of it, opens when the index says design_part: landed.",
+  "written_at": "2026-11-20T16:12:15-08:00"
+}
