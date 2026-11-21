@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1",
+  "template": "hub",
+  "version": "v1",
+  "harness_surface": {
+    "system_prompt": "CLAUDE.md (Role, Members, How the work goes)",
+    "guardrails": "CLAUDE.md (What this hub does not do) + .claude/settings.json deny",
+    "session_skills": ".claude/skills/<name>/SKILL.md: run-hub, the work; choose-session-level",
+    "scripts": "src/hub.py; src/bridge.py, the builder's bridge copied by the build"
+  },
+  "placeholders": [
+    "hub_name",
+    "template",
+    "rid",
+    "purpose",
+    "members_section"
+  ],
+  "bridge_from": "contracts/tools/bridge.py",
+  "hub_script": "src/hub.py",
+  "bridge_script": "src/bridge.py",
+  "members_file": "members.json",
+  "note": "A hub agent over the agents of one request (meta_agent/tasks/033; the person, 2026-11-20, 'A hub bundle (Recommended)', 'Assign freely, carry on my word (Recommended)', 'Pointer to a card (Recommended)', 'Ask once per question (Recommended)', 'until solve the problem'). A build copies this tree, fills CLAUDE.md's placeholders, writes members.json (card hub_members) naming each member by its agent, its build, its folder relative to the hub's and the sha256 of its build card, refusing a member whose bundle is not the digest its build card states, and copies the builder's bridge into src/bridge.py, byte for byte, recording its hash on the build card. The hub carries no tool, no gate, no envelope and no library skill: src/hub.py writes the person's question and the list of assignments from the session's words, the person's agreement to the list once, verbatim, carries an assignment of an agreed list to its member and a member's result back on the hub's trigger, and a hand-over between members only on the person's word with their words, opens a member's session fresh in the member's folder on the model, effort and permission mode the person gave, and reads the states of the results; it reads no value to judge it. The members' folders are named in members.json as ../<agent>-<NNNN>, beside the hub's, as a test run lays bundles out. A member must be of an agent template that answers an assignment (v35 or later); the builder refuses one that does not."
+}
