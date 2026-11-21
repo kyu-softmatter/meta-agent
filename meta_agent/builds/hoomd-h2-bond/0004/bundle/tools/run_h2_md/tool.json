@@ -1,0 +1,165 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "run_h2_md",
+  "description": "run HOOMD-blue on H2 molecules placed on a simple cubic grid in a cubic box, each held together by a harmonic bond, md.bond.Harmonic, with no force between molecules; momenta drawn at kT and constant-volume dynamics with the Bussi thermostat at kT; every value is in HOOMD-blue's own units, whose scales envelope/handovers.json records; a new folder under runs/md for each run; returns what HOOMD-blue reports: the bonds' energy, the potential energy and the kinetic temperature at the end, and the kinetic temperature and potential energy logged along the run",
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "bond_k": {
+        "type": "number",
+        "unit": "engine_energy/engine_length^2",
+        "row": "bond_k",
+        "description": "the bond's potential constant k; the value src/handover.py values prints for the row bond_k",
+        "minimum": 0
+      },
+      "bond_r0": {
+        "type": "number",
+        "unit": "engine_length",
+        "row": "bond_r0",
+        "description": "the bond's rest length r0; the value src/handover.py values prints for the row bond_r0",
+        "minimum": 0
+      },
+      "particle_mass": {
+        "type": "number",
+        "unit": "engine_mass",
+        "row": "particle_mass",
+        "description": "the mass of each hydrogen atom",
+        "minimum": 0
+      },
+      "n_molecules": {
+        "type": "integer",
+        "unit": "count",
+        "minimum": 0,
+        "row": "n_molecules",
+        "description": "how many molecules"
+      },
+      "box_side": {
+        "type": "number",
+        "unit": "engine_length",
+        "row": "box_side",
+        "description": "the side of the cubic box",
+        "minimum": 0
+      },
+      "kT": {
+        "type": "number",
+        "unit": "engine_energy",
+        "row": "kT",
+        "description": "the thermal energy the momenta are drawn at and the thermostat holds",
+        "minimum": 0
+      },
+      "dt": {
+        "type": "number",
+        "unit": "engine_time",
+        "row": "dt",
+        "description": "the integration step",
+        "minimum": 0
+      },
+      "steps": {
+        "type": "integer",
+        "unit": "count",
+        "minimum": 0,
+        "row": "steps",
+        "description": "how many steps the run takes"
+      },
+      "log_every": {
+        "type": "integer",
+        "unit": "count",
+        "minimum": 0,
+        "row": "log_every",
+        "description": "how many steps between two logged values"
+      },
+      "seed": {
+        "type": "integer",
+        "unit": "id",
+        "minimum": 0,
+        "row": "seed",
+        "description": "the random seed of the momenta and the thermostat"
+      },
+      "budget_s": {
+        "type": [
+          "number",
+          "null"
+        ],
+        "unit": "s",
+        "minimum": 0,
+        "default": null,
+        "description": "the running time the run may take before the call gives up on it, counted while it runs and not while it is paused; no limit when null"
+      }
+    },
+    "required": [
+      "bond_k",
+      "bond_r0",
+      "particle_mass",
+      "n_molecules",
+      "box_side",
+      "kT",
+      "dt",
+      "steps",
+      "log_every",
+      "seed"
+    ]
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "hoomd_version": {
+        "type": "string"
+      },
+      "steps_run": {
+        "type": "integer",
+        "unit": "count"
+      },
+      "bond_energy": {
+        "type": "number",
+        "unit": "engine_energy",
+        "description": "the bonds' energy HOOMD-blue reports at the end, md.bond.Harmonic's energy"
+      },
+      "potential_energy": {
+        "type": "number",
+        "unit": "engine_energy",
+        "description": "the potential energy HOOMD-blue reports at the end"
+      },
+      "kinetic_temperature": {
+        "type": "number",
+        "unit": "engine_energy",
+        "description": "the kinetic temperature HOOMD-blue reports at the end, as an energy"
+      },
+      "series": {
+        "type": "object",
+        "description": "step, kinetic_temperature and potential_energy as HOOMD-blue reported them at each logged step"
+      },
+      "run_dir": {
+        "type": "string"
+      },
+      "inputs": {
+        "type": "object"
+      }
+    },
+    "required": [
+      "hoomd_version",
+      "steps_run",
+      "bond_energy",
+      "potential_energy",
+      "kinetic_temperature",
+      "series",
+      "run_dir"
+    ]
+  },
+  "errors": [
+    "invalid_input",
+    "unavailable",
+    "refused_by_safety",
+    "execution_failure",
+    "timeout",
+    "cancelled"
+  ],
+  "side_effects": "runs_process",
+  "safety_gate": {
+    "required": true,
+    "place": "src/gate.py, consulted by src/run_tool.py before the call",
+    "opens_by": "execution_permission"
+  },
+  "idempotent": false,
+  "timeout_s": null
+}

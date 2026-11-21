@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "QE-RUN-002",
+  "category": "execution_failure",
+  "message": "a pw.x run of the scan failed, did not converge or did not end with JOB DONE",
+  "retryable": false,
+  "remediation": {
+    "action": "read pw.out in the run folder the error names; no energy of the scan is used"
+  }
+}

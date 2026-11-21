@@ -1,0 +1,50 @@
+{
+  "note": "what this agent may report to a hub agent from its tools' results, written by its build (template v35); src/handover.py result quotes a field only where it is listed here, with this unit and grade",
+  "agent": {
+    "agent": "hoomd-h2-bond",
+    "build": "hoomd-h2-bond/0004"
+  },
+  "tool_kind": "engine",
+  "reports": [
+    {
+      "tool": "run_h2_md",
+      "field": "bond_energy",
+      "name": "bond_energy",
+      "unit": "engine_energy",
+      "description": "the bonds' energy HOOMD-blue reports at the end, md.bond.Harmonic's energy",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4"
+    },
+    {
+      "tool": "run_h2_md",
+      "field": "kinetic_temperature",
+      "name": "kinetic_temperature",
+      "unit": "engine_energy",
+      "description": "the kinetic temperature HOOMD-blue reports at the end, as an energy",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4"
+    },
+    {
+      "tool": "run_h2_md",
+      "field": "potential_energy",
+      "name": "potential_energy",
+      "unit": "engine_energy",
+      "description": "the potential energy HOOMD-blue reports at the end",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4"
+    },
+    {
+      "tool": "run_h2_md",
+      "field": "steps_run",
+      "name": "steps_run",
+      "unit": "count",
+      "description": "",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4"
+    }
+  ]
+}

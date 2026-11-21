@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "QE-PSEUDO-002",
+  "category": "unavailable",
+  "message": "the pseudopotential could not be read from its host",
+  "retryable": true,
+  "remediation": {
+    "action": "try again later; a network problem may pass on a retry"
+  }
+}

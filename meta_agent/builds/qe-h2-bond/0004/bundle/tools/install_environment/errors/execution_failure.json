@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "QE-INSTALL-001",
+  "category": "execution_failure",
+  "message": "pixi install of qe from conda-forge did not give pw.x",
+  "retryable": true,
+  "remediation": {
+    "action": "read the evidence; a network or channel problem may pass on a retry"
+  }
+}

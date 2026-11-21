@@ -1,0 +1,38 @@
+{
+  "id": "sci-1",
+  "name": "the rest length fitted to one scan against the measured internuclear distance of H2's ground state",
+  "call": {
+    "tool": "scan_h2_bond",
+    "input": {
+      "bond_lengths": [
+        1.3,
+        1.35,
+        1.4,
+        1.45,
+        1.5
+      ],
+      "box_side": 12.0,
+      "ecutwfc": 46.0,
+      "ecutrho": 221.0,
+      "conv_thr": 1e-08
+    }
+  },
+  "measure": {},
+  "reference": {
+    "kind": "source",
+    "ref": "NIST Chemistry WebBook, H2, Constants of diatomic molecules, the row X 1Σg+, r_e in angstrom (mat-20261120-nist-webbook-h2-diatomic-constants)"
+  },
+  "tolerance": null,
+  "held": {
+    "reason": "the reference states no uncertainty, and no published values of H2's bond length with the same functional were taken as materials, so the person's standing rule gives no span; its last branch would judge a PBE bond length by half the last digit NIST prints, which a PBE value is not expected to meet",
+    "needs": "published values of H2's bond length computed with PBE, each a material card saying how its system compares, for the rule's span; or a tolerance the person gives; the comparison is then made in the reference's printed unit, angstrom, the fitted rest length converted from bohr"
+  },
+  "expected_verdict": "not_run",
+  "builder_records": [
+    {
+      "card": "mat-20261120-nist-webbook-h2-diatomic-constants",
+      "in_this_bundle": false,
+      "whose": "a card of the builder's repository, named by its id; it is not in this bundle and is not looked for here"
+    }
+  ]
+}

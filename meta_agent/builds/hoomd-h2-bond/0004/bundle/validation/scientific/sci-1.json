@@ -1,0 +1,26 @@
+{
+  "id": "sci-1",
+  "name": "the bond's vibration in an MD run with the received constants against the measured vibrational constant of H2's ground state",
+  "call": {
+    "tool": "run_h2_md",
+    "input": {}
+  },
+  "measure": {},
+  "reference": {
+    "kind": "source",
+    "ref": "NIST Chemistry WebBook, H2, Constants of diatomic molecules, the row X 1Σg+, omega_e in cm-1 (mat-20261120-nist-webbook-h2-diatomic-constants)"
+  },
+  "tolerance": null,
+  "held": {
+    "reason": "no library skill measures a vibration frequency from a run, and the run tool reports energies and the kinetic temperature, not the positions along the run",
+    "needs": "a library skill that gives a frequency from a series, a run tool that reports what it needs, and a tolerance the person gives or the standing rule derives"
+  },
+  "expected_verdict": "not_run",
+  "builder_records": [
+    {
+      "card": "mat-20261120-nist-webbook-h2-diatomic-constants",
+      "in_this_bundle": false,
+      "whose": "a card of the builder's repository, named by its id; it is not in this bundle and is not looked for here"
+    }
+  ]
+}

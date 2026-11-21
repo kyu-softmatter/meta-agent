@@ -1,0 +1,30 @@
+{
+  "note": "what this agent may report to a hub agent from its tools' results, written by its build (template v35); src/handover.py result quotes a field only where it is listed here, with this unit and grade",
+  "agent": {
+    "agent": "qe-h2-bond",
+    "build": "qe-h2-bond/0004"
+  },
+  "tool_kind": "engine",
+  "reports": [
+    {
+      "tool": "scan_h2_bond",
+      "field": "box_side",
+      "name": "box_side",
+      "unit": "bohr",
+      "description": "",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4"
+    },
+    {
+      "tool": "scan_h2_bond",
+      "field": "n_processes",
+      "name": "n_processes",
+      "unit": "count",
+      "description": "",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4"
+    }
+  ]
+}

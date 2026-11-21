@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "QE-RUN-INPUT-001",
+  "category": "invalid_input",
+  "message": "the scan's input is not one the contract takes, or a bond length is named twice or is not shorter than the box",
+  "retryable": false,
+  "remediation": {
+    "action": "give each bond length once, each shorter than the box side, and every input the contract requires"
+  }
+}

@@ -1,0 +1,858 @@
+{
+  "card": "intake",
+  "schema_version": "0.1",
+  "id": "intake-qe-h2-bond-001",
+  "rid": "req-qe-h2-bond-001",
+  "revision": 5,
+  "supersedes": "intake-qe-h2-bond-001",
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T05:17:02Z",
+  "numbers": [],
+  "degraded": [],
+  "status": "draft",
+  "stage": "specified",
+  "revision_note": "template v35: any agent of it may be a member of a hub agent and answer an assignment with a result card (tasks/033); the hand-over is given to the MD agent's build 0004, which template v35 makes beside this request's own build 0004; nothing else changes",
+  "agent_name": "qe-h2-bond",
+  "requested_by": "human",
+  "request_source": "the person's request of 2026-11-20 for a system that takes DFT and MD together, read as two agents that hand values to each other (docs/ideas/20261120.md); the meta part of meta_agent/tasks/031, which builds the DFT agent and the MD agent on the bridge",
+  "persons_words": {
+    "verbatim": "DFT와 MD를 함께 고려하는 시스템을 만들어보고싶어. / 둘로하고 각각 소통을 할 수 있게 / 너가 판단해줘(예제로 해도 될듯) / 응 / Design a bridge now",
+    "gloss": "I want to build a system that takes DFT and MD into account together. / Two, and each able to communicate with the other. / Judge it yourself (the example will do). / Yes (to Quantum ESPRESSO and HOOMD-blue). / Design a bridge now.",
+    "with": "six sources registered on the person's word '물론' (of course), recorded in docs/ideas/20261120.md",
+    "date": "2026-11-20"
+  },
+  "paragraph": "An agent that controls Quantum ESPRESSO's pw.x in words for one H2 molecule: asked to fit the H2 bond, it computes the total energy at the bond lengths the person named, fits the harmonic bond's force constant and rest length to that energy curve with a library skill, and writes both as one hand-over card in its outbox for the HOOMD-blue agent, each value with the conditions pw.x printed. It never carries the card itself: the person starts the bridge that does.",
+  "reading": {
+    "taken": "two agents, one per engine; this is the DFT one, and what it hands over is the force constant and the rest length of the H2 bond, the example the person let stand",
+    "why": "the person chose two agents that communicate and said the example will do (docs/ideas/20261120.md)",
+    "other_readings": [
+      "one agent driving both engines, which the person did not choose",
+      "QM/MM in one coupling tool, tested apart as task 030"
+    ]
+  },
+  "science_task": "the harmonic force constant and rest length of the H2 bond from PBE total energies, handed to an MD agent",
+  "tool": {
+    "name": "Quantum ESPRESSO pw.x (PWscf)",
+    "kind": "engine",
+    "registry_id": "quantum_espresso",
+    "material_refs": [
+      "mat-20261120-qe-7.5-input-pw",
+      "mat-20261120-pslibrary-h-pbe-rrkjus-upf"
+    ],
+    "documentation": "https://www.quantum-espresso.org/Doc/INPUT_PW.html, read on the day its material card names; the release it documents is a row of values_read",
+    "language": "Fortran; driven by an input file of namelists and cards",
+    "version": "conda-forge's qe for osx-arm64 at the version values_read names, the one the adapter was tried on",
+    "license": "GPL-2.0-only, as conda-forge states it for qe; called, never bundled"
+  },
+  "methods": [
+    "dft"
+  ],
+  "executes": "engine",
+  "must_not": [
+    "touch an instrument",
+    "reach a network host other than the package source and the pseudopotential host the lab's permission lists",
+    "write in the MD agent's folder or carry a hand-over card itself",
+    "hand over a value read off runs under different conditions, or one the fit did not give",
+    "invent a number, choose a setting or a tolerance",
+    "compute again a value pw.x itself reports"
+  ],
+  "knowledge_needs": [
+    "what each line pw.x prints means: the total energy, the convergence line, JOB DONE, the cutoffs, the functional and the pseudopotential read",
+    "the harmonic form an MD engine's bond takes, so that the fitted constants mean what the receiving engine means"
+  ],
+  "parameter_scope": [
+    "bond_lengths",
+    "box_side",
+    "ecutwfc",
+    "ecutrho",
+    "conv_thr"
+  ],
+  "destination": "this computer (macOS on arm64), in a folder the person chooses beside the HOOMD-blue agent's folder; the bundle stops at meta_agent/builds/ until the person moves it",
+  "priorities": [
+    "a value is handed over only as the fit's output on one scan's energy curve, with the conditions pw.x printed",
+    "nothing is reached but pw.x, the agent's own folders and the sources the permission names",
+    "the agent stands alone: without the bridge it still scans and fits"
+  ],
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "gui_choice": "none",
+  "analysis_permission": null,
+  "tool_reading": [
+    {
+      "claim": "pw.x reads namelists &CONTROL, &SYSTEM and &ELECTRONS and the cards ATOMIC_SPECIES, ATOMIC_POSITIONS and K_POINTS; quantities whose dimensions are not stated are in Rydberg atomic units",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "INPUT_PW.html, INTRODUCTION: 'All quantities whose dimensions are not explicitly specified are in RYDBERG ATOMIC UNITS'"
+      ],
+      "capability": "io_format"
+    },
+    {
+      "claim": "ecutwfc and ecutrho are the kinetic energy cutoffs in Ry for wavefunctions and for charge density; with ultrasoft pseudopotentials an ecutrho larger than four times ecutwfc is often desirable",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "INPUT_PW.html, &SYSTEM, ecutwfc and ecutrho"
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "celldm(1) is the lattice parameter in bohr; with ibrav 1 the cell is simple cubic",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "INPUT_PW.html, &SYSTEM, celldm(i)"
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "assume_isolated 'martyna-tuckerman' corrects the total energy and the self-consistent potential of a molecule in a 3D supercell",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "INPUT_PW.html, &SYSTEM, assume_isolated"
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "the species mass in ATOMIC_SPECIES is used only for molecular dynamics or damped dynamics, not in an scf run",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "INPUT_PW.html, ATOMIC_SPECIES, Mass_X"
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "the pseudopotential H.pbe-rrkjus_psl.1.0.0.UPF is ultrasoft, for the PBE functional, and states suggested minimum cutoffs for wavefunctions and charge density",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "H.pbe-rrkjus_psl.1.0.0.UPF, PP_INFO lines 6 to 10"
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "pw.x from conda-forge, at the version values_read names, ran an scf of one H2 molecule from the adapter's input, printed the total energy on its line starting with an exclamation mark, the convergence line and JOB DONE, and, given a species mass of zero, printed the mass it took from its own table",
+      "kind": "observed",
+      "basis": "run_record",
+      "loci": [
+        "the adapter's trial under TMPDIR, pw.out of each point of a scan (evidence for the adapter only; no value of it enters a card)"
+      ],
+      "capability": "observable"
+    },
+    {
+      "claim": "with n_processes two, pw.x ran through the environment's mpirun and printed the number of MPI processes",
+      "kind": "observed",
+      "basis": "run_record",
+      "loci": [
+        "the adapter's trial under TMPDIR, pw.out"
+      ],
+      "capability": "execution"
+    }
+  ],
+  "values_read": [
+    {
+      "name": "suggested_ecutwfc",
+      "value": 46.0,
+      "unit": "Ry",
+      "locus": "H.pbe-rrkjus_psl.1.0.0.UPF, PP_INFO line 9 (mat-20261120-pslibrary-h-pbe-rrkjus-upf)",
+      "role": "a setting the source suggests"
+    },
+    {
+      "name": "suggested_ecutrho",
+      "value": 221.0,
+      "unit": "Ry",
+      "locus": "H.pbe-rrkjus_psl.1.0.0.UPF, PP_INFO line 10 (mat-20261120-pslibrary-h-pbe-rrkjus-upf)",
+      "role": "a setting the source suggests"
+    },
+    {
+      "name": "h2_ground_state_re",
+      "value": 0.74144,
+      "unit": "Angstrom",
+      "locus": "NIST Chemistry WebBook, H2, Constants of diatomic molecules, the row X 1Σg+, column r_e (mat-20261120-nist-webbook-h2-diatomic-constants)",
+      "role": "a measured value the rest length may be compared with"
+    },
+    {
+      "name": "input_pw_documents_release",
+      "value": 7.5,
+      "unit": "1",
+      "locus": "INPUT_PW.html, its head: 'Program: pw.x / PWscf / Quantum ESPRESSO (version: 7.5)' (mat-20261120-qe-7.5-input-pw)",
+      "role": "the release the page documents; conda-forge offers a later one (failure line dftmd-8)"
+    },
+    {
+      "name": "qe_version_conda_forge",
+      "value": 7.6,
+      "unit": "1",
+      "locus": "pixi search -c conda-forge -p osx-arm64 qe, 2026-11-21 UTC",
+      "role": "the engine version the package source offers"
+    }
+  ],
+  "scales_run": [
+    {
+      "skill": "unit_convert@v1",
+      "runner": "contracts/tools/skills.py run",
+      "inputs": {
+        "value": 0.74144,
+        "from_unit": "Angstrom",
+        "to_unit": "bohr",
+        "stands_for": null
+      },
+      "outputs": {
+        "state": "converted",
+        "factor": 1.8897261259077824,
+        "converted": 1.4011185387930662
+      },
+      "for": "the recommendation of the bond lengths put to the person (question 1)"
+    }
+  ],
+  "environment_read": {
+    "os": "macOS on arm64",
+    "pixi": "pixi on PATH",
+    "pw.x": "not on PATH; the agent makes its own environment",
+    "trial": "the adapters were tried under TMPDIR in an environment of conda-forge's qe made with pixi, as the lab's permission allows"
+  },
+  "notes": {
+    "scientific_tasks": "one task, not run in this build: the comparison of the fitted rest length with NIST's measured r_e waits on suitable materials for the standing rule's span (published PBE values for H2), since the reference states no uncertainty and the half-digit branch on a value converted into bohr would judge by a digit the source never printed; a follow-up of meta_agent/tasks/031",
+    "parameter_rows": "the two rows that give a hand-over carry no value: each is the fit's output, written by src/handover.py into the card; the build derives their grade from contracts/grades.json",
+    "tools": "the three adapters weigh the asks of task 018 waiting for the meta role (20261117-design-macbook-20261117-2-4, 20261118-design-macbook-20261117-2-1, -2-2): the scan has a process count (dft-23), a running-time budget through src/engine_wait.py (dft-17), a new folder for every scan and point (dft-24), and returns an error, not an output, for a point that failed or did not converge (dft-13, dft-19)"
+  },
+  "questions_for_the_person": [
+    {
+      "n": 1,
+      "needed_before": "the build: the scan's settings are the agent's rows and its tasks' inputs",
+      "question": "The DFT agent (Quantum ESPRESSO) fits the H2 bond to pw.x energies at several bond lengths, and its scientific task needs one set of run settings that only you can choose. My recommendation: cutoffs 46 Ry and 221 Ry (the minimums the pseudopotential file suggests, the maker's statement); five bond lengths 1.30, 1.35, 1.40, 1.45 and 1.50 bohr (spaced around NIST's measured 0.74144 Å, which is 1.4011 bohr by unit_convert@v1; the spacing is my inference, not from a source); a cubic box of 12 bohr side and a convergence threshold of 1e-8 Ry (both my inference; the adapter's trial ran there, and no convergence study stands behind them). Which settings should the agent use?",
+      "how": "one of two buttons, the recommendation marked",
+      "answer": {
+        "verbatim": "Take the recommendation (Recommended)",
+        "date": "2026-11-20",
+        "gloss": "the button this seat wrote: cutoffs 46/221 Ry, bond lengths 1.30-1.50 bohr in steps of 0.05, box 12 bohr, conv_thr 1e-8 Ry, the box and the threshold marked as having no convergence study",
+        "recorded_in": "docs/ideas/20261120.md"
+      }
+    }
+  ],
+  "tools": [
+    {
+      "contract": {
+        "artifact": "tool_contract",
+        "schema_version": "0.1",
+        "name": "install_environment",
+        "description": "make this agent's own environment once, before the first scan: the package qe (Quantum ESPRESSO) at the version conda-forge offered when the agent was built, installed with pixi from conda-forge into runs/env; the runner points pixi's caches at runs/cache",
+        "inputs": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "installed": {
+              "type": "boolean"
+            },
+            "pw_x": {
+              "type": "string",
+              "description": "the path of pw.x, relative to this directory"
+            },
+            "package": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string",
+              "description": "the version of qe the environment holds, read from its conda-meta record"
+            },
+            "platform": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "installed",
+            "pw_x",
+            "package",
+            "version",
+            "platform"
+          ]
+        },
+        "errors": [
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "unsupported_target"
+        ],
+        "side_effects": "network",
+        "safety_gate": {
+          "required": true,
+          "place": "src/gate.py, consulted by src/run_tool.py before the call",
+          "opens_by": "execution_permission"
+        },
+        "idempotent": true,
+        "timeout_s": null,
+        "installs_from": {
+          "installer": "pixi",
+          "channel": "conda-forge"
+        }
+      },
+      "adapter_source": "requests/req-qe-h2-bond-001/adapters/install_environment.py",
+      "error_contracts": [
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "QE-INSTALL-001",
+          "category": "execution_failure",
+          "message": "pixi install of qe from conda-forge did not give pw.x",
+          "retryable": true,
+          "remediation": {
+            "action": "read the evidence; a network or channel problem may pass on a retry"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "QE-INSTALL-002",
+          "category": "unsupported_target",
+          "message": "conda-forge offers no qe for this platform",
+          "retryable": false,
+          "remediation": {
+            "action": "run this agent on osx-arm64, osx-64, linux-64 or linux-aarch64"
+          }
+        }
+      ]
+    },
+    {
+      "contract": {
+        "artifact": "tool_contract",
+        "schema_version": "0.1",
+        "name": "fetch_pseudopotential",
+        "description": "fetch the hydrogen pseudopotential the scans use, PSLibrary's H.pbe-rrkjus_psl.1.0.0.UPF, anonymously and read-only from pseudopotentials.quantum-espresso.org into runs/inputs/pseudo, and keep it only when its bytes are the ones the builder read; a file already there with those bytes is not fetched again",
+        "inputs": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "string",
+              "description": "the pseudopotential's path, relative to this directory"
+            },
+            "sha256": {
+              "type": "string",
+              "description": "its content hash, the one the builder read"
+            },
+            "fetched": {
+              "type": "boolean",
+              "description": "false where the file was there already with those bytes"
+            }
+          },
+          "required": [
+            "file",
+            "sha256",
+            "fetched"
+          ]
+        },
+        "errors": [
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "invalid_input"
+        ],
+        "side_effects": "network",
+        "safety_gate": {
+          "required": true,
+          "place": "src/gate.py, consulted by src/run_tool.py before the call",
+          "opens_by": "execution_permission"
+        },
+        "idempotent": true,
+        "timeout_s": null,
+        "fetches_from": [
+          {
+            "host": "pseudopotentials.quantum-espresso.org",
+            "access": "read_only_anonymous"
+          }
+        ]
+      },
+      "adapter_source": "requests/req-qe-h2-bond-001/adapters/fetch_pseudopotential.py",
+      "error_contracts": [
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "QE-PSEUDO-002",
+          "category": "unavailable",
+          "message": "the pseudopotential could not be read from its host",
+          "retryable": true,
+          "remediation": {
+            "action": "try again later; a network problem may pass on a retry"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "QE-PSEUDO-004",
+          "category": "execution_failure",
+          "message": "the file read is not the bytes the builder read",
+          "retryable": false,
+          "remediation": {
+            "action": "nothing was kept; a person says whether the source changed"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "QE-PSEUDO-003",
+          "category": "invalid_input",
+          "message": "a pseudopotential is there with other bytes",
+          "retryable": false,
+          "remediation": {
+            "action": "a person removes it or names why it differs; this agent writes no file over it"
+          }
+        }
+      ]
+    },
+    {
+      "contract": {
+        "artifact": "tool_contract",
+        "schema_version": "0.1",
+        "name": "scan_h2_bond",
+        "description": "run one self-consistent pw.x calculation of one H2 molecule at each bond length named, in a cubic box at the gamma point with the Martyna-Tuckerman correction, each in its own folder of a new scan folder under runs/scan, and return the energy curve: each pair a bond length as given and the total energy pw.x printed for it, with the conditions pw.x printed, which must be the same for every point; a point that did not converge or did not end with JOB DONE ends the scan with an error",
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "bond_lengths": {
+              "type": "array",
+              "unit": "bohr",
+              "row": "bond_lengths",
+              "description": "the bond lengths to compute, each once"
+            },
+            "box_side": {
+              "type": "number",
+              "unit": "bohr",
+              "minimum": 0,
+              "row": "box_side",
+              "description": "the side of the cubic box, the first of the celldm constants"
+            },
+            "ecutwfc": {
+              "type": "number",
+              "unit": "Ry",
+              "minimum": 0,
+              "row": "ecutwfc",
+              "description": "the kinetic energy cutoff for wavefunctions"
+            },
+            "ecutrho": {
+              "type": "number",
+              "unit": "Ry",
+              "minimum": 0,
+              "row": "ecutrho",
+              "description": "the kinetic energy cutoff for charge density and potential"
+            },
+            "conv_thr": {
+              "type": "number",
+              "unit": "Ry",
+              "minimum": 0,
+              "row": "conv_thr",
+              "description": "the convergence threshold of the self-consistent loop"
+            },
+            "n_processes": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "unit": "count",
+              "default": null,
+              "description": "how many MPI processes each pw.x runs on, a positive count, through the environment's mpirun; null starts pw.x directly, without mpirun"
+            },
+            "budget_s": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "unit": "s",
+              "minimum": 0,
+              "default": null,
+              "description": "the running time each pw.x may take before the call gives up on it, counted while it runs and not while it is paused; no limit when null"
+            },
+            "pseudo_dir": {
+              "type": "string",
+              "minLength": 1,
+              "default": "runs/inputs/pseudo",
+              "description": "the folder that holds the pseudopotential"
+            }
+          },
+          "required": [
+            "bond_lengths",
+            "box_side",
+            "ecutwfc",
+            "ecutrho",
+            "conv_thr"
+          ]
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "run_dir": {
+              "type": "string",
+              "description": "the scan folder, relative to this directory"
+            },
+            "energy_curve": {
+              "type": "array",
+              "unit": "Ry",
+              "description": "pairs of a bond length in bohr, as given, and the total energy pw.x printed for it, in Ry"
+            },
+            "printed_conditions": {
+              "type": "object",
+              "description": "what pw.x printed of the conditions, the same for every point: the cutoffs, the lattice parameter, the threshold, the processes, the exchange-correlation functional, the pseudopotential file, the species mass it used and the isolated-system correction"
+            },
+            "program_version": {
+              "type": "string",
+              "description": "the version pw.x printed"
+            },
+            "points": {
+              "type": "array",
+              "description": "each point's bond length, folder, total energy, iterations and convergence as pw.x printed them"
+            },
+            "box_side": {
+              "type": "number",
+              "unit": "bohr"
+            },
+            "n_processes": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "unit": "count"
+            },
+            "inputs": {
+              "type": "object",
+              "description": "the call's inputs, as given"
+            }
+          },
+          "required": [
+            "run_dir",
+            "energy_curve",
+            "printed_conditions",
+            "program_version",
+            "points"
+          ]
+        },
+        "errors": [
+          "invalid_input",
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "timeout",
+          "cancelled"
+        ],
+        "side_effects": "runs_process",
+        "safety_gate": {
+          "required": true,
+          "place": "src/gate.py, consulted by src/run_tool.py before the call",
+          "opens_by": "execution_permission"
+        },
+        "idempotent": false,
+        "timeout_s": null,
+        "calls_external": {
+          "program": "Quantum ESPRESSO pw.x (conda-forge package qe)",
+          "license": "GPL-2.0-only",
+          "bundled": false
+        }
+      },
+      "adapter_source": "requests/req-qe-h2-bond-001/adapters/scan_h2_bond.py",
+      "error_contracts": [
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "QE-RUN-INPUT-001",
+          "category": "invalid_input",
+          "message": "the scan's input is not one the contract takes, or a bond length is named twice or is not shorter than the box",
+          "retryable": false,
+          "remediation": {
+            "action": "give each bond length once, each shorter than the box side, and every input the contract requires"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "QE-ENV-001",
+          "category": "unavailable",
+          "message": "this agent's environment is not made",
+          "retryable": true,
+          "remediation": {
+            "action": "call install_environment first, then this call again"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "QE-PSEUDO-001",
+          "category": "unavailable",
+          "message": "the pseudopotential is not in its folder",
+          "retryable": true,
+          "remediation": {
+            "action": "call fetch_pseudopotential first, then this call again"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "QE-ENV-002",
+          "category": "unavailable",
+          "message": "processes asked for and no mpirun in this agent's environment",
+          "retryable": false,
+          "remediation": {
+            "action": "call with n_processes null, or remake the environment"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "QE-RUN-002",
+          "category": "execution_failure",
+          "message": "a pw.x run of the scan failed, did not converge or did not end with JOB DONE",
+          "retryable": false,
+          "remediation": {
+            "action": "read pw.out in the run folder the error names; no energy of the scan is used"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "QE-RUN-003",
+          "category": "execution_failure",
+          "message": "pw.x printed different conditions for the points of one scan",
+          "retryable": false,
+          "remediation": {
+            "action": "read result.json in the scan folder; no energy curve is handed on from runs under different conditions"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "SCAN_H2_BOND-GAVE-UP",
+          "category": "timeout",
+          "message": "the call gave up on a pw.x run after its budget of running time and stopped it",
+          "retryable": true,
+          "remediation": {
+            "action": "call again with a larger budget_s, or none"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "SCAN_H2_BOND-STOPPED",
+          "category": "cancelled",
+          "message": "a pw.x run was stopped from outside",
+          "retryable": true,
+          "remediation": {
+            "action": "call again with the same input to start the scan over"
+          }
+        }
+      ]
+    }
+  ],
+  "skills": [
+    "harmonic_well_fit@v1"
+  ],
+  "parameter_rows": [
+    {
+      "name": "bond_lengths",
+      "value": [
+        1.3,
+        1.35,
+        1.4,
+        1.45,
+        1.5
+      ],
+      "unit": "bohr",
+      "chosen_by": "human",
+      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+      "note": "spaced around NIST's measured r_e converted to bohr by unit_convert@v1; the spacing was this seat's inference, which the person took"
+    },
+    {
+      "name": "box_side",
+      "value": 12.0,
+      "unit": "bohr",
+      "chosen_by": "human",
+      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+      "note": "no convergence study stands behind it"
+    },
+    {
+      "name": "ecutwfc",
+      "value": 46.0,
+      "unit": "Ry",
+      "chosen_by": "human",
+      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+      "note": "the pseudopotential's suggested minimum for wavefunctions (mat-20261120-pslibrary-h-pbe-rrkjus-upf, PP_INFO)"
+    },
+    {
+      "name": "ecutrho",
+      "value": 221.0,
+      "unit": "Ry",
+      "chosen_by": "human",
+      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+      "note": "the pseudopotential's suggested minimum for charge density (mat-20261120-pslibrary-h-pbe-rrkjus-upf, PP_INFO)"
+    },
+    {
+      "name": "conv_thr",
+      "value": 1e-08,
+      "unit": "Ry",
+      "chosen_by": "human",
+      "basis": "the person's choice of 2026-11-20 (question 1, answered 'Take the recommendation (Recommended)')",
+      "note": "no convergence study stands behind it"
+    },
+    {
+      "name": "h2_bond_force_constant",
+      "value": null,
+      "unit": "Ry/bohr^2",
+      "handover": {
+        "gives": {
+          "thread": "thr-h2-bond",
+          "to_agent": "hoomd-h2-bond",
+          "to_build": "hoomd-h2-bond/0004",
+          "skill": "harmonic_well_fit@v1",
+          "record_inputs": {
+            "points": "energy_curve"
+          },
+          "record_inputs_from": "one_result",
+          "conditions_field": "printed_conditions",
+          "conditions": {
+            "engine": "Quantum ESPRESSO pw.x from conda-forge's qe",
+            "system": "one H2 molecule at the centre of a cubic box, gamma point, Martyna-Tuckerman correction",
+            "fit": "harmonic_well_fit@v1 over the energy curve of one scan"
+          },
+          "accept_states": [
+            "fitted"
+          ],
+          "what": "the harmonic bond of H2 fitted to PBE total energies, for the MD agent's bond potential",
+          "output": "force_constant",
+          "record_tool": "scan_h2_bond"
+        }
+      }
+    },
+    {
+      "name": "h2_bond_rest_length",
+      "value": null,
+      "unit": "bohr",
+      "handover": {
+        "gives": {
+          "thread": "thr-h2-bond",
+          "to_agent": "hoomd-h2-bond",
+          "to_build": "hoomd-h2-bond/0004",
+          "skill": "harmonic_well_fit@v1",
+          "record_inputs": {
+            "points": "energy_curve"
+          },
+          "record_inputs_from": "one_result",
+          "conditions_field": "printed_conditions",
+          "conditions": {
+            "engine": "Quantum ESPRESSO pw.x from conda-forge's qe",
+            "system": "one H2 molecule at the centre of a cubic box, gamma point, Martyna-Tuckerman correction",
+            "fit": "harmonic_well_fit@v1 over the energy curve of one scan"
+          },
+          "accept_states": [
+            "fitted"
+          ],
+          "what": "the harmonic bond of H2 fitted to PBE total energies, for the MD agent's bond potential",
+          "output": "rest_position",
+          "record_tool": "scan_h2_bond"
+        }
+      }
+    }
+  ],
+  "interface_tasks": [
+    {
+      "id": "if-1",
+      "name": "a scan with no input is refused by the runner's input check",
+      "call": {
+        "tool": "scan_h2_bond",
+        "input": {}
+      },
+      "expected": {
+        "error": {
+          "category": "invalid_input",
+          "code": "QE-RUN-INPUT-001"
+        }
+      },
+      "expected_verdict": "pass"
+    },
+    {
+      "id": "if-2",
+      "name": "bond lengths given in words are refused by the runner's input check",
+      "call": {
+        "tool": "scan_h2_bond",
+        "input": {
+          "bond_lengths": "about the measured bond length",
+          "box_side": 12.0,
+          "ecutwfc": 46.0,
+          "ecutrho": 221.0,
+          "conv_thr": 1e-08
+        }
+      },
+      "expected": {
+        "error": {
+          "category": "invalid_input",
+          "code": "QE-RUN-INPUT-001"
+        }
+      },
+      "expected_verdict": "pass"
+    }
+  ],
+  "scientific_tasks": [
+    {
+      "id": "sci-1",
+      "name": "the rest length fitted to one scan against the measured internuclear distance of H2's ground state",
+      "call": {
+        "tool": "scan_h2_bond",
+        "input": {
+          "bond_lengths": [
+            1.3,
+            1.35,
+            1.4,
+            1.45,
+            1.5
+          ],
+          "box_side": 12.0,
+          "ecutwfc": 46.0,
+          "ecutrho": 221.0,
+          "conv_thr": 1e-08
+        }
+      },
+      "measure": {},
+      "reference": {
+        "kind": "source",
+        "ref": "NIST Chemistry WebBook, H2, Constants of diatomic molecules, the row X 1Σg+, r_e in angstrom (mat-20261120-nist-webbook-h2-diatomic-constants)"
+      },
+      "tolerance": null,
+      "held": {
+        "reason": "the reference states no uncertainty, and no published values of H2's bond length with the same functional were taken as materials, so the person's standing rule gives no span; its last branch would judge a PBE bond length by half the last digit NIST prints, which a PBE value is not expected to meet",
+        "needs": "published values of H2's bond length computed with PBE, each a material card saying how its system compares, for the rule's span; or a tolerance the person gives; the comparison is then made in the reference's printed unit, angstrom, the fitted rest length converted from bohr"
+      },
+      "expected_verdict": "not_run"
+    }
+  ],
+  "replay_items": [
+    {
+      "id": "rp-001",
+      "name": "a scan with no input is refused with QE-RUN-INPUT-001",
+      "call": {
+        "tool": "scan_h2_bond",
+        "input": {}
+      },
+      "expected": {
+        "error": {
+          "category": "invalid_input",
+          "code": "QE-RUN-INPUT-001"
+        }
+      },
+      "expected_verdict": "pass"
+    }
+  ],
+  "held": [
+    {
+      "item": "the comparison of the fitted rest length with NIST's measured r_e as a scientific task",
+      "reason": "the standing rule needs suitable materials (published PBE values for H2) for a span; none was searched in this build"
+    }
+  ],
+  "workflow": [
+    "install_environment",
+    "fetch_pseudopotential",
+    "scan_h2_bond"
+  ]
+}

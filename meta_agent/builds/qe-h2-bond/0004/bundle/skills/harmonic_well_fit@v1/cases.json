@@ -1,0 +1,130 @@
+[
+  {
+    "name": "three energies of a diatomic bond on an exact parabola, in Ry at bond lengths in bohr",
+    "inputs": {
+      "points": [
+        [
+          1.3,
+          -2.298
+        ],
+        [
+          1.4,
+          -2.3
+        ],
+        [
+          1.5,
+          -2.298
+        ]
+      ]
+    },
+    "expect": {
+      "force_constant": 0.4,
+      "rest_position": 1.4,
+      "well_energy": -2.3,
+      "residual_standard_deviation": null,
+      "minimum_inside_span": true,
+      "points": 3,
+      "state": "fitted"
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "U = -2.3 + 0.4 (x - 1.4)^2 / 2 = -2.3 + 0.2 (x - 1.4)^2: at 1.3 and 1.5, 0.2 x 0.01 = 0.002, so -2.298; at 1.4, -2.3",
+    "system": "a diatomic molecule's bond computed with DFT"
+  },
+  {
+    "name": "five energies of a trapped bead on an exact parabola whose minimum is off the centre of the points",
+    "inputs": {
+      "points": [
+        [
+          0.0,
+          28.0
+        ],
+        [
+          1.0,
+          13.0
+        ],
+        [
+          2.0,
+          4.0
+        ],
+        [
+          3.0,
+          1.0
+        ],
+        [
+          4.0,
+          4.0
+        ]
+      ]
+    },
+    "expect": {
+      "force_constant": 6.0,
+      "rest_position": 3.0,
+      "well_energy": 1.0,
+      "minimum_inside_span": true,
+      "points": 5,
+      "state": "fitted"
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "U = 1 + 6 (x - 3)^2 / 2 = 1 + 3 (x - 3)^2: at 0, 1, 2, 3, 4 that is 28, 13, 4, 1, 4",
+    "system": "a colloidal bead in an optical trap"
+  },
+  {
+    "name": "energies that rise along the points have their fitted minimum outside them",
+    "inputs": {
+      "points": [
+        [
+          1.0,
+          1.25
+        ],
+        [
+          2.0,
+          3.25
+        ],
+        [
+          3.0,
+          7.25
+        ]
+      ]
+    },
+    "expect": {
+      "force_constant": 2.0,
+      "rest_position": 0.5,
+      "well_energy": 1.0,
+      "minimum_inside_span": false,
+      "state": "fitted"
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "U = 1 + 2 (x - 0.5)^2 / 2 = 1 + (x - 0.5)^2: at 1, 2, 3 that is 1.25, 3.25, 7.25; x0 = 0.5 lies below the smallest position, 1",
+    "system": "a colloidal bead in an optical trap"
+  },
+  {
+    "name": "two positions are too few for a quadratic",
+    "inputs": {
+      "points": [
+        [
+          1.3,
+          -2.298
+        ],
+        [
+          1.4,
+          -2.3
+        ]
+      ]
+    },
+    "expect": {
+      "force_constant": null,
+      "rest_position": null,
+      "points": 2,
+      "state": "not_fitted",
+      "why": "a quadratic needs three distinct positions or more"
+    },
+    "worked": "three parameters need three distinct positions; two are handed",
+    "system": "a diatomic molecule's bond computed with DFT"
+  }
+]

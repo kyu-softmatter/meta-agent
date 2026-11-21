@@ -1,0 +1,15 @@
+{
+  "id": "rp-001",
+  "name": "a run with no input is refused with HOOMD-RUN-INPUT-001",
+  "call": {
+    "tool": "run_h2_md",
+    "input": {}
+  },
+  "expected": {
+    "error": {
+      "category": "invalid_input",
+      "code": "HOOMD-RUN-INPUT-001"
+    }
+  },
+  "expected_verdict": "pass"
+}

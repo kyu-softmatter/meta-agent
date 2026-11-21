@@ -1,0 +1,21 @@
+{
+  "id": "if-2",
+  "name": "bond lengths given in words are refused by the runner's input check",
+  "call": {
+    "tool": "scan_h2_bond",
+    "input": {
+      "bond_lengths": "about the measured bond length",
+      "box_side": 12.0,
+      "ecutwfc": 46.0,
+      "ecutrho": 221.0,
+      "conv_thr": 1e-08
+    }
+  },
+  "expected": {
+    "error": {
+      "category": "invalid_input",
+      "code": "QE-RUN-INPUT-001"
+    }
+  },
+  "expected_verdict": "pass"
+}

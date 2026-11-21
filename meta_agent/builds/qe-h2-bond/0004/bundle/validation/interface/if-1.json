@@ -1,0 +1,15 @@
+{
+  "id": "if-1",
+  "name": "a scan with no input is refused by the runner's input check",
+  "call": {
+    "tool": "scan_h2_bond",
+    "input": {}
+  },
+  "expected": {
+    "error": {
+      "category": "invalid_input",
+      "code": "QE-RUN-INPUT-001"
+    }
+  },
+  "expected_verdict": "pass"
+}
