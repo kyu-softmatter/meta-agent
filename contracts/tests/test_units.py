@@ -50,6 +50,21 @@ class Registry(unittest.TestCase):
         self.assertIsNone(why)
         self.assertTrue(U.factor_matches(f, self.units["bohr"]["si_factor"] / self.units["Angstrom"]["si_factor"]))
 
+    def test_a_particle_mass_is_not_a_molar_mass(self):
+        f, why = U.factor(self.units, "Da", "kg")
+        self.assertIsNone(why)
+        self.assertTrue(U.factor_matches(f, self.units["Da"]["si_factor"]))
+        f, why = U.factor(self.units, "Da", "g/mol")
+        self.assertIsNone(f)
+        self.assertIn("dimension", why)
+
+    def test_an_engine_mass_stands_for_a_mass(self):
+        f, why = U.factor(self.units, "Da", "engine_mass", stands_for="g/mol")
+        self.assertIsNone(f)
+        f, why = U.factor(self.units, "g", "engine_mass", stands_for="Da")
+        self.assertIsNone(why)
+        self.assertTrue(U.factor_matches(f, self.units["g"]["si_factor"] / self.units["Da"]["si_factor"]))
+
     def test_a_value_in_an_engine_unit_goes_nowhere(self):
         f, why = U.factor(self.units, "engine_length", "nm")
         self.assertIsNone(f)
