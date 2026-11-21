@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "The person's answers for tasks/034, given in this seat's conversation on 2026-11-21, each to a question this seat wrote with buttons and its recommendation marked, for docs/ideas/20261121.md. (1) 'Task 034 (HOOMD -> OpenFOAM, under a hub): which viscoelastic properties should the MD agent compute and hand over to the CFD agent?' Buttons: 'λ, η_p, η_s (Recommended)' (the three constants of Oldroyd-B, relaxation time, polymer viscosity and solvent viscosity, handed over in the form the CFD takes), 'G′, G″ curves', 'Stress and N1 vs rate'. The person chose: 'λ, η_p, η_s (Recommended)'. (2) 'What flow should the OpenFOAM agent simulate with those properties, and what should it find?' Buttons: 'Channel start-up (Recommended)' (start-up planar Poiseuille flow, the centreline velocity against time, with an analytical solution to compare with), '4:1 contraction', 'Flow past a cylinder'. Chosen: 'Channel start-up (Recommended)'. (3) 'How should the HOOMD-blue agent realize the Oldroyd-B fluid?' Buttons: 'Dumbbells, implicit solvent (Recommended)' (Brownian dynamics of Hookean dumbbells; the solvent implicit, so η_s is an input and the MD computes λ and η_p; the model relation to be confirmed from sources), 'Dumbbells in DPD solvent'. Chosen: 'Dumbbells, implicit solvent (Recommended)'. (4) 'Which OpenFOAM should the CFD agent run?' Buttons: 'rheoTool image (Recommended)' (rheotool:of90 in this computer's Colima profile rheotool, OpenFOAM 9 with rheoFoam, already within the execution permission), 'Install plain OpenFOAM'. Chosen: 'rheoTool image (Recommended)'. What they do not settle: η_s's value and every engine setting, the channel's size, the driving and the fluid's density, the unit scales, the tolerance, and each session's level.",
+  "written_at": "2026-11-21T15:35:24-08:00"
+}
