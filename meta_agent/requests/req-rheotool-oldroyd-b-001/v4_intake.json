@@ -1,0 +1,137 @@
+{
+  "card": "intake",
+  "schema_version": "0.1",
+  "id": "intake-rheotool-oldroyd-b-001",
+  "rid": "req-rheotool-oldroyd-b-001",
+  "revision": 4,
+  "supersedes": "intake-rheotool-oldroyd-b-001",
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-21T23:37:10Z",
+  "numbers": [],
+  "degraded": [],
+  "status": "draft",
+  "stage": "reading",
+  "revision_note": "the person's answer to question 3, in the person's words",
+  "agent_name": "rheotool-oldroyd-b",
+  "requested_by": "human",
+  "request_source": "the person's request of 2026-11-20 for a test of HOOMD-blue and OpenFOAM together under a hub (docs/ideas/20261120.md) and their answers of 2026-11-21; the meta part of meta_agent/tasks/034, which builds an MD agent, a CFD agent and a hub over them",
+  "persons_words": {
+    "verbatim": "새로운 테스트는 HOOMD와 OpenFOAM을 함께 사용해보고싶어, / MD로 Oldroyd-B유체를 구현하고 여기서 Viscoelastic properties를 계산한 뒤, 이를 바탕으로 CFD 시뮬레이션을 진행한다. / Under a hub (Recommended) / λ, η_p, η_s (Recommended) / Channel start-up (Recommended) / Dumbbells, implicit solvent (Recommended) / rheoTool image (Recommended)",
+    "gloss": "For the new test, I would like to try HOOMD and OpenFOAM together. / Implement an Oldroyd-B fluid with MD, compute its viscoelastic properties from it, then run a CFD simulation on that basis. / Under a hub. / The relaxation time, the polymer viscosity and the solvent viscosity. / The start-up of a planar channel flow. / Hookean dumbbells in an implicit solvent. / The rheoTool image on this computer.",
+    "with": "nothing attached; the first three answers given to the design seat design-macbook-20261120-3 (docs/ideas/20261120.md, 'A new test: HOOMD-blue and OpenFOAM together, under a hub'), the last four to the meta seat meta-macbook-20261120-4 on 2026-11-21, relayed by the note 20261121-meta-macbook-20261120-4-5",
+    "date": "2026-11-21"
+  },
+  "paragraph": "An agent that controls rheoTool's solvers on OpenFOAM in words for the start-up of a planar channel flow of an Oldroyd-B fluid: it takes the relaxation time, the polymer viscosity and the solvent viscosity the MD agent handed over, once the person has let the card cross, holds any value its build did not declare, and, asked for a run, runs the start-up flow on the settings the person gives and reports the centreline velocity against time as the solver writes it, with the analytical solution computed by a library skill to compare against.",
+  "reading": {
+    "taken": "two engine agents under a hub; this is the CFD one, on the rheoTool image that is already on this computer, and what it finds is the start-up flow's centreline velocity against time",
+    "why": "the person chose 'Channel start-up (Recommended)' and 'rheoTool image (Recommended)' (note 20261121-meta-macbook-20261120-4-5)",
+    "other_readings": [
+      "a 4:1 contraction or the flow past a cylinder, which the person did not choose",
+      "a plain OpenFOAM installed anew, which the person did not choose"
+    ]
+  },
+  "science_task": "the start-up of a planar Poiseuille flow of an Oldroyd-B fluid with the MD agent's constants, its centreline velocity against time compared with the analytical solution",
+  "tool": {
+    "name": "rheoTool on OpenFOAM (rheoFoam)",
+    "kind": "engine",
+    "registry_id": "rheotool",
+    "material_refs": [],
+    "documentation": "rheoTool's user guide and tutorials (github.com/fppimenta/rheotool) and OpenFOAM's for the release the image carries, still to be read as materials",
+    "language": "C++ applications of OpenFOAM driven by case dictionaries",
+    "version": "the image rheotool:of90 in this computer's Colima profile rheotool, the versions inside it to be read off the adapter's trial",
+    "license": "GPL for OpenFOAM and rheoTool, its version as their sources state it, to be read; called out of process, never bundled"
+  },
+  "methods": [
+    "cfd"
+  ],
+  "executes": "engine",
+  "must_not": [
+    "touch an instrument",
+    "invent a number, or choose a setting, a scale or a tolerance",
+    "convert a unit by hand",
+    "compute again a value the engine itself reports",
+    "reach a network host or a container other than those the lab's permission lists for rheoTool",
+    "write in the MD agent's or the hub's folder",
+    "use a value handed over that its build did not declare"
+  ],
+  "knowledge_needs": [
+    "which rheoTool solver and constitutive model carry Oldroyd-B, and how its dictionaries name λ, η_p and η_s",
+    "how a planar channel's start-up is set up in rheoTool, from its tutorials",
+    "the analytical solution of the start-up of planar Poiseuille flow of an Oldroyd-B fluid, from a published source",
+    "what the solver writes of the velocity, and where"
+  ],
+  "parameter_scope": [
+    "channel_half_width",
+    "channel_length",
+    "pressure_gradient",
+    "density",
+    "mesh",
+    "time_step",
+    "end_time"
+  ],
+  "destination": "this computer (macOS on arm64), in a folder the person chooses beside the MD agent's and the hub's, running the image rheotool:of90 in the Colima profile rheotool; the bundle stops at meta_agent/builds/ until the person moves it",
+  "priorities": [
+    "a value handed over is used only as declared",
+    "the velocity reported is the solver's own, never computed again",
+    "the agent stands alone: without the hub it still runs, the constants then being the person's to give"
+  ],
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "gui_choice": "none",
+  "analysis_permission": null,
+  "tool_reading": [
+    {
+      "claim": "which rheoTool solver and constitutive model carry Oldroyd-B, and how a case names its constants",
+      "kind": "unknown",
+      "basis": "documentation",
+      "loci": [
+        "rheoTool's user guide, not yet read as a material"
+      ],
+      "gap_reason": "not_read",
+      "requires": "rheoTool's user guide and its Oldroyd-B channel tutorial, read as material cards by research-materials"
+    },
+    {
+      "claim": "the image rheotool:of90 is in the Colima profile rheotool, which `colima list` showed stopped on 2026-11-21",
+      "kind": "observed",
+      "basis": "run_record",
+      "loci": [
+        "`colima list` on this computer, 2026-11-21"
+      ],
+      "capability": "environment"
+    }
+  ],
+  "questions_for_the_person": [
+    {
+      "n": 1,
+      "needed_before": "the goal: what the agent computes and hands over",
+      "question": "Task 034 (HOOMD -> OpenFOAM, under a hub): which viscoelastic properties should the MD agent compute and hand over to the CFD agent?",
+      "how": "one of the buttons, the recommendation marked",
+      "answer": {
+        "verbatim": "λ, η_p, η_s (Recommended)",
+        "date": "2026-11-21",
+        "gloss": "the relaxation time, the polymer viscosity and the solvent viscosity (given in the meta seat's conversation; relayed for docs/ideas by the note 20261121-meta-macbook-20261120-4-5)"
+      }
+    },
+    {
+      "n": 2,
+      "needed_before": "the goal: the flow the CFD runs and what it finds",
+      "question": "What flow should the OpenFOAM agent simulate with those properties, and what should it find?",
+      "how": "one of the buttons, the recommendation marked",
+      "answer": {
+        "verbatim": "Channel start-up (Recommended)",
+        "date": "2026-11-21",
+        "gloss": "the start-up of planar Poiseuille flow, its centreline velocity against time (given in the meta seat's conversation; relayed for docs/ideas by the note 20261121-meta-macbook-20261120-4-5)"
+      }
+    },
+    {
+      "n": 3,
+      "needed_before": "the goal: the engine the CFD agent runs",
+      "question": "Which OpenFOAM should the CFD agent run?",
+      "how": "one of the buttons, the recommendation marked",
+      "answer": {
+        "verbatim": "rheoTool image (Recommended)",
+        "date": "2026-11-21",
+        "gloss": "the image rheotool:of90 in this computer's Colima profile rheotool (given in the meta seat's conversation; relayed for docs/ideas by the note 20261121-meta-macbook-20261120-4-5)"
+      }
+    }
+  ]
+}
