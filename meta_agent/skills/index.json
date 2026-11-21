@@ -930,6 +930,79 @@
       "sha256": "sha256:328f7b2f9b9f30a036f4b85cf91156ea3ccc38faec48822b9f271b3b2b2e88a3"
     },
     {
+      "ref": "harmonic_well_fit@v1",
+      "id": "harmonic_well_fit",
+      "version": 1,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the potential constant, the rest position and the well's energy of a harmonic well fitted by least squares to energies at positions about a minimum",
+      "description": "The potential constant, the rest position and the energy at the minimum of a harmonic well, fitted by least squares to energies computed or measured at several positions about a minimum, with the residual and whether the minimum lies inside the points. Take it when a bond, a trap or any well is to be handed on as the harmonic potential an engine takes.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "points",
+          "unit": "1",
+          "meaning": "the energy curve: pairs of a position along one coordinate (a bond length, a displacement) and the energy computed or measured there, each part in one unit throughout, three distinct positions or more"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "force_constant",
+          "unit": "1",
+          "meaning": "k of U = U0 + k (x - x0)^2 / 2: twice the fitted curvature, in the unit of the energies over the square of the unit of the positions; null when not fitted"
+        },
+        {
+          "name": "rest_position",
+          "unit": "1",
+          "meaning": "x0, the position of the fitted minimum, in the unit of the positions; null when the curvature is not positive",
+          "unit_of": "points",
+          "unit_of_part": "variable"
+        },
+        {
+          "name": "well_energy",
+          "unit": "1",
+          "meaning": "U0, the fitted energy at x0, in the unit of the energies",
+          "unit_of": "points",
+          "unit_of_part": "value"
+        },
+        {
+          "name": "residual_standard_deviation",
+          "unit": "1",
+          "meaning": "the residual sum of squares over n - 3, rooted, in the unit of the energies; null with three points, where no degree of freedom is left",
+          "unit_of": "points",
+          "unit_of_part": "value"
+        },
+        {
+          "name": "minimum_inside_span",
+          "unit": "1",
+          "meaning": "true where x0 lies between the smallest and the largest position of the points; a minimum outside them is an extrapolation"
+        },
+        {
+          "name": "points",
+          "unit": "count",
+          "meaning": "how many points were handed"
+        },
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "fitted | no_minimum | not_fitted"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why nothing was fitted, or why there is no minimum; absent when fitted"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/harmonic_well_fit@v1",
+      "sha256": "sha256:36934762959265cc3438b0d41bcf5a30196062259b8f2a56ad524800f3f1aa58"
+    },
+    {
       "ref": "literature_span@v1",
       "id": "literature_span",
       "version": 1,
@@ -1841,6 +1914,73 @@
       "uses_skills": [],
       "path": "data_analysis/tolerance_from_reference@v5",
       "sha256": "sha256:6d23997efa0a04f5be140b5e0c14b269fe9dee188c812c5e6ba973d76989b3d3"
+    },
+    {
+      "ref": "unit_convert@v1",
+      "id": "unit_convert",
+      "version": 1,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the factor between two registered units of one dimension, and a value converted by it, into an engine's own unit only through the unit a scale says it stands for",
+      "description": "The factor between two registered units of one dimension and a value converted by it, read from the registry's entries its caller hands; into an engine's own unit only through the registered unit a scale says it stands for, and nothing where the dimensions differ or no scale is handed. Take it whenever a value received from another agent, or read in one unit and wanted in another, changes unit.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "value",
+          "unit": "1",
+          "meaning": "the value to convert, in from_unit"
+        },
+        {
+          "name": "from_unit",
+          "unit": "1",
+          "meaning": "the registry's entry of the value's unit: name, si_factor and dim, as the registry holds them"
+        },
+        {
+          "name": "to_unit",
+          "unit": "1",
+          "meaning": "the registry's entry of the unit the value is wanted in"
+        },
+        {
+          "name": "stands_for",
+          "unit": "1",
+          "meaning": "where to_unit has no si_factor, the registry's entry of the registered unit a confirmed scale says it stands for; null otherwise"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "converted | not_convertible"
+        },
+        {
+          "name": "factor",
+          "unit": "1",
+          "meaning": "si_factor(from) over si_factor(to, or the unit its scale stands for); null when not convertible"
+        },
+        {
+          "name": "converted",
+          "unit": "1",
+          "meaning": "the value times the factor, in to_unit; null when not convertible"
+        },
+        {
+          "name": "value",
+          "unit": "1",
+          "meaning": "the value handed, unchanged, in from_unit"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why no factor exists; absent when converted"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/unit_convert@v1",
+      "sha256": "sha256:71fceb493a96aaa0eea51955420300c122785b7f9308692ff95be5ebe862f347"
     },
     {
       "ref": "diffusive_regime_from_msd@v1",
