@@ -1,0 +1,28 @@
+This folder is a bundle: a hub agent built by a separate builder, the Meta-Agent, as a self-contained folder. It is the `h2-bond-hub` agent. It coordinates two other agents, each in a folder of its own beside this one: a DFT agent that runs Quantum ESPRESSO, and an MD agent that runs HOOMD-blue. The folders were copied out of the builder's repository into a place with no other project around them, and the builder is not here. The purpose of this run is to see whether a person can have several engines worked together by asking one question in their own words. So what was in your context, what you loaded, what you could not find and what was unclear matters as much as what you ran: say what you met as you met it, and do not assume the text is right because it is there.
+
+`CLAUDE.md` in this folder says who you are and what binds you. Work only from what this folder carries, from what the members' folders show, and from what your instructions let you write.
+
+Earlier sessions of this hub took the person's question, "H2 결합을 DFT로 구하고, 그 결합으로 HOOMD에서 MD를 돌려줘." (find the H2 bond by DFT, and run MD in HOOMD with that bond), recorded the person's agreement to its list, had the DFT agent answer, and stopped with two questions for the person. The person was shown the DFT result card in this hub's inbox, with its two values, its source, its grade and the conditions pw.x printed.
+
+Asked whether the DFT agent's scan settings, which it took from the person's choice for its build rather than holding them, stand for this question, the person answered "Rerun with new ones", and then, asked which settings and how to go on, "Cross now, rerun later" (carry the current hand-over to the MD agent now and run the MD with it; the rerun's settings are asked of the person afterwards).
+
+Asked whether the hand-over `../qe-h2-bond-0004/outbox/handover-thr-h2-bond-001.json`, from qe-h2-bond to hoomd-h2-bond, may cross, the person answered:
+
+"넘겨줘"
+
+(hand it over.)
+
+Nobody is present to answer you during this session. Where your work needs the person (a word, a value only they can give), do not supply it yourself and do not go around it: say what it is and what you would show them, and stop there, as this hub waits.
+
+This folder and the members' folders are copies made for this run and are not under version control: there is nothing to commit, and what your instructions allow a session to write, you may write. Write nothing they do not allow.
+
+Done when: you have answered the person as this hub answers, or stopped where what is left is the person's.
+
+Your final message is your report, ten lines or fewer plus what you say to the person:
+
+```
+task     <the person's request>
+landed   <every file you wrote or changed, or nothing>
+ran      <each command, and what it returned>
+open     <what is not done, and whose step it is>
+```
