@@ -1,0 +1,17 @@
+{
+  "id": "if-2",
+  "name": "a force constant given in words is refused by the runner's input check",
+  "call": {
+    "tool": "run_h2_md",
+    "input": {
+      "bond_k": "the received one"
+    }
+  },
+  "expected": {
+    "error": {
+      "category": "invalid_input",
+      "code": "HOOMD-RUN-INPUT-001"
+    }
+  },
+  "expected_verdict": "pass"
+}

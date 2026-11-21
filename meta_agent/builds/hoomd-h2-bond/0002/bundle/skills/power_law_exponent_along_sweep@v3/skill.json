@@ -1,0 +1,69 @@
+{
+  "schema_version": "0.1",
+  "id": "power_law_exponent_along_sweep",
+  "version": 3,
+  "kind": "diagnostic",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "whether a quantity changes along a sweep, by the exponent of a power law fitted to it and that exponent's standard error, against a tolerance and a multiple it is handed",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "sweep",
+      "unit": "1",
+      "meaning": "the values the sweep took, all positive, in one unit"
+    },
+    {
+      "name": "values",
+      "unit": "1",
+      "meaning": "the quantity at each value of the sweep, all positive, in one unit"
+    },
+    {
+      "name": "tolerance",
+      "unit": "1",
+      "meaning": "the largest size of the exponent that counts as not changing; null when none is chosen"
+    },
+    {
+      "name": "multiple",
+      "unit": "1",
+      "meaning": "how many standard errors the exponent must clear the tolerance by, on either side; null when none is chosen"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "state",
+      "unit": "1",
+      "meaning": "changes | does_not_change | undecided"
+    },
+    {
+      "name": "exponent",
+      "unit": "1",
+      "meaning": "the least-squares slope of the logarithm of the values on the logarithm of the sweep; null below three points"
+    },
+    {
+      "name": "exponent_standard_error",
+      "unit": "1",
+      "meaning": "the slope's standard error, the residual sum over n - 2 over the sum of squared deviations, rooted; null below three points"
+    },
+    {
+      "name": "points",
+      "unit": "count",
+      "meaning": "how many points were fitted"
+    }
+  ],
+  "entry": {
+    "script": "scripts/diagnostic.py",
+    "function": "diagnostic"
+  },
+  "validity": "a quantity that goes as a power of the swept value over the sweep, with errors alike on every point; three points or more",
+  "source": {
+    "citation": "NIST/SEMATECH e-Handbook of Statistical Methods, Section 4.4.3.1 Least Squares (read 2026-11-17, https://www.itl.nist.gov/div898/handbook/pmd/section4/pmd431.htm; meta_agent/inbox/materials/20261117-nist-sematech-least-squares); D. M. Lane et al., Online Statistics Education: A Multimedia Course of Study, Rice University, chapter Regression: Inferential Statistics for b and r; Standard Error of the Estimate (an open textbook) (read 2026-11-17, https://onlinestatbook.com/2/regression/inferential.html; meta_agent/inbox/materials/20261117-lane-online-statistics-regression)",
+    "locus": "Sec. 4.4.3.1: the least-squares slope, the intercept and the residual standard deviation over n - p, p = 2 for a line; Inferential Statistics for b and r: s_b = s_est / sqrt(SSX); Standard Error of the Estimate: s_est = sqrt(sum (Y - Y')^2 / (N - 2))"
+  },
+  "note": "v1 with its source changed from an encyclopedia page to a statistics handbook and a textbook, found by search; the code and the cases are v1's. No value of the sources stands behind the worked cases: each is worked in its worked field, the slope by hand and its standard error by the sources' expressions. v3 is v2 made common, unchanged in its code and its cases' values: every simulation bundle carries it (the person, 2026-11-18, docs/ideas/20261118.md; meta_agent/tasks/025), and each worked case names the kind of system it is worked on, at least two unrelated kinds. A build adapts it to an engine as a next version that names the engine and says adapted_from.",
+  "cases": "cases.json",
+  "common": true
+}

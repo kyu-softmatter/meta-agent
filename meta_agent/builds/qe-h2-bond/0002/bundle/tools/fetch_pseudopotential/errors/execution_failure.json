@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "QE-PSEUDO-004",
+  "category": "execution_failure",
+  "message": "the file read is not the bytes the builder read",
+  "retryable": false,
+  "remediation": {
+    "action": "nothing was kept; a person says whether the source changed"
+  }
+}

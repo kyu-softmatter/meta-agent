@@ -1,0 +1,53 @@
+{
+  "card": "validation_report",
+  "schema_version": "0.1",
+  "id": "vr-qe-h2-bond-0002",
+  "rid": "req-qe-h2-bond-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T02:14:11Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "build_ref": "build-qe-h2-bond-0002",
+  "environment": "sandbox",
+  "interface": {
+    "tasks": [
+      {
+        "id": "if-1",
+        "name": "a scan with no input is refused by the runner's input check",
+        "verdict": "pass",
+        "evidence": "meta_agent/builds/qe-h2-bond/0002/bundle/validation/interface/if-1.json"
+      },
+      {
+        "id": "if-2",
+        "name": "bond lengths given in words are refused by the runner's input check",
+        "verdict": "pass",
+        "evidence": "meta_agent/builds/qe-h2-bond/0002/bundle/validation/interface/if-2.json"
+      }
+    ]
+  },
+  "scientific": {
+    "tasks": [
+      {
+        "id": "sci-1",
+        "name": "the rest length fitted to one scan against the measured internuclear distance of H2's ground state",
+        "verdict": "not_run",
+        "reference": {
+          "kind": "source",
+          "ref": "NIST Chemistry WebBook, H2, Constants of diatomic molecules, the row X 1Σg+, r_e in angstrom (mat-20261120-nist-webbook-h2-diatomic-constants)"
+        },
+        "tolerance": null,
+        "evidence": "meta_agent/builds/qe-h2-bond/0002/bundle/validation/scientific/sci-1.json",
+        "reason": "no reference function 'h2_ground_state_re_in_bohr' in this bundle"
+      }
+    ]
+  },
+  "overall": "not_run",
+  "note": "gates read off the bundle's own runners: interface pass, scientific not_run, replay 1 item(s) ok; read off an isolated copy of the bundle outside the repository, where its scan_h2_bond started the engine already on this computer by the lab's execution permission; none of its calls was made in the builder's tree; the copy was removed"
+}

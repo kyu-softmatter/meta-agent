@@ -1,0 +1,146 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "scan_h2_bond",
+  "description": "run one self-consistent pw.x calculation of one H2 molecule at each bond length named, in a cubic box at the gamma point with the Martyna-Tuckerman correction, each in its own folder of a new scan folder under runs/scan, and return the energy curve: each pair a bond length as given and the total energy pw.x printed for it, with the conditions pw.x printed, which must be the same for every point; a point that did not converge or did not end with JOB DONE ends the scan with an error",
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "bond_lengths": {
+        "type": "array",
+        "unit": "bohr",
+        "row": "bond_lengths",
+        "description": "the bond lengths to compute, each once"
+      },
+      "box_side": {
+        "type": "number",
+        "unit": "bohr",
+        "minimum": 0,
+        "row": "box_side",
+        "description": "the side of the cubic box, the first of the celldm constants"
+      },
+      "ecutwfc": {
+        "type": "number",
+        "unit": "Ry",
+        "minimum": 0,
+        "row": "ecutwfc",
+        "description": "the kinetic energy cutoff for wavefunctions"
+      },
+      "ecutrho": {
+        "type": "number",
+        "unit": "Ry",
+        "minimum": 0,
+        "row": "ecutrho",
+        "description": "the kinetic energy cutoff for charge density and potential"
+      },
+      "conv_thr": {
+        "type": "number",
+        "unit": "Ry",
+        "minimum": 0,
+        "row": "conv_thr",
+        "description": "the convergence threshold of the self-consistent loop"
+      },
+      "n_processes": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "unit": "count",
+        "default": null,
+        "description": "how many MPI processes each pw.x runs on, a positive count, through the environment's mpirun; null starts pw.x directly, without mpirun"
+      },
+      "budget_s": {
+        "type": [
+          "number",
+          "null"
+        ],
+        "unit": "s",
+        "minimum": 0,
+        "default": null,
+        "description": "the running time each pw.x may take before the call gives up on it, counted while it runs and not while it is paused; no limit when null"
+      },
+      "pseudo_dir": {
+        "type": "string",
+        "minLength": 1,
+        "default": "runs/inputs/pseudo",
+        "description": "the folder that holds the pseudopotential"
+      }
+    },
+    "required": [
+      "bond_lengths",
+      "box_side",
+      "ecutwfc",
+      "ecutrho",
+      "conv_thr"
+    ]
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "run_dir": {
+        "type": "string",
+        "description": "the scan folder, relative to this directory"
+      },
+      "energy_curve": {
+        "type": "array",
+        "unit": "Ry",
+        "description": "pairs of a bond length in bohr, as given, and the total energy pw.x printed for it, in Ry"
+      },
+      "printed_conditions": {
+        "type": "object",
+        "description": "what pw.x printed of the conditions, the same for every point: the cutoffs, the lattice parameter, the threshold, the processes, the exchange-correlation functional, the pseudopotential file, the species mass it used and the isolated-system correction"
+      },
+      "program_version": {
+        "type": "string",
+        "description": "the version pw.x printed"
+      },
+      "points": {
+        "type": "array",
+        "description": "each point's bond length, folder, total energy, iterations and convergence as pw.x printed them"
+      },
+      "box_side": {
+        "type": "number",
+        "unit": "bohr"
+      },
+      "n_processes": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "unit": "count"
+      },
+      "inputs": {
+        "type": "object",
+        "description": "the call's inputs, as given"
+      }
+    },
+    "required": [
+      "run_dir",
+      "energy_curve",
+      "printed_conditions",
+      "program_version",
+      "points"
+    ]
+  },
+  "errors": [
+    "invalid_input",
+    "unavailable",
+    "refused_by_safety",
+    "execution_failure",
+    "timeout",
+    "cancelled"
+  ],
+  "side_effects": "runs_process",
+  "safety_gate": {
+    "required": true,
+    "place": "src/gate.py, consulted by src/run_tool.py before the call",
+    "opens_by": "execution_permission"
+  },
+  "idempotent": false,
+  "timeout_s": null,
+  "calls_external": {
+    "program": "Quantum ESPRESSO pw.x (conda-forge package qe)",
+    "license": "GPL-2.0-only",
+    "bundled": false
+  }
+}

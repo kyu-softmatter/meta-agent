@@ -1,0 +1,72 @@
+{
+  "rows": [
+    {
+      "name": "bond_k",
+      "value": null,
+      "unit": "engine_energy/engine_length^2",
+      "takes_handover": {
+        "name": "h2_bond_force_constant",
+        "thread": "thr-h2-bond",
+        "from_agent": "qe-h2-bond"
+      }
+    },
+    {
+      "name": "bond_r0",
+      "value": null,
+      "unit": "engine_length",
+      "takes_handover": {
+        "name": "h2_bond_rest_length",
+        "thread": "thr-h2-bond",
+        "from_agent": "qe-h2-bond"
+      }
+    },
+    {
+      "name": "particle_mass",
+      "value": null,
+      "unit": "engine_mass",
+      "note": "the hydrogen atom's mass, in engine_mass, which stands for Da; no source for it was read in this build, so the person gives it"
+    },
+    {
+      "name": "n_molecules",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "box_side",
+      "value": null,
+      "unit": "engine_length",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "kT",
+      "value": null,
+      "unit": "engine_energy",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "dt",
+      "value": null,
+      "unit": "engine_time",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it; engine_time's scale follows from the three base scales and is not registered"
+    },
+    {
+      "name": "steps",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "log_every",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "seed",
+      "value": null,
+      "unit": "id",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "schema_version": "0.1",
+  "id": "tolerance_from_reference",
+  "version": 5,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "a scientific task's tolerance by the person's standing rule, its branches in order: the reference's stated uncertainty; else the span of the quantity across suitable materials, as an acceptance interval; else the larger of half a unit in its last printed digit and the run's own numerical error, a two-grid estimate of that error entering three times over; for a reference the source gives as exact, the run's own error alone in that last branch",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "printed",
+      "unit": "1",
+      "meaning": "the reference value as its source prints it, as text, its last digit kept as printed (a trailing zero included); in the quantity's unit; it may be null for a reference marked exact"
+    },
+    {
+      "name": "stated_uncertainty",
+      "unit": "1",
+      "meaning": "the uncertainty the source states for that value, in the quantity's unit, or null where it states none"
+    },
+    {
+      "name": "run_numerical_error",
+      "unit": "1",
+      "meaning": "the run's own numerical error of the quantity, in its unit, as an estimating skill gave it through the runner (the difference between two resolutions, or the standard error of a series the run produced); null where it was not estimated"
+    },
+    {
+      "name": "run_error_from",
+      "unit": "1",
+      "meaning": "how the run's own error was estimated: two_grids (two resolutions, as discretization_error_from_two_resolutions gives it), three_or_more_grids, or series_standard_error; null where the run's error is null"
+    },
+    {
+      "name": "exact",
+      "unit": "1",
+      "meaning": "true where the source gives the reference as exact (an analytic value of the case's own settings, a defined constant), so that it has no printed digit to be uncertain in and the half-digit branch does not apply; false or null otherwise"
+    },
+    {
+      "name": "span_low",
+      "unit": "1",
+      "meaning": "the low edge of the span of the quantity across suitable materials, in the quantity's unit, as the span's skill gave it through the runner; null where it gave none or no material was handed"
+    },
+    {
+      "name": "span_high",
+      "unit": "1",
+      "meaning": "the high edge of that span, in the quantity's unit; null where there is none"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "tolerance",
+      "unit": "1",
+      "meaning": "the tolerance about the reference, in the quantity's unit; null where the span gave an interval in its place, and null, with why, where the inputs give none"
+    },
+    {
+      "name": "interval_low",
+      "unit": "1",
+      "meaning": "the low edge of the acceptance interval, in the quantity's unit, where the span gave it: the measured value is to lie between the two edges, the edges as handed; else null"
+    },
+    {
+      "name": "interval_high",
+      "unit": "1",
+      "meaning": "the high edge of that interval; else null"
+    },
+    {
+      "name": "from",
+      "unit": "1",
+      "meaning": "stated_uncertainty, literature_span, last_printed_digit or run_numerical_error: which of the rule's ways gave it; null where none did"
+    },
+    {
+      "name": "run_error_estimated",
+      "unit": "1",
+      "meaning": "true when a run's numerical error was handed and weighed, false when it was not estimated and the half-digit branch alone applied, null where the stated uncertainty or the span was taken"
+    },
+    {
+      "name": "factor",
+      "unit": "1",
+      "meaning": "the factor the run's own error entered with: 3 for a two-grid estimate, 1 for three or more grids or a series' standard error; null where no run error was weighed"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why no tolerance was given, or that the run's error was not estimated; else null"
+    }
+  ],
+  "entry": {
+    "script": "scripts/analysis.py",
+    "function": "analysis"
+  },
+  "validity": "one reference value of one quantity. The stated uncertainty, where there is one, is taken as handed: which uncertainty a source states (a standard error, the spread between its refinement levels) is the reader's to say. The last printed digit is read off the text as printed, so a trailing zero counts and a number already stored as a float has lost its printed form; an integer printed with trailing zeros is read as printed. A run's numerical error is taken as handed, with how it was estimated: estimating it is another skill's, and a run error handed without run_error_from gives no tolerance. A reference marked exact is taken as the source gives it: whether a value is exact is the reader's to say from the source, and an exact reference with no run error estimated gives no tolerance. A span is taken as handed, its two edges as the span's skill gave them: finding the materials, saying how each compares and computing the span are not this skill's, and it widens the span by nothing. A span is taken before the printed digit and the run's error whether or not the reference is marked exact, and after a stated uncertainty. It judges nothing, a tolerance the person gave overrides it, and a pass the person gave by judgement stays as it is",
+  "source": {
+    "citation": "the person's standing rule of 2026-11-18 (docs/ideas/20261118.md, 'Tolerances by a standing rule', amended in 'Yes, run's own error', 'Yes, factor 3', 'Yes, add literature span' and 'Min-max of values'; widened in docs/ideas/20261119.md, 'Yes, widen it'); JCGM 100:2008, Evaluation of measurement data - Guide to the expression of uncertainty in measurement (GUM), BIPM (read 2026-11-18, https://www.bipm.org/documents/20126/2071204/JCGM_100_2008_E.pdf; meta_agent/inbox/materials/20261118-jcgm-100-2008-gum); NASA Glenn Research Center, NPARC Alliance CFD Verification and Validation, Examining Spatial (Grid) Convergence (read 2026-11-18, https://www.grc.nasa.gov/www/wind/valid/tutorial/spatconv.html; meta_agent/inbox/materials/20261118-nasa-grc-spatial-convergence), after P. J. Roache",
+    "locus": "GUM F.2.2.1, The resolution of a digital indication, printed page 64: half the unit of the last printed digit is the half-width the rule takes; NASA GRC, section Grid Convergence Index (GCI): the factor of safety is recommended to be 3.0 for comparisons of two grids and 1.25 for comparisons over three or more grids; the person's rule takes the first and keeps no factor for three or more grids"
+  },
+  "note": "v4 with the span of branch 3 in its place in the rule's order (meta_agent/tasks/028; the design role's ask 20261118-design-macbook-20261117-1-16): two inputs hand the span's edges as literature_span gave them, and where they are handed and the source states no uncertainty, the answer is that interval, from literature_span, with no tolerance about the reference. Every case of v4 gives the same with the two inputs null, and says null for the two interval outputs. Common, as v4 (every simulation bundle carries it; meta_agent/tasks/025). The span of the first span case is the one literature_span@v1's first worked case gives from its materials (Schaefer and Turek 1996, V. John 2004, the FeatFlow page), and its printed reference is John's value; the other values are worked by hand in each case's worked field, the person's own example of 1066 K among them.",
+  "cases": "cases.json",
+  "common": true
+}

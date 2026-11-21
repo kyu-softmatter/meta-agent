@@ -1,0 +1,67 @@
+[
+  {
+    "name": "a DFT rest length in bohr into an MD engine's length unit that the person said stands for the angstrom",
+    "inputs": {
+      "value": 1.42,
+      "from_unit": {"name": "bohr", "si_factor": 5.29177210544e-11, "dim": {"L": 1}},
+      "to_unit": {"name": "engine_length", "si_factor": null, "dim": {"L": 1}},
+      "stands_for": {"name": "Angstrom", "si_factor": 1e-10, "dim": {"L": 1}}
+    },
+    "expect": {"state": "converted", "factor": 0.529177210544, "converted": 0.75143163897248, "value": 1.42},
+    "tolerance": {"rel": 1e-12},
+    "worked": "5.29177210544e-11 / 1e-10 = 0.529177210544; 1.42 x 0.529177210544 = 0.75143163897248",
+    "system": "a diatomic molecule's bond handed from DFT to MD"
+  },
+  {
+    "name": "a force constant in Ry/bohr^2 into an MD engine's force-constant unit standing for eV/Angstrom^2",
+    "inputs": {
+      "value": 0.37,
+      "from_unit": {"name": "Ry/bohr^2", "si_factor": 778.4465524669654, "dim": {"M": 1, "T": -2}},
+      "to_unit": {"name": "engine_energy/engine_length^2", "si_factor": null, "dim": {"M": 1, "T": -2}},
+      "stands_for": {"name": "eV/Angstrom^2", "si_factor": 16.02176634, "dim": {"M": 1, "T": -2}}
+    },
+    "expect": {"state": "converted", "factor": 48.58681221205261, "converted": 17.977120518459466, "value": 0.37},
+    "tolerance": {"rel": 1e-12},
+    "worked": "778.4465524669654 / 16.02176634 = 48.586812212; 0.37 x 48.586812212 = 17.97712052",
+    "system": "a diatomic molecule's bond handed from DFT to MD"
+  },
+  {
+    "name": "a measured viscosity in Pa.s into mPa.s",
+    "inputs": {
+      "value": 0.98,
+      "from_unit": {"name": "Pa.s", "si_factor": 1.0, "dim": {"M": 1, "L": -1, "T": -1}},
+      "to_unit": {"name": "mPa.s", "si_factor": 0.001, "dim": {"M": 1, "L": -1, "T": -1}},
+      "stands_for": null
+    },
+    "expect": {"state": "converted", "factor": 1000.0, "converted": 980.0, "value": 0.98},
+    "tolerance": {"rel": 1e-12},
+    "worked": "1.0 / 0.001 = 1000; 0.98 x 1000 = 980",
+    "system": "a fluid's viscosity handed from a rheometer to a flow solver"
+  },
+  {
+    "name": "an engine's own unit with no scale has no factor",
+    "inputs": {
+      "value": 0.98,
+      "from_unit": {"name": "Pa.s", "si_factor": 1.0, "dim": {"M": 1, "L": -1, "T": -1}},
+      "to_unit": {"name": "engine_viscosity", "si_factor": null, "dim": {"M": 1, "L": -1, "T": -1}},
+      "stands_for": null
+    },
+    "expect": {"state": "not_convertible", "factor": null, "converted": null, "value": 0.98,
+               "why": "engine_viscosity has no si_factor and no scale says which registered unit it stands for"},
+    "worked": "engine_viscosity's si_factor is null and no scale is handed, so no factor exists",
+    "system": "a fluid's viscosity handed from a rheometer to a flow solver"
+  },
+  {
+    "name": "a length is not converted into an energy",
+    "inputs": {
+      "value": 1.42,
+      "from_unit": {"name": "bohr", "si_factor": 5.29177210544e-11, "dim": {"L": 1}},
+      "to_unit": {"name": "eV", "si_factor": 1.602176634e-19, "dim": {"M": 1, "L": 2, "T": -2}},
+      "stands_for": null
+    },
+    "expect": {"state": "not_convertible", "factor": null, "converted": null, "value": 1.42,
+               "why": "bohr and eV are not of one dimension"},
+    "worked": "a length (L) and an energy (M L^2 T^-2) differ in dimension, so no factor exists",
+    "system": "a diatomic molecule's bond handed from DFT to MD"
+  }
+]
