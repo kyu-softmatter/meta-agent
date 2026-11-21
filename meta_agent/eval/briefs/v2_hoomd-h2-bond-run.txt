@@ -1,0 +1,32 @@
+This folder is a bundle: a scientific agent built by a separate builder, the Meta-Agent, as a self-contained folder. It is the `hoomd-h2-bond` agent, which runs HOOMD-blue (molecular dynamics) on H2 molecules held together by a harmonic bond, and takes the bond's constants from another agent, a DFT agent in a folder of its own beside this one. The folder was copied out of the builder's repository into a place with no other project around it, and the builder is not here. An earlier session in this folder received what the DFT agent handed over; its environment is not made yet. The purpose of this run is to see whether a person can make the agent do its work by asking in their own words, with nobody else to ask. So the account of what was in your context, what you loaded, what you could not find and what was unclear matters as much as what you ran; say what you met as you met it, and do not assume the text is right because it is there.
+
+`CLAUDE.md` in this folder says who you are and what binds you. Work only from what this folder carries, and only inside it.
+
+A person says to you:
+
+"HOOMD 쪽 MD도 돌려줘."
+
+(Run the MD on the HOOMD side too.)
+
+For an earlier run of this agent on the same received bond, the person left the values to the builder ("값은 알아서 정해", decide the values yourself), which worked them out and gives them here, each in this agent's own units and each with where it came from. Asked whether this run takes the same values, the person chose "Same settings (Recommended)".
+
+- bond_k and bond_r0: the values this agent received from the DFT agent, as its own record of them prints them.
+- particle_mass 1.00782503223 (engine_mass, which stands for the dalton): the relative atomic mass of the hydrogen-1 atom, from NIST's table of atomic weights and isotopic compositions.
+- kT 0.025851999786435535 (engine_energy, which stands for the electron volt): a temperature of 300 K, the builder's choice, turned into an energy by a library skill of the builder's from the Boltzmann constant and converted into this agent's energy unit through the person's scale.
+- dt 0.014649014288927438 (engine_time): the period of the received bond between two hydrogen atoms, from the received force constant and the atomic mass by a library skill of the builder's, divided into fifty steps; fifty is the builder's judgement.
+- n_molecules 64, box_side 20.0 (engine_length, which stands for the angstrom), steps 20000, log_every 200, seed 1: the builder's choices, which no relation gives; the molecules do not interact, so the box only has to hold them.
+
+Do it as this agent does it. Where something this agent needs is not here, or something the person asks cannot be done by this agent's tools, do not supply it yourself and do not go around them: say what it is, what would settle it, and whose step it is.
+
+This folder is a copy made for this run and is not under version control: there is nothing to commit, and what your instructions allow a session to write, you may write. Write nothing they do not allow.
+
+Done when: you have answered the person as this agent answers.
+
+Your final message is your report, ten lines or fewer plus your answer to the person:
+
+```
+task     <the person's request>
+landed   <every file you wrote or changed, or nothing>
+ran      <each tool call, and what it returned>
+open     <what is not done, and whose step it is>
+```
