@@ -1,0 +1,3 @@
+check 12
+
+The measured viscosity is compared in Pa.s against a reference printed in mPa.s, with no conversion into the reference's unit (tasks/032, dftmd-10).

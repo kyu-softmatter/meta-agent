@@ -36,7 +36,7 @@ GIT_REPO = os.environ.get(GATE_ENV) or REPO  # where git is asked; differs from 
 EXPORTED = bool(os.environ.get(GATE_ENV))
 SCHEMAS = os.path.join(HERE, "schemas")
 REJECTED = os.path.join(HERE, "examples", "rejected")
-IMPLEMENTED = [1, 2, 3, 4, 5, 6, 7, 8, 11, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25]
+IMPLEMENTED = [1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25]
 SKIP_DIRS = {".git", ".agent", ".venv", ".pixi", "node_modules", "__pycache__"}
 
 def judge_the_commits_tree(argv):
@@ -791,6 +791,50 @@ def check24(tree, c, report, include_rejected=False):
 def _agents_equal(a, b):
     return isinstance(a, dict) and isinstance(b, dict) and \
         (a.get("agent"), a.get("build")) == (b.get("agent"), b.get("build"))
+
+
+# ----------------------------------------------------------------------------
+# check 12: a validation_report's scientific comparison (the rest of check 12 is held by the report's schema)
+# ----------------------------------------------------------------------------
+def check12(cards, c, report, tree):
+    """Where a reference states the unit it is printed in, the comparison is made in that unit: the measured
+    value is in it, converted from the run's unit by the registry's factor, and a tolerance the rule derived and
+    the agreement are in it (the person, 2026-11-20, 'Compare in its printed unit (Recommended)'; tasks/032,
+    dftmd-10)."""
+    for path, data in cards:
+        if card_name(data) != "validation_report":
+            continue
+        r = rel(path, tree)
+        for t in ((data.get("scientific") or {}).get("tasks") or []):
+            if not isinstance(t, dict):
+                continue
+            label = "scientific task %s" % t.get("id")
+            measured = t.get("measured") if isinstance(t.get("measured"), dict) else None
+            if measured and isinstance(measured.get("converted_from"), dict):
+                src = measured["converted_from"]
+                f, why = unit_rules.factor(c.units, src.get("unit"), measured.get("unit"))
+                if f is None:
+                    report.fail(12, r, "%s: the measured value was converted from %r into %r, which no factor of the "
+                                       "registry joins: %s" % (label, src.get("unit"), measured.get("unit"), why))
+                elif isinstance(src.get("value"), (int, float)) and \
+                        not unit_rules.factor_matches(measured.get("value"), src["value"] * f):
+                    report.fail(12, r, "%s: %r %s converted into %s is %r by the registry's factor %r, not %r" % (
+                        label, src["value"], src.get("unit"), measured.get("unit"), src["value"] * f, f,
+                        measured.get("value")))
+            unit = (t.get("reference") or {}).get("unit") if isinstance(t.get("reference"), dict) else None
+            if not unit:
+                continue
+            if measured and measured.get("unit") != unit:
+                report.fail(12, r, "%s: the measured value is in %r; the reference is printed in %r, and the comparison "
+                                   "is made in it" % (label, measured.get("unit"), unit))
+            tol = t.get("tolerance") if isinstance(t.get("tolerance"), dict) else None
+            if tol and tol.get("chosen_by") == "rule" and tol.get("unit") != unit:
+                report.fail(12, r, "%s: the rule's tolerance is in %r; the reference is printed in %r, and the rule "
+                                   "runs on it as printed" % (label, tol.get("unit"), unit))
+            agr = t.get("agreement") if isinstance(t.get("agreement"), dict) else None
+            if agr and tol and tol.get("chosen_by") == "rule" and agr.get("unit") != unit:
+                report.fail(12, r, "%s: the agreement is in %r, not in the reference's printed unit %r" % (
+                    label, agr.get("unit"), unit))
 
 
 def check25(cards, c, report, tree):
@@ -1955,6 +1999,8 @@ def run_static(tree, c, report, checks, include_rejected=False):
         check22(tree, c, report, include_rejected)
     if 24 in checks:
         check24(tree, c, report, include_rejected)
+    if 12 in checks:
+        check12(cards, c, report, tree)
     if 25 in checks:
         check25(cards, c, report, tree)
     report.ran.update(ch for ch in checks if isinstance(ch, int))

@@ -1,0 +1,3 @@
+check 12
+
+A DFT rest length is compared with a bond length printed in angstrom, but the tolerance the rule derived is stated in bohr; the comparison is made in the reference's printed unit, and the tolerance with it (tasks/032, dftmd-10).

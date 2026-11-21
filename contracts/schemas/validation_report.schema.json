@@ -171,6 +171,51 @@
               "evidence": {
                 "type": "string"
               },
+              "measured": {
+                "type": "object",
+                "description": "the measured value as compared: in the reference's printed unit, and, where the run gave it in another unit, the value it was converted from and the library skill that converted it through the registry, whose factor check 12 recomputes (tasks/032, dftmd-10)",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "$ref": "common.schema.json#/$defs/unit"
+                  },
+                  "converted_from": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "number"
+                      },
+                      "unit": {
+                        "$ref": "common.schema.json#/$defs/unit"
+                      }
+                    },
+                    "required": [
+                      "value",
+                      "unit"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "converted_by": {
+                    "type": "string",
+                    "pattern": "^computed:[a-z][a-z0-9_]*@v[1-9][0-9]*$"
+                  }
+                },
+                "required": [
+                  "value",
+                  "unit"
+                ],
+                "additionalProperties": false,
+                "dependentRequired": {
+                  "converted_from": [
+                    "converted_by"
+                  ],
+                  "converted_by": [
+                    "converted_from"
+                  ]
+                }
+              },
               "reference": {
                 "type": "object",
                 "properties": {
@@ -191,6 +236,10 @@
                       "type": "string",
                       "minLength": 1
                     }
+                  },
+                  "unit": {
+                    "$ref": "common.schema.json#/$defs/unit",
+                    "description": "the unit the source prints the reference value in; where it is not the measured quantity's unit, the comparison is made in it: the measured value and the run's own error are converted into it through the registry, the reference staying as printed, and a tolerance derived by the rule is in it (the person, 2026-11-20, 'Compare in its printed unit (Recommended)'; tasks/032, dftmd-10; check 12)"
                   }
                 },
                 "additionalProperties": false,
