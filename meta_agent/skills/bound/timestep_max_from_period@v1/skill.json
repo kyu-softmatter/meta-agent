@@ -1,0 +1,47 @@
+{
+  "schema_version": "0.1",
+  "id": "timestep_max_from_period",
+  "version": 1,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "parameter": "dt",
+  "side": "max",
+  "summary": "the largest time step that still resolves a period into a stated number of steps",
+  "applies_to": {
+    "parameters": [
+      "dt"
+    ],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "period",
+      "unit": "engine_time",
+      "meaning": "the shortest period the run must resolve, a bond's vibration for one"
+    },
+    {
+      "name": "steps_per_period",
+      "unit": "count",
+      "meaning": "how many steps one period is to span; a judgement, bound to a row with it"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "time_step_max",
+      "unit": "engine_time",
+      "meaning": "the period divided by the steps it is to span"
+    }
+  ],
+  "entry": {
+    "script": "scripts/bound.py",
+    "function": "bound"
+  },
+  "validity": "a run whose fastest motion is the period handed; the number of steps a period needs depends on the integrator and is the caller's judgement",
+  "source": {
+    "citation": "by definition: a step that is a stated fraction of the shortest period the run resolves",
+    "locus": "the definition of a time step as a fraction of a period; no source states the number of steps, which is a judgement handed as an input"
+  },
+  "note": "Written for meta_agent/tasks/031, beside harmonic_oscillation_period@v1. A bound of one parameter from one reason, with two cases on different inputs, each worked by hand on its own kind of system.",
+  "cases": "cases.json"
+}

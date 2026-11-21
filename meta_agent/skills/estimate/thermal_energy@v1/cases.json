@@ -1,0 +1,30 @@
+[
+  {
+    "name": "a room-temperature MD run",
+    "inputs": {
+      "temperature": 300.0
+    },
+    "expect": {
+      "thermal_energy": 4.141947e-21
+    },
+    "tolerance": {
+      "rel": 1e-12
+    },
+    "worked": "1.380649e-23 x 300 = 4.141947e-21",
+    "system": "a molecular dynamics thermostat"
+  },
+  {
+    "name": "a sample held at 298.15 K in a rheometer",
+    "inputs": {
+      "temperature": 298.15
+    },
+    "expect": {
+      "thermal_energy": 4.1164049935e-21
+    },
+    "tolerance": {
+      "rel": 1e-12
+    },
+    "worked": "1.380649e-23 x 298.15 = 4.1164049935e-21",
+    "system": "a rheometer's Peltier-held sample"
+  }
+]

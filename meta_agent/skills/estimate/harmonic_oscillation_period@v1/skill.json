@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.1",
+  "id": "harmonic_oscillation_period",
+  "version": 1,
+  "kind": "estimate",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the reduced mass, the angular frequency and the period of two masses joined by a harmonic bond, in an engine's own self-consistent units",
+  "applies_to": {
+    "parameters": [
+      "dt"
+    ],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "force_constant",
+      "unit": "engine_energy/engine_length^2",
+      "meaning": "k of the bond's energy U = k (r - r0)^2 / 2, the potential constant an MD engine's harmonic bond takes"
+    },
+    {
+      "name": "mass_a",
+      "unit": "engine_mass",
+      "meaning": "the mass of one of the two bonded particles"
+    },
+    {
+      "name": "mass_b",
+      "unit": "engine_mass",
+      "meaning": "the mass of the other"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reduced_mass",
+      "unit": "engine_mass",
+      "meaning": "mass_a mass_b / (mass_a + mass_b), the single mass whose motion is the pair's relative motion"
+    },
+    {
+      "name": "angular_frequency",
+      "unit": "1/engine_time",
+      "meaning": "the square root of the force constant over the reduced mass"
+    },
+    {
+      "name": "period",
+      "unit": "engine_time",
+      "meaning": "2 pi over the angular frequency: the time of one oscillation of the bond's length"
+    }
+  ],
+  "entry": {
+    "script": "scripts/estimate.py",
+    "function": "estimate"
+  },
+  "validity": "a harmonic bond between two point masses in classical mechanics, with no other force on them; an anharmonic bond's period depends on the amplitude, and a bond whose vibrational quantum is large beside kT is not classical, which this skill does not judge",
+  "source": {
+    "citation": "HyperPhysics (R. Nave, Georgia State University), Simple Harmonic Motion (read 2026-11-21, http://hyperphysics.phy-astr.gsu.edu/hbase/shm2.html; mat-20261121-hyperphysics-shm); HyperPhysics (R. Nave, Georgia State University), Reduced Mass (read 2026-11-21, http://hyperphysics.phy-astr.gsu.edu/hbase/orbv.html, section Reduced Mass; mat-20261121-hyperphysics-reduced-mass)",
+    "locus": "Simple Harmonic Motion: angular frequency = sqrt(spring constant / mass), and with the period T the angular frequency is 2 pi / T; Reduced Mass: the relative motion of two masses under a central force is that of a single mass mu = m1 m2 / (m1 + m2) (the section's equation image)"
+  },
+  "note": "Written for the HOOMD-blue agent of meta_agent/tasks/031, whose time step is to resolve the bond it received: the period is given in the engine's own units, from a force constant and masses in them, so that no scale of the engine's time is needed. No value of either source stands behind the worked cases; each is worked by hand in its worked field, on two unrelated kinds of system.",
+  "cases": "cases.json"
+}

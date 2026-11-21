@@ -1,0 +1,32 @@
+[
+  {
+    "name": "a bond's period resolved into twenty steps",
+    "inputs": {
+      "period": 3.141592653589793,
+      "steps_per_period": 20
+    },
+    "expect": {
+      "time_step_max": 0.15707963267948966
+    },
+    "tolerance": {
+      "rel": 1e-12
+    },
+    "worked": "pi / 20 = 0.1570796",
+    "system": "a diatomic molecule's bond in MD"
+  },
+  {
+    "name": "a polymer bond's period resolved into fifty steps",
+    "inputs": {
+      "period": 1.2566370614359172,
+      "steps_per_period": 50
+    },
+    "expect": {
+      "time_step_max": 0.025132741228718343
+    },
+    "tolerance": {
+      "rel": 1e-12
+    },
+    "worked": "1.256637 / 50 = 0.02513274",
+    "system": "a coarse-grained polymer's bond"
+  }
+]

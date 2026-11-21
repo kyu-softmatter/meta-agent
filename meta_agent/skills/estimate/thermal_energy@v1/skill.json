@@ -1,0 +1,40 @@
+{
+  "schema_version": "0.1",
+  "id": "thermal_energy",
+  "version": 1,
+  "kind": "estimate",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the thermal energy k_B T of a temperature, in joules",
+  "applies_to": {
+    "parameters": [
+      "kT"
+    ],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "temperature",
+      "unit": "K",
+      "meaning": "the absolute temperature"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "thermal_energy",
+      "unit": "J",
+      "meaning": "the Boltzmann constant times the temperature"
+    }
+  ],
+  "entry": {
+    "script": "scripts/estimate.py",
+    "function": "estimate"
+  },
+  "validity": "any absolute temperature; the Boltzmann constant is exact in the SI since 2019, so the product carries no uncertainty of its own",
+  "source": {
+    "citation": "NIST, CODATA Value: Boltzmann constant, 2022 CODATA recommended values (read 2026-11-21, https://physics.nist.gov/cgi-bin/cuu/Value?k; mat-20261121-nist-codata-boltzmann-constant)",
+    "locus": "Numerical value 1.380 649 x 10^-23 J K^-1, standard uncertainty (exact)"
+  },
+  "note": "Written for meta_agent/tasks/031, where an MD engine's thermostat takes kT in the engine's energy unit: this skill gives joules, and unit_convert@v1 takes them to the engine's unit through a scale the person confirmed. The constant is the source's; each case is worked by hand on its own kind of system.",
+  "cases": "cases.json"
+}

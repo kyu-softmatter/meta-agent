@@ -1,0 +1,69 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261121-nist-atomic-weights-hydrogen",
+  "revision": 1,
+  "author": "meta-macbook-20261120-3",
+  "created_at": "2026-11-21T01:54:26Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "Found by searching, anonymously and read-only, for the mass of a hydrogen atom for the HOOMD-blue agent's run (tasks/031): the relative atomic mass of 1H, 1.007 825 032 23(9), which is the mass in daltons; the standard atomic weight of hydrogen, an interval, is also given. The H2 the DFT agent fitted and NIST's WebBook constants are of the common isotope.",
+  "kind": "dataset",
+  "about": {
+    "name": {
+      "value": "NIST, Atomic Weights and Isotopic Compositions for Hydrogen",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-nist-atomic-weights-hydrogen",
+          "locus": "the page's heading"
+        }
+      ]
+    },
+    "role": {
+      "value": null,
+      "state": "unknown",
+      "note": "a reference page of physics or of measured constants; it documents no engine, instrument, platform or analysis software"
+    },
+    "methods": {
+      "value": [
+        "metrology"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-nist-atomic-weights-hydrogen",
+          "locus": "a table of relative atomic masses and isotopic compositions"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=H&ascii=html&isotype=some"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-21T01:54:26Z",
+    "content_hash": "sha256:7a5c60fe6e2b471204cf574dab580d7e01cbefda70bdbcfce6d57e2a35b96cee",
+    "archived": null
+  },
+  "added_by": "meta-macbook-20261120-3",
+  "added_at": "2026-11-21",
+  "entry_path": "search",
+  "license_note": {
+    "value": null,
+    "state": "unknown"
+  },
+  "may_quote": "unknown",
+  "state": "queued",
+  "state_reason": null,
+  "questions": [
+    "registered: may this source, found by a seat's search for the HOOMD-blue agent's run settings (tasks/031), be registered?",
+    "may_quote: may an excerpt of it be kept?"
+  ]
+}

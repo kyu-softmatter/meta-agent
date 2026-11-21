@@ -1,0 +1,38 @@
+[
+  {
+    "name": "a homonuclear diatomic bond in units where the force constant and the masses are round",
+    "inputs": {
+      "force_constant": 2.0,
+      "mass_a": 1.0,
+      "mass_b": 1.0
+    },
+    "expect": {
+      "reduced_mass": 0.5,
+      "angular_frequency": 2.0,
+      "period": 3.141592653589793
+    },
+    "tolerance": {
+      "rel": 1e-12
+    },
+    "worked": "mu = 1 x 1 / 2 = 0.5; omega = sqrt(2 / 0.5) = 2; T = 2 pi / 2 = pi",
+    "system": "a diatomic molecule's bond in MD"
+  },
+  {
+    "name": "a bead-spring bond between unequal beads in Lennard-Jones units",
+    "inputs": {
+      "force_constant": 30.0,
+      "mass_a": 2.0,
+      "mass_b": 3.0
+    },
+    "expect": {
+      "reduced_mass": 1.2,
+      "angular_frequency": 5.0,
+      "period": 1.2566370614359172
+    },
+    "tolerance": {
+      "rel": 1e-12
+    },
+    "worked": "mu = 2 x 3 / 5 = 1.2; omega = sqrt(30 / 1.2) = sqrt(25) = 5; T = 2 pi / 5 = 1.256637",
+    "system": "a coarse-grained polymer's bond"
+  }
+]

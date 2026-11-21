@@ -540,6 +540,47 @@
       "side": "max"
     },
     {
+      "ref": "timestep_max_from_period@v1",
+      "id": "timestep_max_from_period",
+      "version": 1,
+      "kind": "bound",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the largest time step that still resolves a period into a stated number of steps",
+      "description": "The largest time step that still resolves a period, such as a bond's vibration, into a stated number of steps. Take it when a run's time step is chosen against the fastest motion it must follow.",
+      "applies_to": {
+        "parameters": [
+          "dt"
+        ],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "period",
+          "unit": "engine_time",
+          "meaning": "the shortest period the run must resolve, a bond's vibration for one"
+        },
+        {
+          "name": "steps_per_period",
+          "unit": "count",
+          "meaning": "how many steps one period is to span; a judgement, bound to a row with it"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "time_step_max",
+          "unit": "engine_time",
+          "meaning": "the period divided by the steps it is to span"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "bound/timestep_max_from_period@v1",
+      "sha256": "sha256:bd0e91c10bcfeff9761700a2ca9bee145b59229a840e5cdffd47c156f8f34dca",
+      "parameter": "dt",
+      "side": "max"
+    },
+    {
       "ref": "timestep_max_from_relaxation_time@v1",
       "id": "timestep_max_from_relaxation_time",
       "version": 1,
@@ -2810,6 +2851,60 @@
       "sha256": "sha256:c2357b5879a7f381e766521ccddff5f1dd8ffc1a7966ba592a4592a4ec953552"
     },
     {
+      "ref": "harmonic_oscillation_period@v1",
+      "id": "harmonic_oscillation_period",
+      "version": 1,
+      "kind": "estimate",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the reduced mass, the angular frequency and the period of two masses joined by a harmonic bond, in an engine's own self-consistent units",
+      "description": "The reduced mass, the angular frequency and the period of two masses joined by a harmonic bond, in an engine's own self-consistent units. Take it when a time step must resolve a bond's vibration, or a bond's period is wanted from its force constant and the masses it joins.",
+      "applies_to": {
+        "parameters": [
+          "dt"
+        ],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "force_constant",
+          "unit": "engine_energy/engine_length^2",
+          "meaning": "k of the bond's energy U = k (r - r0)^2 / 2, the potential constant an MD engine's harmonic bond takes"
+        },
+        {
+          "name": "mass_a",
+          "unit": "engine_mass",
+          "meaning": "the mass of one of the two bonded particles"
+        },
+        {
+          "name": "mass_b",
+          "unit": "engine_mass",
+          "meaning": "the mass of the other"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "reduced_mass",
+          "unit": "engine_mass",
+          "meaning": "mass_a mass_b / (mass_a + mass_b), the single mass whose motion is the pair's relative motion"
+        },
+        {
+          "name": "angular_frequency",
+          "unit": "1/engine_time",
+          "meaning": "the square root of the force constant over the reduced mass"
+        },
+        {
+          "name": "period",
+          "unit": "engine_time",
+          "meaning": "2 pi over the angular frequency: the time of one oscillation of the bond's length"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "estimate/harmonic_oscillation_period@v1",
+      "sha256": "sha256:e015265885b88444ceffc3acb8ffa940a50b495af5ae2e68fd4ae05450b0e71a"
+    },
+    {
       "ref": "steps_for_diffusive_displacement@v1",
       "id": "steps_for_diffusive_displacement",
       "version": 1,
@@ -2922,6 +3017,40 @@
       "uses_skills": [],
       "path": "estimate/steps_for_diffusive_displacement@v2",
       "sha256": "sha256:4b97a1aadf82a3a64f66d413ba9f8d0fbdf82dbe10904319082eaea9ea97a4d8"
+    },
+    {
+      "ref": "thermal_energy@v1",
+      "id": "thermal_energy",
+      "version": 1,
+      "kind": "estimate",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the thermal energy k_B T of a temperature, in joules",
+      "description": "The thermal energy k_B T of an absolute temperature, in joules, with the Boltzmann constant exact in the SI. Take it when an engine or a relation takes kT and a temperature is what was chosen.",
+      "applies_to": {
+        "parameters": [
+          "kT"
+        ],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "temperature",
+          "unit": "K",
+          "meaning": "the absolute temperature"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "thermal_energy",
+          "unit": "J",
+          "meaning": "the Boltzmann constant times the temperature"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "estimate/thermal_energy@v1",
+      "sha256": "sha256:c0654d1c7b68902cf283abd28429c0ebc5af470cb7dbaa0d865d8987d359196e"
     },
     {
       "ref": "bring_to_ready@v1",
