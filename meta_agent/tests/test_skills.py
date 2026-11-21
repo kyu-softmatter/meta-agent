@@ -650,6 +650,8 @@ class Template(unittest.TestCase):
         left a folder made by hand from a tree it then changed). So templates/ holds only what a version's tree
         gives, under that tree's name, and the latest version need not be there before a build names it."""
         names = {template_mod.template_name(root): root for root in template_mod.SOURCES.values()}
+        from meta_agent.src.build import hubs as hubs_mod      # the hub template's versions, named hub@<hash> (tasks/033)
+        names.update({hubs_mod.template_name(root): root for root in hubs_mod.SOURCES.values()})
         there = sorted(n for n in os.listdir(os.path.join(META, "templates")) if os.path.isdir(os.path.join(META, "templates", n)))
         for name in there:
             self.assertIn(name, names, "templates/%s is the materialization of no version" % name)
