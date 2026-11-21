@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://meta-agent.invalid/schemas/hub_question.schema.json",
   "title": "hub_question",
-  "description": "The person's whole question to a hub agent, the items that say it is solved, and the list of assignments the hub split it into, which the person agreed to once (the person, 2026-11-20, 'Ask once per question (Recommended)' and 'until solve the problem'; meta_agent/tasks/033). Written by the hub in its question/. No numbers: a value the question gives is a card of its own.",
+  "description": "The person's whole question to a hub agent, the items that say it is solved, and the list of assignments the hub split it into, which the person agreed to once (the person, 2026-11-20, 'Ask once per question (Recommended)' and 'until solve the problem'; meta_agent/tasks/033). Written by the hub in its question/. No numbers: a value the question gives is a card of its own. The person's later words are appended under person_words in a new revision (v<N>_<name>), the rest unchanged; check 25 judges it.",
   "type": "object",
   "properties": {
     "card": {
@@ -137,6 +137,28 @@
         }
       },
       "description": "the person's agreement to the list, once for the question; absent until given, and nothing is carried on the hub's trigger before it"
+    },
+    "person_words": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "at",
+          "words"
+        ],
+        "properties": {
+          "at": {
+            "$ref": "common.schema.json#/$defs/datetime"
+          },
+          "words": {
+            "type": "string",
+            "minLength": 1,
+            "description": "the person's words, verbatim, numbers included"
+          }
+        }
+      },
+      "description": "the person's words given after the agreement, appended in a new revision that keeps the question, its items, its list and the agreement unchanged; a later round's assignment within the list quotes from them (the person, 2026-11-21, 'Append to the question (Recommended)'; hub-3)"
     }
   },
   "required": [

@@ -1,0 +1,43 @@
+{
+  "card": "hub_question",
+  "schema_version": "0.1",
+  "id": "q-waveguide-heating-hub-001",
+  "revision": 2,
+  "author": "waveguide-heating-hub",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "question": "fixture question: how much does a strip waveguide heat when it carries light through an absorbing section",
+  "done_when": [
+    {
+      "id": "dw-mode",
+      "what": "the guided mode's effective index"
+    },
+    {
+      "id": "dw-absorbed",
+      "what": "the power absorbed in the section"
+    },
+    {
+      "id": "dw-heat",
+      "what": "the temperature rise of the section at that absorbed power"
+    }
+  ],
+  "assignments": [
+    "as-mpb-waveguide-mode-r1",
+    "as-meep-waveguide-absorption-r1",
+    "as-fenics-waveguide-heat-r1"
+  ],
+  "agreed": {
+    "words": "fixture words of the person agreeing to this list",
+    "at": "2026-11-20T12:00:00Z"
+  },
+  "supersedes": "q-waveguide-heating-hub-001",
+  "person_words": [
+    {
+      "at": "2026-11-21T12:00:00Z",
+      "words": "fixture words of the person: take the ambient temperature as 293 K and the absorbed power as the FDTD agent handed it over"
+    }
+  ]
+}

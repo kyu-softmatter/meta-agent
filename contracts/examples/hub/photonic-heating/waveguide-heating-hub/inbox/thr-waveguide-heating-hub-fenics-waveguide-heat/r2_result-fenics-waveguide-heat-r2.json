@@ -1,0 +1,49 @@
+{
+  "card": "result",
+  "schema_version": "0.1",
+  "id": "res-fenics-waveguide-heat-r2",
+  "revision": 1,
+  "author": "fenics-waveguide-heat",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [
+    {
+      "name": "temperature_rise",
+      "value": 0.8,
+      "unit": "K",
+      "source": "computed:skill steady_heat_peak_rise@v1, runs/0002/record.json",
+      "grade": "E4",
+      "value_kind": "computed",
+      "uncertainty": null,
+      "conditions": {
+        "engine": "fenics",
+        "structure": "the waveguide section, fixture geometry",
+        "boundary": "the person's ambient temperature, quoted in the assignment"
+      }
+    }
+  ],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "thread": "thr-waveguide-heating-hub-fenics-waveguide-heat",
+  "round": 2,
+  "from": {
+    "agent": "fenics-waveguide-heat",
+    "build": "fenics-waveguide-heat/0001"
+  },
+  "to": {
+    "agent": "waveguide-heating-hub",
+    "build": "waveguide-heating-hub/0001"
+  },
+  "answers": {
+    "assignment": "as-fenics-waveguide-heat-r2",
+    "envelope": "inbox/thr-waveguide-heating-hub-fenics-waveguide-heat/r2_envelope.json"
+  },
+  "state": "answered",
+  "produced_by": [
+    {
+      "skill": "steady_heat_peak_rise@v1",
+      "record": "runs/0002/record.json"
+    }
+  ],
+  "held": []
+}

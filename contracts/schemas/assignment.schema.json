@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://meta-agent.invalid/schemas/assignment.schema.json",
   "title": "assignment",
-  "description": "What a hub agent asks one member to do (meta_agent/tasks/033). Written by the hub in its assignments/ and carried by the bridge into the member's inbox/<thread>/ on the hub's trigger ('Assign freely, carry on my word (Recommended)'). It carries no number; a value the member needs reaches it as a card of its own.",
+  "description": "What a hub agent asks one member to do (meta_agent/tasks/033). Written by the hub in its assignments/ and carried by the bridge into the member's inbox/<thread>/ on the hub's trigger ('Assign freely, carry on my word (Recommended)'). It carries no number; a value the member needs reaches it as a card of its own. A later round within the agreed list names its list_item and may quote the person's later words from its question (the person, 2026-11-21, 'Append to the question (Recommended)').",
   "type": "object",
   "properties": {
     "card": {
@@ -195,6 +195,38 @@
       "type": "string",
       "minLength": 1,
       "description": "what the member's result must hold, in words"
+    },
+    "list_item": {
+      "$ref": "common.schema.json#/$defs/id",
+      "description": "for a later round: the id of the assignment in the agreed list this one carries on, to the same member and answering the same items; absent, the assignment's own id is the list item"
+    },
+    "quotes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "question_revision",
+          "index",
+          "quote"
+        ],
+        "properties": {
+          "question_revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "description": "a part of person_words[index].words of that revision of the question, character for character"
+          }
+        }
+      },
+      "description": "the person's later words this assignment passes on, each quoted from its question; the only way a value the person gave reaches a member through an assignment (hub-3)"
     }
   },
   "required": [

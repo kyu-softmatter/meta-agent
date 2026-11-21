@@ -870,6 +870,42 @@ def _hub_root(folder):
     return data if isinstance(data, dict) and data.get("card") == "hub_members" else None
 
 
+def _hub_question_revisions(hub, qid):
+    """{revision: card} of one question in a hub's question/."""
+    out = {}
+    qdir = os.path.join(hub, "question")
+    for qn in sorted(os.listdir(qdir)) if os.path.isdir(qdir) else []:
+        try:
+            q = load_json(os.path.join(qdir, qn))
+        except (ValueError, UnicodeDecodeError, OSError):
+            continue
+        if isinstance(q, dict) and q.get("card") == "hub_question" and q.get("id") == qid:
+            out[q.get("revision")] = q
+    return out
+
+
+def _check25_hub_question(path, data, r, report):
+    """Once the person has agreed to a question's list, a later revision keeps the question, its items, its list
+    and the agreement, and only appends the person's later words (the person, 2026-11-21, 'Append to the question
+    (Recommended)'; hub-3)."""
+    rev = data.get("revision")
+    if not isinstance(rev, int) or rev < 2:
+        return
+    prev = _hub_question_revisions(os.path.dirname(os.path.dirname(os.path.abspath(path))), data.get("id")).get(rev - 1)
+    if prev is None:
+        report.fail(25, r, "revision %d of question %s stands with no revision %d beside it" % (rev, data.get("id"), rev - 1))
+        return
+    if isinstance(prev.get("agreed"), dict):
+        for key in ("question", "done_when", "assignments", "agreed"):
+            if prev.get(key) != data.get(key):
+                report.fail(25, r, "revision %d changes the %s of a question whose list the person agreed to; a "
+                                   "changed list is a new question, shown to the person again" % (rev, key))
+    before = prev.get("person_words") or []
+    if (data.get("person_words") or [])[:len(before)] != before:
+        report.fail(25, r, "revision %d drops or changes the person's words revision %d holds; they are only "
+                           "appended" % (rev, rev - 1))
+
+
 def _check25_hub_card(path, data, name, here, r, envelopes_by_dir, report):
     """An assignment is written in a hub's assignments/, to one of its members and inside a question whose list
     the person agreed to once, or carried into the member's inbox/<thread>/ beside its envelope; a result is
@@ -899,20 +935,38 @@ def _check25_hub_card(path, data, name, here, r, envelopes_by_dir, report):
         if not any(_agents_equal(m, data.get("to")) for m in members.get("members") or []):
             report.fail(25, r, "the assignment goes to %r, which is not a member of the hub" % (
                 (data.get("to") or {}).get("agent") if isinstance(data.get("to"), dict) else data.get("to")))
-        agreed = False
-        qdir = os.path.join(hub, "question")
-        for qn in sorted(os.listdir(qdir)) if os.path.isdir(qdir) else []:
-            try:
-                q = load_json(os.path.join(qdir, qn))
-            except (ValueError, UnicodeDecodeError, OSError):
-                continue
-            if isinstance(q, dict) and q.get("card") == "hub_question" and q.get("id") == data.get("question") \
-                    and data.get("id") in (q.get("assignments") or []) \
-                    and isinstance(q.get("agreed"), dict) and str(q["agreed"].get("words") or "").strip():
-                agreed = True
+        item = data.get("list_item") or data.get("id")
+        revisions = _hub_question_revisions(hub, data.get("question"))
+        agreed = any(item in (q.get("assignments") or []) and isinstance(q.get("agreed"), dict)
+                     and str(q["agreed"].get("words") or "").strip() for q in revisions.values())
         if not agreed:
             report.fail(25, r, "the assignment is in no question of the hub whose list of assignments the person "
                                "agreed to; a new assignment is a new list, shown to the person again")
+        if item != data.get("id"):
+            first = None
+            for an in sorted(os.listdir(here)):
+                try:
+                    a = load_json(os.path.join(here, an))
+                except (ValueError, UnicodeDecodeError, OSError):
+                    continue
+                if isinstance(a, dict) and a.get("card") == "assignment" and a.get("id") == item:
+                    first = a
+            if first is None:
+                report.fail(25, r, "the assignment carries on list item %r, which is no assignment of the hub" % item)
+            elif not _agents_equal(first.get("to"), data.get("to")) or \
+                    sorted(first.get("answers_items") or []) != sorted(data.get("answers_items") or []):
+                report.fail(25, r, "a later round of list item %r goes to another member or answers other items than "
+                                   "the item the person agreed to; that is a new list, shown to the person again" % item)
+        for k, qt in enumerate(data.get("quotes") or []):
+            if not isinstance(qt, dict):
+                continue
+            q = revisions.get(qt.get("question_revision"))
+            words = (q or {}).get("person_words") or []
+            i = qt.get("index")
+            said = words[i].get("words") if isinstance(i, int) and 0 <= i < len(words) and isinstance(words[i], dict) else None
+            if not isinstance(said, str) or str(qt.get("quote")) not in said:
+                report.fail(25, r, "quotes[%d]: %r does not stand in the person's words %s of revision %s of question %s" % (
+                    k, qt.get("quote"), i, qt.get("question_revision"), data.get("question")))
     if name == "result" and in_inbox:
         hub = os.path.dirname(os.path.dirname(here))
         if _hub_root(hub) is None:
@@ -1011,6 +1065,8 @@ def check25(cards, c, report, tree):
                 report.fail(25, r, "the envelope drops or adds to the payload's degraded %s" % (p.get("degraded") or []))
         elif name in ("assignment", "result"):
             _check25_hub_card(path, data, name, here, r, envelopes_by_dir, report)
+        elif name == "hub_question":
+            _check25_hub_question(path, data, r, report)
         elif name == "handover_receipt":
             if os.path.basename(here) != "received":
                 report.fail(25, r, "a receipt is written in its bundle's received/")

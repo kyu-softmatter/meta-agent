@@ -1,0 +1,35 @@
+{
+  "card": "bridge_envelope",
+  "schema_version": "0.1",
+  "id": "env-thr-waveguide-heating-hub-fenics-waveguide-heat-r1",
+  "revision": 1,
+  "author": "bridge",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [],
+  "degraded": [],
+  "status": "draft",
+  "thread": "thr-waveguide-heating-hub-fenics-waveguide-heat",
+  "round": 1,
+  "from": {
+    "agent": "fenics-waveguide-heat",
+    "build": "fenics-waveguide-heat/0001"
+  },
+  "to": {
+    "agent": "waveguide-heating-hub",
+    "build": "waveguide-heating-hub/0001"
+  },
+  "payload": {
+    "file": "r1_result-fenics-waveguide-heat-r1.json",
+    "card": "result",
+    "id": "res-fenics-waveguide-heat-r1",
+    "sha256": "sha256:51e7f5a39ca234e0b23737805e95a850edf5390ef80b24a431205849b4abee3b",
+    "origin": "outbox/result-fenics-waveguide-heat-r1.json"
+  },
+  "trigger": "hub",
+  "released_by": "hub",
+  "released_at": "2026-11-20T12:00:00Z",
+  "ran_by": {
+    "by": "hub",
+    "session": "fixture-hub-session"
+  }
+}
