@@ -1024,8 +1024,16 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     faults = engine_wait_problems(tools, template_path)
     if faults:
         raise ValueError("a tool's adapter does not wait on its engine as this template's does: " + "; ".join(faults))
+    results_file = meta_c.get("results_file")
+    if results_file:
+        # any agent of template v35 or later may be a member of a hub (tasks/033): it declares what it may report from its
+        # tools' results, and has the folders an assignment arrives in and a result leaves from
+        agent = fill.get("agent_name")
+        build = "%s/%s" % (agent, os.path.basename(os.path.dirname(os.path.abspath(bundle_path))))
+        envelope = dict(envelope, results=handovers_mod.results_declaration(
+            agent, build, {t["name"]: t["contract"] for t in tools}, tool_kind))
     shutil.copytree(template_path, bundle_path, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
-    if handover_decl is not None:
+    if handover_decl is not None or results_file:
         for sub in ("outbox", "inbox", "received"):
             cards.write_text(os.path.join(bundle_path, sub, ".gitkeep"), "")
     add_skills(bundle_path, rows, subagents)

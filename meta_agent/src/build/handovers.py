@@ -225,3 +225,30 @@ def section(decl):
 
 def no_handovers_section():
     return "This agent gives nothing to another agent and takes nothing from one: its build declares no hand-over."
+
+
+def results_declaration(agent, build, contracts, tool_kind):
+    """envelope/results.json for a bundle of template v35 or later (tasks/033): what the agent may report to a hub from
+    its tools' results. One entry for each output field of a tool contract that is a number in a unit, with what the
+    contract says it is and the grade derived here from contracts/grades.json: an engine's value is computed, an
+    instrument's measured. A tool of another kind, or a bundle that says no kind, reports nothing from its tools; its
+    result quotes hand-over cards alone. Nothing here converts a value."""
+    kinds = {"engine": ("computed", "computed"), "instrument": ("measured", "measured")}
+    reports = []
+    if tool_kind in kinds:
+        source_kind, value_kind = kinds[tool_kind]
+        grade = derived_grade(source_kind, value_kind)
+        for tool in sorted(contracts or {}):
+            props = ((contracts[tool] or {}).get("outputs") or {}).get("properties") or {}
+            for field in sorted(props):
+                f = props[field] or {}
+                types = f.get("type") if isinstance(f.get("type"), list) else [f.get("type")]
+                if not ({"number", "integer"} & set(types)) or not f.get("unit"):
+                    continue
+                reports.append({"tool": tool, "field": field, "name": field, "unit": f["unit"],
+                                "description": f.get("description") or "", "source_kind": source_kind,
+                                "value_kind": value_kind, "grade": grade})
+    return {"note": "what this agent may report to a hub agent from its tools' results, written by its build (template "
+                    "v35); src/handover.py result quotes a field only where it is listed here, with this unit and grade",
+            "agent": {"agent": agent, "build": build}, "tool_kind": tool_kind, "reports": reports}
+

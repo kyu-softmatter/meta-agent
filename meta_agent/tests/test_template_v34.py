@@ -248,7 +248,7 @@ class TheDefinitionNamesTheToolsField(unittest.TestCase):
 
 class TheVersion(unittest.TestCase):
     def test_v34_is_the_latest_and_changes_two_scripts_its_text_and_its_card(self):
-        self.assertEqual(template_mod.LATEST, "v34")
+        self.assertIn("v34", template_mod.SOURCES)                  # v35 is the latest since an agent may be a hub's member
         self.assertEqual(sorted(set(cards.tree_files(V34)) ^ set(cards.tree_files(V33))), [])
         both = set(cards.tree_files(V33)) & set(cards.tree_files(V34))
         changed = sorted(r for r in both if cards.sha256_file(os.path.join(V33, r)) != cards.sha256_file(os.path.join(V34, r)))
