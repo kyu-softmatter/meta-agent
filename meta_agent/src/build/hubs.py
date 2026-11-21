@@ -20,7 +20,8 @@ refuses a member whose bundle is not the digest its build card states, one whose
 (the agent template before v35, which has no results_file), fewer than two members, and two members of one agent.
 Its gate is the hub's own: in a temporary folder laid out as the members' folders say, `python src/hub.py members` must
 find each member there, holding the build members.json names and able to answer an assignment. The hub computes
-nothing, so its scientific gate is not_run.
+nothing, so its scientific gate is not_run. A build of the latest version refuses a template whose src/bridge.py is not
+the bytes of contracts/tools/bridge.py; build(template=<version>) builds that version as it was made, with its own copy.
 """
 import argparse
 import json
@@ -109,8 +110,16 @@ def gate(bundle, entries):
         shutil.rmtree(tmp, True)
 
 
-def build(name, members, purpose, lab_profile, seat, build_id=None, now=None, root=ROOT, rid=None):
-    """Make builds/<name>/<NNNN>/ and return what was written. Raises ValueError before anything is written."""
+def build(name, members, purpose, lab_profile, seat, build_id=None, now=None, root=ROOT, rid=None, template=None):
+    """Make builds/<name>/<NNNN>/ and return what was written. Raises ValueError before anything is written.
+
+    template: a version of SOURCES. Left out, the build is of the latest version, and that version's src/bridge.py must
+    be the bytes of contracts/tools/bridge.py, so that a new hub carries the bridge as it now is. Named, the version is
+    built as it was made, with the bridge its tree carries, which bundle check B19 reads from templates/hub@<hash>/; a
+    test of one version names it, and does not depend on the bridge as it now is (the design role's ask
+    20261121-design-macbook-20261120-3-3)."""
+    if template is not None and template not in SOURCES:
+        raise ValueError("no hub template %r; the versions are %s" % (template, sorted(SOURCES)))
     if not NAME_RE.match(name or ""):
         raise ValueError("a hub's name is lower-case words joined by hyphens, not %r" % name)
     if not isinstance(purpose, str) or not purpose.strip():
@@ -133,8 +142,9 @@ def build(name, members, purpose, lab_profile, seat, build_id=None, now=None, ro
     out_dir = os.path.join(builds, build_id)
     if os.path.exists(out_dir):
         raise FileExistsError("build exists: %s (a rebuild is a new build id)" % os.path.relpath(out_dir, REPO))
-    template_root = SOURCES[LATEST]
-    if cards.sha256_file(os.path.join(template_root, "src", "bridge.py")) != cards.sha256_file(BRIDGE):
+    template_root = SOURCES[template or LATEST]
+    current = cards.sha256_file(os.path.join(template_root, "src", "bridge.py")) == cards.sha256_file(BRIDGE)
+    if template is None and not current:
         raise ValueError("the template's src/bridge.py is not the bytes of contracts/tools/bridge.py: a new template "
                          "version carries the bridge as it now is")
     tname, tpath = materialize(os.path.join(root, "templates"), template_root)
@@ -180,9 +190,11 @@ def build(name, members, purpose, lab_profile, seat, build_id=None, now=None, ro
                           "src/hub.py members in a folder laid out as members.json says, which found every member there, "
                           "holding its build and able to answer an assignment: %s; the hub computes nothing, so its "
                           "scientific gate is not_run; the bridge copied as src/bridge.py is %s, the bytes of "
-                          "contracts/tools/bridge.py; hand-over (landed_at) is the person's" % (
+                          "%s; hand-over (landed_at) is the person's" % (
                               ", ".join(e["build"] for e in entries), tname, mcard["id"], verdict,
-                              "sha256:" + cards.sha256_file(os.path.join(bundle, "src", "bridge.py")))})
+                              "sha256:" + cards.sha256_file(os.path.join(bundle, "src", "bridge.py")),
+                              "contracts/tools/bridge.py" if current else
+                              "the template's src/bridge.py, which contracts/tools/bridge.py no longer is")})
     cards.write_json(os.path.join(out_dir, "build.json"), bcard)
     return {"build": hub_build, "dir": os.path.relpath(out_dir, REPO), "template": tname, "gate": verdict,
             "gate_printed": printed, "members": [{k: e[k] for k in ("agent", "build", "folder", "build_card_sha256")}

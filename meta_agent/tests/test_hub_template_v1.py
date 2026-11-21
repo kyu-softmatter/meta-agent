@@ -37,6 +37,7 @@ VALIDATE = os.path.join(REPO, "contracts", "validate.py")
 DFT, MD = "qe-h2-bond/0004", "hoomd-h2-bond/0004"
 PURPOSE = "A test hub over the agents it is given."
 WORDS = "a test's words agreeing to the list"
+V1 = "v1"          # each build here names the version, so the test does not depend on the bridge as it now is
 
 
 def run(cwd, *args, stdin=None, env=None):
@@ -94,7 +95,7 @@ class TheBuilder(unittest.TestCase):
 
     def test_members_json_names_each_member_by_build_folder_and_card_hash(self):
         out = hubs_mod.build("h2-bond-hub", [DFT, MD], PURPOSE, "lab-kyu-softmatter", "meta-macbook-20261120-4",
-                             now="2026-11-20T12:00:00Z", root=self.root)
+                             now="2026-11-20T12:00:00Z", root=self.root, template=V1)
         self.assertEqual(out["gate"], "pass", out["gate_printed"])
         b = os.path.join(self.root, "builds", "h2-bond-hub", "0001")
         m = cards.load_json(os.path.join(b, "bundle", "members.json"))
@@ -108,23 +109,23 @@ class TheBuilder(unittest.TestCase):
         self.assertEqual(card["bundle_sha256"], cards.sha256_tree(os.path.join(b, "bundle")))
         self.assertEqual(card["gate_verdict"]["interface"], "pass")
         self.assertEqual(cards.sha256_file(os.path.join(b, "bundle", "src", "bridge.py")),
-                         cards.sha256_file(os.path.join(REPO, "contracts", "tools", "bridge.py")))
+                         cards.sha256_file(os.path.join(hubs_mod.SOURCES[V1], "src", "bridge.py")))
         for absent in ("tools", "skills", "envelope", "src/run_tool.py", "src/gate.py", "src/run_skill.py"):
             self.assertFalse(os.path.exists(os.path.join(b, "bundle", *absent.split("/"))), absent)
         self.assertNotIn("{{", cards.read_text(os.path.join(b, "bundle", "CLAUDE.md")))
 
     def test_it_refuses_what_cannot_be_a_member(self):
         with self.assertRaises(ValueError):
-            hubs_mod.build("h2-bond-hub", [DFT], PURPOSE, "lab", "seat", root=self.root)
+            hubs_mod.build("h2-bond-hub", [DFT], PURPOSE, "lab", "seat", root=self.root, template=V1)
         with self.assertRaises(ValueError):
-            hubs_mod.build("h2-bond-hub", [DFT, DFT], PURPOSE, "lab", "seat", root=self.root)
+            hubs_mod.build("h2-bond-hub", [DFT, DFT], PURPOSE, "lab", "seat", root=self.root, template=V1)
         with self.assertRaises(ValueError):
-            hubs_mod.build("h2-bond-hub", [DFT, MD], "a purpose with 3 parts", "lab", "seat", root=self.root)
+            hubs_mod.build("h2-bond-hub", [DFT, MD], "a purpose with 3 parts", "lab", "seat", root=self.root, template=V1)
         old = v35.compose(os.path.join(self.root, "builds"), "old-agent", "engine", template=v35.V34)
         cards.write_json(os.path.join(os.path.dirname(old), "build.json"),
                          {"card": "build", "bundle_path": old, "bundle_sha256": cards.sha256_tree(old)})
         with self.assertRaises(ValueError) as e:
-            hubs_mod.build("h2-bond-hub", [DFT, "old-agent/0001"], PURPOSE, "lab", "seat", root=self.root)
+            hubs_mod.build("h2-bond-hub", [DFT, "old-agent/0001"], PURPOSE, "lab", "seat", root=self.root, template=V1)
         self.assertIn("v35", str(e.exception))
         # a member changed after it was built is not the build its card names
         bundle = os.path.join(self.root, "builds", "hoomd-h2-bond", "0004", "bundle")
@@ -136,9 +137,30 @@ class TheBuilder(unittest.TestCase):
         with open(os.path.join(bundle, "failures.jsonl"), "a") as f:
             f.write("{}\n")
         with self.assertRaises(ValueError) as e:
-            hubs_mod.build("h2-bond-hub", [DFT, MD], PURPOSE, "lab", "seat", root=self.root)
+            hubs_mod.build("h2-bond-hub", [DFT, MD], PURPOSE, "lab", "seat", root=self.root, template=V1)
         self.assertIn("digest", str(e.exception))
         self.assertFalse(os.path.exists(os.path.join(self.root, "builds", "h2-bond-hub")))
+
+
+    def test_a_named_version_does_not_depend_on_the_bridge_as_it_now_is(self):
+        # the design role's ask 20261121-design-macbook-20261120-3-3: a changed contracts/tools/bridge.py refuses a new
+        # hub of the latest version, and a build that names its version carries that version's bridge and passes
+        changed = os.path.join(self.tmp, "bridge.py")
+        shutil.copyfile(hubs_mod.BRIDGE, changed)
+        with open(changed, "a") as f:
+            f.write("# a line the bridge gained after this version was made\n")
+        self.addCleanup(setattr, hubs_mod, "BRIDGE", hubs_mod.BRIDGE)
+        hubs_mod.BRIDGE = changed
+        with self.assertRaises(ValueError) as e:
+            hubs_mod.build("h2-bond-hub", [DFT, MD], PURPOSE, "lab", "seat", root=self.root)
+        self.assertIn("bridge as it now is", str(e.exception))
+        self.assertFalse(os.path.exists(os.path.join(self.root, "builds", "h2-bond-hub")))
+        out = hubs_mod.build("h2-bond-hub", [DFT, MD], PURPOSE, "lab", "seat", root=self.root, template=V1)
+        self.assertEqual(out["gate"], "pass", out["gate_printed"])
+        card = cards.load_json(os.path.join(self.root, "builds", "h2-bond-hub", "0001", "build.json"))
+        self.assertIn("which contracts/tools/bridge.py no longer is", card["note"])
+        with self.assertRaises(ValueError):
+            hubs_mod.build("h2-bond-hub", [DFT, MD], PURPOSE, "lab", "seat", root=self.root, template="v0")
 
 
 class DftThenMd(unittest.TestCase):
@@ -150,7 +172,7 @@ class DftThenMd(unittest.TestCase):
         root = os.path.join(self.tmp, "meta_agent")
         for b in (DFT, MD):
             copy_build(BUILDS, os.path.join(root, "builds"), b)
-        hubs_mod.build("h2-bond-hub", [DFT, MD], PURPOSE, "lab-kyu-softmatter", "meta-macbook-20261120-4", root=root)
+        hubs_mod.build("h2-bond-hub", [DFT, MD], PURPOSE, "lab-kyu-softmatter", "meta-macbook-20261120-4", root=root, template=V1)
         self.run_dir, self.hub = lay_out(self, self.tmp, "h2-bond-hub/0001", {
             DFT: os.path.join(BUILDS, "qe-h2-bond", "0004", "bundle"), MD: os.path.join(BUILDS, "hoomd-h2-bond", "0004", "bundle")})
         self.dft = os.path.join(self.run_dir, "qe-h2-bond-0004")
@@ -245,7 +267,7 @@ class ThreeEnginesOneHub(unittest.TestCase):
             cards.write_json(os.path.join(os.path.dirname(b), "build.json"),
                              {"card": "build", "bundle_path": b, "bundle_sha256": cards.sha256_tree(b)})
             self.bundles[n + "/0001"] = b
-        out = hubs_mod.build("waveguide-heating-hub", [n + "/0001" for n in self.NAMES], PURPOSE, "lab", "seat", root=root)
+        out = hubs_mod.build("waveguide-heating-hub", [n + "/0001" for n in self.NAMES], PURPOSE, "lab", "seat", root=root, template=V1)
         self.assertEqual(out["gate"], "pass", out["gate_printed"])
         self.run_dir, self.hub = lay_out(self, self.tmp, "waveguide-heating-hub/0001", self.bundles)
 
