@@ -724,7 +724,7 @@ Numbers are fixed and never reused after retirement. M0 implements 1, 2, 3, 6, 7
 | B2 | every `Bash(...)` deny / ask has a `PowerShell(...)` twin and vice versa | build |
 | B3 | all values of `envelope/safety.json` are `null` | build |
 | B4 | `snapshot.json` entry hashes match `knowledge/`; `kb_version` pinned | build |
-| B5 | `replay/` and `validation/{interface,scientific}/` each have at least one task with an expected verdict | build |
+| B5 | `replay/` and `validation/{interface,scientific}/` each have at least one task with an expected verdict; a scientific comparison that cannot be judged yet may stand as a held item, with `held.reason` and `held.needs`, expected `not_run` and naming no reference function, and the gate prints it PENDING (2026-11-20, "Held item, shown pending (Recommended)"; `tasks/032`) | build |
 | B6 | every number in the bundle's `CLAUDE.md` exists in `snapshot.json`; a registered unit that carries a digit (`m^3`, `kg/m^3`) is a unit where it stands whole and is not read as a number, nor is the unit `1` where a field's type and unit stand in brackets, whatever follows it there (2026-11-16, `tasks/016`: the Tools section prints the unit a contract names); a version of three parts or more is not read as a number, nor one after the word `version` or a `v` (`version 26.3`, `v26.3`); `contracts/tools/skills.py check` notes the numbers of a skill's description as this check reads them, since a builder may print it (2026-11-17, `tasks/016`, run `20261117-1`) | build |
 | B7 | every `tools/<name>/tool.json` passes `tool_contract`, and fixture calls honour the error contract | build |
 | B8 | every skill has a trigger sentence in `CLAUDE.md`; named scripts exist; no `inferred` claim in `CAPABILITIES.json` | build |

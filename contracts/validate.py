@@ -1341,6 +1341,26 @@ def checkB5(bundle, label, report):
             if call["tool"] not in tools:
                 report.fail("B5", relpath, "call.tool %r is not a tool of this bundle" % call["tool"])
                 continue
+            if "held" in item:
+                # a comparison that cannot be judged yet stands as a held item, shown pending, never as a gate
+                # filled (the person, 2026-11-20, "Held item, shown pending (Recommended)"; tasks/032, dftmd-12)
+                held = item["held"]
+                if sub != "validation/scientific":
+                    report.fail("B5", relpath, "only a scientific comparison may be held")
+                    continue
+                if not isinstance(held, dict) or not all(isinstance(held.get(k), str) and held[k].strip()
+                                                         for k in ("reason", "needs")):
+                    report.fail("B5", relpath, "a held comparison says why it is held (held.reason) and what it "
+                                               "needs to run (held.needs)")
+                    continue
+                if ev != "not_run":
+                    report.fail("B5", relpath, "a held comparison is expected not_run, not %r" % ev)
+                    continue
+                if (item.get("measure") or {}).get("reference_function"):
+                    report.fail("B5", relpath, "a held comparison names no reference function; one that names "
+                                               "a reference function is a task that runs")
+                    continue
+                report.pending("B5", relpath, "held comparison: %s; needs %s" % (held["reason"], held["needs"]))
             good += 1
         if good == 0:
             report.fail("B5", label, "%s/ has no task with an expected verdict" % sub)

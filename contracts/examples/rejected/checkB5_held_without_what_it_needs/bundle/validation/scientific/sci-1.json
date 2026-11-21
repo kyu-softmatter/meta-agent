@@ -1,0 +1,23 @@
+{
+  "id": "sci-1",
+  "name": "a bond's rest length fitted by the tool against a measured internuclear distance printed in another unit",
+  "call": {
+    "tool": "echo",
+    "input": {
+      "message": "bond"
+    }
+  },
+  "measure": {
+    "output_field": "length"
+  },
+  "reference": {
+    "kind": "source",
+    "ref": "a fixture: a published internuclear distance"
+  },
+  "tolerance": null,
+  "expected_verdict": "not_run",
+  "held": {
+    "reason": "no reference function in this bundle can read the published value yet"
+  },
+  "note": "a fixture: a held comparison that says why it is held and not what would let it run"
+}

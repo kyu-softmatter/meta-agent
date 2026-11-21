@@ -1,0 +1,25 @@
+{
+  "id": "sci-1",
+  "name": "a zero-shear viscosity returned by the tool against the value a rheometer measured",
+  "call": {
+    "tool": "echo",
+    "input": {
+      "message": "viscosity"
+    }
+  },
+  "measure": {
+    "output_field": "length",
+    "reference_function": "len_message"
+  },
+  "reference": {
+    "kind": "source",
+    "ref": "a fixture: a measured viscosity"
+  },
+  "tolerance": null,
+  "expected_verdict": "not_run",
+  "held": {
+    "reason": "the measured viscosity has not been handed over yet",
+    "needs": "a hand-over of the measured viscosity over the bridge"
+  },
+  "note": "a fixture: a held comparison that also names a reference function, so it reads as a task that runs"
+}
