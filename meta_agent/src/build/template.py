@@ -262,6 +262,12 @@ v36 changes one script, CLAUDE.md and TEMPLATE.json (tasks/034, the first hand-o
     tool results, an earlier step's output, the registry's entry of a unit or the unit a person confirmed an engine unit
     stands for (handovers.py); a value leaves the engine's own unit only through such a scale, by unit_convert@v2.
 
+v37 changes three scripts, CLAUDE.md, run-skill and TEMPLATE.json (tasks/034, after its first test standing alone;
+    rheo-4, rheo-5, bd-3): a result quotes a series the build declared, with the unit of each part; src/run_tool.py
+    checks an array output item by item and keeps an output with --out, whole, never as an empty file; the build gives
+    a row, the person's, to each input of a skill the request named that nothing in the bundle gives
+    (skill_inputs.py), and refuses one it cannot.
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -298,8 +304,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v33": os.path.join(HERE, "template_v33"),
            "v34": os.path.join(HERE, "template_v34"),
            "v35": os.path.join(HERE, "template_v35"),
-           "v36": os.path.join(HERE, "template_v36")}
-LATEST = "v36"
+           "v36": os.path.join(HERE, "template_v36"),
+           "v37": os.path.join(HERE, "template_v37")}
+LATEST = "v37"
 SOURCE = SOURCES[LATEST]
 
 

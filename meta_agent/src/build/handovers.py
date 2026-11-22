@@ -398,14 +398,19 @@ def no_handovers_section():
     return "This agent gives nothing to another agent and takes nothing from one: its build declares no hand-over."
 
 
-def results_declaration(agent, build, contracts, tool_kind):
+def results_declaration(agent, build, contracts, tool_kind, series=False):
     """envelope/results.json for a bundle of template v35 or later (tasks/033): what the agent may report to a hub from
     its tools' results. One entry for each output field of a tool contract that is a number in a unit, with what the
     contract says it is and the grade derived here from contracts/grades.json: an engine's value is computed, an
-    instrument's measured. A tool of another kind, or a bundle that says no kind, reports nothing from its tools; its
-    result quotes hand-over cards alone. Nothing here converts a value."""
+    instrument's measured. With `series` (template v37; tasks/034, rheo-4), also one entry for each output field that is
+    a series: an array whose items the contract declares as a number with a unit (one part, named by the items' title or
+    the field), or as an array of prefixItems, each a number with a unit, a title naming the part and a description, with
+    items false (one part each). An array that declares prefixItems short of that is refused with ValueError, since a
+    series the result could not quote is the fault this entry mends. A tool of another kind, or a bundle that says no
+    kind, reports nothing from its tools; its result quotes hand-over cards alone. Nothing here converts a value."""
     kinds = {"engine": ("computed", "computed"), "instrument": ("measured", "measured")}
-    reports = []
+    units = _load(UNITS)["units"] if series else {}
+    reports, faults = [], []
     if tool_kind in kinds:
         source_kind, value_kind = kinds[tool_kind]
         grade = derived_grade(source_kind, value_kind)
@@ -414,12 +419,55 @@ def results_declaration(agent, build, contracts, tool_kind):
             for field in sorted(props):
                 f = props[field] or {}
                 types = f.get("type") if isinstance(f.get("type"), list) else [f.get("type")]
+                base = {"tool": tool, "field": field, "name": field, "description": f.get("description") or "",
+                        "source_kind": source_kind, "value_kind": value_kind, "grade": grade}
+                if series and "array" in types:
+                    parts, why = series_parts(f, field, units)
+                    if why:
+                        faults.append("the output %s of %s: %s" % (field, tool, why))
+                    elif parts:
+                        reports.append(dict(base, kind="series", parts=parts,
+                                            one_part=not isinstance((f.get("items") or {}).get("prefixItems"), list)))
+                    continue
                 if not ({"number", "integer"} & set(types)) or not f.get("unit"):
                     continue
-                reports.append({"tool": tool, "field": field, "name": field, "unit": f["unit"],
-                                "description": f.get("description") or "", "source_kind": source_kind,
-                                "value_kind": value_kind, "grade": grade})
+                reports.append(dict(base, unit=f["unit"]))
+    if faults:
+        raise ValueError("a tool's series cannot be declared for a result: " + "; ".join(faults))
     return {"note": "what this agent may report to a hub agent from its tools' results, written by its build (template "
-                    "v35); src/handover.py result quotes a field only where it is listed here, with this unit and grade",
+                    "v35; a series from v37); src/handover.py result quotes a field only where it is listed here, with "
+                    "this unit and grade, a series with the unit of each part",
             "agent": {"agent": agent, "build": build}, "tool_kind": tool_kind, "reports": reports}
 
+
+def series_parts(f, field, units):
+    """([{name, unit, description}], None) for an array output a result may quote as a series, ([], None) for an array
+    that declares no unit for its items (not a series), or (None, why) for one that declares a series short of what a
+    result needs (template v37)."""
+    items = f.get("items")
+    if not isinstance(items, dict):
+        return [], None
+    num = lambda d: isinstance(d, dict) and bool({"number", "integer"} & set(
+        d.get("type") if isinstance(d.get("type"), list) else [d.get("type")]))
+    if num(items):
+        if not items.get("unit"):
+            return [], None
+        if not isinstance(units.get(items["unit"]), dict):
+            return None, "its items' unit %r is not in contracts/units.json" % items["unit"]
+        return [{"name": items.get("title") or field, "unit": items["unit"],
+                 "description": items.get("description") or f.get("description") or ""}], None
+    prefix = items.get("prefixItems")
+    if not isinstance(prefix, list):
+        return [], None
+    if not prefix or items.get("items") is not False:
+        return None, "its items declare prefixItems with no part, or without items false"
+    parts = []
+    for i, p in enumerate(prefix):
+        if not num(p) or not p.get("unit") or not p.get("title") or not p.get("description"):
+            return None, "part %d of its items is not a number with a unit, a title and a description" % i
+        if not isinstance(units.get(p["unit"]), dict):
+            return None, "part %d's unit %r is not in contracts/units.json" % (i, p["unit"])
+        parts.append({"name": p["title"], "unit": p["unit"], "description": p["description"]})
+    if len({p["name"] for p in parts}) != len(parts):
+        return None, "two parts of its items have one title"
+    return parts, None

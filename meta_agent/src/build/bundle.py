@@ -26,6 +26,7 @@ import shutil
 from .. import cards
 from . import handovers as handovers_mod
 from . import comparisons as comparisons_mod
+from . import skill_inputs as skill_inputs_mod
 
 WRITER = "operator"        # the one subagent that may list write_device (plan.md 14-34(e))
 SESSION_SKILL = "run-skill"   # the one session skill that names the runner, from template v3 on (tasks/015)
@@ -925,6 +926,7 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     if os.path.exists(bundle_path):
         raise FileExistsError("bundle exists: %s (a rebuild is a new build id)" % bundle_path)
     skills, subagents = list(skills or []), list(subagents or [])
+    named = [r["ref"] for r in skills]     # the skills the specification names, before the template's own are added
     # a template that names an agreement skill (v16 on) has src/validate_tasks.py take each scientific task's agreement
     # from it, so every bundle with a scientific task carries it (cfd-7: the agreement is a library skill's output)
     meta = os.path.join(template_path, "TEMPLATE.json")
@@ -997,6 +999,15 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
         envelope = dict(envelope, parameters=dict(envelope.get("parameters") or {}, rows=kept), handovers=handover_decl,
                         units=cards.load_json(handovers_mod.UNITS))
     fill.setdefault("handovers_section", handovers_mod.no_handovers_section())
+    if handovers_mod._version(meta_c) >= skill_inputs_mod.FROM_VERSION:
+        # every input of a skill the request names that nothing in the bundle gives gets a row, the person's (v37, rheo-5)
+        prow = (envelope.get("parameters") or {}).get("rows") or []
+        added, faults = skill_inputs_mod.rows_for(named, skills, prow, {t["name"]: t["contract"] for t in tools},
+                                                  handover_decl, decisions, scientific_tasks, meta_c)
+        if faults:
+            raise ValueError("an input of a skill this request names cannot be given a row: " + "; ".join(faults))
+        if added:
+            envelope = dict(envelope, parameters=dict(envelope.get("parameters") or {}, rows=list(prow) + added))
     if comparisons_mod.needs_units(scientific_tasks):
         # a task compared in its reference's printed unit converts through the unit skill and the registry (v34)
         unit_skill = meta_c.get("unit_skill")
@@ -1031,7 +1042,8 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
         agent = fill.get("agent_name")
         build = "%s/%s" % (agent, os.path.basename(os.path.dirname(os.path.abspath(bundle_path))))
         envelope = dict(envelope, results=handovers_mod.results_declaration(
-            agent, build, {t["name"]: t["contract"] for t in tools}, tool_kind))
+            agent, build, {t["name"]: t["contract"] for t in tools}, tool_kind,
+            series=handovers_mod._version(meta_c) >= 37))
     shutil.copytree(template_path, bundle_path, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     if handover_decl is not None or results_file:
         for sub in ("outbox", "inbox", "received"):

@@ -352,7 +352,7 @@ class TheChainIsCheckedWhenBuilt(unittest.TestCase):
 
 class TheVersion(unittest.TestCase):
     def test_v36_is_the_latest_and_changes_two_scripts_and_the_text(self):
-        self.assertEqual(template_mod.LATEST, "v36")
+        self.assertIn("v36", template_mod.SOURCES)                  # v37 is the latest since a result quotes a series
         meta = cards.load_json(os.path.join(V36, "TEMPLATE.json"))
         self.assertEqual((meta["version"], meta["unit_skill"]), ("v36", CONVERT))
         self.assertEqual(sorted(cards.tree_files(V36)), sorted(cards.tree_files(V35)))

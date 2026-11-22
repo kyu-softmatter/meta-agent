@@ -827,7 +827,10 @@ class Template(unittest.TestCase):
             self.assertEqual(cards.load_json(os.path.join(req, "spec_a4.json"))["content"]["rows"], intake["parameter_rows"])
             self.assertEqual(cards.load_json(os.path.join(req, "spec_a5.json"))["content"]["rows"], intake["safety_rows"])
             self.assertEqual(cards.load_json(os.path.join(bundle, "envelope", "safety.json")), {"highest_angular_velocity": None})
-            self.assertEqual(cards.load_json(os.path.join(bundle, "envelope", "parameters.json"))["rows"], intake["parameter_rows"])
+            rows = cards.load_json(os.path.join(bundle, "envelope", "parameters.json"))["rows"]
+            # from template v37 the build adds a row, the person's, for each input of a named skill nothing gives (rheo-5)
+            self.assertEqual([r for r in rows if not r.get("for_skill_inputs")], intake["parameter_rows"])
+            self.assertTrue(all(r["value"] is None for r in rows if r.get("for_skill_inputs")))
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
 
