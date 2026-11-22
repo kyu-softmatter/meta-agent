@@ -454,8 +454,10 @@ def series_parts(f, field, units):
             return [], None
         if not isinstance(units.get(items["unit"]), dict):
             return None, "its items' unit %r is not in contracts/units.json" % items["unit"]
-        return [{"name": items.get("title") or field, "unit": items["unit"],
-                 "description": items.get("description") or f.get("description") or ""}], None
+        desc = items.get("description") or f.get("description")
+        if not desc:
+            return None, "neither its items nor the field say what a point is (a description), which a series' part needs"
+        return [{"name": items.get("title") or field, "unit": items["unit"], "description": desc}], None
     prefix = items.get("prefixItems")
     if not isinstance(prefix, list):
         return [], None

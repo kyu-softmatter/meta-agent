@@ -39,7 +39,6 @@ REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 V36, V37 = template_mod.SOURCES["v36"], template_mod.SOURCES["v37"]
 BRIDGE = os.path.join(REPO, "contracts", "tools", "bridge.py")
 VALIDATE = os.path.join(REPO, "contracts", "validate.py")
-RESULT_SCHEMA = os.path.join(REPO, "contracts", "schemas", "result.schema.json")
 
 
 def part(unit, title, description):
@@ -186,6 +185,12 @@ class AResultQuotesASeries(unittest.TestCase):
                 compose(os.path.join(self.tmp, kind, "short"), "agent-" + kind, kind, outputs=outputs)
             self.assertIn(field, str(e.exception))
             self.assertFalse(os.path.exists(os.path.join(self.tmp, kind, "short", "agent-" + kind, "0001", "bundle")))
+        outputs = json.loads(json.dumps(KINDS["photonic"]["outputs"]))
+        del outputs["effective_indices"]["items"]["description"]
+        del outputs["effective_indices"]["description"]
+        with self.assertRaises(ValueError) as e:
+            compose(os.path.join(self.tmp, "one-part"), "agent-photonic", "photonic", outputs=outputs)
+        self.assertIn("effective_indices", str(e.exception))         # a part says what it is (common series, 69f329b)
 
     def test_result_quotes_the_series_point_by_point(self):
         for kind, k in KINDS.items():
@@ -218,9 +223,6 @@ class AResultQuotesASeries(unittest.TestCase):
             self.assertEqual(c, 3, out)
             self.assertIn("declares no report", out)
 
-    @unittest.skipUnless("series" in cards.load_json(RESULT_SCHEMA)["properties"],
-                         "the result schema holds no series yet: asked of the design role in note "
-                         "meta_agent/inbox/seats/20261122-meta-macbook-20261122-1-1.json")
     def test_the_folder_passes_checks_1_2_25_with_a_series_carried_back(self):
         for kind, k in KINDS.items():
             tmp = os.path.join(self.tmp, kind)
