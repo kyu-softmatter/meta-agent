@@ -1,0 +1,30 @@
+{
+  "card": "hub_members",
+  "schema_version": "0.1",
+  "id": "members-oldroyd-b-hub",
+  "revision": 1,
+  "author": "meta-macbook-20261122-1",
+  "created_at": "2026-11-22T18:05:54Z",
+  "numbers": [],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "hub": {
+    "agent": "oldroyd-b-hub",
+    "build": "oldroyd-b-hub/0002"
+  },
+  "members": [
+    {
+      "agent": "hoomd-oldroyd-b",
+      "build": "hoomd-oldroyd-b/0002",
+      "folder": "../hoomd-oldroyd-b-0002",
+      "build_card_sha256": "sha256:9b479db6dc5714c0e52f973390511871b26f0ccc836cb9b3341b6f616a816537"
+    },
+    {
+      "agent": "rheotool-oldroyd-b",
+      "build": "rheotool-oldroyd-b/0002",
+      "folder": "../rheotool-oldroyd-b-0002",
+      "build_card_sha256": "sha256:b2c01c89fbb77815d4e055808d82e85a3638835adb37c3e5f93334c2942364ce"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+# diff from template
+# template: hub@4044c9a8b8d9
+
+added     members.json
+modified  CLAUDE.md
