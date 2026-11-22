@@ -1,0 +1,228 @@
+{
+  "card": "intake",
+  "schema_version": "0.1",
+  "id": "intake-hoomd-oldroyd-b-001",
+  "rid": "req-hoomd-oldroyd-b-001",
+  "revision": 11,
+  "supersedes": "intake-hoomd-oldroyd-b-001",
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T05:54:58Z",
+  "numbers": [],
+  "degraded": [],
+  "status": "draft",
+  "stage": "reading",
+  "revision_note": "the person's answer to question 5, in the person's words",
+  "agent_name": "hoomd-oldroyd-b",
+  "requested_by": "human",
+  "request_source": "the person's request of 2026-11-20 for a test of HOOMD-blue and OpenFOAM together under a hub (docs/ideas/20261120.md) and their answers of 2026-11-21; the meta part of meta_agent/tasks/034, which builds an MD agent, a CFD agent and a hub over them",
+  "persons_words": {
+    "verbatim": "새로운 테스트는 HOOMD와 OpenFOAM을 함께 사용해보고싶어, / MD로 Oldroyd-B유체를 구현하고 여기서 Viscoelastic properties를 계산한 뒤, 이를 바탕으로 CFD 시뮬레이션을 진행한다. / Under a hub (Recommended) / λ, η_p, η_s (Recommended) / Channel start-up (Recommended) / Dumbbells, implicit solvent (Recommended) / rheoTool image (Recommended)",
+    "gloss": "For the new test, I would like to try HOOMD and OpenFOAM together. / Implement an Oldroyd-B fluid with MD, compute its viscoelastic properties from it, then run a CFD simulation on that basis. / Under a hub. / The relaxation time, the polymer viscosity and the solvent viscosity. / The start-up of a planar channel flow. / Hookean dumbbells in an implicit solvent. / The rheoTool image on this computer.",
+    "with": "nothing attached; the first three answers given to the design seat design-macbook-20261120-3 (docs/ideas/20261120.md, 'A new test: HOOMD-blue and OpenFOAM together, under a hub'), the last four to the meta seat meta-macbook-20261120-4 on 2026-11-21, relayed by the note 20261121-meta-macbook-20261120-4-5",
+    "date": "2026-11-21"
+  },
+  "paragraph": "An agent that controls HOOMD-blue in words for a fluid of Hookean dumbbells in an implicit solvent, the molecular model whose stress the Oldroyd-B equation describes: asked for the fluid's viscoelastic properties, it runs the dumbbells' Brownian dynamics on the settings the person gives, has library skills compute the relaxation time and the polymer viscosity from what HOOMD-blue reports, carries the solvent viscosity the person gave, and writes the three as one hand-over card in its outbox for the CFD agent, each with its source, its grade and the run's conditions. It never carries the card itself.",
+  "reading": {
+    "taken": "two engine agents under a hub; this is the MD one, and what it hands over is the Oldroyd-B constants λ, η_p and η_s, with η_s the person's input, since an implicit solvent gives no solvent viscosity of its own",
+    "why": "the person chose 'λ, η_p, η_s (Recommended)' and 'Dumbbells, implicit solvent (Recommended)' (note 20261121-meta-macbook-20261120-4-5)",
+    "other_readings": [
+      "dumbbells in an explicit DPD solvent, η_s then computed by the MD, which the person did not choose",
+      "the moduli G′ and G″, or the shear stress and N1 against the rate, handed over as curves, which the person did not choose"
+    ]
+  },
+  "science_task": "the relaxation time and the polymer viscosity of a fluid of Hookean dumbbells from Brownian dynamics, with the solvent viscosity, handed to a CFD agent as the constants of an Oldroyd-B fluid",
+  "tool": {
+    "name": "HOOMD-blue",
+    "kind": "engine",
+    "registry_id": "hoomd_blue",
+    "material_refs": [
+      "mat-20261120-hoomd-7.2.2-units",
+      "mat-20261120-hoomd-7.2.2-bond-harmonic",
+      "mat-20261121-hoomd-7.2.2-methods-brownian",
+      "mat-20261121-hoomd-7.2.2-compute-thermodynamicquantities",
+      "mat-20261121-hoomd-7.2.2-simulation"
+    ],
+    "documentation": "https://hoomd-blue.readthedocs.io/en/latest/ (units, md.bond.Harmonic, md.methods.Brownian, md.compute.ThermodynamicQuantities), read on the days their material cards name; the release they document is a row of values_read",
+    "language": "Python package over a C++ core",
+    "version": "conda-forge's hoomd for osx-arm64 at the version values_read names, the one the adapters were tried on",
+    "license": "BSD-3-Clause, as conda-forge states it for hoomd"
+  },
+  "methods": [
+    "md"
+  ],
+  "executes": "engine",
+  "must_not": [
+    "touch an instrument",
+    "invent a number, or choose a setting, a scale or a tolerance",
+    "convert a unit by hand",
+    "compute again a value the engine itself reports",
+    "reach a network host other than the package source the lab's permission lists",
+    "write in the CFD agent's or the hub's folder, or carry a hand-over card itself",
+    "hand over a value a run under other conditions gave, or one no library skill computed",
+    "give the solvent viscosity a value the person did not give"
+  ],
+  "knowledge_needs": [
+    "how HOOMD-blue integrates Brownian dynamics and what friction and temperature it takes",
+    "how a Hookean dumbbell's relaxation time and its contribution to the viscosity follow from the model, from a published source",
+    "what HOOMD-blue reports of the stress, so that λ and η_p are computed from the engine's own output",
+    "what the Oldroyd-B constants mean in the CFD agent's constitutive equation, so that the values handed over mean what it means"
+  ],
+  "parameter_scope": [
+    "dumbbell_count",
+    "spring_constant",
+    "friction",
+    "kT",
+    "time_step",
+    "run_length",
+    "eta_s"
+  ],
+  "destination": "this computer (macOS on arm64), in a folder the person chooses beside the CFD agent's and the hub's; the bundle stops at meta_agent/builds/ until the person moves it",
+  "priorities": [
+    "a value is handed over only as a library skill's output on one run's record, with its conditions",
+    "η_s crosses as the person gave it, never computed or chosen",
+    "the agent stands alone: without the hub it still runs and computes"
+  ],
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "gui_choice": "none",
+  "analysis_permission": null,
+  "tool_reading": [
+    {
+      "claim": "HOOMD-blue adopts no system of units: it follows a self-consistent one on three base units, energy, length and mass, from which time, force and pressure are derived",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "Units, sections Base Units and Unit Conversion (mat-20261120-hoomd-7.2.2-units)"
+      ],
+      "capability": "io_format"
+    },
+    {
+      "claim": "md.bond.Harmonic gives each bond the energy U(r) = k (r - r0)^2 / 2, with k the potential constant in energy per length squared and r0 the rest length, set per bond type in params",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "hoomd.md.bond.Harmonic, the formula and params (mat-20261120-hoomd-7.2.2-bond-harmonic)"
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "md.methods.Brownian integrates the overdamped Langevin equation on a particle filter at a temperature kT (energy) with a translational drag coefficient gamma per particle type (mass per time), the random force sized by the fluctuation-dissipation theorem; its error is first order in the time step",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "hoomd.md.methods.Brownian, the equations of motion, the parameters and the warning (mat-20261121-hoomd-7.2.2-methods-brownian)"
+      ],
+      "capability": "parameter",
+      "limitations": "no hydrodynamic interaction between particles is stated, and none is in the dumbbell model either"
+    },
+    {
+      "claim": "md.compute.ThermodynamicQuantities reports pressure_tensor, six components xx, xy, xz, yy, yz, zz, each the kinetic sum plus the net virial of the integrator's forces over the volume, in pressure units; under Brownian the velocities are drawn each step at the set temperature",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "hoomd.md.compute.ThermodynamicQuantities, property pressure_tensor (mat-20261121-hoomd-7.2.2-compute-thermodynamicquantities)",
+        "hoomd.md.methods.Brownian, the paragraph on velocities (mat-20261121-hoomd-7.2.2-methods-brownian)"
+      ],
+      "capability": "observable",
+      "limitations": "a pressure is positive in compression: a stress read from it carries the opposite sign"
+    },
+    {
+      "claim": "HOOMD-blue computes the virial and the pressure only on steps where a GSD writer or an NPT integrator needs them unless Simulation.always_compute_pressure is set; read between them, pressure_tensor is not a number",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "hoomd.Simulation, property always_compute_pressure (mat-20261121-hoomd-7.2.2-simulation)",
+        "the run adapter's first trial under TMPDIR, every logged component not a number, and its second, finite with the flag set (failure bd-1)"
+      ],
+      "capability": "observable"
+    },
+    {
+      "claim": "the run adapter, tried under TMPDIR with hoomd from conda-forge, ran Brownian dynamics of Hookean dumbbells and logged the xy, xz and yz components of the pressure tensor with the box volume; passed through autocorrelation_of_series, shear_relaxation_modulus_green_kubo and exponential_decay_fit they gave a relaxation time and a viscosity near the dumbbell relations' for the trial's settings (evidence for the adapter only; no value of it enters a card)",
+      "kind": "observed",
+      "basis": "run_record",
+      "loci": [
+        "the adapter's third trial under TMPDIR, result.json and run.log of its run folder"
+      ],
+      "capability": "observable",
+      "limitations": "the first trial, a tenth as long, gave a decay time well off the relation's: how long a run must be for a given precision is not settled, and the uncertainty of the Green-Kubo estimate is not yet computed by any skill"
+    }
+  ],
+  "values_read": [
+    {
+      "name": "hoomd_docs_release",
+      "value": "7.2.2",
+      "unit": "1",
+      "locus": "the head of each HOOMD-blue page read: 'HOOMD-blue 7.2.2 documentation'",
+      "role": "the release the pages document"
+    },
+    {
+      "name": "hoomd_version_conda_forge",
+      "value": "7.2.2",
+      "unit": "1",
+      "locus": "pixi search -c conda-forge -p osx-arm64 hoomd, 2026-11-22 UTC, and the version install_environment read from the trial environment's conda-meta record",
+      "role": "the engine version the package source offers and the adapters were tried on"
+    }
+  ],
+  "environment_read": {
+    "os": "macOS on arm64",
+    "pixi": "pixi on PATH",
+    "hoomd": "not installed for the agent; it makes its own environment with install_environment",
+    "trial": "the adapters (meta_agent/requests/req-hoomd-oldroyd-b-001/adapters/) were tried under TMPDIR in an environment of conda-forge's hoomd made with pixi, as the lab's permission allows"
+  },
+  "questions_for_the_person": [
+    {
+      "n": 1,
+      "needed_before": "the goal: what the agent computes and hands over",
+      "question": "Task 034 (HOOMD -> OpenFOAM, under a hub): which viscoelastic properties should the MD agent compute and hand over to the CFD agent?",
+      "how": "one of the buttons, the recommendation marked",
+      "answer": {
+        "verbatim": "λ, η_p, η_s (Recommended)",
+        "date": "2026-11-21",
+        "gloss": "the relaxation time, the polymer viscosity and the solvent viscosity (given in the meta seat's conversation; relayed for docs/ideas by the note 20261121-meta-macbook-20261120-4-5)"
+      }
+    },
+    {
+      "n": 2,
+      "needed_before": "the goal: the model the MD realises",
+      "question": "How should the HOOMD-blue agent realize the Oldroyd-B fluid?",
+      "how": "one of the buttons, the recommendation marked",
+      "answer": {
+        "verbatim": "Dumbbells, implicit solvent (Recommended)",
+        "date": "2026-11-21",
+        "gloss": "Brownian dynamics of Hookean dumbbells in an implicit solvent (given in the meta seat's conversation; relayed for docs/ideas by the note 20261121-meta-macbook-20261120-4-5)"
+      }
+    },
+    {
+      "n": 3,
+      "needed_before": "the goal: how the MD computes what it hands over",
+      "question": "How should the HOOMD-blue agent get λ and η_p from its Brownian-dynamics run?",
+      "how": "one of the buttons, the recommendation marked",
+      "answer": {
+        "verbatim": "Stress autocorrelation (Recommended)",
+        "date": "2026-11-21",
+        "gloss": "a library skill fits the autocorrelation of the xy stress HOOMD-blue reports at equilibrium for λ and integrates it for η_p; the dumbbell relations are the reference (given in the meta seat's conversation; relayed for docs/ideas by the note 20261121-meta-macbook-20261120-4-6)"
+      }
+    },
+    {
+      "n": 4,
+      "needed_before": "the hand-over's declaration and the build: the scales enter it as settings the person confirmed, and lambda and eta_p leave HOOMD-blue's own units only through them",
+      "question": "For the HOOMD-blue Oldroyd-B agent (task 034): HOOMD-blue works in its own units of length, energy and mass, and λ and η_p must reach rheoTool in seconds and Pa.s. What should HOOMD-blue's three base units stand for?",
+      "how": "one of the buttons, the recommendation marked: 'SI base units (Recommended)' (length m, energy J, mass kg, so that time is s and viscosity Pa.s and the two values cross with their numbers unchanged; the dumbbells then stand for no real polymer) or 'A real polymer solution' (nm, k_B T at a temperature the person gives, a time or mass scale the person names)",
+      "answer": {
+        "verbatim": "SI base units (Recommended)",
+        "date": "2026-11-21",
+        "gloss": "HOOMD-blue's length stands for the metre, its energy for the joule and its mass for the kilogram, so that its time is the second and its viscosity the pascal second, and lambda and eta_p cross with their numbers unchanged; the button this seat wrote, its recommendation (given in the meta seat's conversation; relayed for docs/ideas by note)"
+      }
+    },
+    {
+      "n": 5,
+      "needed_before": "the hand-over's declaration: which values the MD agent's card carries",
+      "question": "Task 034: you chose that λ, η_p and η_s cross from the MD agent, with η_s your own input. A hand-over card holds only values a library skill computed, each graded by where it comes from, and a value you choose has no such grade. How should η_s reach the rheoTool agent?",
+      "how": "one of the buttons, the recommendation marked: 'Give it to the CFD agent (Recommended)' (the MD agent's card carries λ and η_p, both computed from its run; the person gives η_s to the rheoTool agent as a run setting) or 'Compute it from the drag' (η_s from the bead drag by Stokes' law with a bead radius the person gives, a new library skill)",
+      "answer": {
+        "verbatim": "Give it to the CFD agent (Recommended)",
+        "date": "2026-11-21",
+        "gloss": "the MD agent's hand-over card carries the relaxation time and the polymer viscosity, both computed from its run; the person gives the solvent viscosity to the rheoTool agent as a run setting; the button this seat wrote, its recommendation (given in the meta seat's conversation; relayed for docs/ideas by note)"
+      }
+    }
+  ]
+}
