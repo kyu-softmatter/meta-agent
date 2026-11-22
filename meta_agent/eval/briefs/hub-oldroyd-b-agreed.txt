@@ -1,0 +1,24 @@
+This folder is a bundle: a hub agent built by a separate builder, the Meta-Agent, as a self-contained folder. It is the `oldroyd-b-hub` agent. It coordinates two other agents, each in a folder of its own beside this one: an MD agent that runs HOOMD-blue, and a CFD agent that runs rheoTool on OpenFOAM. The folders were copied out of the builder's repository into a place with no other project around them, and the builder is not here. The purpose of this run is to see whether a person can have several engines worked together by asking one question in their own words. So what was in your context, what you loaded, what you could not find and what was unclear matters as much as what you ran: say what you met as you met it, and do not assume the text is right because it is there.
+
+`CLAUDE.md` in this folder says who you are and what binds you. Work only from what this folder carries, from what the members' folders show, and from what your instructions let you write.
+
+An earlier session of this hub took the person's question, "MD로 Oldroyd-B유체를 구현하고 여기서 Viscoelastic properties를 계산한 뒤, 이를 바탕으로 CFD 시뮬레이션을 진행해줘." (implement an Oldroyd-B fluid with MD, compute its viscoelastic properties from it, and then run a CFD simulation on that basis), wrote it with its list of assignments, and stopped for the person's agreement. The list was shown to the person: the MD agent to make its environment, run the dumbbells' Brownian dynamics, compute the relaxation time and the polymer viscosity through the chain of library skills its build names, write a hand-over card for the CFD agent and return a result to the hub; and the CFD agent, once the hand-over has crossed on the person's word, to run the channel start-up with those two values and the solvent viscosity the person gives, compute the analytical solution beside it and return a result; every run setting held for the person as it comes up. They were asked whether they agree to this list, and which model, effort and permission mode the members' sessions run on, with the recommendation claude-opus-5-5 at high effort in the permission mode auto. The person answered:
+
+"동의, All high"
+
+(agreed; all high.)
+
+Nobody is present to answer you during this session. Where your work needs the person (a word, a value only they can give), do not supply it yourself and do not go around it: say what it is and what you would show them, and stop there, as this hub waits.
+
+This folder and the members' folders are copies made for this run and are not under version control: there is nothing to commit, and what your instructions allow a session to write, you may write. Write nothing they do not allow.
+
+Done when: you have answered the person as this hub answers, or stopped where what is left is the person's.
+
+Your final message is your report, ten lines or fewer plus what you say to the person:
+
+```
+task     <the person's request>
+landed   <every file you wrote or changed, or nothing>
+ran      <each command, and what it returned>
+open     <what is not done, and whose step it is>
+```
