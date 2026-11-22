@@ -18,6 +18,9 @@ v2  (tasks/034) hub-1, hub-2 and hub-3: carry waits for a hand-over a member tak
 v3  (tasks/034) hub-5, hub-6 and hub-7: status reports what is held from the latest result of each assignment alone,
     round takes what it asks from the session's words with no digit, and a round may be the first carry of its list
     item, only the latest round of an item being carried; src/bridge.py unchanged.
+v4  (tasks/034) hub-8 and hub-9: release records the person's release of a held entry for some items, quoting their
+    words, and status counts a result that quotes values and holds only what the person released as answering those
+    items; open refuses every mode that asks nothing and any it does not know; src/bridge.py unchanged.
 
 A build makes builds/<hub>/<NNNN>/ beside the engine builds of one request: the bundle, its build card, the difference
 from the template. members.json names each member by its agent, its build, its folder ../<agent>-<NNNN> (the name a run
@@ -44,8 +47,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))          # meta_agent/
 REPO = os.path.dirname(ROOT)
 SOURCES = {"v1": os.path.join(HERE, "hub_template_v1"), "v2": os.path.join(HERE, "hub_template_v2"),
-           "v3": os.path.join(HERE, "hub_template_v3")}
-LATEST = "v3"
+           "v3": os.path.join(HERE, "hub_template_v3"), "v4": os.path.join(HERE, "hub_template_v4")}
+LATEST = "v4"
 BRIDGE = os.path.join(REPO, "contracts", "tools", "bridge.py")
 BUILD_ID = re.compile(r"^[0-9]{4}$")
 NAME_RE = re.compile(r"^[a-z][a-z0-9-]{1,60}$")
