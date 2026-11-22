@@ -1,0 +1,70 @@
+{
+  "schema_version": "0.1",
+  "id": "autocorrelation_of_series",
+  "version": 1,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the time autocorrelation of a quantity sampled at a fixed interval, averaged over the time origins of each series and over independent series",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "series",
+      "unit": "1",
+      "meaning": "one or more lists of values of one quantity, each sampled at the same interval from an equilibrium run; independent runs, or independent and alike components (xy, xz, yz of a stress)"
+    },
+    {
+      "name": "interval",
+      "unit": "1",
+      "meaning": "the time between two consecutive values, in the unit of time of the run"
+    },
+    {
+      "name": "max_lag",
+      "unit": "count",
+      "meaning": "the largest lag, in samples, for which the correlation is computed; every series must be longer than it"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "correlation",
+      "unit": "1",
+      "meaning": "pairs [lag time, C], lag time = lag x interval, C the mean over the series of the mean over time origins of a(t0) a(t0 + lag), in the square of the unit of the values",
+      "unit_of": "interval",
+      "unit_of_part": "variable"
+    },
+    {
+      "name": "series_averaged",
+      "unit": "count",
+      "meaning": "how many series were averaged"
+    },
+    {
+      "name": "pairs_at_max_lag",
+      "unit": "count",
+      "meaning": "the number of time origins the largest lag had in the shortest series"
+    },
+    {
+      "name": "state",
+      "unit": "1",
+      "meaning": "computed | not_computed"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why nothing was computed; absent when computed"
+    }
+  ],
+  "validity": "a stationary series sampled at equal intervals; no mean is subtracted, so a quantity whose mean is not zero gives the correlation of its full value, not of its fluctuation; the statistical error grows with the lag and this skill does not estimate it (the source's equations (7) and (8) do)",
+  "source": {
+    "citation": "Kim, Han, Kim, Li, Karniadakis and Lee (2018), Nature of intrinsic uncertainties in equilibrium molecular dynamics estimation of shear viscosity for simple and complex fluids, arXiv:1807.08063v1 (read 2026-11-21, https://arxiv.org/pdf/1807.08063v1; mat-20261121-kim-2018-green-kubo-uncertainty)",
+    "locus": "equation (3): the autocorrelation C(t) = <a(0) a(t)> is estimated as the ensemble average over N independent sample trajectories of the time average over origins t' of a(t') a(t' + t); section III: the shear stress was sampled at a fixed interval and the SACF computed by a standard time-averaging procedure"
+  },
+  "note": "Written for meta_agent/tasks/034, where a HOOMD-blue agent reads the relaxation of an Oldroyd-B fluid of Hookean dumbbells from the xy stress of an equilibrium Brownian-dynamics run. The discrete time average divides by the number of origins a lag has (n - lag), the time average of equation (3) over the origins the series holds. No value of the source stands behind the worked cases: each is worked by hand in its worked field, on two unrelated kinds of system.",
+  "entry": {
+    "script": "scripts/analysis.py",
+    "function": "analysis"
+  },
+  "cases": "cases.json"
+}

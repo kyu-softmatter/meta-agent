@@ -1,0 +1,70 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261121-kim-2018-green-kubo-uncertainty",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T00:50:10Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "Found by searching, anonymously and read-only, by meta-macbook-20261120-4 for tasks/034 (req-hoomd-oldroyd-b-001), after the person chose 'Stress autocorrelation (Recommended)'. Read for the Green-Kubo relation and its estimator: equation (1), the time-dependent shear viscosity V/(kB T) times the integral of the shear-stress autocorrelation; equation (3), the autocorrelation estimated as the ensemble average over independent trajectories of the time average over origins; equation (24), the viscosity as V/(kB T) times the integral of C(t) to infinity; section III, the SACF by a standard time-averaging procedure and its integral by the trapezoidal rule; equations (7) and (8), the standard errors of both under a Gaussian approximation. Critique: an arXiv preprint (v1); the journal version was not looked for, and the relation is the standard Green-Kubo one, which the paper cites to its references [38, 39] rather than derives. Refinement: cited for the relation as written and for its estimator; the errors of equations (7) and (8) are for a later skill if a run's uncertainty is wanted.",
+  "kind": "paper",
+  "about": {
+    "name": {
+      "value": "Kim, Han, Kim, Li, Karniadakis and Lee (2018), Nature of intrinsic uncertainties in equilibrium molecular dynamics estimation of shear viscosity for simple and complex fluids, arXiv:1807.08063v1",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-kim-2018-green-kubo-uncertainty",
+          "locus": "the preprint's title, its authors' lines and the arXiv stamp 'arXiv:1807.08063v1 [physics.chem-ph] 21 Jul 2018'"
+        }
+      ]
+    },
+    "role": {
+      "value": null,
+      "state": "unknown",
+      "note": "a paper on molecular dynamics estimation of viscosity; it documents no engine, instrument, platform or analysis software"
+    },
+    "methods": {
+      "value": [
+        "molecular dynamics",
+        "Green-Kubo relations"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-kim-2018-green-kubo-uncertainty",
+          "locus": "the abstract and section II on the Green-Kubo formulas"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://arxiv.org/pdf/1807.08063v1"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-22T00:50:10Z",
+    "content_hash": "sha256:190123e6eeff8a7782d88c617459d78471c4edeba436f6a9f6a705d9bc1a263b",
+    "archived": null
+  },
+  "added_by": "meta-macbook-20261120-4",
+  "added_at": "2026-11-21",
+  "entry_path": "search",
+  "license_note": {
+    "value": null,
+    "state": "unknown"
+  },
+  "may_quote": "unknown",
+  "state": "queued",
+  "state_reason": null,
+  "questions": [
+    "registered: may this source, found by a seat's search for tasks/034, be registered?",
+    "may_quote: may an excerpt of it be kept?"
+  ]
+}

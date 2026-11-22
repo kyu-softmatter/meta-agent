@@ -825,6 +825,70 @@
       "value_kind": "computed"
     },
     {
+      "ref": "autocorrelation_of_series@v1",
+      "id": "autocorrelation_of_series",
+      "version": 1,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the time autocorrelation of a quantity sampled at a fixed interval, averaged over the time origins of each series and over independent series",
+      "description": "The time autocorrelation of a quantity sampled at a fixed interval, averaged over the time origins of each series and then over independent series, without subtracting a mean. Take it when a transport coefficient or a relaxation is to be read from the fluctuations of an equilibrium run, such as a stress, a velocity or a current.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "series",
+          "unit": "1",
+          "meaning": "one or more lists of values of one quantity, each sampled at the same interval from an equilibrium run; independent runs, or independent and alike components (xy, xz, yz of a stress)"
+        },
+        {
+          "name": "interval",
+          "unit": "1",
+          "meaning": "the time between two consecutive values, in the unit of time of the run"
+        },
+        {
+          "name": "max_lag",
+          "unit": "count",
+          "meaning": "the largest lag, in samples, for which the correlation is computed; every series must be longer than it"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "correlation",
+          "unit": "1",
+          "meaning": "pairs [lag time, C], lag time = lag x interval, C the mean over the series of the mean over time origins of a(t0) a(t0 + lag), in the square of the unit of the values",
+          "unit_of": "interval",
+          "unit_of_part": "variable"
+        },
+        {
+          "name": "series_averaged",
+          "unit": "count",
+          "meaning": "how many series were averaged"
+        },
+        {
+          "name": "pairs_at_max_lag",
+          "unit": "count",
+          "meaning": "the number of time origins the largest lag had in the shortest series"
+        },
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "computed | not_computed"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why nothing was computed; absent when computed"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/autocorrelation_of_series@v1",
+      "sha256": "sha256:494c79ecb6c0a77cfa83d4036ce6cf563e6187bc45262a654b3508ee3c91a710"
+    },
+    {
       "ref": "discretization_error_from_two_resolutions@v1",
       "id": "discretization_error_from_two_resolutions",
       "version": 1,
@@ -890,6 +954,72 @@
       "uses_skills": [],
       "path": "data_analysis/discretization_error_from_two_resolutions@v1",
       "sha256": "sha256:f7fbd7a4636376bb82c8dfd68b8dfd5ccb97d2599da5a3825d979951468c785b"
+    },
+    {
+      "ref": "exponential_decay_fit@v1",
+      "id": "exponential_decay_fit",
+      "version": 1,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the decay time and the amplitude of a single exponential decay fitted by least squares on the logarithm over a window the caller names",
+      "description": "The decay time and the amplitude of a single exponential decay fitted to positive values of a series over a window the caller names, by least squares on the logarithm. Take it when a relaxation time is to be read from a relaxation modulus, a correlation or any signal expected to decay as one exponential.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "points",
+          "unit": "1",
+          "meaning": "pairs [t, y] of a decaying signal, the time and the value each in one unit throughout"
+        },
+        {
+          "name": "window",
+          "unit": "1",
+          "meaning": "[t_first, t_last], the times between which (both included) the points are fitted, in the unit of the points' times"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "decay_time",
+          "unit": "1",
+          "meaning": "tau of y = A exp(-t/tau), minus one over the fitted slope of ln y against t, in the unit of the points' times; null when not fitted or when the fitted slope is not negative",
+          "unit_of": "points",
+          "unit_of_part": "variable"
+        },
+        {
+          "name": "amplitude",
+          "unit": "1",
+          "meaning": "A, the fitted value at t = 0, in the unit of the points' values",
+          "unit_of": "points",
+          "unit_of_part": "value"
+        },
+        {
+          "name": "residual_standard_deviation",
+          "unit": "1",
+          "meaning": "of ln y about the fitted line, the residual sum of squares over n - 2, rooted; null with two points"
+        },
+        {
+          "name": "points_fitted",
+          "unit": "count",
+          "meaning": "how many points lay in the window"
+        },
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "fitted | not_decaying | not_fitted"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why nothing was fitted; absent when fitted"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/exponential_decay_fit@v1",
+      "sha256": "sha256:6ff74aff4bf444ae484578b5104087de24f5b3abf6c8ee3112795d62faea5755"
     },
     {
       "ref": "flow_curve_fit@v1",
@@ -1526,6 +1656,75 @@
       "uses_skills": [],
       "path": "data_analysis/series_maximum@v3",
       "sha256": "sha256:9bd4ff68765cdba9b8efa16fef8654a65b548304ef7181d84553eeb378a7c406"
+    },
+    {
+      "ref": "shear_relaxation_modulus_green_kubo@v1",
+      "id": "shear_relaxation_modulus_green_kubo",
+      "version": 1,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the shear relaxation modulus and the Green-Kubo shear viscosity from the autocorrelation of an off-diagonal stress at equilibrium",
+      "description": "The shear relaxation modulus and the shear viscosity of a fluid from the autocorrelation of an off-diagonal stress at equilibrium, by the Green-Kubo relation, the viscosity integrated by the trapezoidal rule up to a time the caller names. Take it when a viscosity or a relaxation modulus is to be read from an equilibrium run's stress fluctuations.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "correlation",
+          "unit": "1",
+          "meaning": "pairs [lag time, C] from lag time zero at a fixed spacing, C the autocorrelation of one off-diagonal stress component (or the mean over xy, xz, yz), in pressure squared of the run's units"
+        },
+        {
+          "name": "volume",
+          "unit": "engine_length^3",
+          "meaning": "the volume of the system whose stress was sampled"
+        },
+        {
+          "name": "thermal_energy",
+          "unit": "engine_energy",
+          "meaning": "the thermal energy of the run"
+        },
+        {
+          "name": "end",
+          "unit": "1",
+          "meaning": "the lag time up to which the viscosity is integrated, one of the correlation's lag times, in its unit of time"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "modulus",
+          "unit": "1",
+          "meaning": "pairs [lag time, G], G = V C / kT, the shear relaxation modulus in pressure of the run's units",
+          "unit_of": "correlation",
+          "unit_of_part": "variable"
+        },
+        {
+          "name": "viscosity",
+          "unit": "engine_viscosity",
+          "meaning": "V/kT times the trapezoidal integral of C from zero to end: the shear viscosity when end lies where the integral has levelled off"
+        },
+        {
+          "name": "samples_integrated",
+          "unit": "count",
+          "meaning": "how many lag times the integral took, zero and end included"
+        },
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "computed | not_computed"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why nothing was computed; absent when computed"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/shear_relaxation_modulus_green_kubo@v1",
+      "sha256": "sha256:70639f137ec46102fe80ece8c2c679740a5a3b563e51c3949546fe14ac64c65a"
     },
     {
       "ref": "standard_error_of_independent_estimates@v1",
@@ -2903,6 +3102,152 @@
       "uses_skills": [],
       "path": "estimate/harmonic_oscillation_period@v1",
       "sha256": "sha256:e015265885b88444ceffc3acb8ffa940a50b495af5ae2e68fd4ae05450b0e71a"
+    },
+    {
+      "ref": "hookean_dumbbell_oldroyd_b_constants@v1",
+      "id": "hookean_dumbbell_oldroyd_b_constants",
+      "version": 1,
+      "kind": "estimate",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the relaxation time and the polymer viscosity of a dilute solution of Hookean dumbbells as an Oldroyd-B fluid, in an engine's own units",
+      "description": "The relaxation time and the polymer viscosity of the Oldroyd-B fluid that a dilute solution of Hookean dumbbells is, from the bead drag, the spring constant, the number of dumbbells per volume and kT, in an engine's own units. Take it when a model of dumbbells is to be compared with the constants a run measured, or a run's settings are to be chosen for a relaxation time.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "bead_drag",
+          "unit": "engine_drag",
+          "meaning": "zeta, the drag coefficient of one bead (the gamma of HOOMD-blue's Brownian method for the bead's type)"
+        },
+        {
+          "name": "spring_constant",
+          "unit": "engine_energy/engine_length^2",
+          "meaning": "K of the spring force K R, a spring with no rest length (k of a harmonic bond U = k (r - r0)^2 / 2 with r0 = 0)"
+        },
+        {
+          "name": "dumbbells",
+          "unit": "count",
+          "meaning": "the number of dumbbells, not of beads"
+        },
+        {
+          "name": "volume",
+          "unit": "engine_length^3",
+          "meaning": "the volume they are in"
+        },
+        {
+          "name": "thermal_energy",
+          "unit": "engine_energy",
+          "meaning": "the thermal energy"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "relaxation_time",
+          "unit": "engine_time",
+          "meaning": "lambda = zeta / (4 K), the relaxation time of the dumbbells' upper-convected Maxwell stress"
+        },
+        {
+          "name": "polymer_viscosity",
+          "unit": "engine_viscosity",
+          "meaning": "eta_p = n kT lambda with n the dumbbells per volume"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "estimate/hookean_dumbbell_oldroyd_b_constants@v1",
+      "sha256": "sha256:3a6cb0cb1af13a2dcd3c44c223c67a1e1d8a5a9efd8bcb2fd4de9672f059e0e0"
+    },
+    {
+      "ref": "oldroyd_b_startup_channel_velocity@v1",
+      "id": "oldroyd_b_startup_channel_velocity",
+      "version": 1,
+      "kind": "estimate",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the start-up velocity of an Oldroyd-B fluid in a planar channel under a suddenly applied pressure gradient, by Waters and King's series",
+      "description": "The velocity at one distance from the centreline of a planar channel against time, after a constant pressure gradient is suddenly applied to an Oldroyd-B fluid at rest, by Waters and King's series truncated at a number of terms the caller names; with the elasticity number, the solvent's share of the viscosity and the steady mean velocity. Take it as the analytical reference of a start-up channel flow simulation.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "half_width",
+          "unit": "1",
+          "meaning": "h, the distance from the centreline to a wall, in the length unit of one self-consistent system of units (SI for OpenFOAM)"
+        },
+        {
+          "name": "density",
+          "unit": "1",
+          "meaning": "rho, mass per volume in that system"
+        },
+        {
+          "name": "solvent_viscosity",
+          "unit": "1",
+          "meaning": "eta_s, a dynamic viscosity in that system"
+        },
+        {
+          "name": "polymer_viscosity",
+          "unit": "1",
+          "meaning": "eta_p, a dynamic viscosity in that system"
+        },
+        {
+          "name": "relaxation_time",
+          "unit": "1",
+          "meaning": "lambda, a time in that system"
+        },
+        {
+          "name": "driving",
+          "unit": "1",
+          "meaning": "K = -dp/dx, the constant pressure gradient along the channel (force per volume) applied from time zero, in that system"
+        },
+        {
+          "name": "position",
+          "unit": "1",
+          "meaning": "y, the distance from the centreline at which the velocity is wanted, 0 <= |y| <= h, in the length unit"
+        },
+        {
+          "name": "times",
+          "unit": "1",
+          "meaning": "the times since the gradient was applied, zero or more, in the time unit"
+        },
+        {
+          "name": "terms",
+          "unit": "count",
+          "meaning": "how many terms of the series to sum, one or more"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "velocity",
+          "unit": "1",
+          "meaning": "pairs [t, u], u the velocity along the channel at the position asked, in the velocity unit of the system",
+          "unit_of": "times",
+          "unit_of_part": "variable"
+        },
+        {
+          "name": "elasticity_number",
+          "unit": "1",
+          "meaning": "E = lambda eta0 / (rho h^2), eta0 = eta_s + eta_p"
+        },
+        {
+          "name": "solvent_fraction",
+          "unit": "1",
+          "meaning": "beta = eta_s / eta0"
+        },
+        {
+          "name": "steady_mean_velocity",
+          "unit": "1",
+          "meaning": "K h^2 / (3 eta0), the mean over the channel of the steady velocity, in the velocity unit of the system"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "estimate/oldroyd_b_startup_channel_velocity@v1",
+      "sha256": "sha256:c6d788907075b1f759225810b53ccb001db47e333dcacdf80b31d9b37d3a66e2"
     },
     {
       "ref": "steps_for_diffusive_displacement@v1",

@@ -1,0 +1,75 @@
+{
+  "schema_version": "0.1",
+  "id": "shear_relaxation_modulus_green_kubo",
+  "version": 1,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the shear relaxation modulus and the Green-Kubo shear viscosity from the autocorrelation of an off-diagonal stress at equilibrium",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "correlation",
+      "unit": "1",
+      "meaning": "pairs [lag time, C] from lag time zero at a fixed spacing, C the autocorrelation of one off-diagonal stress component (or the mean over xy, xz, yz), in pressure squared of the run's units"
+    },
+    {
+      "name": "volume",
+      "unit": "engine_length^3",
+      "meaning": "the volume of the system whose stress was sampled"
+    },
+    {
+      "name": "thermal_energy",
+      "unit": "engine_energy",
+      "meaning": "the thermal energy of the run"
+    },
+    {
+      "name": "end",
+      "unit": "1",
+      "meaning": "the lag time up to which the viscosity is integrated, one of the correlation's lag times, in its unit of time"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "modulus",
+      "unit": "1",
+      "meaning": "pairs [lag time, G], G = V C / kT, the shear relaxation modulus in pressure of the run's units",
+      "unit_of": "correlation",
+      "unit_of_part": "variable"
+    },
+    {
+      "name": "viscosity",
+      "unit": "engine_viscosity",
+      "meaning": "V/kT times the trapezoidal integral of C from zero to end: the shear viscosity when end lies where the integral has levelled off"
+    },
+    {
+      "name": "samples_integrated",
+      "unit": "count",
+      "meaning": "how many lag times the integral took, zero and end included"
+    },
+    {
+      "name": "state",
+      "unit": "1",
+      "meaning": "computed | not_computed"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why nothing was computed; absent when computed"
+    }
+  ],
+  "validity": "linear response at equilibrium: the stress handed must be the system's whole off-diagonal stress, sampled densely enough for the trapezoidal rule; a kinetic part drawn afresh each step (as in Brownian dynamics) adds an uncorrelated spike at lag zero that the trapezoidal rule weighs by half a spacing, a bias the caller can see in the modulus",
+  "source": {
+    "citation": "Kim, Han, Kim, Li, Karniadakis and Lee (2018), Nature of intrinsic uncertainties in equilibrium molecular dynamics estimation of shear viscosity for simple and complex fluids, arXiv:1807.08063v1 (read 2026-11-21, https://arxiv.org/pdf/1807.08063v1; mat-20261121-kim-2018-green-kubo-uncertainty)",
+    "locus": "equation (1): eta(t) = V/(kB T) times the integral from 0 to t of <pxy(0) pxy(t')>; equation (24): eta = V/(kB T) times the integral from 0 to infinity of C(t); section III: the integral was computed by the trapezoidal rule. Morozov and Spagnolie (2015), Introduction to Complex Fluids, chapter 1 of Complex Fluids in Biological Systems (read 2026-11-21, https://people.math.wisc.edu/~spagnolie/Papers/Introduction_to_Complex_Fluids.pdf; mat-20261121-morozov-spagnolie-2015-complex-fluids), equation (1.51): the Maxwell stress as the integral of the memory G exp(-(t - t')/lambda) over the past strain rate, so that V C(t)/kT is the relaxation modulus whose integral is the viscosity"
+  },
+  "note": "Written for meta_agent/tasks/034 (the HOOMD-blue agent of an Oldroyd-B fluid of Hookean dumbbells, whose person chose 'Stress autocorrelation (Recommended)'). No value of the sources stands behind the worked cases: each is worked by hand in its worked field, on two unrelated kinds of system.",
+  "entry": {
+    "script": "scripts/analysis.py",
+    "function": "analysis"
+  },
+  "cases": "cases.json"
+}

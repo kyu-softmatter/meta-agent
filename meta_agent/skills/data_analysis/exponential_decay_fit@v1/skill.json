@@ -1,0 +1,72 @@
+{
+  "schema_version": "0.1",
+  "id": "exponential_decay_fit",
+  "version": 1,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the decay time and the amplitude of a single exponential decay fitted by least squares on the logarithm over a window the caller names",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "points",
+      "unit": "1",
+      "meaning": "pairs [t, y] of a decaying signal, the time and the value each in one unit throughout"
+    },
+    {
+      "name": "window",
+      "unit": "1",
+      "meaning": "[t_first, t_last], the times between which (both included) the points are fitted, in the unit of the points' times"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "decay_time",
+      "unit": "1",
+      "meaning": "tau of y = A exp(-t/tau), minus one over the fitted slope of ln y against t, in the unit of the points' times; null when not fitted or when the fitted slope is not negative",
+      "unit_of": "points",
+      "unit_of_part": "variable"
+    },
+    {
+      "name": "amplitude",
+      "unit": "1",
+      "meaning": "A, the fitted value at t = 0, in the unit of the points' values",
+      "unit_of": "points",
+      "unit_of_part": "value"
+    },
+    {
+      "name": "residual_standard_deviation",
+      "unit": "1",
+      "meaning": "of ln y about the fitted line, the residual sum of squares over n - 2, rooted; null with two points"
+    },
+    {
+      "name": "points_fitted",
+      "unit": "count",
+      "meaning": "how many points lay in the window"
+    },
+    {
+      "name": "state",
+      "unit": "1",
+      "meaning": "fitted | not_decaying | not_fitted"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why nothing was fitted; absent when fitted"
+    }
+  ],
+  "validity": "a single exponential over the window; least squares on ln y weighs every point's relative error alike, so noise near zero, where ln y is wide, pulls the fit, and the window is the caller's to keep it out; a sum of exponentials gives an effective decay time that depends on the window",
+  "source": {
+    "citation": "Morozov and Spagnolie (2015), Introduction to Complex Fluids, chapter 1 of Complex Fluids in Biological Systems (read 2026-11-21, https://people.math.wisc.edu/~spagnolie/Papers/Introduction_to_Complex_Fluids.pdf; mat-20261121-morozov-spagnolie-2015-complex-fluids); NIST/SEMATECH e-Handbook of Statistical Methods, Section 4.4.3.1 Least Squares (read 2026-11-17, https://www.itl.nist.gov/div898/handbook/pmd/section4/pmd431.htm; meta_agent/inbox/materials/20261117-nist-sematech-least-squares)",
+    "locus": "Morozov and Spagnolie, equation (1.51): the stress of a Maxwell fluid after a step relaxes as exp(-t/lambda), lambda = eta/G, so its relaxation modulus is G exp(-t/lambda); NIST/SEMATECH 4.4.3.1: least squares chooses the parameters that minimise the sum of squared deviations, a model linear in its parameters (here ln y = ln A - t/tau) solved directly, the residual standard deviation that sum over n - p, rooted"
+  },
+  "note": "Written for meta_agent/tasks/034, where the relaxation time of an Oldroyd-B fluid of Hookean dumbbells is read from the relaxation modulus of an equilibrium Brownian-dynamics run (shear_relaxation_modulus_green_kubo). No value of either source stands behind the worked cases: each is an exact exponential worked by hand, on two unrelated kinds of system.",
+  "entry": {
+    "script": "scripts/analysis.py",
+    "function": "analysis"
+  },
+  "cases": "cases.json"
+}
