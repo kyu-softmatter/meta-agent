@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "For docs/ideas/20261121.md: asked in this seat's conversation 'Task 034: you chose that λ, η_p and η_s cross from the MD agent, with η_s your own input. A hand-over card holds only values a library skill computed, each graded by where it comes from, and a value you choose has no such grade. How should η_s reach the rheoTool agent?', the person answered 'Give it to the CFD agent (Recommended)' (gloss: the MD agent's hand-over card carries the relaxation time and the polymer viscosity, both computed from its run; the person gives the solvent viscosity to the rheoTool agent as a run setting). Recorded as question 5 of meta_agent/requests/req-hoomd-oldroyd-b-001/v11_intake.json. This narrows the person's earlier 'λ, η_p, η_s (Recommended)' to what crosses in the card; η_s still reaches the CFD agent, from the person.",
+  "written_at": "2026-11-21T21:55:16-08:00"
+}
