@@ -1,0 +1,15 @@
+{
+  "id": "if-1",
+  "name": "a run with no input is refused by the runner's input check",
+  "call": {
+    "tool": "run_dumbbell_bd",
+    "input": {}
+  },
+  "expected": {
+    "error": {
+      "category": "invalid_input",
+      "code": "HOOMD-BD-INPUT-001"
+    }
+  },
+  "expected_verdict": "pass"
+}

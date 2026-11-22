@@ -1,0 +1,114 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-hoomd-oldroyd-b-001-a5",
+  "rid": "req-hoomd-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:05:19Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [
+    {
+      "id": "case-engine-adapter-environment-first-001",
+      "version": "1",
+      "hash": "sha256:828137b4d54664b85edad20e64df89ed132ba49758ee6e9aa1d121ecb13873d3",
+      "path": "meta_agent/cases/case-engine-adapter-environment-first-001.json",
+      "note": "level 1 (weight 5: executes, engine); cue: an adapter of a tool whose environment is made after the build checks its own inputs, or reads files the engine would write, before it checks that the environment is there"
+    },
+    {
+      "id": "case-sma-simulation-014",
+      "version": "2",
+      "hash": "sha256:87c8820ff4dbd0494d595fc367a3c7261ca6630c37530b0cc135644f3ada9a73",
+      "path": "meta_agent/cases/sma/v2_simulation-014.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a falsifier fires on a measurement taken on a stand-in backend that does not exercise the quantity being estimated"
+    },
+    {
+      "id": "case-sma-simulation-032",
+      "version": "2",
+      "hash": "sha256:414501636d01559034ffdaf4a506403f59f6fc7e0696a85ec5e53d4a1abc4b0c",
+      "path": "meta_agent/cases/sma/v2_simulation-032.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a run record names its backend through an attribute lookup with a default, so a missing attribute silently produces a false claim"
+    },
+    {
+      "id": "case-sma-simulation-033",
+      "version": "2",
+      "hash": "sha256:8701e76fbfbffc3f96707ba2d2fb5300da4e222b8475b815d67276c902c94fd2",
+      "path": "meta_agent/cases/sma/v2_simulation-033.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a run tool writes into a run directory whose id was picked by hand from a listing, in a tree where several seats run sweeps"
+    },
+    {
+      "id": "case-sma-simulation-034",
+      "version": "2",
+      "hash": "sha256:b98a9e07a417ae151bb40d8bef8d392c3660b29c4373d6de1fcf5bca5739f00f",
+      "path": "meta_agent/cases/sma/v2_simulation-034.json",
+      "note": "level 1 (weight 5: executes, engine); cue: prose or comments state a count or a status recalled from memory, and go stale or wrong as runs land"
+    },
+    {
+      "id": "case-sma-simulation-035",
+      "version": "2",
+      "hash": "sha256:e1f68dab406ce7c1d31406d2aec0c8fae5468e272cae380c426b81a0eb037093",
+      "path": "meta_agent/cases/sma/v2_simulation-035.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a parked falsifier names a backend or a present-tense fact about the machine rather than an artefact the repository can show"
+    },
+    {
+      "id": "case-sma-simulation-044",
+      "version": "2",
+      "hash": "sha256:cbca5a4d650e5415e6a401bad78eb199abf2c746d8f4ab6c0b4c0af391c5864a",
+      "path": "meta_agent/cases/sma/v2_simulation-044.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a shared estimator holds a model property such as dimensionality as a module constant, so newly declared configurations yield plausible but wrong numbers"
+    },
+    {
+      "id": "case-sma-simulation-046",
+      "version": "2",
+      "hash": "sha256:6819a63963c692e0c43a426b2fff28e64b689121dd09db5478217fb82a4ac818",
+      "path": "meta_agent/cases/sma/v2_simulation-046.json",
+      "note": "level 1 (weight 5: executes, engine); cue: physics answers are produced by driving a backend directly because the plan synthesis table lacks an entry for the configuration"
+    },
+    {
+      "id": "case-sma-simulation-048",
+      "version": "2",
+      "hash": "sha256:84171024b6735c97ee2977e3caeca2eb38ce0093dd2b40e08396cf3e65223d87",
+      "path": "meta_agent/cases/sma/v2_simulation-048.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a validator criterion compares a named metric against a physical threshold, but the producing backend fills the field with a coarser quantity than the name says, and earlier runs passed for the wrong reason"
+    },
+    {
+      "id": "case-sma-simulation-053",
+      "version": "2",
+      "hash": "sha256:63813c0ab1b83eeed2d702a3ce645824ea17c0860dd8737b002b63b589dd87c2",
+      "path": "meta_agent/cases/sma/v2_simulation-053.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a new engine backend is written by copying a mock backend's pattern, and the two report different quantities under one metric name"
+    },
+    {
+      "id": "case-sma-simulation-054",
+      "version": "2",
+      "hash": "sha256:2e87639437e2d9f1f676d6f99047856ecd2b1628c1ac29095a739d328a42cba2",
+      "path": "meta_agent/cases/sma/v2_simulation-054.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a missing-engine fallback routes every configuration to one generic mock whose physics differs, so a plan could finish green under the wrong physics, and fixed message text goes into run records"
+    }
+  ],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A5",
+  "title": "Safety",
+  "content": {
+    "rows": [],
+    "gate": "src/gate.py reads envelope/safety.json before any tool whose contract requires a gate; install_environment, run_dumbbell_bd require one; install_environment, run_dumbbell_bd open by the lab's execution permission instead, read from envelope/execution_permission.json, where its level reaches an engine; install_environment reaches the network only to install, from pixi/conda-forge, a source the permission lists",
+    "human_only": [
+      "safety values",
+      "hand-over (landed_at)",
+      "the scientific tolerance",
+      "the lab's execution permission"
+    ]
+  },
+  "reads": [
+    "goal-hoomd-oldroyd-b-001",
+    "tp-hoomd-oldroyd-b-001",
+    "kb-brief-hoomd-oldroyd-b-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

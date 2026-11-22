@@ -1,0 +1,501 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-hoomd-oldroyd-b-001-a4",
+  "rid": "req-hoomd-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:05:19Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [
+    {
+      "id": "case-engine-adapter-environment-first-001",
+      "version": "1",
+      "hash": "sha256:828137b4d54664b85edad20e64df89ed132ba49758ee6e9aa1d121ecb13873d3",
+      "path": "meta_agent/cases/case-engine-adapter-environment-first-001.json",
+      "note": "level 1 (weight 5: executes, engine); cue: an adapter of a tool whose environment is made after the build checks its own inputs, or reads files the engine would write, before it checks that the environment is there"
+    },
+    {
+      "id": "case-sma-simulation-014",
+      "version": "2",
+      "hash": "sha256:87c8820ff4dbd0494d595fc367a3c7261ca6630c37530b0cc135644f3ada9a73",
+      "path": "meta_agent/cases/sma/v2_simulation-014.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a falsifier fires on a measurement taken on a stand-in backend that does not exercise the quantity being estimated"
+    },
+    {
+      "id": "case-sma-simulation-032",
+      "version": "2",
+      "hash": "sha256:414501636d01559034ffdaf4a506403f59f6fc7e0696a85ec5e53d4a1abc4b0c",
+      "path": "meta_agent/cases/sma/v2_simulation-032.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a run record names its backend through an attribute lookup with a default, so a missing attribute silently produces a false claim"
+    },
+    {
+      "id": "case-sma-simulation-033",
+      "version": "2",
+      "hash": "sha256:8701e76fbfbffc3f96707ba2d2fb5300da4e222b8475b815d67276c902c94fd2",
+      "path": "meta_agent/cases/sma/v2_simulation-033.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a run tool writes into a run directory whose id was picked by hand from a listing, in a tree where several seats run sweeps"
+    },
+    {
+      "id": "case-sma-simulation-034",
+      "version": "2",
+      "hash": "sha256:b98a9e07a417ae151bb40d8bef8d392c3660b29c4373d6de1fcf5bca5739f00f",
+      "path": "meta_agent/cases/sma/v2_simulation-034.json",
+      "note": "level 1 (weight 5: executes, engine); cue: prose or comments state a count or a status recalled from memory, and go stale or wrong as runs land"
+    },
+    {
+      "id": "case-sma-simulation-035",
+      "version": "2",
+      "hash": "sha256:e1f68dab406ce7c1d31406d2aec0c8fae5468e272cae380c426b81a0eb037093",
+      "path": "meta_agent/cases/sma/v2_simulation-035.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a parked falsifier names a backend or a present-tense fact about the machine rather than an artefact the repository can show"
+    },
+    {
+      "id": "case-sma-simulation-044",
+      "version": "2",
+      "hash": "sha256:cbca5a4d650e5415e6a401bad78eb199abf2c746d8f4ab6c0b4c0af391c5864a",
+      "path": "meta_agent/cases/sma/v2_simulation-044.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a shared estimator holds a model property such as dimensionality as a module constant, so newly declared configurations yield plausible but wrong numbers"
+    },
+    {
+      "id": "case-sma-simulation-046",
+      "version": "2",
+      "hash": "sha256:6819a63963c692e0c43a426b2fff28e64b689121dd09db5478217fb82a4ac818",
+      "path": "meta_agent/cases/sma/v2_simulation-046.json",
+      "note": "level 1 (weight 5: executes, engine); cue: physics answers are produced by driving a backend directly because the plan synthesis table lacks an entry for the configuration"
+    },
+    {
+      "id": "case-sma-simulation-048",
+      "version": "2",
+      "hash": "sha256:84171024b6735c97ee2977e3caeca2eb38ce0093dd2b40e08396cf3e65223d87",
+      "path": "meta_agent/cases/sma/v2_simulation-048.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a validator criterion compares a named metric against a physical threshold, but the producing backend fills the field with a coarser quantity than the name says, and earlier runs passed for the wrong reason"
+    },
+    {
+      "id": "case-sma-simulation-053",
+      "version": "2",
+      "hash": "sha256:63813c0ab1b83eeed2d702a3ce645824ea17c0860dd8737b002b63b589dd87c2",
+      "path": "meta_agent/cases/sma/v2_simulation-053.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a new engine backend is written by copying a mock backend's pattern, and the two report different quantities under one metric name"
+    },
+    {
+      "id": "case-sma-simulation-054",
+      "version": "2",
+      "hash": "sha256:2e87639437e2d9f1f676d6f99047856ecd2b1628c1ac29095a739d328a42cba2",
+      "path": "meta_agent/cases/sma/v2_simulation-054.json",
+      "note": "level 1 (weight 5: executes, engine); cue: a missing-engine fallback routes every configuration to one generic mock whose physics differs, so a plan could finish green under the wrong physics, and fixed message text goes into run records"
+    }
+  ],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A4",
+  "title": "Parameters",
+  "content": {
+    "rows": [
+      {
+        "name": "relaxation_time",
+        "value": null,
+        "unit": "s",
+        "handover": {
+          "gives": {
+            "thread": "thr-oldroyd-b",
+            "to_agent": "rheotool-oldroyd-b",
+            "to_build": "rheotool-oldroyd-b/0001",
+            "steps": [
+              {
+                "id": "autocorrelation",
+                "skill": "autocorrelation_of_series@v2",
+                "accept_states": [
+                  "computed"
+                ],
+                "inputs": {
+                  "series": {
+                    "field": "pressure_tensor_offdiagonal"
+                  },
+                  "interval": {
+                    "field": "sample_interval"
+                  }
+                }
+              },
+              {
+                "id": "green_kubo",
+                "skill": "shear_relaxation_modulus_green_kubo@v2",
+                "accept_states": [
+                  "computed"
+                ],
+                "inputs": {
+                  "correlation": {
+                    "step": "autocorrelation",
+                    "output": "correlation"
+                  },
+                  "volume": {
+                    "field": "volume"
+                  },
+                  "thermal_energy": {
+                    "field": "thermostat_kT"
+                  }
+                }
+              },
+              {
+                "id": "decay_fit",
+                "skill": "exponential_decay_fit@v2",
+                "accept_states": [
+                  "fitted"
+                ],
+                "inputs": {
+                  "points": {
+                    "step": "green_kubo",
+                    "output": "modulus"
+                  }
+                }
+              },
+              {
+                "id": "relaxation_time_si",
+                "skill": "unit_convert@v2",
+                "accept_states": [
+                  "converted"
+                ],
+                "inputs": {
+                  "value": {
+                    "step": "decay_fit",
+                    "output": "decay_time"
+                  },
+                  "from_unit": {
+                    "registry": "engine_time"
+                  },
+                  "to_unit": {
+                    "registry": "s"
+                  },
+                  "from_stands_for": {
+                    "scale_of": "engine_time"
+                  }
+                }
+              },
+              {
+                "id": "polymer_viscosity_si",
+                "skill": "unit_convert@v2",
+                "accept_states": [
+                  "converted"
+                ],
+                "inputs": {
+                  "value": {
+                    "step": "green_kubo",
+                    "output": "viscosity"
+                  },
+                  "from_unit": {
+                    "registry": "engine_viscosity"
+                  },
+                  "to_unit": {
+                    "registry": "Pa.s"
+                  },
+                  "from_stands_for": {
+                    "scale_of": "engine_viscosity"
+                  }
+                }
+              }
+            ],
+            "step": "relaxation_time_si",
+            "output": "converted",
+            "record_inputs_from": "one_result",
+            "record_tool": "run_dumbbell_bd",
+            "conditions_field": "inputs",
+            "conditions": {
+              "engine": "HOOMD-blue from conda-forge's hoomd, md.methods.Brownian",
+              "system": "Hookean dumbbells in an implicit solvent, no force between dumbbells",
+              "analysis": "the xy, xz and yz stress autocorrelation averaged, its Green-Kubo modulus and integral, and a single exponential fitted to the modulus"
+            },
+            "what": "the relaxation time and the polymer viscosity of the dumbbells' Oldroyd-B fluid, for the CFD agent's constitutive equation"
+          }
+        }
+      },
+      {
+        "name": "polymer_viscosity",
+        "value": null,
+        "unit": "Pa.s",
+        "handover": {
+          "gives": {
+            "thread": "thr-oldroyd-b",
+            "to_agent": "rheotool-oldroyd-b",
+            "to_build": "rheotool-oldroyd-b/0001",
+            "steps": [
+              {
+                "id": "autocorrelation",
+                "skill": "autocorrelation_of_series@v2",
+                "accept_states": [
+                  "computed"
+                ],
+                "inputs": {
+                  "series": {
+                    "field": "pressure_tensor_offdiagonal"
+                  },
+                  "interval": {
+                    "field": "sample_interval"
+                  }
+                }
+              },
+              {
+                "id": "green_kubo",
+                "skill": "shear_relaxation_modulus_green_kubo@v2",
+                "accept_states": [
+                  "computed"
+                ],
+                "inputs": {
+                  "correlation": {
+                    "step": "autocorrelation",
+                    "output": "correlation"
+                  },
+                  "volume": {
+                    "field": "volume"
+                  },
+                  "thermal_energy": {
+                    "field": "thermostat_kT"
+                  }
+                }
+              },
+              {
+                "id": "decay_fit",
+                "skill": "exponential_decay_fit@v2",
+                "accept_states": [
+                  "fitted"
+                ],
+                "inputs": {
+                  "points": {
+                    "step": "green_kubo",
+                    "output": "modulus"
+                  }
+                }
+              },
+              {
+                "id": "relaxation_time_si",
+                "skill": "unit_convert@v2",
+                "accept_states": [
+                  "converted"
+                ],
+                "inputs": {
+                  "value": {
+                    "step": "decay_fit",
+                    "output": "decay_time"
+                  },
+                  "from_unit": {
+                    "registry": "engine_time"
+                  },
+                  "to_unit": {
+                    "registry": "s"
+                  },
+                  "from_stands_for": {
+                    "scale_of": "engine_time"
+                  }
+                }
+              },
+              {
+                "id": "polymer_viscosity_si",
+                "skill": "unit_convert@v2",
+                "accept_states": [
+                  "converted"
+                ],
+                "inputs": {
+                  "value": {
+                    "step": "green_kubo",
+                    "output": "viscosity"
+                  },
+                  "from_unit": {
+                    "registry": "engine_viscosity"
+                  },
+                  "to_unit": {
+                    "registry": "Pa.s"
+                  },
+                  "from_stands_for": {
+                    "scale_of": "engine_viscosity"
+                  }
+                }
+              }
+            ],
+            "step": "polymer_viscosity_si",
+            "output": "converted",
+            "record_inputs_from": "one_result",
+            "record_tool": "run_dumbbell_bd",
+            "conditions_field": "inputs",
+            "conditions": {
+              "engine": "HOOMD-blue from conda-forge's hoomd, md.methods.Brownian",
+              "system": "Hookean dumbbells in an implicit solvent, no force between dumbbells",
+              "analysis": "the xy, xz and yz stress autocorrelation averaged, its Green-Kubo modulus and integral, and a single exponential fitted to the modulus"
+            },
+            "what": "the relaxation time and the polymer viscosity of the dumbbells' Oldroyd-B fluid, for the CFD agent's constitutive equation"
+          }
+        }
+      },
+      {
+        "name": "n_dumbbells",
+        "value": null,
+        "unit": "count",
+        "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+      },
+      {
+        "name": "box_side",
+        "value": null,
+        "unit": "engine_length",
+        "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+      },
+      {
+        "name": "spring_k",
+        "value": null,
+        "unit": "engine_energy/engine_length^2",
+        "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+      },
+      {
+        "name": "initial_separation",
+        "value": null,
+        "unit": "engine_length",
+        "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+      },
+      {
+        "name": "bead_mass",
+        "value": null,
+        "unit": "engine_mass",
+        "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+      },
+      {
+        "name": "bead_drag",
+        "value": null,
+        "unit": "engine_drag",
+        "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+      },
+      {
+        "name": "kT",
+        "value": null,
+        "unit": "engine_energy",
+        "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+      },
+      {
+        "name": "dt",
+        "value": null,
+        "unit": "engine_time",
+        "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+      },
+      {
+        "name": "equilibration_steps",
+        "value": null,
+        "unit": "count",
+        "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+      },
+      {
+        "name": "steps",
+        "value": null,
+        "unit": "count",
+        "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+      },
+      {
+        "name": "sample_every",
+        "value": null,
+        "unit": "count",
+        "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+      },
+      {
+        "name": "seed",
+        "value": null,
+        "unit": "id",
+        "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+      },
+      {
+        "name": "max_lag",
+        "value": null,
+        "unit": "count",
+        "note": "the longest lag of the autocorrelation, in samples: the person gives it with the run"
+      },
+      {
+        "name": "integration_end",
+        "value": null,
+        "unit": "engine_time",
+        "note": "the lag up to which the Green-Kubo integral runs: the person gives it with the run"
+      },
+      {
+        "name": "fit_window",
+        "value": null,
+        "unit": "engine_time",
+        "note": "the lags over which the exponential is fitted, a pair: the person gives it"
+      },
+      {
+        "name": "scale_engine_length",
+        "engine_scale": {
+          "unit": "engine_length",
+          "stands_for": "m",
+          "state": "confirmed",
+          "confirmed_by": "human",
+          "evidence": [
+            "the person, 2026-11-21, answering meta-macbook-20261120-4's question 4 of req-hoomd-oldroyd-b-001 with the button 'SI base units (Recommended)'; relayed for docs/ideas by note 20261121-meta-macbook-20261120-4-8"
+          ]
+        }
+      },
+      {
+        "name": "scale_engine_energy",
+        "engine_scale": {
+          "unit": "engine_energy",
+          "stands_for": "J",
+          "state": "confirmed",
+          "confirmed_by": "human",
+          "evidence": [
+            "the person, 2026-11-21, answering meta-macbook-20261120-4's question 4 of req-hoomd-oldroyd-b-001 with the button 'SI base units (Recommended)'; relayed for docs/ideas by note 20261121-meta-macbook-20261120-4-8"
+          ]
+        }
+      },
+      {
+        "name": "scale_engine_mass",
+        "engine_scale": {
+          "unit": "engine_mass",
+          "stands_for": "kg",
+          "state": "confirmed",
+          "confirmed_by": "human",
+          "evidence": [
+            "the person, 2026-11-21, answering meta-macbook-20261120-4's question 4 of req-hoomd-oldroyd-b-001 with the button 'SI base units (Recommended)'; relayed for docs/ideas by note 20261121-meta-macbook-20261120-4-8"
+          ]
+        }
+      },
+      {
+        "name": "scale_engine_time",
+        "engine_scale": {
+          "unit": "engine_time",
+          "stands_for": "s",
+          "state": "confirmed",
+          "confirmed_by": "human",
+          "evidence": [
+            "follows from the person's three base scales of 2026-11-21 (question 4 of req-hoomd-oldroyd-b-001, 'SI base units (Recommended)'), whose gloss names it"
+          ],
+          "rests_on": [
+            "engine_length",
+            "engine_energy",
+            "engine_mass"
+          ]
+        }
+      },
+      {
+        "name": "scale_engine_viscosity",
+        "engine_scale": {
+          "unit": "engine_viscosity",
+          "stands_for": "Pa.s",
+          "state": "confirmed",
+          "confirmed_by": "human",
+          "evidence": [
+            "follows from the person's three base scales of 2026-11-21 (question 4 of req-hoomd-oldroyd-b-001, 'SI base units (Recommended)'), whose gloss names it"
+          ],
+          "rests_on": [
+            "engine_length",
+            "engine_energy",
+            "engine_mass"
+          ]
+        }
+      }
+    ],
+    "note": "rows come from the parameter sheet; a tool without physical parameters has none"
+  },
+  "reads": [
+    "goal-hoomd-oldroyd-b-001",
+    "tp-hoomd-oldroyd-b-001",
+    "kb-brief-hoomd-oldroyd-b-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

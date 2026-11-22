@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "RUN_DUMBBELL_BD-GAVE-UP",
+  "category": "timeout",
+  "message": "the call gave up on the run after its budget of running time and stopped it",
+  "retryable": true,
+  "remediation": {
+    "action": "call again with a larger budget_s, or none"
+  }
+}

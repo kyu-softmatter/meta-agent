@@ -1,0 +1,43 @@
+{
+  "card": "agent_spec",
+  "schema_version": "0.1",
+  "id": "spec-hoomd-oldroyd-b-001",
+  "rid": "req-hoomd-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:05:19Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "held",
+  "axis_refs": {
+    "A1": "spec_a1.json",
+    "A2": "spec_a2.json",
+    "A3": "spec_a3.json",
+    "A4": "spec_a4.json",
+    "A5": "spec_a5.json",
+    "A6": "spec_a6.json"
+  },
+  "synthesis_ref": "synthesis.json",
+  "goal_ref": "goal-hoomd-oldroyd-b-001",
+  "tool_profile_ref": "tp-hoomd-oldroyd-b-001",
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "held": [
+    {
+      "item": "the comparison of the run's relaxation time and polymer viscosity with the dumbbell's relations",
+      "reason": "the bundle's check measures through one skill and takes no reference a skill computes"
+    }
+  ],
+  "skills": [
+    "autocorrelation_of_series@v2",
+    "shear_relaxation_modulus_green_kubo@v2",
+    "exponential_decay_fit@v2",
+    "unit_convert@v2",
+    "hookean_dumbbell_oldroyd_b_constants@v1"
+  ],
+  "subagents": []
+}

@@ -1,0 +1,134 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-hoomd-oldroyd-b-001-a2",
+  "rid": "req-hoomd-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:05:19Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A2",
+  "title": "Interface",
+  "content": {
+    "cards_in": [
+      "tasks/*.md"
+    ],
+    "cards_out": [
+      "the printed reports of src/replay.py and src/validate_tasks.py",
+      "failures.jsonl lines"
+    ],
+    "callable_tools": [
+      {
+        "name": "install_environment",
+        "inputs": [],
+        "outputs": [
+          "installed",
+          "package",
+          "platform",
+          "python",
+          "version"
+        ],
+        "errors": [
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "unsupported_target"
+        ],
+        "side_effects": "network"
+      },
+      {
+        "name": "run_dumbbell_bd",
+        "inputs": [
+          "bead_drag",
+          "bead_mass",
+          "box_side",
+          "budget_s",
+          "dt",
+          "equilibration_steps",
+          "initial_separation",
+          "kT",
+          "n_dumbbells",
+          "sample_every",
+          "seed",
+          "spring_k",
+          "steps"
+        ],
+        "outputs": [
+          "bond_energy",
+          "hoomd_version",
+          "inputs",
+          "integrator_dt",
+          "kinetic_temperature",
+          "pressure_tensor_offdiagonal",
+          "run_dir",
+          "sample_interval",
+          "steps_run",
+          "thermostat_kT",
+          "volume"
+        ],
+        "errors": [
+          "invalid_input",
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "timeout",
+          "cancelled"
+        ],
+        "side_effects": "runs_process"
+      }
+    ],
+    "gui_fields": [],
+    "skills": [
+      {
+        "ref": "autocorrelation_of_series@v2",
+        "kind": "data_analysis",
+        "side_effect": "none",
+        "status": "usable",
+        "calls_tools": []
+      },
+      {
+        "ref": "shear_relaxation_modulus_green_kubo@v2",
+        "kind": "data_analysis",
+        "side_effect": "none",
+        "status": "usable",
+        "calls_tools": []
+      },
+      {
+        "ref": "exponential_decay_fit@v2",
+        "kind": "data_analysis",
+        "side_effect": "none",
+        "status": "usable",
+        "calls_tools": []
+      },
+      {
+        "ref": "unit_convert@v2",
+        "kind": "data_analysis",
+        "side_effect": "none",
+        "status": "usable",
+        "calls_tools": []
+      },
+      {
+        "ref": "hookean_dumbbell_oldroyd_b_constants@v1",
+        "kind": "estimate",
+        "side_effect": "none",
+        "status": "usable",
+        "calls_tools": []
+      }
+    ],
+    "subagents": []
+  },
+  "reads": [
+    "goal-hoomd-oldroyd-b-001",
+    "tp-hoomd-oldroyd-b-001",
+    "kb-brief-hoomd-oldroyd-b-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

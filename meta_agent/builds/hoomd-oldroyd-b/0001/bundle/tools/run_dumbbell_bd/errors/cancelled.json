@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "RUN_DUMBBELL_BD-STOPPED",
+  "category": "cancelled",
+  "message": "the run was stopped from outside",
+  "retryable": true,
+  "remediation": {
+    "action": "call again with the same input to start the run over"
+  }
+}

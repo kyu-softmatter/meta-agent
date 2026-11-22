@@ -1,0 +1,135 @@
+{
+  "card": "tool_profile",
+  "schema_version": "0.1",
+  "id": "tp-hoomd-oldroyd-b-001",
+  "rid": "req-hoomd-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:05:19Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "tool": {
+    "name": "HOOMD-blue",
+    "kind": "engine",
+    "registry_id": "hoomd_blue",
+    "source": "https://hoomd-blue.readthedocs.io/en/latest/ (units, md.bond.Harmonic, md.methods.Brownian, md.compute.ThermodynamicQuantities), read on the days their material cards name; the release they document is a row of values_read",
+    "language": "Python package over a C++ core",
+    "version": "conda-forge's hoomd for osx-arm64 at the version values_read names, the one the adapters were tried on",
+    "license": "BSD-3-Clause, as conda-forge states it for hoomd"
+  },
+  "analysis_permission": null,
+  "claims": [
+    {
+      "claim": "HOOMD-blue adopts no system of units: it follows a self-consistent one on three base units, energy, length and mass, from which time, force and pressure are derived",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_HOOMD-blue",
+          "locus": "Units, sections Base Units and Unit Conversion (mat-20261120-hoomd-7.2.2-units)"
+        }
+      ],
+      "capability": "io_format"
+    },
+    {
+      "claim": "md.bond.Harmonic gives each bond the energy U(r) = k (r - r0)^2 / 2, with k the potential constant in energy per length squared and r0 the rest length, set per bond type in params",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_HOOMD-blue",
+          "locus": "hoomd.md.bond.Harmonic, the formula and params (mat-20261120-hoomd-7.2.2-bond-harmonic)"
+        }
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "md.methods.Brownian integrates the overdamped Langevin equation on a particle filter at a temperature kT (energy) with a translational drag coefficient gamma per particle type (mass per time), the random force sized by the fluctuation-dissipation theorem; its error is first order in the time step",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_HOOMD-blue",
+          "locus": "hoomd.md.methods.Brownian, the equations of motion, the parameters and the warning (mat-20261121-hoomd-7.2.2-methods-brownian)"
+        }
+      ],
+      "limitations": "no hydrodynamic interaction between particles is stated, and none is in the dumbbell model either",
+      "capability": "parameter"
+    },
+    {
+      "claim": "md.compute.ThermodynamicQuantities reports pressure_tensor, six components xx, xy, xz, yy, yz, zz, each the kinetic sum plus the net virial of the integrator's forces over the volume, in pressure units; under Brownian the velocities are drawn each step at the set temperature",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_HOOMD-blue",
+          "locus": "hoomd.md.compute.ThermodynamicQuantities, property pressure_tensor (mat-20261121-hoomd-7.2.2-compute-thermodynamicquantities)"
+        },
+        {
+          "source_ref": "doc_HOOMD-blue",
+          "locus": "hoomd.md.methods.Brownian, the paragraph on velocities (mat-20261121-hoomd-7.2.2-methods-brownian)"
+        }
+      ],
+      "limitations": "a pressure is positive in compression: a stress read from it carries the opposite sign",
+      "capability": "observable"
+    },
+    {
+      "claim": "HOOMD-blue computes the virial and the pressure only on steps where a GSD writer or an NPT integrator needs them unless Simulation.always_compute_pressure is set; read between them, pressure_tensor is not a number",
+      "kind": "observed",
+      "basis": "documentation",
+      "evidence": [
+        {
+          "source_ref": "doc_HOOMD-blue",
+          "locus": "hoomd.Simulation, property always_compute_pressure (mat-20261121-hoomd-7.2.2-simulation)"
+        },
+        {
+          "source_ref": "doc_HOOMD-blue",
+          "locus": "the run adapter's first trial under TMPDIR, every logged component not a number, and its second, finite with the flag set (failure bd-1)"
+        }
+      ],
+      "capability": "observable"
+    },
+    {
+      "claim": "the run adapter, tried under TMPDIR with hoomd from conda-forge, ran Brownian dynamics of Hookean dumbbells and logged the xy, xz and yz components of the pressure tensor with the box volume; passed through autocorrelation_of_series, shear_relaxation_modulus_green_kubo and exponential_decay_fit they gave a relaxation time and a viscosity near the dumbbell relations' for the trial's settings (evidence for the adapter only; no value of it enters a card)",
+      "kind": "observed",
+      "basis": "run_record",
+      "evidence": [
+        {
+          "source_ref": "doc_HOOMD-blue",
+          "locus": "the adapter's third trial under TMPDIR, result.json and run.log of its run folder"
+        }
+      ],
+      "limitations": "the first trial, a tenth as long, gave a decay time well off the relation's: how long a run must be for a given precision is not settled, and the uncertainty of the Green-Kubo estimate is not yet computed by any skill",
+      "capability": "observable"
+    }
+  ],
+  "parameter_candidates": [
+    "bead_drag",
+    "bead_mass",
+    "box_side",
+    "budget_s",
+    "dt",
+    "equilibration_steps",
+    "initial_separation",
+    "kT",
+    "n_dumbbells",
+    "sample_every",
+    "seed",
+    "spring_k",
+    "steps"
+  ],
+  "gaps": [],
+  "material_refs": [
+    "mat-20261120-hoomd-7.2.2-units",
+    "mat-20261120-hoomd-7.2.2-bond-harmonic",
+    "mat-20261121-hoomd-7.2.2-methods-brownian",
+    "mat-20261121-hoomd-7.2.2-compute-thermodynamicquantities",
+    "mat-20261121-hoomd-7.2.2-simulation"
+  ]
+}

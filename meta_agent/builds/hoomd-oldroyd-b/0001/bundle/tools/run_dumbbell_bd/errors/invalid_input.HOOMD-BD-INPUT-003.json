@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "HOOMD-BD-INPUT-003",
+  "category": "invalid_input",
+  "message": "steps is not a multiple of sample_every",
+  "retryable": false,
+  "remediation": {
+    "action": "give steps as a whole number of samples"
+  }
+}

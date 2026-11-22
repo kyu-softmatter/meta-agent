@@ -1,0 +1,58 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "install_environment",
+  "description": "make this agent's own environment once, before the first run: the package hoomd (HOOMD-blue) at the version conda-forge offered when the agent was built, with its Python, installed with pixi from conda-forge into runs/env; the runner points pixi's caches at runs/cache",
+  "inputs": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "installed": {
+        "type": "boolean"
+      },
+      "python": {
+        "type": "string",
+        "description": "the path of the environment's interpreter, relative to this directory"
+      },
+      "package": {
+        "type": "string"
+      },
+      "version": {
+        "type": "string",
+        "description": "the version of hoomd the environment holds, read from its conda-meta record"
+      },
+      "platform": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "installed",
+      "python",
+      "package",
+      "version",
+      "platform"
+    ]
+  },
+  "errors": [
+    "unavailable",
+    "refused_by_safety",
+    "execution_failure",
+    "unsupported_target"
+  ],
+  "side_effects": "network",
+  "safety_gate": {
+    "required": true,
+    "place": "src/gate.py, consulted by src/run_tool.py before the call",
+    "opens_by": "execution_permission"
+  },
+  "idempotent": true,
+  "timeout_s": null,
+  "installs_from": {
+    "installer": "pixi",
+    "channel": "conda-forge"
+  }
+}

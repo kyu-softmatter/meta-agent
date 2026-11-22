@@ -1,0 +1,36 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-hoomd-oldroyd-b-001-a3",
+  "rid": "req-hoomd-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:05:19Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A3",
+  "title": "Knowledge",
+  "content": {
+    "snapshot": [],
+    "kb_version": "kb@e3b0c44298fc",
+    "gaps": [
+      "how HOOMD-blue integrates Brownian dynamics and what friction and temperature it takes",
+      "how a Hookean dumbbell's relaxation time and its contribution to the viscosity follow from the model, from a published source",
+      "what HOOMD-blue reports of the stress, so that λ and η_p are computed from the engine's own output",
+      "what the Oldroyd-B constants mean in the CFD agent's constitutive equation, so that the values handed over mean what it means"
+    ]
+  },
+  "reads": [
+    "goal-hoomd-oldroyd-b-001",
+    "tp-hoomd-oldroyd-b-001",
+    "kb-brief-hoomd-oldroyd-b-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

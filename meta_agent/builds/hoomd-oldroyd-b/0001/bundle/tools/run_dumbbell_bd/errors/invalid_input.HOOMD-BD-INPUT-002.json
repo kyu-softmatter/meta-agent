@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "HOOMD-BD-INPUT-002",
+  "category": "invalid_input",
+  "message": "a count is not a whole number, or steps or sample_every is not one or more",
+  "retryable": false,
+  "remediation": {
+    "action": "give counts as whole numbers"
+  }
+}

@@ -1,0 +1,225 @@
+{
+  "note": "what this agent gives to another agent and takes from one, written by its build from the request's parameter rows (template v32); src/handover.py reads it, and a value for a row not listed under takes is held",
+  "agent": {
+    "agent": "hoomd-oldroyd-b",
+    "build": "hoomd-oldroyd-b/0001"
+  },
+  "gives": [
+    {
+      "thread": "thr-oldroyd-b",
+      "numbers": [
+        {
+          "name": "relaxation_time",
+          "output": "converted",
+          "unit": "s",
+          "source_kind": "computed",
+          "value_kind": "computed",
+          "grade": "E4",
+          "step": "relaxation_time_si"
+        },
+        {
+          "name": "polymer_viscosity",
+          "output": "converted",
+          "unit": "Pa.s",
+          "source_kind": "computed",
+          "value_kind": "computed",
+          "grade": "E4",
+          "step": "polymer_viscosity_si"
+        }
+      ],
+      "record_inputs": null,
+      "record_inputs_from": "one_result",
+      "record_tool": "run_dumbbell_bd",
+      "conditions_field": "inputs",
+      "conditions": {
+        "engine": "HOOMD-blue from conda-forge's hoomd, md.methods.Brownian",
+        "system": "Hookean dumbbells in an implicit solvent, no force between dumbbells",
+        "analysis": "the xy, xz and yz stress autocorrelation averaged, its Green-Kubo modulus and integral, and a single exponential fitted to the modulus"
+      },
+      "accept_states": null,
+      "what": "the relaxation time and the polymer viscosity of the dumbbells' Oldroyd-B fluid, for the CFD agent's constitutive equation",
+      "steps": [
+        {
+          "id": "autocorrelation",
+          "skill": "autocorrelation_of_series@v2",
+          "accept_states": [
+            "computed"
+          ],
+          "inputs": {
+            "series": {
+              "field": "pressure_tensor_offdiagonal"
+            },
+            "interval": {
+              "field": "sample_interval"
+            }
+          },
+          "fields": {
+            "interval": {
+              "tool": "run_dumbbell_bd",
+              "field": "sample_interval",
+              "description": "the engine time between two logged samples: the integrator's step times sample_every"
+            },
+            "series": {
+              "tool": "run_dumbbell_bd",
+              "field": "pressure_tensor_offdiagonal",
+              "description": "three series in the order xy, xz, yz: the off-diagonal components of md.compute.ThermodynamicQuantities.pressure_tensor, the stress of the springs and the beads' motion, in HOOMD-blue's energy per volume, logged every sample_every steps at equilibrium"
+            }
+          }
+        },
+        {
+          "id": "green_kubo",
+          "skill": "shear_relaxation_modulus_green_kubo@v2",
+          "accept_states": [
+            "computed"
+          ],
+          "inputs": {
+            "correlation": {
+              "step": "autocorrelation",
+              "output": "correlation"
+            },
+            "volume": {
+              "field": "volume"
+            },
+            "thermal_energy": {
+              "field": "thermostat_kT"
+            }
+          },
+          "fields": {
+            "thermal_energy": {
+              "tool": "run_dumbbell_bd",
+              "field": "thermostat_kT",
+              "description": "the thermal energy md.methods.Brownian held, read back from HOOMD-blue"
+            },
+            "volume": {
+              "tool": "run_dumbbell_bd",
+              "field": "volume",
+              "description": "the box's volume, sim.state.box.volume"
+            }
+          }
+        },
+        {
+          "id": "decay_fit",
+          "skill": "exponential_decay_fit@v2",
+          "accept_states": [
+            "fitted"
+          ],
+          "inputs": {
+            "points": {
+              "step": "green_kubo",
+              "output": "modulus"
+            }
+          },
+          "fields": {}
+        },
+        {
+          "id": "relaxation_time_si",
+          "skill": "unit_convert@v2",
+          "accept_states": [
+            "converted"
+          ],
+          "inputs": {
+            "value": {
+              "step": "decay_fit",
+              "output": "decay_time"
+            },
+            "from_unit": {
+              "registry": "engine_time"
+            },
+            "to_unit": {
+              "registry": "s"
+            },
+            "from_stands_for": {
+              "scale_of": "engine_time"
+            }
+          },
+          "fields": {}
+        },
+        {
+          "id": "polymer_viscosity_si",
+          "skill": "unit_convert@v2",
+          "accept_states": [
+            "converted"
+          ],
+          "inputs": {
+            "value": {
+              "step": "green_kubo",
+              "output": "viscosity"
+            },
+            "from_unit": {
+              "registry": "engine_viscosity"
+            },
+            "to_unit": {
+              "registry": "Pa.s"
+            },
+            "from_stands_for": {
+              "scale_of": "engine_viscosity"
+            }
+          },
+          "fields": {}
+        }
+      ],
+      "to": {
+        "agent": "rheotool-oldroyd-b",
+        "build": "rheotool-oldroyd-b/0001"
+      }
+    }
+  ],
+  "takes": [],
+  "engine_scales": [
+    {
+      "unit": "engine_length",
+      "stands_for": "m",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "evidence": [
+        "the person, 2026-11-21, answering meta-macbook-20261120-4's question 4 of req-hoomd-oldroyd-b-001 with the button 'SI base units (Recommended)'; relayed for docs/ideas by note 20261121-meta-macbook-20261120-4-8"
+      ]
+    },
+    {
+      "unit": "engine_energy",
+      "stands_for": "J",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "evidence": [
+        "the person, 2026-11-21, answering meta-macbook-20261120-4's question 4 of req-hoomd-oldroyd-b-001 with the button 'SI base units (Recommended)'; relayed for docs/ideas by note 20261121-meta-macbook-20261120-4-8"
+      ]
+    },
+    {
+      "unit": "engine_mass",
+      "stands_for": "kg",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "evidence": [
+        "the person, 2026-11-21, answering meta-macbook-20261120-4's question 4 of req-hoomd-oldroyd-b-001 with the button 'SI base units (Recommended)'; relayed for docs/ideas by note 20261121-meta-macbook-20261120-4-8"
+      ]
+    },
+    {
+      "unit": "engine_time",
+      "stands_for": "s",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "evidence": [
+        "follows from the person's three base scales of 2026-11-21 (question 4 of req-hoomd-oldroyd-b-001, 'SI base units (Recommended)'), whose gloss names it"
+      ],
+      "rests_on": [
+        "engine_length",
+        "engine_energy",
+        "engine_mass"
+      ]
+    },
+    {
+      "unit": "engine_viscosity",
+      "stands_for": "Pa.s",
+      "state": "confirmed",
+      "confirmed_by": "human",
+      "evidence": [
+        "follows from the person's three base scales of 2026-11-21 (question 4 of req-hoomd-oldroyd-b-001, 'SI base units (Recommended)'), whose gloss names it"
+      ],
+      "rests_on": [
+        "engine_length",
+        "engine_energy",
+        "engine_mass"
+      ]
+    }
+  ]
+}

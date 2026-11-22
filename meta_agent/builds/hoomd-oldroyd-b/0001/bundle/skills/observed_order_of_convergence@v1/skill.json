@@ -1,0 +1,64 @@
+{
+  "schema_version": "0.1",
+  "id": "observed_order_of_convergence",
+  "version": 1,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "common": true,
+  "summary": "the observed order of convergence of a quantity from three runs at a constant refinement ratio",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "coarse",
+      "unit": "1",
+      "meaning": "the quantity from the coarsest of the three runs, in its unit"
+    },
+    {
+      "name": "medium",
+      "unit": "1",
+      "meaning": "the same quantity from the middle run, in the same unit"
+    },
+    {
+      "name": "fine",
+      "unit": "1",
+      "meaning": "the same quantity from the finest run, in the same unit"
+    },
+    {
+      "name": "refinement_ratio",
+      "unit": "1",
+      "meaning": "the constant ratio of each run's spacing to the next finer one's, above 1"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "observed",
+      "unit": "1",
+      "meaning": "true when an order was read from the three results; false, with why, when they do not converge monotonically or the inputs do not allow it"
+    },
+    {
+      "name": "order",
+      "unit": "1",
+      "meaning": "the observed order of convergence"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why no order was read, or null"
+    }
+  ],
+  "entry": {
+    "script": "scripts/analysis.py",
+    "function": "analysis"
+  },
+  "validity": "three runs of one scheme on the same problem, each finer than the last by the same ratio, in the asymptotic range and converging monotonically; where the differences change sign there is no order to read. It keeps no safety factor (the person, 2026-11-18), and judges nothing",
+  "source": {
+    "citation": "NASA Glenn Research Center, NPARC Alliance CFD Verification and Validation, Examining Spatial (Grid) Convergence (read 2026-11-18, https://www.grc.nasa.gov/www/wind/valid/tutorial/spatconv.html; meta_agent/inbox/materials/20261118-nasa-grc-spatial-convergence, v3_RETRIEVED.json)",
+    "locus": "section Order of Grid Convergence: a more direct evaluation of p from three solutions at a constant grid refinement ratio r, p = ln((f3 - f2)/(f2 - f1)) / ln(r), f1 the finest, read off its image eq_porder1.gif"
+  },
+  "note": "Made for a scientific task's refinement with a third run (the intake card's third_inputs, 6c7a488; failures.jsonl cfd-25), so that the run's own error needs no order from a source; a common skill of meta_agent/tasks/025. No value of the source stands behind the worked cases: each is worked by hand in its worked field.",
+  "cases": "cases.json"
+}

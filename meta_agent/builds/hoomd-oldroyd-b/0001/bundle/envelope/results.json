@@ -1,0 +1,80 @@
+{
+  "note": "what this agent may report to a hub agent from its tools' results, written by its build (template v35); src/handover.py result quotes a field only where it is listed here, with this unit and grade",
+  "agent": {
+    "agent": "hoomd-oldroyd-b",
+    "build": "hoomd-oldroyd-b/0001"
+  },
+  "tool_kind": "engine",
+  "reports": [
+    {
+      "tool": "run_dumbbell_bd",
+      "field": "bond_energy",
+      "name": "bond_energy",
+      "unit": "engine_energy",
+      "description": "the springs' energy HOOMD-blue reports at the end",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4"
+    },
+    {
+      "tool": "run_dumbbell_bd",
+      "field": "integrator_dt",
+      "name": "integrator_dt",
+      "unit": "engine_time",
+      "description": "the integrator's step, read back from HOOMD-blue",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4"
+    },
+    {
+      "tool": "run_dumbbell_bd",
+      "field": "kinetic_temperature",
+      "name": "kinetic_temperature",
+      "unit": "engine_energy",
+      "description": "the kinetic temperature HOOMD-blue reports at the end, as an energy",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4"
+    },
+    {
+      "tool": "run_dumbbell_bd",
+      "field": "sample_interval",
+      "name": "sample_interval",
+      "unit": "engine_time",
+      "description": "the engine time between two logged samples: the integrator's step times sample_every",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4"
+    },
+    {
+      "tool": "run_dumbbell_bd",
+      "field": "steps_run",
+      "name": "steps_run",
+      "unit": "count",
+      "description": "how many steps were logged after equilibration",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4"
+    },
+    {
+      "tool": "run_dumbbell_bd",
+      "field": "thermostat_kT",
+      "name": "thermostat_kT",
+      "unit": "engine_energy",
+      "description": "the thermal energy md.methods.Brownian held, read back from HOOMD-blue",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4"
+    },
+    {
+      "tool": "run_dumbbell_bd",
+      "field": "volume",
+      "name": "volume",
+      "unit": "engine_length^3",
+      "description": "the box's volume, sim.state.box.volume",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4"
+    }
+  ]
+}

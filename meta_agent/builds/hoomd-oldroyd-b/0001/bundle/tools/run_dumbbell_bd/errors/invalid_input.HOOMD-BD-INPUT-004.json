@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "HOOMD-BD-INPUT-004",
+  "category": "invalid_input",
+  "message": "the initial separation is not between zero and the box side",
+  "retryable": false,
+  "remediation": {
+    "action": "give a positive initial separation shorter than the box side"
+  }
+}

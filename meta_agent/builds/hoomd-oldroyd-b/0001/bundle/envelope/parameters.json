@@ -1,0 +1,94 @@
+{
+  "rows": [
+    {
+      "name": "n_dumbbells",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "box_side",
+      "value": null,
+      "unit": "engine_length",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "spring_k",
+      "value": null,
+      "unit": "engine_energy/engine_length^2",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "initial_separation",
+      "value": null,
+      "unit": "engine_length",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "bead_mass",
+      "value": null,
+      "unit": "engine_mass",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "bead_drag",
+      "value": null,
+      "unit": "engine_drag",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "kT",
+      "value": null,
+      "unit": "engine_energy",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "dt",
+      "value": null,
+      "unit": "engine_time",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "equilibration_steps",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "steps",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "sample_every",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "seed",
+      "value": null,
+      "unit": "id",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "max_lag",
+      "value": null,
+      "unit": "count",
+      "note": "the longest lag of the autocorrelation, in samples: the person gives it with the run"
+    },
+    {
+      "name": "integration_end",
+      "value": null,
+      "unit": "engine_time",
+      "note": "the lag up to which the Green-Kubo integral runs: the person gives it with the run"
+    },
+    {
+      "name": "fit_window",
+      "value": null,
+      "unit": "engine_time",
+      "note": "the lags over which the exponential is fitted, a pair: the person gives it"
+    }
+  ]
+}

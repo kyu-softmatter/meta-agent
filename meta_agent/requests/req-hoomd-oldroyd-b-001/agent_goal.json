@@ -1,0 +1,70 @@
+{
+  "card": "agent_goal",
+  "schema_version": "0.1",
+  "id": "goal-hoomd-oldroyd-b-001",
+  "rid": "req-hoomd-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:05:19Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "purpose": "An agent that controls HOOMD-blue in words for a fluid of Hookean dumbbells in an implicit solvent, the molecular model whose stress the Oldroyd-B equation describes: asked for the fluid's viscoelastic properties, it runs the dumbbells' Brownian dynamics on the settings the person gives, has library skills compute the relaxation time and the polymer viscosity from the stress HOOMD-blue reports, takes both out of HOOMD-blue's own units through the scales the person confirmed, and writes the two as one hand-over card in its outbox for the CFD agent, each with its source, its grade and the run's conditions. The solvent viscosity is the person's to give to the CFD agent. It never carries the card itself.",
+  "science_task": "the relaxation time and the polymer viscosity of a fluid of Hookean dumbbells from Brownian dynamics, with the solvent viscosity, handed to a CFD agent as the constants of an Oldroyd-B fluid",
+  "tool": {
+    "name": "HOOMD-blue",
+    "kind": "engine",
+    "registry_id": "hoomd_blue",
+    "material_refs": [
+      "mat-20261120-hoomd-7.2.2-units",
+      "mat-20261120-hoomd-7.2.2-bond-harmonic",
+      "mat-20261121-hoomd-7.2.2-methods-brownian",
+      "mat-20261121-hoomd-7.2.2-compute-thermodynamicquantities",
+      "mat-20261121-hoomd-7.2.2-simulation"
+    ]
+  },
+  "methods": [
+    "md"
+  ],
+  "executes": "engine",
+  "must_not": [
+    "touch an instrument",
+    "invent a number, or choose a setting, a scale or a tolerance",
+    "convert a unit by hand",
+    "compute again a value the engine itself reports",
+    "reach a network host other than the package source the lab's permission lists",
+    "write in the CFD agent's or the hub's folder, or carry a hand-over card itself",
+    "hand over a value a run under other conditions gave, or one no library skill computed",
+    "give the solvent viscosity a value the person did not give"
+  ],
+  "knowledge_needs": [
+    "how HOOMD-blue integrates Brownian dynamics and what friction and temperature it takes",
+    "how a Hookean dumbbell's relaxation time and its contribution to the viscosity follow from the model, from a published source",
+    "what HOOMD-blue reports of the stress, so that λ and η_p are computed from the engine's own output",
+    "what the Oldroyd-B constants mean in the CFD agent's constitutive equation, so that the values handed over mean what it means"
+  ],
+  "parameter_scope": [
+    "dumbbell_count",
+    "spring_constant",
+    "friction",
+    "kT",
+    "time_step",
+    "run_length",
+    "eta_s"
+  ],
+  "destination": "this computer (macOS on arm64), in a folder the person chooses beside the CFD agent's and the hub's; the bundle stops at meta_agent/builds/ until the person moves it",
+  "priorities": [
+    "a value is handed over only as a library skill's output on one run's record, with its conditions",
+    "η_s crosses as the person gave it, never computed or chosen",
+    "the agent stands alone: without the hub it still runs and computes"
+  ],
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "gui_choice": "none",
+  "analysis_permission": null,
+  "requested_by": "human"
+}
