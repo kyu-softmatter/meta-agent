@@ -636,6 +636,19 @@
         "M": 1
       },
       "note": "the dalton, the unified atomic mass unit, a mass; read from NIST's CODATA 2022 recommended values (https://physics.nist.gov/cgi-bin/cuu/Value?ukg, read 2026-11-20): 1.660 539 068 92(52) x 10^-27 kg, relative standard uncertainty 3.1e-10. Unlike kDa above, which is a molar mass, Da is the mass of one particle; the HOOMD-blue agent of the H2 bond's engine_mass stands for it on the person's word (tasks/031, docs/ideas/20261120.md)"
+    },
+    "Pa/m": {
+      "si_factor": 1.0,
+      "dim": {
+        "M": 1,
+        "L": -2,
+        "T": -2
+      },
+      "derived_from": {
+        "Pa": 1,
+        "m": -1
+      },
+      "note": "a pressure gradient, force per volume (a channel's driving -dp/dx); added 2026-11-21 (tasks/034, note 20261121-meta-macbook-20261120-4-11)"
     }
   }
 }
