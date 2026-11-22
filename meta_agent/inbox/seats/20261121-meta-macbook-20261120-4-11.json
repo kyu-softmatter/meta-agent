@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "An ask to land, for tasks/034: register Pa/m in contracts/units.json, a pressure gradient (force per volume), dim M L^-2 T^-2, si_factor 1.0, derived_from {Pa: 1, m: -1}. The rheoTool agent's run_startup_channel takes the driving pressure gradient -dp/dx of the channel's start-up (rheoFoam's fvModels semiImplicitSource takes it over the density, mat-20261121-rheotool-6.0-user-guide), and the registry holds no unit of that dimension today (a scan of contracts/units.json for M L^-2 T^-2 finds none). The contract's input, its parameter row and the Waters-King skill's input (oldroyd_b_startup_channel_velocity@v1, driving) are in it; nothing else is asked.",
+  "written_at": "2026-11-21T21:56:21-08:00"
+}
