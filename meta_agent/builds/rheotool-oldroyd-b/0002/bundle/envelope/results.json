@@ -1,0 +1,33 @@
+{
+  "note": "what this agent may report to a hub agent from its tools' results, written by its build (template v35; a series from v37); src/handover.py result quotes a field only where it is listed here, with this unit and grade, a series with the unit of each part",
+  "agent": {
+    "agent": "rheotool-oldroyd-b",
+    "build": "rheotool-oldroyd-b/0002"
+  },
+  "tool_kind": "engine",
+  "reports": [
+    {
+      "tool": "run_startup_channel",
+      "field": "centreline_velocity",
+      "name": "centreline_velocity",
+      "description": "pairs [t, u]: the time in seconds and the streamwise velocity at the centreline in metres per second, as rheoFoam's probes function writes them",
+      "source_kind": "computed",
+      "value_kind": "computed",
+      "grade": "E4",
+      "kind": "series",
+      "parts": [
+        {
+          "name": "t",
+          "unit": "s",
+          "description": "the time since the start, as rheoFoam's probes function writes it"
+        },
+        {
+          "name": "u",
+          "unit": "m/s",
+          "description": "the streamwise velocity at the centreline, the first component rheoFoam's probes function writes"
+        }
+      ],
+      "one_part": false
+    }
+  ]
+}

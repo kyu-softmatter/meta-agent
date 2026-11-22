@@ -1,0 +1,53 @@
+{
+  "card": "validation_report",
+  "schema_version": "0.1",
+  "id": "vr-rheotool-oldroyd-b-0002",
+  "rid": "req-rheotool-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261122-1",
+  "created_at": "2026-11-22T18:05:32Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "build_ref": "build-rheotool-oldroyd-b-0002",
+  "environment": "mock",
+  "interface": {
+    "tasks": [
+      {
+        "id": "if-1",
+        "name": "a run with no input is refused by the runner's input check",
+        "verdict": "pass",
+        "evidence": "meta_agent/builds/rheotool-oldroyd-b/0002/bundle/validation/interface/if-1.json"
+      },
+      {
+        "id": "if-2",
+        "name": "a relaxation time given in words is refused by the runner's input check",
+        "verdict": "pass",
+        "evidence": "meta_agent/builds/rheotool-oldroyd-b/0002/bundle/validation/interface/if-2.json"
+      }
+    ]
+  },
+  "scientific": {
+    "tasks": [
+      {
+        "id": "sci-1",
+        "name": "the centreline velocity of the start-up against the analytical solution of the start-up of planar Poiseuille flow of an Oldroyd-B fluid",
+        "verdict": "not_run",
+        "reference": {
+          "kind": "source",
+          "ref": "Amoreira and Oliveira (2010), section 2.1 (mat-20261121-amoreira-oliveira-2010-startup), and OpenFOAM-9's WatersKing.C (mat-20261121-openfoam-9-planarpoiseuille-watersking), as oldroyd_b_startup_channel_velocity@v1 computes it from the run's own settings"
+        },
+        "tolerance": null,
+        "evidence": "meta_agent/builds/rheotool-oldroyd-b/0002/bundle/validation/scientific/sci-1.json",
+        "reason": "held: the reference is a series a library skill computes from the call's input at the times the solver wrote, which the bundle's check takes only as a function of its own, and the comparison is of a series, not of one value; it needs a check that takes a reference a library skill computes from the call's input and compares a series point by point, and a tolerance the person gives or the standing rule derives"
+      }
+    ]
+  },
+  "overall": "not_run",
+  "note": "gates read off the bundle's own runners: interface pass, scientific not_run, replay 1 item(s) ok"
+}

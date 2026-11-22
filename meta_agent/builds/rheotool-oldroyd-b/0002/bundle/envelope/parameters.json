@@ -1,0 +1,150 @@
+{
+  "rows": [
+    {
+      "name": "relaxation_time",
+      "value": null,
+      "unit": "s",
+      "takes_handover": {
+        "name": "relaxation_time",
+        "thread": "thr-oldroyd-b",
+        "from_agent": "hoomd-oldroyd-b"
+      }
+    },
+    {
+      "name": "polymer_viscosity",
+      "value": null,
+      "unit": "Pa.s",
+      "takes_handover": {
+        "name": "polymer_viscosity",
+        "thread": "thr-oldroyd-b",
+        "from_agent": "hoomd-oldroyd-b"
+      }
+    },
+    {
+      "name": "solvent_viscosity",
+      "value": null,
+      "unit": "Pa.s",
+      "note": "the person gives it when asking for a run, as they chose (question 5 of req-hoomd-oldroyd-b-001, 'Give it to the CFD agent (Recommended)'); no hand-over carries it"
+    },
+    {
+      "name": "half_width",
+      "value": null,
+      "unit": "m",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "density",
+      "value": null,
+      "unit": "kg/m^3",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "driving",
+      "value": null,
+      "unit": "Pa/m",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "cells_across",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "dt",
+      "value": null,
+      "unit": "s",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "end_time",
+      "value": null,
+      "unit": "s",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "probe_every",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "position",
+      "value": null,
+      "unit": "1",
+      "for_skill_inputs": [
+        {
+          "skill": "oldroyd_b_startup_channel_velocity@v1",
+          "input": "position",
+          "meaning": "y, the distance from the centreline at which the velocity is wanted, 0 <= |y| <= h, in the length unit"
+        }
+      ],
+      "note": "the person gives it: nothing in the bundle gives the input position of oldroyd_b_startup_channel_velocity@v1 (y, the distance from the centreline at which the velocity is wanted, 0 <= |y| <= h, in the length unit), so the build gave it this row with no value (template v37)"
+    },
+    {
+      "name": "times",
+      "value": null,
+      "unit": "1",
+      "for_skill_inputs": [
+        {
+          "skill": "oldroyd_b_startup_channel_velocity@v1",
+          "input": "times",
+          "meaning": "the times since the gradient was applied, zero or more, in the time unit"
+        }
+      ],
+      "note": "the person gives it: nothing in the bundle gives the input times of oldroyd_b_startup_channel_velocity@v1 (the times since the gradient was applied, zero or more, in the time unit), so the build gave it this row with no value (template v37)"
+    },
+    {
+      "name": "terms",
+      "value": null,
+      "unit": "count",
+      "for_skill_inputs": [
+        {
+          "skill": "oldroyd_b_startup_channel_velocity@v1",
+          "input": "terms",
+          "meaning": "how many terms of the series to sum, one or more"
+        }
+      ],
+      "note": "the person gives it: nothing in the bundle gives the input terms of oldroyd_b_startup_channel_velocity@v1 (how many terms of the series to sum, one or more), so the build gave it this row with no value (template v37)"
+    },
+    {
+      "name": "courant_limit",
+      "value": null,
+      "unit": "1",
+      "for_skill_inputs": [
+        {
+          "skill": "timestep_max_from_courant@v2",
+          "input": "courant_limit",
+          "meaning": "the Courant number the scheme is run below; a judgement that depends on the scheme, bound to a row with its own source"
+        }
+      ],
+      "note": "the person gives it: nothing in the bundle gives the input courant_limit of timestep_max_from_courant@v2 (the Courant number the scheme is run below; a judgement that depends on the scheme, bound to a row with its own source), so the build gave it this row with no value (template v37)"
+    },
+    {
+      "name": "cell_size",
+      "value": null,
+      "unit": "m",
+      "for_skill_inputs": [
+        {
+          "skill": "timestep_max_from_courant@v2",
+          "input": "cell_size",
+          "meaning": "the smallest cell or element of the grid or mesh, along the direction the signal travels"
+        }
+      ],
+      "note": "the person gives it: nothing in the bundle gives the input cell_size of timestep_max_from_courant@v2 (the smallest cell or element of the grid or mesh, along the direction the signal travels), so the build gave it this row with no value (template v37)"
+    },
+    {
+      "name": "velocity",
+      "value": null,
+      "unit": "m/s",
+      "for_skill_inputs": [
+        {
+          "skill": "timestep_max_from_courant@v2",
+          "input": "velocity",
+          "meaning": "the largest speed at which the solution carries information across the grid: the largest flow velocity for advection, the wave speed for a wave equation"
+        }
+      ],
+      "note": "the person gives it: nothing in the bundle gives the input velocity of timestep_max_from_courant@v2 (the largest speed at which the solution carries information across the grid: the largest flow velocity for advection, the wave speed for a wave equation), so the build gave it this row with no value (template v37)"
+    }
+  ]
+}

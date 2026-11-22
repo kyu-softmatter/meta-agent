@@ -1,0 +1,15 @@
+{
+  "id": "rp-001",
+  "name": "a run with no input is refused with RHEO-RUN-INPUT-001",
+  "call": {
+    "tool": "run_startup_channel",
+    "input": {}
+  },
+  "expected": {
+    "error": {
+      "category": "invalid_input",
+      "code": "RHEO-RUN-INPUT-001"
+    }
+  },
+  "expected_verdict": "pass"
+}

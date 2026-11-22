@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "RHEO-RUN-INPUT-001",
+  "category": "invalid_input",
+  "message": "a value the run needs is missing or not one the contract takes",
+  "retryable": false,
+  "remediation": {
+    "action": "give every value; relaxation_time and polymer_viscosity are what src/handover.py values prints for their rows, and every other value is the person's to give"
+  }
+}

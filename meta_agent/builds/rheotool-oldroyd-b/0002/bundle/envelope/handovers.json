@@ -1,0 +1,23 @@
+{
+  "note": "what this agent gives to another agent and takes from one, written by its build from the request's parameter rows (template v32); src/handover.py reads it, and a value for a row not listed under takes is held",
+  "agent": {
+    "agent": "rheotool-oldroyd-b",
+    "build": "rheotool-oldroyd-b/0002"
+  },
+  "gives": [],
+  "takes": [
+    {
+      "row": "relaxation_time",
+      "name": "relaxation_time",
+      "thread": "thr-oldroyd-b",
+      "from_agent": "hoomd-oldroyd-b"
+    },
+    {
+      "row": "polymer_viscosity",
+      "name": "polymer_viscosity",
+      "thread": "thr-oldroyd-b",
+      "from_agent": "hoomd-oldroyd-b"
+    }
+  ],
+  "engine_scales": []
+}

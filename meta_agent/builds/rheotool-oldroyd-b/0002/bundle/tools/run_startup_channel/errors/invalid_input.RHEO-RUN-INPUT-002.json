@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "RHEO-RUN-INPUT-002",
+  "category": "invalid_input",
+  "message": "a value that must be positive is not",
+  "retryable": false,
+  "remediation": {
+    "action": "give positive values"
+  }
+}

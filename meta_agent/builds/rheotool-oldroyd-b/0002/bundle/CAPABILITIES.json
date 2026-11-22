@@ -1,0 +1,70 @@
+{
+  "schema_version": "0.1",
+  "agent": "rheotool-oldroyd-b",
+  "tool": "rheoTool on OpenFOAM (rheoFoam)",
+  "source": "the documentation of rheoTool on OpenFOAM (rheoFoam) (rheoTool's user guide (mat-20261121-rheotool-6.0-user-guide), its of90 tutorials and OpenFOAM's own planarPoiseuille tutorial, read on the day their material cards name), as the builder read it; the document is not in this directory",
+  "observed": [
+    {
+      "claim": "rheoTool's Oldroyd-B model (TypeName Oldroyd-B, or Oldroyd-BLog for the log-conformation approach) takes the constants etaS, etaP and lambda in constitutiveProperties, with rho, each a dimensioned value in OpenFOAM's SI dimension set (dynamic viscosity, time, density)",
+      "capability": "parameter",
+      "evidence": [
+        "the user guide, Table 4.1 (mat-20261121-rheotool-6.0-user-guide)",
+        "of90 tutorial rheoFoam/Channel/Oldroyd-BLog, constant/constitutiveProperties (mat-20261121-rheotool-of90-channel-oldroyd-b-constitutive)"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "rheoFoam is a transient solver whose momentum equation takes fvOptions, and rheoTool supports cyclic patches, so a channel may be driven by a momentum source with periodic ends",
+      "capability": "parameter",
+      "evidence": [
+        "the user guide, section 4.7.1, the listing of rheoFoam's momentum equation, and the changelog on cyclicAMI (mat-20261121-rheotool-6.0-user-guide)"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "the analytical velocity of the start-up planar Poiseuille flow of an Oldroyd-B fluid is Waters and King's series in the elasticity number lambda eta0/(rho h^2) and the solvent's share beta, h the half-width and time scaled by lambda",
+      "capability": "observable",
+      "evidence": [
+        "Amoreira and Oliveira (2010), equations (2.6)-(2.9) (mat-20261121-amoreira-oliveira-2010-startup)",
+        "OpenFOAM-9 validation/WatersKing/WatersKing.C (mat-20261121-openfoam-9-planarpoiseuille-watersking)"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "the image rheotool:of90 is in the Colima profile rheotool, which `colima list` showed stopped on 2026-11-21",
+      "capability": "environment",
+      "evidence": [
+        "`colima list` on this computer, 2026-11-21"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "rheoFoam's momentum equation is written per unit density: the pressure it solves for and the stress term are divided by the density, so a momentum source given to it in fvModels (semiImplicitSource, volumeMode specific) is a force per unit mass, the pressure gradient over the density",
+      "capability": "parameter",
+      "evidence": [
+        "the user guide, section 4.7 on divTau, 'divided by the density to be compliant with the usual strategy of OpenFOAM', and section 5.1.1 on the pressure (mat-20261121-rheotool-6.0-user-guide)",
+        "OpenFOAM-9's planarPoiseuille tutorial, constant/fvModels, a semiImplicitSource of volumeMode specific on U (mat-20261121-openfoam-9-planarpoiseuille-watersking, the same tutorial folder)"
+      ],
+      "kind": "observed"
+    },
+    {
+      "claim": "the run adapter, tried under TMPDIR, sent a periodic planar channel case into rheotool:of90 through stdin, ran blockMesh and rheoFoam there and read back OpenFOAM's probe of the centreline velocity; the series followed oldroyd_b_startup_channel_velocity for the trial's settings, its overshoot and its oscillation included (evidence for the adapter only; no value of it enters a card)",
+      "capability": "observable",
+      "evidence": [
+        "the adapter's trial under TMPDIR, back/log.rheoFoam and back/postProcessing/probes/0/U of its run folder"
+      ],
+      "kind": "observed"
+    }
+  ],
+  "derived": [],
+  "unverified": [],
+  "gaps": [],
+  "held": [
+    {
+      "item": "the comparison of the centreline velocity with the analytical start-up solution",
+      "reason": "the bundle's check takes no reference a skill computes and compares no series"
+    }
+  ],
+  "tool_kind": "engine",
+  "engine": "rheotool"
+}

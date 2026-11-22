@@ -1,0 +1,81 @@
+[
+  {
+    "name": "an engine's acceptance ratio inside its band",
+    "inputs": {
+      "series": [
+        0.62,
+        0.45,
+        0.3,
+        0.28,
+        0.25
+      ],
+      "window": 3,
+      "low": 0.2,
+      "high": 0.4
+    },
+    "expect": {
+      "state": "within",
+      "last_mean": 0.27666666666666667
+    },
+    "worked": "last three [0.30, 0.28, 0.25], mean 0.83 / 3 = 0.276667, between 0.2 and 0.4",
+    "system": "a hard-particle monte carlo simulation"
+  },
+  {
+    "name": "a sample's temperature above its band, in K",
+    "inputs": {
+      "series": [
+        298.0,
+        299.0,
+        301.0,
+        302.0
+      ],
+      "window": 2,
+      "low": 297.5,
+      "high": 300.5
+    },
+    "expect": {
+      "state": "above",
+      "last_mean": 301.5
+    },
+    "worked": "last two [301, 302] K, mean 301.5 K, above 300.5 K",
+    "system": "a spectrometer reading"
+  },
+  {
+    "name": "a count below its band",
+    "inputs": {
+      "series": [
+        10,
+        12,
+        9,
+        8
+      ],
+      "window": 4,
+      "low": 20,
+      "high": 40
+    },
+    "expect": {
+      "state": "below",
+      "last_mean": 9.75
+    },
+    "worked": "all four [10, 12, 9, 8], mean 39 / 4 = 9.75, below 20",
+    "system": "a brownian dynamics simulation"
+  },
+  {
+    "name": "no band chosen",
+    "inputs": {
+      "series": [
+        0.3,
+        0.3
+      ],
+      "window": 2,
+      "low": null,
+      "high": 0.4
+    },
+    "expect": {
+      "state": "undecided",
+      "last_mean": 0.3
+    },
+    "worked": "mean 0.3; with no lowest value the state is undecided",
+    "system": "a hard-particle monte carlo simulation"
+  }
+]

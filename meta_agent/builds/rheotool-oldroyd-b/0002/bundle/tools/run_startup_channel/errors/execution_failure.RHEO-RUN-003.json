@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "RHEO-RUN-003",
+  "category": "execution_failure",
+  "message": "rheoFoam did not reach its end or wrote no probe",
+  "retryable": false,
+  "remediation": {
+    "action": "read back/log.blockMesh and back/log.rheoFoam in the run folder"
+  }
+}

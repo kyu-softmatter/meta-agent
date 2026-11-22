@@ -1,0 +1,26 @@
+[
+  {
+    "name": "a flow on a mesh: the smallest element along the flow and the largest flow velocity",
+    "inputs": {
+      "courant_limit": 0.5,
+      "cell_size": 0.001,
+      "velocity": 2.0
+    },
+    "expect": {
+      "time_step_max": 0.00025
+    },
+    "worked": "0.5 x 0.001 = 0.0005; 0.0005 / 2 = 0.00025"
+  },
+  {
+    "name": "an electromagnetic wave on a grid: the cell size and the speed of light in vacuum",
+    "inputs": {
+      "courant_limit": 0.5,
+      "cell_size": 1e-08,
+      "velocity": 299792458.0
+    },
+    "expect": {
+      "time_step_max": 1.66782047599076e-17
+    },
+    "worked": "0.5 x 1e-8 = 5e-9; 5e-9 / 299792458 = 1.6678e-17"
+  }
+]

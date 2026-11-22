@@ -1,0 +1,654 @@
+# diff from template
+# template: agent@316f0fba00be
+
+added     .claude/skills/run-skill/library/discretization_error_from_two_resolutions@v1.md
+added     .claude/skills/run-skill/library/literature_span@v2.md
+added     .claude/skills/run-skill/library/measurement_error@v3.md
+added     .claude/skills/run-skill/library/observed_order_of_convergence@v1.md
+added     .claude/skills/run-skill/library/oldroyd_b_startup_channel_velocity@v1.md
+added     .claude/skills/run-skill/library/power_law_exponent_along_sweep@v3.md
+added     .claude/skills/run-skill/library/series_maximum@v3.md
+added     .claude/skills/run-skill/library/series_settled@v5.md
+added     .claude/skills/run-skill/library/series_within_window@v3.md
+added     .claude/skills/run-skill/library/standard_error_of_independent_estimates@v2.md
+added     .claude/skills/run-skill/library/timestep_max_from_courant@v2.md
+added     .claude/skills/run-skill/library/tolerance_from_reference@v5.md
+added     .claude/skills/run-skill/library/unit_convert@v2.md
+added     envelope/execution_permission.json
+added     envelope/handovers.json
+added     envelope/results.json
+added     envelope/units.json
+added     inbox/.gitkeep
+added     outbox/.gitkeep
+added     received/.gitkeep
+added     replay/rp-001.json
+added     skills/discretization_error_from_two_resolutions@v1/SKILL.md
+added     skills/discretization_error_from_two_resolutions@v1/cases.json
+added     skills/discretization_error_from_two_resolutions@v1/scripts/analysis.py
+added     skills/discretization_error_from_two_resolutions@v1/skill.json
+added     skills/literature_span@v2/SKILL.md
+added     skills/literature_span@v2/cases.json
+added     skills/literature_span@v2/scripts/analysis.py
+added     skills/literature_span@v2/skill.json
+added     skills/measurement_error@v3/SKILL.md
+added     skills/measurement_error@v3/cases.json
+added     skills/measurement_error@v3/scripts/analysis.py
+added     skills/measurement_error@v3/skill.json
+added     skills/observed_order_of_convergence@v1/SKILL.md
+added     skills/observed_order_of_convergence@v1/cases.json
+added     skills/observed_order_of_convergence@v1/scripts/analysis.py
+added     skills/observed_order_of_convergence@v1/skill.json
+added     skills/oldroyd_b_startup_channel_velocity@v1/SKILL.md
+added     skills/oldroyd_b_startup_channel_velocity@v1/cases.json
+added     skills/oldroyd_b_startup_channel_velocity@v1/scripts/estimate.py
+added     skills/oldroyd_b_startup_channel_velocity@v1/skill.json
+added     skills/power_law_exponent_along_sweep@v3/SKILL.md
+added     skills/power_law_exponent_along_sweep@v3/cases.json
+added     skills/power_law_exponent_along_sweep@v3/scripts/diagnostic.py
+added     skills/power_law_exponent_along_sweep@v3/skill.json
+added     skills/series_maximum@v3/SKILL.md
+added     skills/series_maximum@v3/cases.json
+added     skills/series_maximum@v3/scripts/analysis.py
+added     skills/series_maximum@v3/skill.json
+added     skills/series_settled@v5/SKILL.md
+added     skills/series_settled@v5/cases.json
+added     skills/series_settled@v5/scripts/diagnostic.py
+added     skills/series_settled@v5/skill.json
+added     skills/series_within_window@v3/SKILL.md
+added     skills/series_within_window@v3/cases.json
+added     skills/series_within_window@v3/scripts/diagnostic.py
+added     skills/series_within_window@v3/skill.json
+added     skills/standard_error_of_independent_estimates@v2/SKILL.md
+added     skills/standard_error_of_independent_estimates@v2/cases.json
+added     skills/standard_error_of_independent_estimates@v2/scripts/analysis.py
+added     skills/standard_error_of_independent_estimates@v2/skill.json
+added     skills/timestep_max_from_courant@v2/SKILL.md
+added     skills/timestep_max_from_courant@v2/cases.json
+added     skills/timestep_max_from_courant@v2/scripts/bound.py
+added     skills/timestep_max_from_courant@v2/skill.json
+added     skills/tolerance_from_reference@v5/SKILL.md
+added     skills/tolerance_from_reference@v5/cases.json
+added     skills/tolerance_from_reference@v5/scripts/analysis.py
+added     skills/tolerance_from_reference@v5/skill.json
+added     skills/unit_convert@v2/SKILL.md
+added     skills/unit_convert@v2/cases.json
+added     skills/unit_convert@v2/scripts/analysis.py
+added     skills/unit_convert@v2/skill.json
+added     tools/run_startup_channel/adapter.py
+added     tools/run_startup_channel/errors/cancelled.json
+added     tools/run_startup_channel/errors/execution_failure.RHEO-RUN-003.json
+added     tools/run_startup_channel/errors/execution_failure.json
+added     tools/run_startup_channel/errors/invalid_input.RHEO-RUN-INPUT-002.json
+added     tools/run_startup_channel/errors/invalid_input.RHEO-RUN-INPUT-003.json
+added     tools/run_startup_channel/errors/invalid_input.RHEO-RUN-INPUT-004.json
+added     tools/run_startup_channel/errors/invalid_input.json
+added     tools/run_startup_channel/errors/timeout.json
+added     tools/run_startup_channel/errors/unavailable.RHEO-ENV-002.json
+added     tools/run_startup_channel/errors/unavailable.json
+added     tools/run_startup_channel/tool.json
+added     validation/interface/if-1.json
+added     validation/interface/if-2.json
+added     validation/scientific/sci-1.json
+removed   replay/.gitkeep
+removed   skills/.gitkeep
+removed   tools/.gitkeep
+removed   validation/interface/.gitkeep
+removed   validation/scientific/.gitkeep
+modified  .claude/skills/run-skill/library/index.md
+modified  CAPABILITIES.json
+modified  CLAUDE.md
+modified  TEMPLATE.json
+modified  envelope/parameters.json
+modified  envelope/snapshot.json
+
+--- template/.claude/skills/run-skill/library/index.md
++++ bundle/.claude/skills/run-skill/library/index.md
+@@ -1,3 +1,17 @@
+ # Library skills of this agent
+ 
+-This agent has no library skill. When a build gives it one, the skill is listed here with its page.
++Rendered by the build from the manifests under `skills/`; never edited by hand. Each skill has a page beside this file, named after it.
++
++- `oldroyd_b_startup_channel_velocity@v1` (estimate, none, usable): the start-up velocity of an Oldroyd-B fluid in a planar channel under a suddenly applied pressure gradient, by Waters and King's series. Page: `oldroyd_b_startup_channel_velocity@v1.md`.
++- `timestep_max_from_courant@v2` (bound, none, usable): the largest time step the Courant condition allows on a grid. Page: `timestep_max_from_courant@v2.md`.
++- `unit_convert@v2` (data_analysis, none, usable): the factor between two registered units of one dimension, and a value converted by it, into or out of an engine's own unit only through the unit a scale says it stands for. Page: `unit_convert@v2.md`.
++- `measurement_error@v3` (data_analysis, none, usable): the measurement error of a measured value against a reference value, and its magnitude. Page: `measurement_error@v3.md`.
++- `tolerance_from_reference@v5` (data_analysis, none, usable): a scientific task's tolerance by the person's standing rule, its branches in order: the reference's stated uncertainty; else the span of the quantity across suitable materials, as an acceptance interval; else the larger of half a unit in its last printed digit and the run's own numerical error, a two-grid estimate of that error entering three times over; for a reference the source gives as exact, the run's own error alone in that last branch. Page: `tolerance_from_reference@v5.md`.
++- `series_maximum@v3` (data_analysis, none, usable): the largest value of a sampled series and the independent variable at which it is first reached. Page: `series_maximum@v3.md`.
++- `series_settled@v5` (diagnostic, none, usable): whether a series of readings has settled, by the change between the means of its last two windows. Page: `series_settled@v5.md`.
++- `series_within_window@v3` (diagnostic, none, usable): whether the mean of a series' last readings lies inside a band, between a lowest and a highest value it is handed. Page: `series_within_window@v3.md`.
++- `standard_error_of_independent_estimates@v2` (data_analysis, none, usable): the mean of independent estimates of one quantity, their standard deviation and the standard error of the mean. Page: `standard_error_of_independent_estimates@v2.md`.
++- `power_law_exponent_along_sweep@v3` (diagnostic, none, usable): whether a quantity changes along a sweep, by the exponent of a power law fitted to it and that exponent's standard error, against a tolerance and a multiple it is handed. Page: `power_law_exponent_along_sweep@v3.md`.
++- `discretization_error_from_two_resolutions@v1` (data_analysis, none, usable): the discretization error of a run's finer result, from the same quantity at two resolutions, and the value extrapolated to zero spacing. Page: `discretization_error_from_two_resolutions@v1.md`.
++- `observed_order_of_convergence@v1` (data_analysis, none, usable): the observed order of convergence of a quantity from three runs at a constant refinement ratio. Page: `observed_order_of_convergence@v1.md`.
++- `literature_span@v2` (data_analysis, none, usable): the span of one quantity across suitable materials, branch 3 of the person's standing rule for tolerances: the interval from the lowest to the highest of the values and stated error ranges the materials give, a value stated with an uncertainty entering as the value less and plus that uncertainty, each entry naming its material and how its system compares; no span from fewer than two values and no stated range. Page: `literature_span@v2.md`.
+
+--- template/CAPABILITIES.json
++++ bundle/CAPABILITIES.json
+@@ -1,10 +1,70 @@
+ {
+   "schema_version": "0.1",
+-  "agent": null,
+-  "tool": null,
+-  "source": null,
+-  "observed": [],
++  "agent": "rheotool-oldroyd-b",
++  "tool": "rheoTool on OpenFOAM (rheoFoam)",
++  "source": "the documentation of rheoTool on OpenFOAM (rheoFoam) (rheoTool's user guide (mat-20261121-rheotool-6.0-user-guide), its of90 tutorials and OpenFOAM's own planarPoiseuille tutorial, read on the day their material cards name), as the builder read it; the document is not in this directory",
++  "observed": [
++    {
++      "claim": "rheoTool's Oldroyd-B model (TypeName Oldroyd-B, or Oldroyd-BLog for the log-conformation approach) takes the constants etaS, etaP and lambda in constitutiveProperties, with rho, each a dimensioned value in OpenFOAM's SI dimension set (dynamic viscosity, time, density)",
++      "capability": "parameter",
++      "evidence": [
++        "the user guide, Table 4.1 (mat-20261121-rheotool-6.0-user-guide)",
++        "of90 tutorial rheoFoam/Channel/Oldroyd-BLog, constant/constitutiveProperties (mat-20261121-rheotool-of90-channel-oldroyd-b-constitutive)"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "rheoFoam is a transient solver whose momentum equation takes fvOptions, and rheoTool supports cyclic patches, so a channel may be driven by a momentum source with periodic ends",
++      "capability": "parameter",
++      "evidence": [
++        "the user guide, section 4.7.1, the listing of rheoFoam's momentum equation, and the changelog on cyclicAMI (mat-20261121-rheotool-6.0-user-guide)"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "the analytical velocity of the start-up planar Poiseuille flow of an Oldroyd-B fluid is Waters and King's series in the elasticity number lambda eta0/(rho h^2) and the solvent's share beta, h the half-width and time scaled by lambda",
++      "capability": "observable",
++      "evidence": [
++        "Amoreira and Oliveira (2010), equations (2.6)-(2.9) (mat-20261121-amoreira-oliveira-2010-startup)",
++        "OpenFOAM-9 validation/WatersKing/WatersKing.C (mat-20261121-openfoam-9-planarpoiseuille-watersking)"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "the image rheotool:of90 is in the Colima profile rheotool, which `colima list` showed stopped on 2026-11-21",
++      "capability": "environment",
++      "evidence": [
++        "`colima list` on this computer, 2026-11-21"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "rheoFoam's momentum equation is written per unit density: the pressure it solves for and the stress term are divided by the density, so a momentum source given to it in fvModels (semiImplicitSource, volumeMode specific) is a force per unit mass, the pressure gradient over the density",
++      "capability": "parameter",
++      "evidence": [
++        "the user guide, section 4.7 on divTau, 'divided by the density to be compliant with the usual strategy of OpenFOAM', and section 5.1.1 on the pressure (mat-20261121-rheotool-6.0-user-guide)",
++        "OpenFOAM-9's planarPoiseuille tutorial, constant/fvModels, a semiImplicitSource of volumeMode specific on U (mat-20261121-openfoam-9-planarpoiseuille-watersking, the same tutorial folder)"
++      ],
++      "kind": "observed"
++    },
++    {
++      "claim": "the run adapter, tried under TMPDIR, sent a periodic planar channel case into rheotool:of90 through stdin, ran blockMesh and rheoFoam there and read back OpenFOAM's probe of the centreline velocity; the series followed oldroyd_b_startup_channel_velocity for the trial's settings, its overshoot and its oscillation included (evidence for the adapter only; no value of it enters a card)",
++      "capability": "observable",
++      "evidence": [
++        "the adapter's trial under TMPDIR, back/log.rheoFoam and back/postProcessing/probes/0/U of its run folder"
++      ],
++      "kind": "observed"
++    }
++  ],
+   "derived": [],
+   "unverified": [],
+-  "gaps": []
++  "gaps": [],
++  "held": [
++    {
++      "item": "the comparison of the centreline velocity with the analytical start-up solution",
++      "reason": "the bundle's check takes no reference a skill computes and compares no series"
++    }
++  ],
++  "tool_kind": "engine",
++  "engine": "rheotool"
+ }
+
+--- template/CLAUDE.md
++++ bundle/CLAUDE.md
+@@ -1,6 +1,6 @@
+-# {{agent_name}} — a scientific agent
++# rheotool-oldroyd-b — a scientific agent
+ 
+-Built by the Meta-Agent from template `{{template}}` for request `{{rid}}`. You are this agent; the Meta-Agent is not here. Everything you need to run, validate and report is in this directory.
++Built by the Meta-Agent from template `agent@316f0fba00be` for request `req-rheotool-oldroyd-b-001`. You are this agent; the Meta-Agent is not here. Everything you need to run, validate and report is in this directory.
+ 
+ Two files here are not rules and not tasks. `README.md` says what each folder is, for a person who opens the directory, and `TEMPLATE.json` records the template this agent was built from. What binds you is this file.
+ 
+@@ -10,13 +10,21 @@
+ 
+ ## Role
+ 
+-{{purpose}}
++An agent that controls rheoTool's solvers on OpenFOAM in words for the start-up of a planar channel flow of an Oldroyd-B fluid: it takes the relaxation time and the polymer viscosity the MD agent handed over, once the person has let the card cross, and the solvent viscosity from the person, holds any value its build did not declare, and, asked for a run, runs the start-up flow on the settings the person gives and reports the centreline velocity against time as the solver writes it, with the analytical solution computed by a library skill beside it.
+ 
+-Science task: {{science_task}}
++Science task: the start-up of a planar Poiseuille flow of an Oldroyd-B fluid with the MD agent's constants, its centreline velocity against time compared with the analytical solution
+ 
+ ## Tools
+ 
+-{{tools_section}}
++### `run_startup_channel`
++
++run rheoFoam (rheoTool on OpenFOAM, in the image rheotool:of90 of the Colima profile rheotool) on the start-up of a planar channel flow of an Oldroyd-B fluid: a channel periodic along the flow between two no-slip walls, the fluid at rest with no stress until the pressure gradient is applied, the constitutive model Oldroyd-BLog with the schemes and solvers of rheoTool's channel tutorial; the case goes into the container through stdin and the results come back through stdout; a new folder under runs/cfd for each run; it returns the centreline velocity against time as the solver writes it and computes nothing from it
++
++- input: `budget_s` (['number', 'null'], s; the running time the run may take before the call gives up on it, counted while it runs and not while it is paused; no limit when null; left out, it is the default its contract states), `cells_across` (integer, count, required; how many cells span the channel, an odd number so that one cell centre is on the centreline), `density` (number, kg/m^3, required; rho, the fluid's density), `driving` (number, Pa/m, required; -dp/dx, the pressure gradient that drives the flow from rest, applied as a step; rheoFoam takes it over the density), `dt` (number, s, required; the solver's time step), `end_time` (number, s, required; how long after the start the run ends), `half_width` (number, m, required; h, the distance from the centreline to each wall), `polymer_viscosity` (number, Pa.s, required; eta_p, the polymer viscosity; the value src/handover.py values prints for the row polymer_viscosity), `probe_every` (integer, count, required; how many time steps between two written values of the probe), `relaxation_time` (number, s, required; lambda, the relaxation time; the value src/handover.py values prints for the row relaxation_time), `solvent_viscosity` (number, Pa.s, required; eta_s, the solvent's viscosity, the person's to give)
++- output: `centreline_velocity` (array; pairs [t, u]: the time in seconds and the streamwise velocity at the centreline in metres per second, as rheoFoam's probes function writes them), `inputs` (object; the call's inputs, the conditions the run held under), `openfoam_build` (['string', 'null']; the build OpenFOAM's banner prints in log.rheoFoam), `openfoam_version` (['string', 'null']; the version OpenFOAM's banner prints in log.rheoFoam), `probe_location` (array; the probe's point, the channel's centre, in metres), `run_dir` (string; the run's folder, relative to this directory)
++- errors it may return: `invalid_input`, `unavailable`, `refused_by_safety`, `execution_failure`, `timeout`, `cancelled`
++- side effects: runs_process; idempotent: no
++- gate: required, at src/gate.py, consulted by src/run_tool.py before the call; opened by the lab's execution permission in `envelope/execution_permission.json`
+ 
+ Call a tool only through the runner, which applies the gate, checks the input against the tool's contract and returns either the output or an error contract:
+ 
+@@ -32,13 +40,13 @@
+ 
+ ## Workflow
+ 
+-{{workflow_section}}
++The workflow calls the tools in this order, each through the runner and each once the one before it has answered: `run_startup_channel`. The order is the one the request this agent was built for gave. A task or the person may ask for part of it, and a step may be called again on its own.
+ 
+ ## Decisions
+ 
+ A decision a run calls for while it runs (whether a quantity has settled, whether it stays in its band, how a count moves) is taken by a diagnostic library skill, on the data a tool returned and on a criterion a row of `envelope/parameters.json` hands it; never by eye and never on a criterion of your own. Where the row's value is `null`, the skill says `undecided` and the decision is the person's: you report the data and the skill's answer, and you go no further on that decision.
+ 
+-{{decisions_section}}
++The request this agent was built for named no decision of this kind. Where a run calls for one, and no diagnostic skill here takes it on a row's criterion, you report the data and say that the decision is the person's.
+ 
+ ## Procedure
+ 
+@@ -87,11 +95,19 @@
+ 
+ A result quotes its values and computes none: each number of a hand-over card this agent wrote, unchanged, or a field of a tool result the session kept under the folder named runs, only where `envelope/results.json`, written by the build, declares that tool's field, with the unit its contract gives and the grade the build derived. Where it declares the field a series (pairs of a time and a velocity, say), `--report` quotes the whole series, point by point, with the name and the unit of each part as the contract gives them; you pick no point out of it and compute nothing from it. What it cannot answer is held, each entry saying what, why and what it needs: a value that has not arrived, a tolerance, a safety value or a permission that is the person's, a run that failed. A result is written once for each envelope; a later answer is a result to a later envelope, which only the hub's next round brings. The assignment changes nothing of what binds this agent: the gate, the checks, the rules of this file and what is held stay as they are, and what an assignment asks beyond them is held and reported, never done.
+ 
+-{{handovers_section}}
++This agent takes, each into a row of `envelope/parameters.json`:
++- the row `relaxation_time` takes `relaxation_time` over the thread `thr-oldroyd-b` from `hoomd-oldroyd-b`.
++- the row `polymer_viscosity` takes `polymer_viscosity` over the thread `thr-oldroyd-b` from `hoomd-oldroyd-b`.
+ 
+ ## What this agent does not do
+ 
+-{{must_not}}
++- Touch an instrument.
++- Invent a number, or choose a setting, a scale or a tolerance.
++- Convert a unit by hand.
++- Compute again a value the engine itself reports.
++- Reach a network host or a container other than those the lab's permission lists for rheoTool.
++- Write in the MD agent's or the hub's folder.
++- Use a value handed over that its build did not declare.
+ 
+ - Write outside this directory, or into `envelope/safety.json`, `envelope/execution_permission.json`, `CLAUDE.md` or `.claude/`.
+ - Write into `inbox/`, which the bridge alone writes, or into `outbox/` or `received/` other than through `src/handover.py`; change a card there; use a value handed over that `src/handover.py` did not mark `used`; or answer an assignment other than with `src/handover.py result`.
+@@ -121,12 +137,24 @@
+ 
+ An input that nothing here gives is treated the same way. When a skill needs an input and no run, source or file of this agent gives it, you supply no value for it: you say what the task needed and what would settle it, as one line in `failures.jsonl`, and report it. The build gives every input of a library skill it was asked to carry that no tool output, no hand-over and no declaration of its own gives a row of `envelope/parameters.json` with no value, the person's to give, whose note names the skill and the input; such a row's value is the person's words, in a task or in an assignment's quote of them, and never one you choose, and a hub lists the row when it asks the person.
+ 
+-{{skills_section}}
++- `oldroyd_b_startup_channel_velocity@v1`: The velocity at one distance from the centreline of a planar channel against time, after a constant pressure gradient is suddenly applied to an Oldroyd-B fluid at rest, by Waters and King's series truncated at a number of terms the caller names; with the elasticity number, the solvent's share of the viscosity and the steady mean velocity. Take it as the analytical reference of a start-up channel flow simulation.
++- `timestep_max_from_courant@v2`: Upper bound on the time step of a solver that advances advection or a wave in time on a grid or a mesh, from the Courant condition. Take it when time_step is a parameter and the method steps a field in time on a grid or a mesh, whatever program does it.
++- `unit_convert@v2`: The factor between two registered units of one dimension and a value converted by it, read from the registry's entries its caller hands; into or out of an engine's own unit only through the registered unit a scale says it stands for, and nothing where the dimensions differ or no scale is handed. Take it whenever a value received from another agent, or read in one unit and wanted in another, changes unit.
++- `measurement_error@v3`: The measurement error of a measured value against a reference value, and its magnitude. Take it whenever a measured value is compared with a reference value of the same quantity, as a scientific task's agreement is.
++- `tolerance_from_reference@v5`: A scientific task's tolerance by the person's standing rule, from the reference as its source gives it: the uncertainty the source states, otherwise the span of the quantity across suitable materials where one was derived, as an interval the measured value is to lie in, otherwise the larger of half a unit in the last digit the reference prints and the run's own numerical error where that was estimated, a two-grid estimate of it entering three times over; for a reference the source gives as exact, the run's own error alone. Take it when a scientific task compares a measured value with a reference and the person has given no tolerance for it.
++- `series_maximum@v3`: The largest value of a sampled series and the value of the independent variable at which it is first reached, with its place in the series. Take it when a run or a measurement gives a series against time, wavelength or another variable and the question is its peak and where the peak falls, as a benchmark's largest coefficient and its instant are.
++- `series_settled@v5`: Whether a series of readings has settled, by comparing the means of its last two windows against a relative tolerance it is handed. Any run or measurement that reports a quantity over time, an engine's acceptance ratio or an instrument's sample temperature alike.
++- `series_within_window@v3`: Whether the recent readings of a series lie inside a window, a lowest and a highest value it is handed, by the mean of its last readings. Any run or measurement that must keep a quantity in a band, an engine's acceptance ratio or an instrument's sample temperature alike.
++- `standard_error_of_independent_estimates@v2`: The mean of several independent estimates of one quantity, with their standard deviation and the standard error of the mean. Take it when a coefficient was fitted once per block of a run, per subset of particles, per replicate or per subset of scans, and its uncertainty is wanted.
++- `power_law_exponent_along_sweep@v3`: Whether a quantity changes along a sweep of another, by the exponent of a power law fitted through it and that exponent's standard error, judged against a tolerance and a multiple it is handed. Take it when a person asks whether something changes with size, with a setting or with time, a diffusivity along the particles' diameters or a peak's width along the integration time alike.
++- `discretization_error_from_two_resolutions@v1`: The discretization error of a run's finer result, estimated from the same quantity at two resolutions and the scheme's order of convergence, with the value extrapolated to zero spacing. Take it when a run was made at two resolutions of a mesh, a grid or a time step and its own numerical error is wanted, as the tolerance rule weighs it.
++- `observed_order_of_convergence@v1`: The observed order of convergence of a quantity from three runs, each finer than the last by the same refinement ratio. Take it when a run's own numerical error is to be estimated from a refinement and no source gives the scheme's order, or when the order a source gives is to be checked against the runs.
++- `literature_span@v2`: The span of one quantity across suitable materials, as the person's standing rule for tolerances takes it where a reference states no uncertainty: the interval from the lowest to the highest of the values and stated error ranges that published studies of the same or a similar system and the maker's manuals give for that quantity, each entry naming its material and saying how its system compares, a value its material states with an uncertainty entering as the range that uncertainty gives about it. Take it when a result is to be judged, its reference states no uncertainty, the person gave no tolerance, and materials that give the quantity were found and read.
+ 
+ ## Subagents
+ 
+-{{subagents_section}}
++This agent has no subagents.
+ 
+ ## Seat
+ 
+-Commits from this directory are made as the seat the person assigns, in the form `{{seat_form}}`.
++Commits from this directory are made as the seat the person assigns, in the form `rheotool-oldroyd-b-<machine>-<YYYYMMDD>-<n>`.
+
+--- template/TEMPLATE.json
++++ bundle/TEMPLATE.json
+@@ -55,5 +55,175 @@
+   "engine_wait": "src/engine_wait.py",
+   "unit_skill": "unit_convert@v2",
+   "handover_script": "src/handover.py",
+-  "results_file": "envelope/results.json"
++  "results_file": "envelope/results.json",
++  "builder_records": [
++    {
++      "path": "meta_agent/tasks/010",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/015",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261112-meta-macbook-20261112-1-5.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261113-meta-macbook-20261112-1-1.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261113-design-macbook-20261112-1-1.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/016",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261116-design-macbook-20261116-1-2.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261116-design-macbook-20261116-1-8.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "docs/ideas/20261116.md",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261116-design-macbook-20261116-1-9.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261116-design-macbook-20261116-1-10.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261117-design-macbook-20261116-1-1.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261117-design-macbook-20261116-1-4.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "docs/ideas/20261117.md",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261117-design-macbook-20261116-1-8.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/inbox/seats/20261117-design-macbook-20261116-1-10.json",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/021",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/failures.jsonl",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/023",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/019",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "docs/ideas/20261118.md",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/025",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "docs/ideas/20261119.md",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/028",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/017",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/031",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/033",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    },
++    {
++      "path": "meta_agent/tasks/034",
++      "in_this_bundle": false,
++      "whose": "a record of the builder's repository; it is not in this bundle and is not looked for here",
++      "words_here": "none: what the item rests on is what it says in its own words"
++    }
++  ]
+ }
+
+--- template/envelope/parameters.json
++++ bundle/envelope/parameters.json
+@@ -1,4 +1,150 @@
+ {
+-  "schema_version": "0.1",
+-  "rows": []
++  "rows": [
++    {
++      "name": "relaxation_time",
++      "value": null,
++      "unit": "s",
++      "takes_handover": {
++        "name": "relaxation_time",
++        "thread": "thr-oldroyd-b",
++        "from_agent": "hoomd-oldroyd-b"
++      }
++    },
++    {
++      "name": "polymer_viscosity",
++      "value": null,
++      "unit": "Pa.s",
++      "takes_handover": {
++        "name": "polymer_viscosity",
++        "thread": "thr-oldroyd-b",
++        "from_agent": "hoomd-oldroyd-b"
++      }
++    },
++    {
++      "name": "solvent_viscosity",
++      "value": null,
++      "unit": "Pa.s",
++      "note": "the person gives it when asking for a run, as they chose (question 5 of req-hoomd-oldroyd-b-001, 'Give it to the CFD agent (Recommended)'); no hand-over carries it"
++    },
++    {
++      "name": "half_width",
++      "value": null,
++      "unit": "m",
++      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
++    },
++    {
++      "name": "density",
++      "value": null,
++      "unit": "kg/m^3",
++      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
++    },
++    {
++      "name": "driving",
++      "value": null,
++      "unit": "Pa/m",
++      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
++    },
++    {
++      "name": "cells_across",
++      "value": null,
++      "unit": "count",
++      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
++    },
++    {
++      "name": "dt",
++      "value": null,
++      "unit": "s",
++      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
++    },
++    {
++      "name": "end_time",
++      "value": null,
++      "unit": "s",
++      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
++    },
++    {
++      "name": "probe_every",
++      "value": null,
++      "unit": "count",
++      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
++    },
++    {
++      "name": "position",
++      "value": null,
++      "unit": "1",
++      "for_skill_inputs": [
++        {
++          "skill": "oldroyd_b_startup_channel_velocity@v1",
++          "input": "position",
++          "meaning": "y, the distance from the centreline at which the velocity is wanted, 0 <= |y| <= h, in the length unit"
++        }
++      ],
++      "note": "the person gives it: nothing in the bundle gives the input position of oldroyd_b_startup_channel_velocity@v1 (y, the distance from the centreline at which the velocity is wanted, 0 <= |y| <= h, in the length unit), so the build gave it this row with no value (template v37)"
++    },
++    {
++      "name": "times",
++      "value": null,
++      "unit": "1",
++      "for_skill_inputs": [
++        {
++          "skill": "oldroyd_b_startup_channel_velocity@v1",
++          "input": "times",
++          "meaning": "the times since the gradient was applied, zero or more, in the time unit"
++        }
++      ],
++      "note": "the person gives it: nothing in the bundle gives the input times of oldroyd_b_startup_channel_velocity@v1 (the times since the gradient was applied, zero or more, in the time unit), so the build gave it this row with no value (template v37)"
++    },
++    {
++      "name": "terms",
++      "value": null,
++      "unit": "count",
++      "for_skill_inputs": [
++        {
++          "skill": "oldroyd_b_startup_channel_velocity@v1",
++          "input": "terms",
++          "meaning": "how many terms of the series to sum, one or more"
++        }
++      ],
++      "note": "the person gives it: nothing in the bundle gives the input terms of oldroyd_b_startup_channel_velocity@v1 (how many terms of the series to sum, one or more), so the build gave it this row with no value (template v37)"
++    },
++    {
++      "name": "courant_limit",
++      "value": null,
++      "unit": "1",
++      "for_skill_inputs": [
++        {
++          "skill": "timestep_max_from_courant@v2",
++          "input": "courant_limit",
++          "meaning": "the Courant number the scheme is run below; a judgement that depends on the scheme, bound to a row with its own source"
++        }
++      ],
++      "note": "the person gives it: nothing in the bundle gives the input courant_limit of timestep_max_from_courant@v2 (the Courant number the scheme is run below; a judgement that depends on the scheme, bound to a row with its own source), so the build gave it this row with no value (template v37)"
++    },
++    {
++      "name": "cell_size",
++      "value": null,
++      "unit": "m",
++      "for_skill_inputs": [
++        {
++          "skill": "timestep_max_from_courant@v2",
++          "input": "cell_size",
++          "meaning": "the smallest cell or element of the grid or mesh, along the direction the signal travels"
++        }
++      ],
++      "note": "the person gives it: nothing in the bundle gives the input cell_size of timestep_max_from_courant@v2 (the smallest cell or element of the grid or mesh, along the direction the signal travels), so the build gave it this row with no value (template v37)"
++    },
++    {
++      "name": "velocity",
++      "value": null,
++      "unit": "m/s",
++      "for_skill_inputs": [
++        {
++          "skill": "timestep_max_from_courant@v2",
++          "input": "velocity",
++          "meaning": "the largest speed at which the solution carries information across the grid: the largest flow velocity for advection, the wave speed for a wave equation"
++        }
++      ],
++      "note": "the person gives it: nothing in the bundle gives the input velocity of timestep_max_from_courant@v2 (the largest speed at which the solution carries information across the grid: the largest flow velocity for advection, the wave speed for a wave equation), so the build gave it this row with no value (template v37)"
++    }
++  ]
+ }
+
+--- template/envelope/snapshot.json
++++ bundle/envelope/snapshot.json
+@@ -1,6 +1,5 @@
+ {
+-  "schema_version": "0.1",
+-  "kb_version": null,
++  "kb_version": "kb@e3b0c44298fc",
+   "entries": [],
+   "numbers": []
+ }
+

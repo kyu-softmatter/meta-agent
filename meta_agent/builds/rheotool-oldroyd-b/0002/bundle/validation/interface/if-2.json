@@ -1,0 +1,17 @@
+{
+  "id": "if-2",
+  "name": "a relaxation time given in words is refused by the runner's input check",
+  "call": {
+    "tool": "run_startup_channel",
+    "input": {
+      "relaxation_time": "the received one"
+    }
+  },
+  "expected": {
+    "error": {
+      "category": "invalid_input",
+      "code": "RHEO-RUN-INPUT-001"
+    }
+  },
+  "expected_verdict": "pass"
+}
