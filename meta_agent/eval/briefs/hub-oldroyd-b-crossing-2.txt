@@ -1,0 +1,40 @@
+This folder is a bundle: a hub agent built by a separate builder, the Meta-Agent, as a self-contained folder. It is the `oldroyd-b-hub` agent. It coordinates two other agents, each in a folder of its own beside this one: an MD agent that runs HOOMD-blue, and a CFD agent that runs rheoTool on OpenFOAM. The folders were copied out of the builder's repository into a place with no other project around them, and the builder is not here. The purpose of this run is to see whether a person can have several engines worked together by asking one question in their own words. So what was in your context, what you loaded, what you could not find and what was unclear matters as much as what you ran: say what you met as you met it, and do not assume the text is right because it is there.
+
+`CLAUDE.md` in this folder says who you are and what binds you. Work only from what this folder carries, from what the members' folders show, and from what your instructions let you write.
+
+Earlier sessions of this hub took the person's question, "MD로 Oldroyd-B유체를 구현하고 여기서 Viscoelastic properties를 계산한 뒤, 이를 바탕으로 CFD 시뮬레이션을 진행해줘." (implement an Oldroyd-B fluid with MD, compute its viscoelastic properties from it, and then run a CFD simulation on that basis), recorded the person's agreement to its list, had the MD agent answer in a later round on the settings the person gave, and stopped with what was left for the person. Each was put to the person with answers to choose from; their answers follow, each the answer they chose, quoted in full with the text it carried.
+
+Asked whether the hand-over `../hoomd-oldroyd-b-0002/outbox/handover-thr-oldroyd-b-001.json`, from hoomd-oldroyd-b to rheotool-oldroyd-b, may cross (they were shown its two values, relaxation_time 1.0147743482349956 s and polymer_viscosity 0.06687634087181032 Pa.s, both of grade E4, read off the records of unit_convert@v2), the person answered:
+
+"넘겨줘"
+
+(hand it over.)
+
+Asked what they give the CFD agent for its eight run settings (solvent_viscosity, half_width, density, driving, cells_across, dt, end_time, probe_every), the person chose:
+
+"지난번 값 그대로: solvent_viscosity 0.1 Pa.s, half_width 1 m, density 1 kg/m^3, driving 3 Pa/m, cells_across 41, dt 0.001 s, end_time 6 s, probe_every 50"
+
+(the same as last time. They were told that these are the values they chose in an earlier test, which the builder had picked to try the CFD agent's adapter, not derived by any skill.)
+
+Asked what they give for the CFD agent's six further rows, the inputs of its analytical skill (position, times, terms) and of its Courant skill (courant_limit, cell_size, velocity), the person chose:
+
+"모두 보류: 해석해 비교와 Courant 계산은 held로 남고, CFD run과 그 series만 돌아옵니다."
+
+(hold them all: the analytical comparison and the Courant calculation stay held, and only the CFD run and its series come back.)
+
+The person has started the container runtime the CFD agent's engine runs in (the Colima profile rheotool) themselves.
+
+Nobody is present to answer you during this session. Where your work needs the person (a word, a value only they can give), do not supply it yourself and do not go around it: say what it is and what you would show them, and stop there, as this hub waits.
+
+This folder and the members' folders are copies made for this run and are not under version control: there is nothing to commit, and what your instructions allow a session to write, you may write. Write nothing they do not allow.
+
+Done when: you have answered the person as this hub answers, or stopped where what is left is the person's.
+
+Your final message is your report, ten lines or fewer plus what you say to the person:
+
+```
+task     <the person's request>
+landed   <every file you wrote or changed, or nothing>
+ran      <each command, and what it returned>
+open     <what is not done, and whose step it is>
+```
