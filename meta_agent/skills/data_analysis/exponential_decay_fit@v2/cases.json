@@ -1,0 +1,136 @@
+[
+  {
+    "name": "a relaxation modulus halving every unit of time",
+    "inputs": {
+      "points": [
+        [
+          0.0,
+          8.0
+        ],
+        [
+          1.0,
+          4.0
+        ],
+        [
+          2.0,
+          2.0
+        ],
+        [
+          3.0,
+          1.0
+        ]
+      ],
+      "window": [
+        0.0,
+        3.0
+      ]
+    },
+    "expect": {
+      "decay_time": 1.4426950408889634,
+      "amplitude": 8.0,
+      "points_fitted": 4,
+      "state": "fitted"
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "ln y = ln 8 - t ln 2 exactly, so the slope is -ln 2 and tau = 1/ln 2 = 1.442695, A = 8",
+    "system": "the stress relaxation of a dilute polymer solution"
+  },
+  {
+    "name": "a fluorescence decay whose first point is left out of the window",
+    "inputs": {
+      "points": [
+        [
+          0.0,
+          100.0
+        ],
+        [
+          1.0,
+          9.0
+        ],
+        [
+          2.0,
+          3.0
+        ],
+        [
+          3.0,
+          1.0
+        ]
+      ],
+      "window": [
+        1.0,
+        3.0
+      ]
+    },
+    "expect": {
+      "decay_time": 0.9102392266268373,
+      "amplitude": 27.0,
+      "points_fitted": 3,
+      "state": "fitted"
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "in the window ln y = ln 9, ln 3, ln 1 at t = 1, 2, 3: the slope is -ln 3, tau = 1/ln 3 = 0.910239; at t = 0 the line gives ln 9 + ln 3 = ln 27, A = 27",
+    "system": "a fluorescence intensity decay"
+  },
+  {
+    "name": "a value in the window that is not positive",
+    "inputs": {
+      "points": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          0.2
+        ],
+        [
+          2.0,
+          -0.1
+        ]
+      ],
+      "window": [
+        0.0,
+        2.0
+      ]
+    },
+    "expect": {
+      "state": "not_fitted"
+    },
+    "tolerance": {
+      "abs": 0
+    },
+    "worked": "-0.1 has no logarithm; the fit stops and says so",
+    "system": "the stress relaxation of a dilute polymer solution"
+  },
+  {
+    "name": "points holding a value that is not a number",
+    "inputs": {
+      "points": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          "NaN"
+        ]
+      ],
+      "window": [
+        0.0,
+        1.0
+      ]
+    },
+    "expect": {
+      "state": "not_fitted"
+    },
+    "tolerance": {
+      "abs": 0
+    },
+    "worked": "the value at t = 1 is not a number; nothing is fitted and it says so",
+    "system": "a relaxation modulus an engine did not compute"
+  }
+]

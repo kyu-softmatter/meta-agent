@@ -889,6 +889,70 @@
       "sha256": "sha256:494c79ecb6c0a77cfa83d4036ce6cf563e6187bc45262a654b3508ee3c91a710"
     },
     {
+      "ref": "autocorrelation_of_series@v2",
+      "id": "autocorrelation_of_series",
+      "version": 2,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the time autocorrelation of a quantity sampled at a fixed interval, averaged over the time origins of each series and over independent series",
+      "description": "The time autocorrelation of a quantity sampled at a fixed interval, averaged over the time origins of each series and then over independent series, without subtracting a mean. Take it when a transport coefficient or a relaxation is to be read from the fluctuations of an equilibrium run, such as a stress, a velocity or a current.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "series",
+          "unit": "1",
+          "meaning": "one or more lists of values of one quantity, each sampled at the same interval from an equilibrium run; independent runs, or independent and alike components (xy, xz, yz of a stress)"
+        },
+        {
+          "name": "interval",
+          "unit": "1",
+          "meaning": "the time between two consecutive values, in the unit of time of the run"
+        },
+        {
+          "name": "max_lag",
+          "unit": "count",
+          "meaning": "the largest lag, in samples, for which the correlation is computed; every series must be longer than it"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "correlation",
+          "unit": "1",
+          "meaning": "pairs [lag time, C], lag time = lag x interval, C the mean over the series of the mean over time origins of a(t0) a(t0 + lag), in the square of the unit of the values",
+          "unit_of": "interval",
+          "unit_of_part": "variable"
+        },
+        {
+          "name": "series_averaged",
+          "unit": "count",
+          "meaning": "how many series were averaged"
+        },
+        {
+          "name": "pairs_at_max_lag",
+          "unit": "count",
+          "meaning": "the number of time origins the largest lag had in the shortest series"
+        },
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "computed | not_computed"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why nothing was computed; absent when computed"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/autocorrelation_of_series@v2",
+      "sha256": "sha256:268cca1f418c6c830681022d80f9037e35d4246cc0c6c9c75d29d97854911d26"
+    },
+    {
       "ref": "discretization_error_from_two_resolutions@v1",
       "id": "discretization_error_from_two_resolutions",
       "version": 1,
@@ -1020,6 +1084,72 @@
       "uses_skills": [],
       "path": "data_analysis/exponential_decay_fit@v1",
       "sha256": "sha256:6ff74aff4bf444ae484578b5104087de24f5b3abf6c8ee3112795d62faea5755"
+    },
+    {
+      "ref": "exponential_decay_fit@v2",
+      "id": "exponential_decay_fit",
+      "version": 2,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the decay time and the amplitude of a single exponential decay fitted by least squares on the logarithm over a window the caller names",
+      "description": "The decay time and the amplitude of a single exponential decay fitted to positive values of a series over a window the caller names, by least squares on the logarithm. Take it when a relaxation time is to be read from a relaxation modulus, a correlation or any signal expected to decay as one exponential.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "points",
+          "unit": "1",
+          "meaning": "pairs [t, y] of a decaying signal, the time and the value each in one unit throughout"
+        },
+        {
+          "name": "window",
+          "unit": "1",
+          "meaning": "[t_first, t_last], the times between which (both included) the points are fitted, in the unit of the points' times"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "decay_time",
+          "unit": "1",
+          "meaning": "tau of y = A exp(-t/tau), minus one over the fitted slope of ln y against t, in the unit of the points' times; null when not fitted or when the fitted slope is not negative",
+          "unit_of": "points",
+          "unit_of_part": "variable"
+        },
+        {
+          "name": "amplitude",
+          "unit": "1",
+          "meaning": "A, the fitted value at t = 0, in the unit of the points' values",
+          "unit_of": "points",
+          "unit_of_part": "value"
+        },
+        {
+          "name": "residual_standard_deviation",
+          "unit": "1",
+          "meaning": "of ln y about the fitted line, the residual sum of squares over n - 2, rooted; null with two points"
+        },
+        {
+          "name": "points_fitted",
+          "unit": "count",
+          "meaning": "how many points lay in the window"
+        },
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "fitted | not_decaying | not_fitted"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why nothing was fitted; absent when fitted"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/exponential_decay_fit@v2",
+      "sha256": "sha256:79fbe4b279a8300fd65ff72f97d4b79273a9437985d20def510d80ef35eec677"
     },
     {
       "ref": "flow_curve_fit@v1",
@@ -1725,6 +1855,75 @@
       "uses_skills": [],
       "path": "data_analysis/shear_relaxation_modulus_green_kubo@v1",
       "sha256": "sha256:70639f137ec46102fe80ece8c2c679740a5a3b563e51c3949546fe14ac64c65a"
+    },
+    {
+      "ref": "shear_relaxation_modulus_green_kubo@v2",
+      "id": "shear_relaxation_modulus_green_kubo",
+      "version": 2,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the shear relaxation modulus and the Green-Kubo shear viscosity from the autocorrelation of an off-diagonal stress at equilibrium",
+      "description": "The shear relaxation modulus and the shear viscosity of a fluid from the autocorrelation of an off-diagonal stress at equilibrium, by the Green-Kubo relation, the viscosity integrated by the trapezoidal rule up to a time the caller names. Take it when a viscosity or a relaxation modulus is to be read from an equilibrium run's stress fluctuations.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "correlation",
+          "unit": "1",
+          "meaning": "pairs [lag time, C] from lag time zero at a fixed spacing, C the autocorrelation of one off-diagonal stress component (or the mean over xy, xz, yz), in pressure squared of the run's units"
+        },
+        {
+          "name": "volume",
+          "unit": "engine_length^3",
+          "meaning": "the volume of the system whose stress was sampled"
+        },
+        {
+          "name": "thermal_energy",
+          "unit": "engine_energy",
+          "meaning": "the thermal energy of the run"
+        },
+        {
+          "name": "end",
+          "unit": "1",
+          "meaning": "the lag time up to which the viscosity is integrated, one of the correlation's lag times, in its unit of time"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "modulus",
+          "unit": "1",
+          "meaning": "pairs [lag time, G], G = V C / kT, the shear relaxation modulus in pressure of the run's units",
+          "unit_of": "correlation",
+          "unit_of_part": "variable"
+        },
+        {
+          "name": "viscosity",
+          "unit": "engine_viscosity",
+          "meaning": "V/kT times the trapezoidal integral of C from zero to end: the shear viscosity when end lies where the integral has levelled off"
+        },
+        {
+          "name": "samples_integrated",
+          "unit": "count",
+          "meaning": "how many lag times the integral took, zero and end included"
+        },
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "computed | not_computed"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why nothing was computed; absent when computed"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/shear_relaxation_modulus_green_kubo@v2",
+      "sha256": "sha256:87bc38b54c786a94ab459331ea43fccc88e4ba00667ab9ffc20d7cc3ee2c55a5"
     },
     {
       "ref": "standard_error_of_independent_estimates@v1",
