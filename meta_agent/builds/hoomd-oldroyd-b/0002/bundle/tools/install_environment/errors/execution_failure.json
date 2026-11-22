@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "HOOMD-INSTALL-001",
+  "category": "execution_failure",
+  "message": "pixi install of hoomd from conda-forge did not give its interpreter",
+  "retryable": true,
+  "remediation": {
+    "action": "read the evidence; a network or channel problem may pass on a retry"
+  }
+}

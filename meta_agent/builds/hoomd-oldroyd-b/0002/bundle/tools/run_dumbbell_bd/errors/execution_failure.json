@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "HOOMD-BD-002",
+  "category": "execution_failure",
+  "message": "the run ended with a failure status or wrote no result",
+  "retryable": false,
+  "remediation": {
+    "action": "read run.err in the run folder"
+  }
+}

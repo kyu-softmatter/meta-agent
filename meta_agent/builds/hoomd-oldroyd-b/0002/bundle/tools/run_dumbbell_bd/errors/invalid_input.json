@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "HOOMD-BD-INPUT-001",
+  "category": "invalid_input",
+  "message": "a value the run needs is missing or not one the contract takes",
+  "retryable": false,
+  "remediation": {
+    "action": "give every value; none of them is chosen by this agent, and each is the person's to give"
+  }
+}

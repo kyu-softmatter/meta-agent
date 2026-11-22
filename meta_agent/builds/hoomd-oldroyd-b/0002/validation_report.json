@@ -1,0 +1,53 @@
+{
+  "card": "validation_report",
+  "schema_version": "0.1",
+  "id": "vr-hoomd-oldroyd-b-0002",
+  "rid": "req-hoomd-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261122-1",
+  "created_at": "2026-11-22T18:05:42Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "build_ref": "build-hoomd-oldroyd-b-0002",
+  "environment": "sandbox",
+  "interface": {
+    "tasks": [
+      {
+        "id": "if-1",
+        "name": "a run with no input is refused by the runner's input check",
+        "verdict": "pass",
+        "evidence": "meta_agent/builds/hoomd-oldroyd-b/0002/bundle/validation/interface/if-1.json"
+      },
+      {
+        "id": "if-2",
+        "name": "a spring constant given in words is refused by the runner's input check",
+        "verdict": "pass",
+        "evidence": "meta_agent/builds/hoomd-oldroyd-b/0002/bundle/validation/interface/if-2.json"
+      }
+    ]
+  },
+  "scientific": {
+    "tasks": [
+      {
+        "id": "sci-1",
+        "name": "the relaxation time and the polymer viscosity from a run, against the Hookean dumbbell's own relations",
+        "verdict": "not_run",
+        "reference": {
+          "kind": "source",
+          "ref": "Morozov and Spagnolie (2015), section 4.4.3, the dumbbell's relaxation time and polymer viscosity (mat-20261121-morozov-spagnolie-2015-complex-fluids), as hookean_dumbbell_oldroyd_b_constants@v1 computes them from the run's own settings"
+        },
+        "tolerance": null,
+        "evidence": "meta_agent/builds/hoomd-oldroyd-b/0002/bundle/validation/scientific/sci-1.json",
+        "reason": "held: the bundle's check measures through one library skill on a call's output, and the relaxation time is read off three in a row (the autocorrelation, its Green-Kubo modulus, the exponential fit); and its reference is computed by a library skill from the call's input, which the check takes only as a function of its own; it needs a check that measures through a chain of skills and takes a reference a library skill computes from the call's input, and a tolerance the person gives or the standing rule derives"
+      }
+    ]
+  },
+  "overall": "not_run",
+  "note": "gates read off the bundle's own runners: interface pass, scientific not_run, replay 1 item(s) ok; read off an isolated copy of the bundle outside the repository, whose environment its own install_environment (pixi/conda-forge) made through its runner and gate, by the lab's execution permission; the copy was removed. In the repository, with no environment, the gates gave interface pass, scientific not_run"
+}

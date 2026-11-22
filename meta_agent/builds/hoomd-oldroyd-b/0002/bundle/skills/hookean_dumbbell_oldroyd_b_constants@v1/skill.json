@@ -1,0 +1,63 @@
+{
+  "schema_version": "0.1",
+  "id": "hookean_dumbbell_oldroyd_b_constants",
+  "version": 1,
+  "kind": "estimate",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the relaxation time and the polymer viscosity of a dilute solution of Hookean dumbbells as an Oldroyd-B fluid, in an engine's own units",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "bead_drag",
+      "unit": "engine_drag",
+      "meaning": "zeta, the drag coefficient of one bead (the gamma of HOOMD-blue's Brownian method for the bead's type)"
+    },
+    {
+      "name": "spring_constant",
+      "unit": "engine_energy/engine_length^2",
+      "meaning": "K of the spring force K R, a spring with no rest length (k of a harmonic bond U = k (r - r0)^2 / 2 with r0 = 0)"
+    },
+    {
+      "name": "dumbbells",
+      "unit": "count",
+      "meaning": "the number of dumbbells, not of beads"
+    },
+    {
+      "name": "volume",
+      "unit": "engine_length^3",
+      "meaning": "the volume they are in"
+    },
+    {
+      "name": "thermal_energy",
+      "unit": "engine_energy",
+      "meaning": "the thermal energy"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "relaxation_time",
+      "unit": "engine_time",
+      "meaning": "lambda = zeta / (4 K), the relaxation time of the dumbbells' upper-convected Maxwell stress"
+    },
+    {
+      "name": "polymer_viscosity",
+      "unit": "engine_viscosity",
+      "meaning": "eta_p = n kT lambda with n the dumbbells per volume"
+    }
+  ],
+  "validity": "Hookean springs of unbounded extension, beads with Stokes drag and no hydrodynamic interaction, dumbbells that do not interact (dilute); finite extensibility, excluded volume or hydrodynamic interaction change both constants, and this skill does not say by how much",
+  "source": {
+    "citation": "Morozov and Spagnolie (2015), Introduction to Complex Fluids, chapter 1 of Complex Fluids in Biological Systems (read 2026-11-21, https://people.math.wisc.edu/~spagnolie/Papers/Introduction_to_Complex_Fluids.pdf; mat-20261121-morozov-spagnolie-2015-complex-fluids); Hinch and Harlen, Oldroyd B, and not A? (read 2026-11-21, https://www.damtp.cam.ac.uk/user/hinch/publications/Oldroyd12b.pdf; mat-20261121-hinch-harlen-oldroyd-b)",
+    "locus": "Morozov and Spagnolie, section 4.4.3, after equation (1.109): identifying a relaxation time lambda = zeta/(4K) and a polymer viscosity eta_p = lambda n kB T, the polymer stress satisfies the upper-convected Maxwell equation (1.110); Hinch and Harlen, section 6: the relaxation time tau = 3 pi mu a/(2 kappa), the same with zeta = 6 pi mu a"
+  },
+  "note": "Written for meta_agent/tasks/034, as the reference against which the HOOMD-blue agent's relaxation time and polymer viscosity, read from its stress autocorrelation, are compared. No value of either source stands behind the worked cases: each is worked by hand in its worked field.",
+  "entry": {
+    "script": "scripts/estimate.py",
+    "function": "estimate"
+  },
+  "cases": "cases.json"
+}

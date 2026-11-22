@@ -1,0 +1,26 @@
+{
+  "id": "sci-1",
+  "name": "the relaxation time and the polymer viscosity from a run, against the Hookean dumbbell's own relations",
+  "call": {
+    "tool": "run_dumbbell_bd",
+    "input": {}
+  },
+  "measure": {},
+  "reference": {
+    "kind": "source",
+    "ref": "Morozov and Spagnolie (2015), section 4.4.3, the dumbbell's relaxation time and polymer viscosity (mat-20261121-morozov-spagnolie-2015-complex-fluids), as hookean_dumbbell_oldroyd_b_constants@v1 computes them from the run's own settings"
+  },
+  "tolerance": null,
+  "held": {
+    "reason": "the bundle's check measures through one library skill on a call's output, and the relaxation time is read off three in a row (the autocorrelation, its Green-Kubo modulus, the exponential fit); and its reference is computed by a library skill from the call's input, which the check takes only as a function of its own",
+    "needs": "a check that measures through a chain of skills and takes a reference a library skill computes from the call's input, and a tolerance the person gives or the standing rule derives"
+  },
+  "expected_verdict": "not_run",
+  "builder_records": [
+    {
+      "card": "mat-20261121-morozov-spagnolie-2015-complex-fluids",
+      "in_this_bundle": false,
+      "whose": "a card of the builder's repository, named by its id; it is not in this bundle and is not looked for here"
+    }
+  ]
+}

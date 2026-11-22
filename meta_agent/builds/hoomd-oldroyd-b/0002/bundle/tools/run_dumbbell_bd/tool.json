@@ -1,0 +1,201 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "run_dumbbell_bd",
+  "description": "run HOOMD-blue's Brownian dynamics, md.methods.Brownian, on Hookean dumbbells in an implicit solvent: two beads joined by md.bond.Harmonic with zero rest length, no force between dumbbells, the dumbbells' centres on a simple cubic grid in a cubic box; after the equilibration steps it logs the off-diagonal components of the pressure tensor every sample_every steps; every value is in HOOMD-blue's own units, whose scales envelope/handovers.json records; a new folder under runs/bd for each run; it returns what HOOMD-blue reports and computes nothing from it",
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "n_dumbbells": {
+        "type": "integer",
+        "unit": "count",
+        "row": "n_dumbbells",
+        "description": "how many dumbbells, each two beads joined by a Hookean spring",
+        "minimum": 1
+      },
+      "box_side": {
+        "type": "number",
+        "unit": "engine_length",
+        "row": "box_side",
+        "description": "the side of the cubic box",
+        "minimum": 0
+      },
+      "spring_k": {
+        "type": "number",
+        "unit": "engine_energy/engine_length^2",
+        "row": "spring_k",
+        "description": "the spring's constant K of md.bond.Harmonic, whose rest length is zero",
+        "minimum": 0
+      },
+      "initial_separation": {
+        "type": "number",
+        "unit": "engine_length",
+        "row": "initial_separation",
+        "description": "how far apart the two beads of each dumbbell start, along x",
+        "minimum": 0
+      },
+      "bead_mass": {
+        "type": "number",
+        "unit": "engine_mass",
+        "row": "bead_mass",
+        "description": "each bead's mass; Brownian dynamics moves the beads without inertia",
+        "minimum": 0
+      },
+      "bead_drag": {
+        "type": "number",
+        "unit": "engine_drag",
+        "row": "bead_drag",
+        "description": "each bead's drag coefficient zeta, md.methods.Brownian's gamma",
+        "minimum": 0
+      },
+      "kT": {
+        "type": "number",
+        "unit": "engine_energy",
+        "row": "kT",
+        "description": "the thermal energy of md.methods.Brownian",
+        "minimum": 0
+      },
+      "dt": {
+        "type": "number",
+        "unit": "engine_time",
+        "row": "dt",
+        "description": "the integration step",
+        "minimum": 0
+      },
+      "equilibration_steps": {
+        "type": "integer",
+        "unit": "count",
+        "row": "equilibration_steps",
+        "description": "how many steps run before anything is logged",
+        "minimum": 0
+      },
+      "steps": {
+        "type": "integer",
+        "unit": "count",
+        "row": "steps",
+        "description": "how many steps are logged after equilibration, a whole number of samples",
+        "minimum": 1
+      },
+      "sample_every": {
+        "type": "integer",
+        "unit": "count",
+        "row": "sample_every",
+        "description": "how many steps between two logged samples",
+        "minimum": 1
+      },
+      "seed": {
+        "type": "integer",
+        "unit": "id",
+        "row": "seed",
+        "description": "the random seed of the Brownian forces",
+        "minimum": 0
+      },
+      "budget_s": {
+        "type": [
+          "number",
+          "null"
+        ],
+        "unit": "s",
+        "minimum": 0,
+        "default": null,
+        "description": "the running time the run may take before the call gives up on it, counted while it runs and not while it is paused; no limit when null"
+      }
+    },
+    "required": [
+      "n_dumbbells",
+      "box_side",
+      "spring_k",
+      "initial_separation",
+      "bead_mass",
+      "bead_drag",
+      "kT",
+      "dt",
+      "equilibration_steps",
+      "steps",
+      "sample_every",
+      "seed"
+    ]
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "hoomd_version": {
+        "type": "string",
+        "description": "hoomd.version.version"
+      },
+      "steps_run": {
+        "type": "integer",
+        "unit": "count",
+        "description": "how many steps were logged after equilibration"
+      },
+      "volume": {
+        "type": "number",
+        "unit": "engine_length^3",
+        "description": "the box's volume, sim.state.box.volume"
+      },
+      "kinetic_temperature": {
+        "type": "number",
+        "unit": "engine_energy",
+        "description": "the kinetic temperature HOOMD-blue reports at the end, as an energy"
+      },
+      "bond_energy": {
+        "type": "number",
+        "unit": "engine_energy",
+        "description": "the springs' energy HOOMD-blue reports at the end"
+      },
+      "thermostat_kT": {
+        "type": "number",
+        "unit": "engine_energy",
+        "description": "the thermal energy md.methods.Brownian held, read back from HOOMD-blue"
+      },
+      "integrator_dt": {
+        "type": "number",
+        "unit": "engine_time",
+        "description": "the integrator's step, read back from HOOMD-blue"
+      },
+      "sample_interval": {
+        "type": "number",
+        "unit": "engine_time",
+        "description": "the engine time between two logged samples: the integrator's step times sample_every"
+      },
+      "pressure_tensor_offdiagonal": {
+        "type": "array",
+        "description": "three series in the order xy, xz, yz: the off-diagonal components of md.compute.ThermodynamicQuantities.pressure_tensor, the stress of the springs and the beads' motion, in HOOMD-blue's energy per volume, logged every sample_every steps at equilibrium"
+      },
+      "run_dir": {
+        "type": "string",
+        "description": "the run's folder, relative to this directory"
+      },
+      "inputs": {
+        "type": "object",
+        "description": "the call's inputs, the conditions the run held under"
+      }
+    },
+    "required": [
+      "hoomd_version",
+      "steps_run",
+      "volume",
+      "thermostat_kT",
+      "sample_interval",
+      "pressure_tensor_offdiagonal",
+      "run_dir",
+      "inputs"
+    ]
+  },
+  "errors": [
+    "invalid_input",
+    "unavailable",
+    "refused_by_safety",
+    "execution_failure",
+    "timeout",
+    "cancelled"
+  ],
+  "side_effects": "runs_process",
+  "safety_gate": {
+    "required": true,
+    "place": "src/gate.py, consulted by src/run_tool.py before the call",
+    "opens_by": "execution_permission"
+  },
+  "idempotent": false,
+  "timeout_s": null
+}

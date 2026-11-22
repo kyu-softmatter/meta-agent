@@ -1,0 +1,15 @@
+{
+  "id": "rp-001",
+  "name": "a run with no input is refused with HOOMD-BD-INPUT-001",
+  "call": {
+    "tool": "run_dumbbell_bd",
+    "input": {}
+  },
+  "expected": {
+    "error": {
+      "category": "invalid_input",
+      "code": "HOOMD-BD-INPUT-001"
+    }
+  },
+  "expected_verdict": "pass"
+}

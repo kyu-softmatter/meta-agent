@@ -1,0 +1,17 @@
+{
+  "id": "if-2",
+  "name": "a spring constant given in words is refused by the runner's input check",
+  "call": {
+    "tool": "run_dumbbell_bd",
+    "input": {
+      "spring_k": "the person's"
+    }
+  },
+  "expected": {
+    "error": {
+      "category": "invalid_input",
+      "code": "HOOMD-BD-INPUT-001"
+    }
+  },
+  "expected_verdict": "pass"
+}
