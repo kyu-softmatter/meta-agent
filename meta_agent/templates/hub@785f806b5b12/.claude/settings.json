@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(ssh *)",
+      "PowerShell(ssh *)",
+      "Bash(scp *)",
+      "PowerShell(scp *)",
+      "Bash(curl *)",
+      "PowerShell(curl *)",
+      "Bash(wget *)",
+      "PowerShell(wget *)",
+      "Bash(git push --force*)",
+      "PowerShell(git push --force*)",
+      "Bash(git push -f*)",
+      "PowerShell(git push -f*)",
+      "Bash(git commit --no-verify*)",
+      "PowerShell(git commit --no-verify*)",
+      "Bash(git commit -n *)",
+      "PowerShell(git commit -n *)",
+      "Bash(git reset --hard*)",
+      "PowerShell(git reset --hard*)",
+      "Bash(rm -rf *)",
+      "PowerShell(rm -rf *)",
+      "Edit(CLAUDE.md)",
+      "Write(CLAUDE.md)",
+      "Edit(.claude/**)",
+      "Write(.claude/**)",
+      "Edit(TEMPLATE.json)",
+      "Write(TEMPLATE.json)",
+      "Edit(members.json)",
+      "Write(members.json)",
+      "Edit(src/**)",
+      "Write(src/**)",
+      "Edit(question/**)",
+      "Write(question/**)",
+      "Edit(assignments/**)",
+      "Write(assignments/**)",
+      "Edit(inbox/**)",
+      "Write(inbox/**)"
+    ]
+  }
+}
