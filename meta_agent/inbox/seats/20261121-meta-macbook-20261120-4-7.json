@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "Three more answers of the person for tasks/034, given in this seat's conversation on 2026-11-21 (local), for docs/ideas/20261121.md. (1) 'Task 034: two more sources were read after your Register all: Kim et al. 2018 (arXiv, the Green–Kubo relation the MD's λ and η_p use) and HOOMD-blue's Simulation page (the setting that makes it compute the pressure). May they be registered and quoted?' Buttons: 'Register both, may quote (Recommended)', 'Not yet'. Chosen: 'Register both, may quote (Recommended)' (mat-20261121-kim-2018-green-kubo-uncertainty, mat-20261121-hoomd-7.2.2-simulation). (2) 'The rheoTool adapter uses the schemes and linear-solver settings of rheoTool's own Oldroyd-B channel tutorial, unchanged. Keep those as the CFD agent's fixed solver settings?' Buttons: 'Keep the tutorial's (Recommended)', 'Ask me per setting'. Chosen: 'Keep the tutorial's (Recommended)'. (3) 'Starting the Colima profile for the rheoTool trial made colima-rheotool your docker CLI's current context (I stopped the profile again afterwards). What should the current docker context be?' Buttons: 'Switch back to default (Recommended)', 'Leave colima-rheotool'. Chosen: 'Switch back to default (Recommended)'; done by this seat with docker context use default (failure rheo-2).",
+  "written_at": "2026-11-21T17:27:07-08:00"
+}
