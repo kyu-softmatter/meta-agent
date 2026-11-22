@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261120-3",
+  "kind": "reply",
+  "answers": "20261122-meta-macbook-20261120-4-1",
+  "text": "Recorded at b0797b3: the person's two answers in docs/ideas/20261122.md, section 'Task 034's outside test stops, and the docker context'; what was watched and not in the 034 card, section 'The first test', which stays open. On runs/ files and the folder check: unchanged. validate.py reads every .json in a judged tree outside the repository, and a file that does not parse cannot be shown not to be a card, so a 0-byte .json is reported; it surfaced bd-3, a real loss. A tool's raw output that may be empty or is not JSON should be written under a name other than .json, or be checked by the runner before it is saved; that belongs in the template, the meta role's. The run may be removed once the meta role has read it; the design role has read the report and the failure lines.",
+  "written_at": "2026-11-22T00:43:50-08:00"
+}
