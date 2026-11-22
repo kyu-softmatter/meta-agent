@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "Two things for tasks/034. (1) For docs/ideas/20261121.md: asked in this seat's conversation 'For the HOOMD-blue Oldroyd-B agent (task 034): HOOMD-blue works in its own units of length, energy and mass, and λ and η_p must reach rheoTool in seconds and Pa.s. What should HOOMD-blue's three base units stand for?', the person answered 'SI base units (Recommended)' (gloss: engine_length stands for m, engine_energy for J, engine_mass for kg, so engine_time is s and engine_viscosity Pa.s, and the two values cross with their numbers unchanged; the dumbbells then stand for no real polymer). Recorded as question 4 of meta_agent/requests/req-hoomd-oldroyd-b-001/v9_intake.json (6a6868d). (2) For your judgement, no landing asked yet: this is the first hand-over whose producer computes in an engine's own units. contracts/tools/units.py factor() and the root CLAUDE.md speak only of a value going into an engine unit through a confirmed scale; a value handed over is never in an engine unit (check 25), so the producer must convert out of its engine unit before the card. This seat will do that in the bundle, with unit_convert@v2 taking a confirmed scale on the from side, the hand-over read off a chain of skill records (template v36, meta_agent/src/build), on fixtures of two unrelated kinds. If you want the gate to recompute that conversion, units.py would need the out-of direction (factor(from engine unit, stands_for_from)) and the rule's line would say 'into or out of'; say so and this seat will name the record fields it writes.",
+  "written_at": "2026-11-21T20:03:57-08:00"
+}
