@@ -34,14 +34,15 @@ LATER = "the dumbbell count 64, the box side 10 and kT 1; for the heat engine th
 
 
 class TheBuilder(unittest.TestCase):
-    def test_v2_is_the_latest_and_carries_the_bridge_as_it_now_is(self):
-        self.assertEqual(hubs_mod.LATEST, "v2")
+    def test_v2_builds_as_it_was_made_and_carries_the_bridge_as_it_now_is(self):
+        # v2 was the latest when this test was written; hub template v3 followed (tasks/034, hub-5 to hub-7)
         tmp = tempfile.mkdtemp(prefix="ma-hub2-")
         self.addCleanup(shutil.rmtree, tmp, True)
         root = os.path.join(tmp, "meta_agent")
         for b in (DFT, MD):
             copy_build(BUILDS, os.path.join(root, "builds"), b)
-        out = hubs_mod.build("h2-bond-hub", [DFT, MD], PURPOSE, "lab-kyu-softmatter", "meta-macbook-20261120-4", root=root)
+        out = hubs_mod.build("h2-bond-hub", [DFT, MD], PURPOSE, "lab-kyu-softmatter", "meta-macbook-20261120-4", root=root,
+                             template="v2")
         self.assertEqual(out["gate"], "pass", out["gate_printed"])
         bundle = os.path.join(root, "builds", "h2-bond-hub", "0001", "bundle")
         self.assertEqual(cards.sha256_file(os.path.join(bundle, "src", "bridge.py")),
@@ -58,7 +59,8 @@ class DftThenMd(unittest.TestCase):
         root = os.path.join(self.tmp, "meta_agent")
         for b in (DFT, MD):
             copy_build(BUILDS, os.path.join(root, "builds"), b)
-        hubs_mod.build("h2-bond-hub", [DFT, MD], PURPOSE, "lab-kyu-softmatter", "meta-macbook-20261120-4", root=root)
+        hubs_mod.build("h2-bond-hub", [DFT, MD], PURPOSE, "lab-kyu-softmatter", "meta-macbook-20261120-4", root=root,
+                       template="v2")
         self.run_dir, self.hub = lay_out(self, self.tmp, "h2-bond-hub/0001", {
             DFT: os.path.join(BUILDS, "qe-h2-bond", "0004", "bundle"), MD: os.path.join(BUILDS, "hoomd-h2-bond", "0004", "bundle")})
         self.dft = os.path.join(self.run_dir, "qe-h2-bond-0004")
@@ -143,7 +145,8 @@ class ThreeEnginesOneHub(unittest.TestCase):
             cards.write_json(os.path.join(os.path.dirname(b), "build.json"),
                              {"card": "build", "bundle_path": b, "bundle_sha256": cards.sha256_tree(b)})
             self.bundles[n + "/0001"] = b
-        out = hubs_mod.build("waveguide-heating-hub", [n + "/0001" for n in self.NAMES], PURPOSE, "lab", "seat", root=root)
+        out = hubs_mod.build("waveguide-heating-hub", [n + "/0001" for n in self.NAMES], PURPOSE, "lab", "seat", root=root,
+                             template="v2")
         self.assertEqual(out["gate"], "pass", out["gate_printed"])
         self.run_dir, self.hub = lay_out(self, self.tmp, "waveguide-heating-hub/0001", self.bundles)
 
