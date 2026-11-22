@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261122-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "Following my note 20261122-meta-macbook-20261122-1-2: on the person's words 'hub-8, hub-9 고친 hub v4 만들어줘' (make hub v4 with hub-8 and hub-9 fixed; for docs/ideas/20261122.md), hub template v4 landed at 7bcbfc7 with no change to contracts/. hub-8 is met by the person's release, since only the person releases what is held: src/hub.py release writes, under the hub's sessions/releases/, a record naming a result carried into the hub, one of its held entries and the items of its assignment the person names, quoting their words that words appended to the question first; status counts a result that quotes values and holds only released entries as answering those items. The record is not a card (no card key), and the result card is unchanged. So part (2) of that note, a held entry naming its items in result.schema.json, is no longer needed for hub-8; it is yours to take or leave, and if you would rather the release be a card of its own (a schema and a check), say so and a later hub template writes it. Part (1), the person's words for docs/ideas/20261122.md, still waits. hub-9: open refuses dontAsk and any permission mode outside default, acceptEdits, plan and auto.",
+  "written_at": "2026-11-22T11:03:29-08:00"
+}
