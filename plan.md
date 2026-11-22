@@ -595,7 +595,7 @@ HOOMD-blue does MD and BD, CP2K does DFT and MD, FEniCSx goes beyond structural 
 | `refusal` | anyone | why it cannot be done, with the counterexample |
 | `kb_candidate` | the executing seat | an entry candidate handed to the librarian |
 | `observation` | the person or the bridge (inbox) | a run, failure or success report from a built agent |
-| `handover` | a built agent (its `outbox/`) | values one agent produces for another, each with its unit, grade, source and the conditions it holds under (§10, §14-40) |
+| `handover` | a built agent (its `outbox/`) | values one agent produces for another, each with its unit, grade, source and the conditions it holds under, read off one skill's run record or off a chain of steps, each a skill and its record (§10, §14-40; `tasks/034`) |
 | `bridge_envelope` | the bridge alone (`author: bridge`) | beside the unchanged copy of a hand-over in the receiver's `inbox/<thread>/`: its hash, round, trigger, who released it and who ran the tool (the person, or a session on the person's quoted words; `tasks/032`); no numbers |
 | `handover_receipt` | the receiving agent (its `received/`) | what it did with one received value: the row, the conversion through the registry, `used` or `held` with a reason |
 | `hub_members` | the builder (a hub's `members.json`) | the bundles a hub agent coordinates, each by build, folder and the hash of its build card; no numbers (§14-41) |

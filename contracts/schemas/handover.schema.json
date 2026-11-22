@@ -132,25 +132,69 @@
       "description": "the receiving agent"
     },
     "produced_by": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "skill",
-        "record"
-      ],
-      "description": "what the values were read off: the library skill and the run record of the producing bundle",
-      "properties": {
-        "skill": {
-          "type": "string",
-          "minLength": 1,
-          "description": "<skill id>@v<n>"
+      "description": "what the values were read off: one library skill and its run record of the producing bundle, or a chain of steps, each a skill and its record, when the values end at different steps (tasks/034, at the ask 20261121-meta-macbook-20261120-4-9)",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "skill",
+            "record"
+          ],
+          "properties": {
+            "skill": {
+              "type": "string",
+              "minLength": 1,
+              "description": "<skill id>@v<n>"
+            },
+            "record": {
+              "type": "string",
+              "minLength": 1,
+              "description": "the run record's path inside the producing bundle"
+            }
+          }
         },
-        "record": {
-          "type": "string",
-          "minLength": 1,
-          "description": "the run record's path inside the producing bundle"
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "chain"
+          ],
+          "properties": {
+            "chain": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "step",
+                  "skill",
+                  "record"
+                ],
+                "properties": {
+                  "step": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "the step's id, as the producing bundle names it"
+                  },
+                  "skill": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "<skill id>@v<n>"
+                  },
+                  "record": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "the run record's path inside the producing bundle"
+                  }
+                }
+              },
+              "description": "one item per step, in the order the steps ran; each number's source names its own last step's skill and record"
+            }
+          }
         }
-      }
+      ]
     },
     "what": {
       "type": "string",
