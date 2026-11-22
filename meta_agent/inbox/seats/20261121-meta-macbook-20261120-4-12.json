@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "For docs/ideas/20261121.md: asked in this seat's conversation 'Hub template v2 (task 034, fault hub-3): when a member holds a run setting only you can give (say, the dumbbell count or η_s) and you answer the hub after agreeing to its list, how should your words reach that member?', the person answered 'Next round quotes them (Recommended)' (gloss: the hub records the person's words verbatim in the question's next revision, as their answer to what the member held; the member's next-round assignment quotes them, and the person need not agree to the list again, since the list is unchanged; any new assignment is still a new question shown to them). This seat builds it into hub template v2 (meta_agent/src/build/hub_template_v2), with hub-1, hub-2 and the bridge as contracts/tools/bridge.py now is. The hub's CLAUDE.md line 'it carries no number but one the person's question holds, quoted' then reads with the question's revisions included.",
+  "written_at": "2026-11-21T22:18:44-08:00"
+}
