@@ -1,0 +1,59 @@
+{
+  "card": "knowledge_brief",
+  "schema_version": "0.1",
+  "id": "kb-brief-rheotool-oldroyd-b-001",
+  "rid": "req-rheotool-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:27:12Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "validated",
+  "need": [
+    "which rheoTool solver and constitutive model carry Oldroyd-B, and how its dictionaries name λ, η_p and η_s",
+    "how a planar channel's start-up is set up in rheoTool, from its tutorials",
+    "the analytical solution of the start-up of planar Poiseuille flow of an Oldroyd-B fluid, from a published source",
+    "what the solver writes of the velocity, and where"
+  ],
+  "kb_version": "kb@e3b0c44298fc",
+  "entries": [],
+  "gaps": [
+    {
+      "what": "which rheoTool solver and constitutive model carry Oldroyd-B, and how its dictionaries name λ, η_p and η_s",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    },
+    {
+      "what": "how a planar channel's start-up is set up in rheoTool, from its tutorials",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    },
+    {
+      "what": "the analytical solution of the start-up of planar Poiseuille flow of an Oldroyd-B fluid, from a published source",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    },
+    {
+      "what": "what the solver writes of the velocity, and where",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    }
+  ]
+}

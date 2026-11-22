@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "RHEO-RUN-002",
+  "category": "execution_failure",
+  "message": "the container returned no results",
+  "retryable": false,
+  "remediation": {
+    "action": "read container.err in the run folder"
+  }
+}

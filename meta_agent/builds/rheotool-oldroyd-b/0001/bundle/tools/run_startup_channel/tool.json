@@ -1,0 +1,160 @@
+{
+  "artifact": "tool_contract",
+  "schema_version": "0.1",
+  "name": "run_startup_channel",
+  "description": "run rheoFoam (rheoTool on OpenFOAM, in the image rheotool:of90 of the Colima profile rheotool) on the start-up of a planar channel flow of an Oldroyd-B fluid: a channel periodic along the flow between two no-slip walls, the fluid at rest with no stress until the pressure gradient is applied, the constitutive model Oldroyd-BLog with the schemes and solvers of rheoTool's channel tutorial; the case goes into the container through stdin and the results come back through stdout; a new folder under runs/cfd for each run; it returns the centreline velocity against time as the solver writes it and computes nothing from it",
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "half_width": {
+        "type": "number",
+        "unit": "m",
+        "row": "half_width",
+        "description": "h, the distance from the centreline to each wall",
+        "minimum": 0
+      },
+      "density": {
+        "type": "number",
+        "unit": "kg/m^3",
+        "row": "density",
+        "description": "rho, the fluid's density",
+        "minimum": 0
+      },
+      "solvent_viscosity": {
+        "type": "number",
+        "unit": "Pa.s",
+        "row": "solvent_viscosity",
+        "description": "eta_s, the solvent's viscosity, the person's to give",
+        "minimum": 0
+      },
+      "polymer_viscosity": {
+        "type": "number",
+        "unit": "Pa.s",
+        "row": "polymer_viscosity",
+        "description": "eta_p, the polymer viscosity; the value src/handover.py values prints for the row polymer_viscosity",
+        "minimum": 0
+      },
+      "relaxation_time": {
+        "type": "number",
+        "unit": "s",
+        "row": "relaxation_time",
+        "description": "lambda, the relaxation time; the value src/handover.py values prints for the row relaxation_time",
+        "minimum": 0
+      },
+      "driving": {
+        "type": "number",
+        "unit": "Pa/m",
+        "row": "driving",
+        "description": "-dp/dx, the pressure gradient that drives the flow from rest, applied as a step; rheoFoam takes it over the density",
+        "minimum": 0
+      },
+      "cells_across": {
+        "type": "integer",
+        "unit": "count",
+        "row": "cells_across",
+        "description": "how many cells span the channel, an odd number so that one cell centre is on the centreline",
+        "minimum": 1
+      },
+      "dt": {
+        "type": "number",
+        "unit": "s",
+        "row": "dt",
+        "description": "the solver's time step",
+        "minimum": 0
+      },
+      "end_time": {
+        "type": "number",
+        "unit": "s",
+        "row": "end_time",
+        "description": "how long after the start the run ends",
+        "minimum": 0
+      },
+      "probe_every": {
+        "type": "integer",
+        "unit": "count",
+        "row": "probe_every",
+        "description": "how many time steps between two written values of the probe",
+        "minimum": 1
+      },
+      "budget_s": {
+        "type": [
+          "number",
+          "null"
+        ],
+        "unit": "s",
+        "minimum": 0,
+        "default": null,
+        "description": "the running time the run may take before the call gives up on it, counted while it runs and not while it is paused; no limit when null"
+      }
+    },
+    "required": [
+      "half_width",
+      "density",
+      "solvent_viscosity",
+      "polymer_viscosity",
+      "relaxation_time",
+      "driving",
+      "cells_across",
+      "dt",
+      "end_time",
+      "probe_every"
+    ]
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "openfoam_version": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "the version OpenFOAM's banner prints in log.rheoFoam"
+      },
+      "openfoam_build": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "the build OpenFOAM's banner prints in log.rheoFoam"
+      },
+      "probe_location": {
+        "type": "array",
+        "description": "the probe's point, the channel's centre, in metres"
+      },
+      "centreline_velocity": {
+        "type": "array",
+        "description": "pairs [t, u]: the time in seconds and the streamwise velocity at the centreline in metres per second, as rheoFoam's probes function writes them"
+      },
+      "run_dir": {
+        "type": "string",
+        "description": "the run's folder, relative to this directory"
+      },
+      "inputs": {
+        "type": "object",
+        "description": "the call's inputs, the conditions the run held under"
+      }
+    },
+    "required": [
+      "probe_location",
+      "centreline_velocity",
+      "run_dir",
+      "inputs"
+    ]
+  },
+  "errors": [
+    "invalid_input",
+    "unavailable",
+    "refused_by_safety",
+    "execution_failure",
+    "timeout",
+    "cancelled"
+  ],
+  "side_effects": "runs_process",
+  "safety_gate": {
+    "required": true,
+    "place": "src/gate.py, consulted by src/run_tool.py before the call",
+    "opens_by": "execution_permission"
+  },
+  "idempotent": false,
+  "timeout_s": null
+}

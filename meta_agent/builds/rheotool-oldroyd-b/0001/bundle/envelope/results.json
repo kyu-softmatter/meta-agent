@@ -1,0 +1,9 @@
+{
+  "note": "what this agent may report to a hub agent from its tools' results, written by its build (template v35); src/handover.py result quotes a field only where it is listed here, with this unit and grade",
+  "agent": {
+    "agent": "rheotool-oldroyd-b",
+    "build": "rheotool-oldroyd-b/0001"
+  },
+  "tool_kind": "engine",
+  "reports": []
+}

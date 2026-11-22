@@ -1,0 +1,37 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-rheotool-oldroyd-b-001-a6",
+  "rid": "req-rheotool-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:27:12Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A6",
+  "title": "Validation",
+  "content": {
+    "interface": [
+      "a run with no input is refused by the runner's input check",
+      "a relaxation time given in words is refused by the runner's input check"
+    ],
+    "scientific": [
+      "the centreline velocity of the start-up against the analytical solution of the start-up of planar Poiseuille flow of an Oldroyd-B fluid"
+    ],
+    "completion": "every interface task passes and every scientific task passes against a person's tolerance",
+    "refusal": "an error contract or a gate refusal is reported as such; not_run and undecided are not passes"
+  },
+  "reads": [
+    "goal-rheotool-oldroyd-b-001",
+    "tp-rheotool-oldroyd-b-001",
+    "kb-brief-rheotool-oldroyd-b-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

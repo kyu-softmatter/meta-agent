@@ -1,0 +1,95 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-rheotool-oldroyd-b-001-a2",
+  "rid": "req-rheotool-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:27:12Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A2",
+  "title": "Interface",
+  "content": {
+    "cards_in": [
+      "tasks/*.md"
+    ],
+    "cards_out": [
+      "the printed reports of src/replay.py and src/validate_tasks.py",
+      "failures.jsonl lines"
+    ],
+    "callable_tools": [
+      {
+        "name": "run_startup_channel",
+        "inputs": [
+          "budget_s",
+          "cells_across",
+          "density",
+          "driving",
+          "dt",
+          "end_time",
+          "half_width",
+          "polymer_viscosity",
+          "probe_every",
+          "relaxation_time",
+          "solvent_viscosity"
+        ],
+        "outputs": [
+          "centreline_velocity",
+          "inputs",
+          "openfoam_build",
+          "openfoam_version",
+          "probe_location",
+          "run_dir"
+        ],
+        "errors": [
+          "invalid_input",
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "timeout",
+          "cancelled"
+        ],
+        "side_effects": "runs_process"
+      }
+    ],
+    "gui_fields": [],
+    "skills": [
+      {
+        "ref": "oldroyd_b_startup_channel_velocity@v1",
+        "kind": "estimate",
+        "side_effect": "none",
+        "status": "usable",
+        "calls_tools": []
+      },
+      {
+        "ref": "timestep_max_from_courant@v2",
+        "kind": "bound",
+        "side_effect": "none",
+        "status": "usable",
+        "calls_tools": []
+      },
+      {
+        "ref": "unit_convert@v2",
+        "kind": "data_analysis",
+        "side_effect": "none",
+        "status": "usable",
+        "calls_tools": []
+      }
+    ],
+    "subagents": []
+  },
+  "reads": [
+    "goal-rheotool-oldroyd-b-001",
+    "tp-rheotool-oldroyd-b-001",
+    "kb-brief-rheotool-oldroyd-b-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

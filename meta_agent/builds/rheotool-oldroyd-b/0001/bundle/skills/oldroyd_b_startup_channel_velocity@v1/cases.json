@@ -1,0 +1,66 @@
+[
+  {
+    "name": "long after start-up, at the centreline",
+    "inputs": {
+      "half_width": 1.0,
+      "density": 1.0,
+      "solvent_viscosity": 0.1,
+      "polymer_viscosity": 0.9,
+      "relaxation_time": 1.0,
+      "driving": 3.0,
+      "position": 0.0,
+      "times": [
+        1000.0
+      ],
+      "terms": 8
+    },
+    "expect": {
+      "velocity": [
+        [
+          1000.0,
+          1.5
+        ]
+      ],
+      "elasticity_number": 1.0,
+      "solvent_fraction": 0.1,
+      "steady_mean_velocity": 1.0
+    },
+    "tolerance": {
+      "abs": 1e-12
+    },
+    "worked": "eta0 = 0.1 + 0.9 = 1; E = 1 x 1/(1 x 1) = 1; beta = 0.1; u_mean = 3 x 1/(3 x 1) = 1; every A_k carries exp(-b_k t) with b_k >= 1/2, so at t = 1000 the sum is nil and u = 1 x 1.5 x (1 - 0) = 1.5",
+    "system": "a dilute polymer solution in a microchannel"
+  },
+  {
+    "name": "the instant of start-up at the centreline, one term",
+    "inputs": {
+      "half_width": 0.002,
+      "density": 1000.0,
+      "solvent_viscosity": 0.0,
+      "polymer_viscosity": 1.0,
+      "relaxation_time": 0.5,
+      "driving": 1500.0,
+      "position": 0.0,
+      "times": [
+        0.0
+      ],
+      "terms": 1
+    },
+    "expect": {
+      "velocity": [
+        [
+          0.0,
+          -9.6147305587e-05
+        ]
+      ],
+      "elasticity_number": 125.0,
+      "solvent_fraction": 0.0,
+      "steady_mean_velocity": 0.002
+    },
+    "tolerance": {
+      "rel": 1e-09
+    },
+    "worked": "eta0 = 1; E = 0.5 x 1/(1000 x 0.002^2) = 0.5/0.004 = 125; beta = 0; u_mean = 1500 x 0.000004/3 = 0.002; at t = 0, A_1 = 1 in either branch and B_1(0) = 48 x (-1)/pi^3 = -48/31.0062767 = -1.5480737; u = 0.002 x (1.5 - 1.5480737) = 0.002 x -0.0480737 = -9.61473e-05 (the one-term truncation, not the fluid's state at rest)",
+    "system": "an upper-convected Maxwell fluid in a millimetre channel"
+  }
+]

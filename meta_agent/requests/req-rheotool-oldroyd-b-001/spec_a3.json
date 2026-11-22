@@ -1,0 +1,36 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-rheotool-oldroyd-b-001-a3",
+  "rid": "req-rheotool-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:27:12Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A3",
+  "title": "Knowledge",
+  "content": {
+    "snapshot": [],
+    "kb_version": "kb@e3b0c44298fc",
+    "gaps": [
+      "which rheoTool solver and constitutive model carry Oldroyd-B, and how its dictionaries name λ, η_p and η_s",
+      "how a planar channel's start-up is set up in rheoTool, from its tutorials",
+      "the analytical solution of the start-up of planar Poiseuille flow of an Oldroyd-B fluid, from a published source",
+      "what the solver writes of the velocity, and where"
+    ]
+  },
+  "reads": [
+    "goal-rheotool-oldroyd-b-001",
+    "tp-rheotool-oldroyd-b-001",
+    "kb-brief-rheotool-oldroyd-b-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

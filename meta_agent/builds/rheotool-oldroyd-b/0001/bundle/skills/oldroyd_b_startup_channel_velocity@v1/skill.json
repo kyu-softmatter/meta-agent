@@ -1,0 +1,95 @@
+{
+  "schema_version": "0.1",
+  "id": "oldroyd_b_startup_channel_velocity",
+  "version": 1,
+  "kind": "estimate",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the start-up velocity of an Oldroyd-B fluid in a planar channel under a suddenly applied pressure gradient, by Waters and King's series",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "half_width",
+      "unit": "1",
+      "meaning": "h, the distance from the centreline to a wall, in the length unit of one self-consistent system of units (SI for OpenFOAM)"
+    },
+    {
+      "name": "density",
+      "unit": "1",
+      "meaning": "rho, mass per volume in that system"
+    },
+    {
+      "name": "solvent_viscosity",
+      "unit": "1",
+      "meaning": "eta_s, a dynamic viscosity in that system"
+    },
+    {
+      "name": "polymer_viscosity",
+      "unit": "1",
+      "meaning": "eta_p, a dynamic viscosity in that system"
+    },
+    {
+      "name": "relaxation_time",
+      "unit": "1",
+      "meaning": "lambda, a time in that system"
+    },
+    {
+      "name": "driving",
+      "unit": "1",
+      "meaning": "K = -dp/dx, the constant pressure gradient along the channel (force per volume) applied from time zero, in that system"
+    },
+    {
+      "name": "position",
+      "unit": "1",
+      "meaning": "y, the distance from the centreline at which the velocity is wanted, 0 <= |y| <= h, in the length unit"
+    },
+    {
+      "name": "times",
+      "unit": "1",
+      "meaning": "the times since the gradient was applied, zero or more, in the time unit"
+    },
+    {
+      "name": "terms",
+      "unit": "count",
+      "meaning": "how many terms of the series to sum, one or more"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "velocity",
+      "unit": "1",
+      "meaning": "pairs [t, u], u the velocity along the channel at the position asked, in the velocity unit of the system",
+      "unit_of": "times",
+      "unit_of_part": "variable"
+    },
+    {
+      "name": "elasticity_number",
+      "unit": "1",
+      "meaning": "E = lambda eta0 / (rho h^2), eta0 = eta_s + eta_p"
+    },
+    {
+      "name": "solvent_fraction",
+      "unit": "1",
+      "meaning": "beta = eta_s / eta0"
+    },
+    {
+      "name": "steady_mean_velocity",
+      "unit": "1",
+      "meaning": "K h^2 / (3 eta0), the mean over the channel of the steady velocity, in the velocity unit of the system"
+    }
+  ],
+  "validity": "an incompressible Oldroyd-B fluid between infinite parallel plates, laminar and one-dimensional, starting from rest with no stress, under a gradient applied as a step; the series converges with the terms as one over the cube of the term's index, and a truncated series does not give zero velocity at t = 0 exactly; a solvent fraction of zero (the upper-convected Maxwell fluid) is within it",
+  "source": {
+    "citation": "Amoreira and Oliveira (2010), Comparison of different formulations for the numerical calculation of unsteady incompressible viscoelastic fluid flow, Adv. Appl. Math. Mech. 2(4), 483-502 (read 2026-11-21, https://www.global-sci.com/aamm/article/view/4529; mat-20261121-amoreira-oliveira-2010-startup); OpenFOAM-9, tutorials/incompressible/pimpleFoam/laminar/planarPoiseuille/validation/WatersKing/WatersKing.C (read 2026-11-21; mat-20261121-openfoam-9-planarpoiseuille-watersking)",
+    "locus": "Amoreira and Oliveira, section 2.1, equations (2.5)-(2.9): u/u_mean = (3/2)(1 - y^2) + sum over k of A_k(t) B_k(y), t scaled by lambda1 and y by the half-width h, u_mean = K h^2/(3 eta0), E = lambda1 eta0/(rho h^2); A_k = exp(-b_k t) [((b_k - a_k^2)/c_k) sinh(c_k t) + cosh(c_k t)] if b_k >= a_k and the same with sin and cos if b_k < a_k; B_k = 48 (-1)^k/((2k-1)^3 pi^3) cos((2k-1) pi y/2); a_k = (2k-1) pi sqrt(E)/2, b_k = (1 + beta a_k^2)/2, c_k = sqrt|b_k^2 - a_k^2|; the series is Waters and King's (1970), which this seat did not read. WatersKing.C writes the same terms, with eight of them"
+  },
+  "note": "Written for meta_agent/tasks/034, the reference of the rheoTool agent's start-up channel flow. The hyperbolic branch is computed as exponentials of (c_k - b_k) t and -(c_k + b_k) t, which is the same quantity without overflow at long times. No value of either source stands behind the worked cases (the paper shows its solution as figures): each is worked by hand in its worked field, at long time, where the series has decayed, and at time zero, where the truncated series' sum is a known alternating sum.",
+  "entry": {
+    "script": "scripts/estimate.py",
+    "function": "estimate"
+  },
+  "cases": "cases.json"
+}

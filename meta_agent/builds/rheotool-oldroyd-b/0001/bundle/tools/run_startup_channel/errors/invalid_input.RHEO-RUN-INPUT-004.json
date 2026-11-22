@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "RHEO-RUN-INPUT-004",
+  "category": "invalid_input",
+  "message": "cells_across is even, so no cell centre lies on the centreline",
+  "retryable": false,
+  "remediation": {
+    "action": "give an odd number of cells across the channel"
+  }
+}

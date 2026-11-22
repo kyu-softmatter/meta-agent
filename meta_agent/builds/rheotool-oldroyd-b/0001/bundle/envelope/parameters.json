@@ -1,0 +1,72 @@
+{
+  "rows": [
+    {
+      "name": "relaxation_time",
+      "value": null,
+      "unit": "s",
+      "takes_handover": {
+        "name": "relaxation_time",
+        "thread": "thr-oldroyd-b",
+        "from_agent": "hoomd-oldroyd-b"
+      }
+    },
+    {
+      "name": "polymer_viscosity",
+      "value": null,
+      "unit": "Pa.s",
+      "takes_handover": {
+        "name": "polymer_viscosity",
+        "thread": "thr-oldroyd-b",
+        "from_agent": "hoomd-oldroyd-b"
+      }
+    },
+    {
+      "name": "solvent_viscosity",
+      "value": null,
+      "unit": "Pa.s",
+      "note": "the person gives it when asking for a run, as they chose (question 5 of req-hoomd-oldroyd-b-001, 'Give it to the CFD agent (Recommended)'); no hand-over carries it"
+    },
+    {
+      "name": "half_width",
+      "value": null,
+      "unit": "m",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "density",
+      "value": null,
+      "unit": "kg/m^3",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "driving",
+      "value": null,
+      "unit": "Pa/m",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "cells_across",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "dt",
+      "value": null,
+      "unit": "s",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "end_time",
+      "value": null,
+      "unit": "s",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "probe_every",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    }
+  ]
+}

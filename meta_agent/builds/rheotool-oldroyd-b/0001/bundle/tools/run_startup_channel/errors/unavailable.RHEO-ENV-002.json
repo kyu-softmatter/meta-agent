@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "RHEO-ENV-002",
+  "category": "unavailable",
+  "message": "the image rheotool:of90 is not reachable in the docker context colima-rheotool",
+  "retryable": true,
+  "remediation": {
+    "action": "the person starts the Colima profile rheotool, which also makes colima-rheotool the docker command's current context, then this call again"
+  }
+}

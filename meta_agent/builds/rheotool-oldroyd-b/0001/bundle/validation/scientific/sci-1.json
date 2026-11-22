@@ -1,0 +1,31 @@
+{
+  "id": "sci-1",
+  "name": "the centreline velocity of the start-up against the analytical solution of the start-up of planar Poiseuille flow of an Oldroyd-B fluid",
+  "call": {
+    "tool": "run_startup_channel",
+    "input": {}
+  },
+  "measure": {},
+  "reference": {
+    "kind": "source",
+    "ref": "Amoreira and Oliveira (2010), section 2.1 (mat-20261121-amoreira-oliveira-2010-startup), and OpenFOAM-9's WatersKing.C (mat-20261121-openfoam-9-planarpoiseuille-watersking), as oldroyd_b_startup_channel_velocity@v1 computes it from the run's own settings"
+  },
+  "tolerance": null,
+  "held": {
+    "reason": "the reference is a series a library skill computes from the call's input at the times the solver wrote, which the bundle's check takes only as a function of its own, and the comparison is of a series, not of one value",
+    "needs": "a check that takes a reference a library skill computes from the call's input and compares a series point by point, and a tolerance the person gives or the standing rule derives"
+  },
+  "expected_verdict": "not_run",
+  "builder_records": [
+    {
+      "card": "mat-20261121-amoreira-oliveira-2010-startup",
+      "in_this_bundle": false,
+      "whose": "a card of the builder's repository, named by its id; it is not in this bundle and is not looked for here"
+    },
+    {
+      "card": "mat-20261121-openfoam-9-planarpoiseuille-watersking",
+      "in_this_bundle": false,
+      "whose": "a card of the builder's repository, named by its id; it is not in this bundle and is not looked for here"
+    }
+  ]
+}

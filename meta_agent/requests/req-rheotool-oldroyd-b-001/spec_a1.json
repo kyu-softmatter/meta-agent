@@ -1,0 +1,51 @@
+{
+  "card": "spec_axis",
+  "schema_version": "0.1",
+  "id": "spec-rheotool-oldroyd-b-001-a1",
+  "rid": "req-rheotool-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:27:12Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "axis": "A1",
+  "title": "Boundary",
+  "content": {
+    "directory": "meta_agent/builds/rheotool-oldroyd-b/0001/bundle",
+    "writes": [
+      "failures.jsonl",
+      "runs/"
+    ],
+    "reads": [
+      "envelope/",
+      "tools/",
+      "validation/",
+      "replay/",
+      "tasks/"
+    ],
+    "forbidden": [
+      "envelope/safety.json",
+      "envelope/execution_permission.json",
+      "CLAUDE.md",
+      ".claude/",
+      "any path outside the bundle",
+      "network hosts",
+      "credentials"
+    ],
+    "seat": "rheoTool on OpenFOAM (rheoFoam)-<machine>-<YYYYMMDD>-<n>",
+    "tier": 0
+  },
+  "reads": [
+    "goal-rheotool-oldroyd-b-001",
+    "tp-rheotool-oldroyd-b-001",
+    "kb-brief-rheotool-oldroyd-b-001",
+    "lab-kyu-softmatter"
+  ],
+  "held": []
+}

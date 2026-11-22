@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.1",
+  "id": "timestep_max_from_courant",
+  "version": 2,
+  "kind": "bound",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the largest time step the Courant condition allows on a grid",
+  "parameter": "time_step",
+  "side": "max",
+  "applies_to": {
+    "parameters": [
+      "time_step"
+    ],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "courant_limit",
+      "unit": "1",
+      "meaning": "the Courant number the scheme is run below; a judgement that depends on the scheme, bound to a row with its own source"
+    },
+    {
+      "name": "cell_size",
+      "unit": "m",
+      "meaning": "the smallest cell or element of the grid or mesh, along the direction the signal travels"
+    },
+    {
+      "name": "velocity",
+      "unit": "m/s",
+      "meaning": "the largest speed at which the solution carries information across the grid: the largest flow velocity for advection, the wave speed for a wave equation"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "time_step_max",
+      "unit": "s",
+      "meaning": "the upper bound on the time step from the Courant condition"
+    }
+  ],
+  "entry": {
+    "script": "scripts/bound.py",
+    "function": "bound"
+  },
+  "validity": "explicit or semi-implicit time stepping of advection or of waves on a grid or a mesh, whatever program does it; not for a method without a grid (particles, Monte Carlo), where the condition does not arise. The limit itself depends on the scheme and is an input",
+  "source": {
+    "citation": "R. Courant, K. Friedrichs, H. Lewy, Über die partiellen Differenzengleichungen der mathematischen Physik, Mathematische Annalen 100 (1928)",
+    "locus": "the condition that the numerical domain of dependence contains the physical one: time step <= C * cell size / velocity"
+  },
+  "cases": "cases.json",
+  "note": "v1 with its scope no longer bound to engines by name: v1 named rheotool and openfoam alone, so the Designer offered no Courant bound for a flow on DOLFINx (meta_agent/failures.jsonl cfd-1, run cfd/20261117-1, tasks/019). The relation is the condition of the cited paper and is a property of a time scheme on a grid, not of a program. The code is v1's; the inputs' meanings say what a velocity is for a wave. No value of the source stands behind the worked cases: each is worked by hand in its worked field, one a flow and one an electromagnetic wave, two unrelated kinds."
+}

@@ -1,0 +1,41 @@
+{
+  "card": "build",
+  "schema_version": "0.1",
+  "id": "build-rheotool-oldroyd-b-0001",
+  "rid": "req-rheotool-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:27:12Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "spec_ref": "spec-rheotool-oldroyd-b-001",
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "template_version": "agent@b52c0875253c",
+  "diff_from_template": "diff_from_template.txt",
+  "bundle_path": "meta_agent/builds/rheotool-oldroyd-b/0001/bundle",
+  "bundle_sha256": "sha256:8a8780f17f004ad2517c739c4a0df8b4dd2bdaf76e6a82af1eb7feb3639bdff3",
+  "held": [
+    {
+      "item": "the comparison of the centreline velocity with the analytical start-up solution",
+      "reason": "the bundle's check takes no reference a skill computes and compares no series"
+    }
+  ],
+  "gate_verdict": {
+    "interface": "pass",
+    "scientific": "not_run",
+    "validation_report_ref": "vr-rheotool-oldroyd-b-0001"
+  },
+  "lineage": {
+    "parent_build": null,
+    "candidate_of": 1,
+    "k": 1
+  },
+  "landed_at": null,
+  "note": "replay: 1 item(s), all as expected; hand-over (landed_at) is the person's"
+}

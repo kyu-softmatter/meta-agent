@@ -1,0 +1,112 @@
+{
+  "card": "agent_goal",
+  "schema_version": "0.1",
+  "id": "goal-rheotool-oldroyd-b-001",
+  "rid": "req-rheotool-oldroyd-b-001",
+  "revision": 2,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:27:12Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [
+    {
+      "what": "which rheoTool solver and constitutive model carry Oldroyd-B, and how its dictionaries name λ, η_p and η_s",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    },
+    {
+      "what": "how a planar channel's start-up is set up in rheoTool, from its tutorials",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    },
+    {
+      "what": "the analytical solution of the start-up of planar Poiseuille flow of an Oldroyd-B fluid, from a published source",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    },
+    {
+      "what": "what the solver writes of the velocity, and where",
+      "searched": [
+        "meta_agent/knowledge/entries (absent)"
+      ],
+      "reason": "no knowledge entries yet",
+      "requires": "a source record and a distilled entry for this need"
+    }
+  ],
+  "case_refs": [],
+  "case_gaps": [
+    {
+      "what": "a prior case for this goal's signature",
+      "searched": [
+        "meta_agent/cases/index.json (223 case(s) read)",
+        "level 1, the signature: science_task=the start-up of a planar poiseuille flow of an oldroyd-b fluid with the md agent's constants, its centreline velocity against time compared with the analytical solution; executes=engine; engine=rheotool; methods=cfd; parameter_names=channel_half_width, channel_length, density, end_time, mesh, pressure_gradient, time_step",
+        "level 2 not searched: the signature states no cause_class"
+      ],
+      "reason": "no case shares an identifying field with the signature",
+      "requires": "a case written from this agent's first incidents, validation failures or the person's interventions"
+    }
+  ],
+  "degraded": [],
+  "status": "validated",
+  "purpose": "An agent that controls rheoTool's solvers on OpenFOAM in words for the start-up of a planar channel flow of an Oldroyd-B fluid: it takes the relaxation time and the polymer viscosity the MD agent handed over, once the person has let the card cross, and the solvent viscosity from the person, holds any value its build did not declare, and, asked for a run, runs the start-up flow on the settings the person gives and reports the centreline velocity against time as the solver writes it, with the analytical solution computed by a library skill beside it.",
+  "science_task": "the start-up of a planar Poiseuille flow of an Oldroyd-B fluid with the MD agent's constants, its centreline velocity against time compared with the analytical solution",
+  "tool": {
+    "name": "rheoTool on OpenFOAM (rheoFoam)",
+    "kind": "engine",
+    "registry_id": "rheotool",
+    "material_refs": [
+      "mat-20261121-rheotool-6.0-user-guide",
+      "mat-20261121-rheotool-of90-channel-oldroyd-b-constitutive",
+      "mat-20261121-openfoam-9-planarpoiseuille-watersking"
+    ]
+  },
+  "methods": [
+    "cfd"
+  ],
+  "executes": "engine",
+  "must_not": [
+    "touch an instrument",
+    "invent a number, or choose a setting, a scale or a tolerance",
+    "convert a unit by hand",
+    "compute again a value the engine itself reports",
+    "reach a network host or a container other than those the lab's permission lists for rheoTool",
+    "write in the MD agent's or the hub's folder",
+    "use a value handed over that its build did not declare"
+  ],
+  "knowledge_needs": [
+    "which rheoTool solver and constitutive model carry Oldroyd-B, and how its dictionaries name λ, η_p and η_s",
+    "how a planar channel's start-up is set up in rheoTool, from its tutorials",
+    "the analytical solution of the start-up of planar Poiseuille flow of an Oldroyd-B fluid, from a published source",
+    "what the solver writes of the velocity, and where"
+  ],
+  "parameter_scope": [
+    "channel_half_width",
+    "channel_length",
+    "pressure_gradient",
+    "density",
+    "mesh",
+    "time_step",
+    "end_time"
+  ],
+  "destination": "this computer (macOS on arm64), in a folder the person chooses beside the MD agent's and the hub's, running the image rheotool:of90 in the Colima profile rheotool; the bundle stops at meta_agent/builds/ until the person moves it",
+  "priorities": [
+    "a value handed over is used only as declared",
+    "the velocity reported is the solver's own, never computed again",
+    "the agent stands alone: without the hub it still runs, the constants then being the person's to give"
+  ],
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "gui_choice": "none",
+  "analysis_permission": null,
+  "requested_by": "human",
+  "supersedes": "goal-rheotool-oldroyd-b-001"
+}

@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "RHEO-ENV-001",
+  "category": "unavailable",
+  "message": "the docker command is not on this computer",
+  "retryable": false,
+  "remediation": {
+    "action": "the person installs Colima and the docker command as the lab's README for rheotool:of90 says"
+  }
+}

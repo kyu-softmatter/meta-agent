@@ -1,0 +1,11 @@
+{
+  "artifact": "error_contract",
+  "schema_version": "0.1",
+  "code": "RHEO-RUN-INPUT-003",
+  "category": "invalid_input",
+  "message": "a count is not a whole number of one or more",
+  "retryable": false,
+  "remediation": {
+    "action": "give a count"
+  }
+}

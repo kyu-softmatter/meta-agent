@@ -1,0 +1,41 @@
+{
+  "card": "agent_spec",
+  "schema_version": "0.1",
+  "id": "spec-rheotool-oldroyd-b-001",
+  "rid": "req-rheotool-oldroyd-b-001",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T06:27:12Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "held",
+  "axis_refs": {
+    "A1": "spec_a1.json",
+    "A2": "spec_a2.json",
+    "A3": "spec_a3.json",
+    "A4": "spec_a4.json",
+    "A5": "spec_a5.json",
+    "A6": "spec_a6.json"
+  },
+  "synthesis_ref": "synthesis.json",
+  "goal_ref": "goal-rheotool-oldroyd-b-001",
+  "tool_profile_ref": "tp-rheotool-oldroyd-b-001",
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "held": [
+    {
+      "item": "the comparison of the centreline velocity with the analytical start-up solution",
+      "reason": "the bundle's check takes no reference a skill computes and compares no series"
+    }
+  ],
+  "skills": [
+    "oldroyd_b_startup_channel_velocity@v1",
+    "timestep_max_from_courant@v2",
+    "unit_convert@v2"
+  ],
+  "subagents": []
+}
