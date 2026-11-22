@@ -1,0 +1,81 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261121-openfoam-9-planarpoiseuille-watersking",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T00:36:18Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "Found by searching, anonymously and read-only, by meta-macbook-20261120-4 for tasks/034 (req-hoomd-oldroyd-b-001, req-rheotool-oldroyd-b-001). Read for the CFD agent's scientific task: the program evaluates the Waters and King series for the velocity at a probe, with h the height from the centreline to the wall, E = lambda nu0/(rho h^2), beta = nu2/nu0 (the solvent's share), the steady mean velocity K h^2/(3 nu0) with K the driving source, and eight terms of a_k, b_k, c_k as in Amoreira and Oliveira (2010), which it cites with Waters and King (1970); its tutorial drives the flow by a momentumSource fvModel. Critique: it states the same series as mat-20261121-amoreira-oliveira-2010-startup term by term (a_k = (2k-1) pi sqrt(E)/2, b_k = (1 + beta a_k^2)/2, c_k = sqrt|b_k^2 - a_k^2|, the sinh or sin branch by b_k against a_k), so two sources agree; the program takes rho as one and kinematic viscosities, so a library skill implementing the series takes dynamic viscosities and the density as the paper writes it, not this program's shortcut.",
+  "kind": "repo",
+  "about": {
+    "name": {
+      "value": "OpenFOAM-9 tutorial pimpleFoam/laminar/planarPoiseuille, validation/WatersKing/WatersKing.C",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-openfoam-9-planarpoiseuille-watersking",
+          "locus": "the file's path in the repository OpenFOAM/OpenFOAM-9 at commit d87800e1bde07696061acb231ec68df126a937cc and its Description 'Analytical solution for the start-up planar Poiseuille flow of an Oldroyd-B fluid'"
+        }
+      ]
+    },
+    "role": {
+      "value": "engine",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-openfoam-9-planarpoiseuille-watersking",
+          "locus": "OpenFOAM, on which rheoTool's solvers are built (mat-20261121-rheotool-6.0-user-guide); the program is the maker's tutorial validation"
+        }
+      ]
+    },
+    "methods": {
+      "value": [
+        "computational fluid dynamics",
+        "viscoelastic flow"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-openfoam-9-planarpoiseuille-watersking",
+          "locus": "the program evaluates an analytical solution for an OpenFOAM tutorial"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://raw.githubusercontent.com/OpenFOAM/OpenFOAM-9/d87800e1bde07696061acb231ec68df126a937cc/tutorials/incompressible/pimpleFoam/laminar/planarPoiseuille/validation/WatersKing/WatersKing.C"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-22T00:36:18Z",
+    "content_hash": "sha256:48920cdc64b8b6fe4bf4e4641266753e6d5aa3c9c59daf1662bcf26e8ab78c5c",
+    "archived": null
+  },
+  "added_by": "meta-macbook-20261120-4",
+  "added_at": "2026-11-21",
+  "entry_path": "search",
+  "license_note": {
+    "value": "GPL-3.0 or later, as the file's header states it",
+    "state": "inferred",
+    "evidence": [
+      {
+        "source_ref": "mat-20261121-openfoam-9-planarpoiseuille-watersking",
+        "locus": "the file's header: 'OpenFOAM is free software ... GNU General Public License'"
+      }
+    ]
+  },
+  "may_quote": "unknown",
+  "state": "queued",
+  "state_reason": null,
+  "questions": [
+    "registered: may this source, found by a seat's search for tasks/034 (req-hoomd-oldroyd-b-001, req-rheotool-oldroyd-b-001), be registered?",
+    "may_quote: may an excerpt of it be kept?"
+  ]
+}

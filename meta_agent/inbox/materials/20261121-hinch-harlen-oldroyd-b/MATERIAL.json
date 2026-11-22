@@ -1,0 +1,70 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261121-hinch-harlen-oldroyd-b",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T00:36:18Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "Found by searching, anonymously and read-only, by meta-macbook-20261120-4 for tasks/034 (req-hoomd-oldroyd-b-001, req-rheotool-oldroyd-b-001). Read as the check of mat-20261121-morozov-spagnolie-2015-complex-fluids: section 6 gives the elastic-dumbbell model with Hookean spring constant kappa and Stokes friction 6 pi mu a per bead, a relaxation time tau = 3 pi mu a/(2 kappa) and a polymer stress n kappa <rr>, which govern an Oldroyd-B fluid. Critique: with zeta = 6 pi mu a, tau = zeta/(4 kappa), the same relaxation time as the chapter's lambda; the paper writes the stress with the equilibrium part left in <rr>, the chapter subtracts it, which is the same fluid. The journal and year of the published version are not on the copy read; they stay unknown.",
+  "kind": "paper",
+  "about": {
+    "name": {
+      "value": "Hinch and Harlen, Oldroyd B, and not A?",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-hinch-harlen-oldroyd-b",
+          "locus": "the paper's title and its authors' lines: J. Hinch, DAMTP Cambridge; O. Harlen, School of Mathematics, Leeds"
+        }
+      ]
+    },
+    "role": {
+      "value": null,
+      "state": "unknown",
+      "note": "a paper on the Oldroyd-B equation; it documents no engine, instrument, platform or analysis software"
+    },
+    "methods": {
+      "value": [
+        "continuum mechanics",
+        "kinetic theory of polymers"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-hinch-harlen-oldroyd-b",
+          "locus": "section 6: the elastic-dumbbell model"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://www.damtp.cam.ac.uk/user/hinch/publications/Oldroyd12b.pdf"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-22T00:36:18Z",
+    "content_hash": "sha256:2fef95f8e894a2e9dfd2d1899707915dc0a320158c54708d3ee0f125254eeda6",
+    "archived": null
+  },
+  "added_by": "meta-macbook-20261120-4",
+  "added_at": "2026-11-21",
+  "entry_path": "search",
+  "license_note": {
+    "value": null,
+    "state": "unknown"
+  },
+  "may_quote": "unknown",
+  "state": "queued",
+  "state_reason": null,
+  "questions": [
+    "registered: may this source, found by a seat's search for tasks/034 (req-hoomd-oldroyd-b-001, req-rheotool-oldroyd-b-001), be registered?",
+    "may_quote: may an excerpt of it be kept?"
+  ]
+}

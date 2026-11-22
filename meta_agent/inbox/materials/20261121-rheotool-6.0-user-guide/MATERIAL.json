@@ -1,0 +1,81 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261121-rheotool-6.0-user-guide",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T00:36:18Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "Found by searching, anonymously and read-only, by meta-macbook-20261120-4 for tasks/034 (req-hoomd-oldroyd-b-001, req-rheotool-oldroyd-b-001). Read for the CFD agent: Table 4.1 lists the Oldroyd-B model (TypeName Oldroyd-B, and Oldroyd-BLog for the log-conformation approach) with constants etaS, etaP and lambda and the upper-convected equation tau + lambda times its upper-convected derivative = etaP (grad u + grad u^T); section 3.2.2 relates the stress to the conformation tensor; rheoFoam takes fvOptions in its momentum equation (listing of section 4.7.1) and the changelog adds cyclicAMI support; tutorial 5.1.3 (tutorials/rheoFoam/Channel/Oldroyd-BLog) is the flow between parallel plates driven by a uniform inlet velocity, steady, compared with the analytical fully developed profiles of its reference [49] (Na and Yoo 1991). Critique: the tutorial is not a start-up flow, and its inlet-driven channel is not the pressure-driven start-up of Waters and King (mat-20261121-amoreira-oliveira-2010-startup); the start-up case must be set up anew from the solver's options, which this guide documents but does not exemplify for this flow. The guide is version 6.0; whether the image rheotool:of90 carries the same release is to be read off the adapter's trial.",
+  "kind": "manual",
+  "about": {
+    "name": {
+      "value": "rheoTool User Guide, version 6.0 (F. Pimenta, M. A. Alves)",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-rheotool-6.0-user-guide",
+          "locus": "the title page 'User Guide, Version 6.0, July 2, 2022' and the copyright line '2016-2022 Francisco Pimenta, Manuel A. Alves'"
+        }
+      ]
+    },
+    "role": {
+      "value": "engine",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-rheotool-6.0-user-guide",
+          "locus": "the guide documents rheoTool, the engine of req-rheotool-oldroyd-b-001"
+        }
+      ]
+    },
+    "methods": {
+      "value": [
+        "computational fluid dynamics",
+        "viscoelastic flow"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-rheotool-6.0-user-guide",
+          "locus": "chapters 3 to 5: governing equations, constitutive models, solvers and tutorials"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://github.com/fppimenta/rheoTool/blob/81f3e8cf6079e84afd04c5d847389c338404b268/doc/user_guide.pdf"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-22T00:36:18Z",
+    "content_hash": "sha256:03284c8edce6d42b7f510c00e756d558f000dec5595e2031c1985f5915d76f61",
+    "archived": null
+  },
+  "added_by": "meta-macbook-20261120-4",
+  "added_at": "2026-11-21",
+  "entry_path": "search",
+  "license_note": {
+    "value": "Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported, as the guide's licence page states it",
+    "state": "inferred",
+    "evidence": [
+      {
+        "source_ref": "mat-20261121-rheotool-6.0-user-guide",
+        "locus": "the page 'License' after the title page"
+      }
+    ]
+  },
+  "may_quote": "unknown",
+  "state": "queued",
+  "state_reason": null,
+  "questions": [
+    "registered: may this source, found by a seat's search for tasks/034 (req-hoomd-oldroyd-b-001, req-rheotool-oldroyd-b-001), be registered?",
+    "may_quote: may an excerpt of it be kept?"
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261121-hoomd-7.2.2-methods-brownian",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T00:36:18Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "Found by searching, anonymously and read-only, by meta-macbook-20261120-4 for tasks/034 (req-hoomd-oldroyd-b-001, req-rheotool-oldroyd-b-001). Read for the MD agent: Brownian takes a particle filter, kT (energy) and a translational drag coefficient gamma per particle type (mass per time); it integrates the overdamped Langevin equation, the position's rate being the net force plus a random force over gamma, the random force sized by the fluctuation-dissipation theorem; its error is first order in the time step, and the page warns that a much smaller step is needed than for other methods; velocities are drawn anew each step at the set temperature so that ThermodynamicQuantities reports temperatures and pressures. Critique: gamma here is the drag on one particle, which is the bead friction of the dumbbell model (mat-20261121-morozov-spagnolie-2015-complex-fluids) only once a bead is one particle; the page says nothing of hydrodynamic interaction, which the model neglects too. The page is at 'latest', which named 7.2.2 when read.",
+  "kind": "api_doc",
+  "about": {
+    "name": {
+      "value": "hoomd.md.methods.Brownian, HOOMD-blue 7.2.2 documentation",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-hoomd-7.2.2-methods-brownian",
+          "locus": "the page's title and its head 'HOOMD-blue 7.2.2 documentation'"
+        }
+      ]
+    },
+    "role": {
+      "value": "engine",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-hoomd-7.2.2-methods-brownian",
+          "locus": "the page documents HOOMD-blue, the MD engine of req-hoomd-oldroyd-b-001"
+        }
+      ]
+    },
+    "methods": {
+      "value": [
+        "molecular dynamics",
+        "Brownian dynamics"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-hoomd-7.2.2-methods-brownian",
+          "locus": "the class documents overdamped Langevin (Brownian) dynamics"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://hoomd-blue.readthedocs.io/en/latest/hoomd/md/methods/brownian.html"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-22T00:36:18Z",
+    "content_hash": "sha256:372aa969c62adb8e4ab7f5e77f4762eae394058ae2278294db566f255331242b",
+    "archived": null
+  },
+  "added_by": "meta-macbook-20261120-4",
+  "added_at": "2026-11-21",
+  "entry_path": "search",
+  "license_note": {
+    "value": null,
+    "state": "unknown"
+  },
+  "may_quote": "unknown",
+  "state": "queued",
+  "state_reason": null,
+  "questions": [
+    "registered: may this source, found by a seat's search for tasks/034 (req-hoomd-oldroyd-b-001, req-rheotool-oldroyd-b-001), be registered?",
+    "may_quote: may an excerpt of it be kept?"
+  ]
+}

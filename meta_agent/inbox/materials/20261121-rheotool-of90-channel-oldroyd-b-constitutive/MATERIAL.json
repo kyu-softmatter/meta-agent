@@ -1,0 +1,81 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261121-rheotool-of90-channel-oldroyd-b-constitutive",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T00:36:18Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "Found by searching, anonymously and read-only, by meta-macbook-20261120-4 for tasks/034 (req-hoomd-oldroyd-b-001, req-rheotool-oldroyd-b-001). Read for the CFD agent: the subdictionary 'parameters' takes type Oldroyd-BLog and four dimensioned constants, rho (dimensions of density), etaS and etaP (dynamic viscosity) and lambda (time), each in OpenFOAM's dimension set, which is SI, plus a stabilization keyword; so the three values the MD agent hands over enter this file as dynamic viscosities and a time, with the density a further value the person gives. Critique: the tutorial's own numbers are an example of the maker's and enter nothing here.",
+  "kind": "repo",
+  "about": {
+    "name": {
+      "value": "rheoTool of90 tutorial rheoFoam/Channel/Oldroyd-BLog, constant/constitutiveProperties",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-rheotool-of90-channel-oldroyd-b-constitutive",
+          "locus": "the file's path in the repository fppimenta/rheoTool at commit 81f3e8cf6079e84afd04c5d847389c338404b268"
+        }
+      ]
+    },
+    "role": {
+      "value": "engine",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-rheotool-of90-channel-oldroyd-b-constitutive",
+          "locus": "the file is a case dictionary of rheoTool, the engine of req-rheotool-oldroyd-b-001"
+        }
+      ]
+    },
+    "methods": {
+      "value": [
+        "computational fluid dynamics",
+        "viscoelastic flow"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-rheotool-of90-channel-oldroyd-b-constitutive",
+          "locus": "the dictionary sets a viscoelastic constitutive model for rheoFoam"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://raw.githubusercontent.com/fppimenta/rheoTool/81f3e8cf6079e84afd04c5d847389c338404b268/of90/tutorials/rheoFoam/Channel/Oldroyd-BLog/constant/constitutiveProperties"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-22T00:36:18Z",
+    "content_hash": "sha256:4e13f4a50a7ef81e3ffff3f7b321fe46881c535b37f4849a0765d4c64d77acb5",
+    "archived": null
+  },
+  "added_by": "meta-macbook-20261120-4",
+  "added_at": "2026-11-21",
+  "entry_path": "search",
+  "license_note": {
+    "value": "GPL-3.0, as the repository's LICENSE file states it",
+    "state": "inferred",
+    "evidence": [
+      {
+        "source_ref": "mat-20261121-rheotool-of90-channel-oldroyd-b-constitutive",
+        "locus": "LICENSE at the same commit: 'GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007'"
+      }
+    ]
+  },
+  "may_quote": "unknown",
+  "state": "queued",
+  "state_reason": null,
+  "questions": [
+    "registered: may this source, found by a seat's search for tasks/034 (req-hoomd-oldroyd-b-001, req-rheotool-oldroyd-b-001), be registered?",
+    "may_quote: may an excerpt of it be kept?"
+  ]
+}

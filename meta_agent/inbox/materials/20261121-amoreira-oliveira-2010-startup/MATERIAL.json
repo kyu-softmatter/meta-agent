@@ -1,0 +1,70 @@
+{
+  "card": "material",
+  "schema_version": "0.1",
+  "id": "mat-20261121-amoreira-oliveira-2010-startup",
+  "revision": 1,
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T00:36:18Z",
+  "numbers": [],
+  "assumptions": [],
+  "kb_refs": [],
+  "kb_gaps": [],
+  "case_refs": [],
+  "case_gaps": [],
+  "degraded": [],
+  "status": "draft",
+  "note": "Found by searching, anonymously and read-only, by meta-macbook-20261120-4 for tasks/034 (req-hoomd-oldroyd-b-001, req-rheotool-oldroyd-b-001). Read for the CFD agent's scientific task: section 2.1 writes the start-up planar Poiseuille flow of an Oldroyd-B fluid with h the channel half-width, the steady mean velocity K h^2/(3 eta0), the elasticity number E = lambda eta0/(rho h^2) and beta the solvent viscosity over the total, time scaled by lambda, and gives Waters and King's analytical velocity, equations (2.6)-(2.9), and the shear stress (2.10)-(2.12). The PDF was reached anonymously from the publisher's article page through its download link. Candidate: this as the reference the CFD's centreline velocity against time is compared with. Critique: the series is quoted from Waters and King (1970), Rheol. Acta 9, 345, which this seat could not read (no open copy found); the OpenFOAM-9 program (mat-20261121-openfoam-9-planarpoiseuille-watersking) states the same terms, and the Basilisk test (mat-20261121-basilisk-poiseuille-oldroydb) an equivalent form whose text and code differ. Refinement: the reference is this paper's equations (2.6)-(2.9), the original noted as not read. The paper's figures and error norms (section 4) are numerical results of the same flow and may serve the tolerance as a material of the same system.",
+  "kind": "paper",
+  "about": {
+    "name": {
+      "value": "Amoreira and Oliveira (2010), Comparison of different formulations for the numerical calculation of unsteady incompressible viscoelastic fluid flow, Adv. Appl. Math. Mech. 2(4), 483-502, doi:10.4208/aamm.10-m1010",
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-amoreira-oliveira-2010-startup",
+          "locus": "the paper's head: the journal, volume, issue, pages and DOI"
+        }
+      ]
+    },
+    "role": {
+      "value": null,
+      "state": "unknown",
+      "note": "a peer-reviewed paper of computational rheology; it documents no engine, instrument, platform or analysis software"
+    },
+    "methods": {
+      "value": [
+        "computational fluid dynamics",
+        "viscoelastic flow"
+      ],
+      "state": "inferred",
+      "evidence": [
+        {
+          "source_ref": "mat-20261121-amoreira-oliveira-2010-startup",
+          "locus": "the abstract: finite volume simulations of plane Poiseuille start-up and pulsated flows of Oldroyd-B fluids"
+        }
+      ]
+    }
+  },
+  "location": {
+    "url": "https://www.global-sci.com/aamm/article/view/4529"
+  },
+  "source_snapshot": {
+    "retrieved_at": "2026-11-22T00:36:18Z",
+    "content_hash": "sha256:bb9b1ffd6968c177fd55e97b106e31de3a0aba5bd9fc1e92f6dc4fbde59339ae",
+    "archived": null
+  },
+  "added_by": "meta-macbook-20261120-4",
+  "added_at": "2026-11-21",
+  "entry_path": "search",
+  "license_note": {
+    "value": null,
+    "state": "unknown"
+  },
+  "may_quote": "unknown",
+  "state": "queued",
+  "state_reason": null,
+  "questions": [
+    "registered: may this source, found by a seat's search for tasks/034 (req-hoomd-oldroyd-b-001, req-rheotool-oldroyd-b-001), be registered?",
+    "may_quote: may an excerpt of it be kept?"
+  ]
+}
