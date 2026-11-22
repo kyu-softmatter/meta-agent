@@ -1,0 +1,664 @@
+{
+  "card": "intake",
+  "schema_version": "0.1",
+  "id": "intake-rheotool-oldroyd-b-001",
+  "rid": "req-rheotool-oldroyd-b-001",
+  "revision": 9,
+  "supersedes": "intake-rheotool-oldroyd-b-001",
+  "author": "meta-macbook-20261120-4",
+  "created_at": "2026-11-22T05:59:14Z",
+  "numbers": [],
+  "degraded": [],
+  "status": "draft",
+  "stage": "specified",
+  "revision_note": "the contract, the rows that take the MD agent's hand-over, the solvent viscosity as the person's (question 5 of req-hoomd-oldroyd-b-001) and the tasks",
+  "agent_name": "rheotool-oldroyd-b",
+  "requested_by": "human",
+  "request_source": "the person's request of 2026-11-20 for a test of HOOMD-blue and OpenFOAM together under a hub (docs/ideas/20261120.md) and their answers of 2026-11-21; the meta part of meta_agent/tasks/034, which builds an MD agent, a CFD agent and a hub over them",
+  "persons_words": {
+    "verbatim": "새로운 테스트는 HOOMD와 OpenFOAM을 함께 사용해보고싶어, / MD로 Oldroyd-B유체를 구현하고 여기서 Viscoelastic properties를 계산한 뒤, 이를 바탕으로 CFD 시뮬레이션을 진행한다. / Under a hub (Recommended) / λ, η_p, η_s (Recommended) / Channel start-up (Recommended) / Dumbbells, implicit solvent (Recommended) / rheoTool image (Recommended)",
+    "gloss": "For the new test, I would like to try HOOMD and OpenFOAM together. / Implement an Oldroyd-B fluid with MD, compute its viscoelastic properties from it, then run a CFD simulation on that basis. / Under a hub. / The relaxation time, the polymer viscosity and the solvent viscosity. / The start-up of a planar channel flow. / Hookean dumbbells in an implicit solvent. / The rheoTool image on this computer.",
+    "with": "nothing attached; the first three answers given to the design seat design-macbook-20261120-3 (docs/ideas/20261120.md, 'A new test: HOOMD-blue and OpenFOAM together, under a hub'), the last four to the meta seat meta-macbook-20261120-4 on 2026-11-21, relayed by the note 20261121-meta-macbook-20261120-4-5",
+    "date": "2026-11-21"
+  },
+  "paragraph": "An agent that controls rheoTool's solvers on OpenFOAM in words for the start-up of a planar channel flow of an Oldroyd-B fluid: it takes the relaxation time and the polymer viscosity the MD agent handed over, once the person has let the card cross, and the solvent viscosity from the person, holds any value its build did not declare, and, asked for a run, runs the start-up flow on the settings the person gives and reports the centreline velocity against time as the solver writes it, with the analytical solution computed by a library skill beside it.",
+  "reading": {
+    "taken": "two engine agents under a hub; this is the CFD one, on the rheoTool image that is already on this computer, and what it finds is the start-up flow's centreline velocity against time",
+    "why": "the person chose 'Channel start-up (Recommended)' and 'rheoTool image (Recommended)' (note 20261121-meta-macbook-20261120-4-5)",
+    "other_readings": [
+      "a 4:1 contraction or the flow past a cylinder, which the person did not choose",
+      "a plain OpenFOAM installed anew, which the person did not choose"
+    ]
+  },
+  "science_task": "the start-up of a planar Poiseuille flow of an Oldroyd-B fluid with the MD agent's constants, its centreline velocity against time compared with the analytical solution",
+  "tool": {
+    "name": "rheoTool on OpenFOAM (rheoFoam)",
+    "kind": "engine",
+    "registry_id": "rheotool",
+    "material_refs": [
+      "mat-20261121-rheotool-6.0-user-guide",
+      "mat-20261121-rheotool-of90-channel-oldroyd-b-constitutive",
+      "mat-20261121-openfoam-9-planarpoiseuille-watersking"
+    ],
+    "documentation": "rheoTool's user guide (mat-20261121-rheotool-6.0-user-guide), its of90 tutorials and OpenFOAM's own planarPoiseuille tutorial, read on the day their material cards name",
+    "language": "C++ applications of OpenFOAM driven by case dictionaries",
+    "version": "the image rheotool:of90 in this computer's Colima profile rheotool, the versions inside it to be read off the adapter's trial",
+    "license": "GPL for OpenFOAM and rheoTool, as their sources state it (mat-20261121-rheotool-of90-channel-oldroyd-b-constitutive, mat-20261121-openfoam-9-planarpoiseuille-watersking); called out of process, never bundled"
+  },
+  "methods": [
+    "cfd"
+  ],
+  "executes": "engine",
+  "must_not": [
+    "touch an instrument",
+    "invent a number, or choose a setting, a scale or a tolerance",
+    "convert a unit by hand",
+    "compute again a value the engine itself reports",
+    "reach a network host or a container other than those the lab's permission lists for rheoTool",
+    "write in the MD agent's or the hub's folder",
+    "use a value handed over that its build did not declare"
+  ],
+  "knowledge_needs": [
+    "which rheoTool solver and constitutive model carry Oldroyd-B, and how its dictionaries name λ, η_p and η_s",
+    "how a planar channel's start-up is set up in rheoTool, from its tutorials",
+    "the analytical solution of the start-up of planar Poiseuille flow of an Oldroyd-B fluid, from a published source",
+    "what the solver writes of the velocity, and where"
+  ],
+  "parameter_scope": [
+    "channel_half_width",
+    "channel_length",
+    "pressure_gradient",
+    "density",
+    "mesh",
+    "time_step",
+    "end_time"
+  ],
+  "destination": "this computer (macOS on arm64), in a folder the person chooses beside the MD agent's and the hub's, running the image rheotool:of90 in the Colima profile rheotool; the bundle stops at meta_agent/builds/ until the person moves it",
+  "priorities": [
+    "a value handed over is used only as declared",
+    "the velocity reported is the solver's own, never computed again",
+    "the agent stands alone: without the hub it still runs, the constants then being the person's to give"
+  ],
+  "lab_profile_ref": "lab-kyu-softmatter",
+  "gui_choice": "none",
+  "analysis_permission": null,
+  "tool_reading": [
+    {
+      "claim": "rheoTool's Oldroyd-B model (TypeName Oldroyd-B, or Oldroyd-BLog for the log-conformation approach) takes the constants etaS, etaP and lambda in constitutiveProperties, with rho, each a dimensioned value in OpenFOAM's SI dimension set (dynamic viscosity, time, density)",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "the user guide, Table 4.1 (mat-20261121-rheotool-6.0-user-guide)",
+        "of90 tutorial rheoFoam/Channel/Oldroyd-BLog, constant/constitutiveProperties (mat-20261121-rheotool-of90-channel-oldroyd-b-constitutive)"
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "rheoFoam is a transient solver whose momentum equation takes fvOptions, and rheoTool supports cyclic patches, so a channel may be driven by a momentum source with periodic ends",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "the user guide, section 4.7.1, the listing of rheoFoam's momentum equation, and the changelog on cyclicAMI (mat-20261121-rheotool-6.0-user-guide)"
+      ],
+      "capability": "parameter",
+      "limitations": "the guide's channel tutorial is steady and inlet-driven; a start-up driven by a source is not exemplified in rheoTool, only in OpenFOAM's own planarPoiseuille tutorial (mat-20261121-openfoam-9-planarpoiseuille-watersking)"
+    },
+    {
+      "claim": "the analytical velocity of the start-up planar Poiseuille flow of an Oldroyd-B fluid is Waters and King's series in the elasticity number lambda eta0/(rho h^2) and the solvent's share beta, h the half-width and time scaled by lambda",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "Amoreira and Oliveira (2010), equations (2.6)-(2.9) (mat-20261121-amoreira-oliveira-2010-startup)",
+        "OpenFOAM-9 validation/WatersKing/WatersKing.C (mat-20261121-openfoam-9-planarpoiseuille-watersking)"
+      ],
+      "capability": "observable",
+      "limitations": "the original, Waters and King (1970), was not read: no open copy was found"
+    },
+    {
+      "claim": "the image rheotool:of90 is in the Colima profile rheotool, which `colima list` showed stopped on 2026-11-21",
+      "kind": "observed",
+      "basis": "run_record",
+      "loci": [
+        "`colima list` on this computer, 2026-11-21"
+      ],
+      "capability": "environment"
+    },
+    {
+      "claim": "rheoFoam's momentum equation is written per unit density: the pressure it solves for and the stress term are divided by the density, so a momentum source given to it in fvModels (semiImplicitSource, volumeMode specific) is a force per unit mass, the pressure gradient over the density",
+      "kind": "observed",
+      "basis": "documentation",
+      "loci": [
+        "the user guide, section 4.7 on divTau, 'divided by the density to be compliant with the usual strategy of OpenFOAM', and section 5.1.1 on the pressure (mat-20261121-rheotool-6.0-user-guide)",
+        "OpenFOAM-9's planarPoiseuille tutorial, constant/fvModels, a semiImplicitSource of volumeMode specific on U (mat-20261121-openfoam-9-planarpoiseuille-watersking, the same tutorial folder)"
+      ],
+      "capability": "parameter"
+    },
+    {
+      "claim": "the run adapter, tried under TMPDIR, sent a periodic planar channel case into rheotool:of90 through stdin, ran blockMesh and rheoFoam there and read back OpenFOAM's probe of the centreline velocity; the series followed oldroyd_b_startup_channel_velocity for the trial's settings, its overshoot and its oscillation included (evidence for the adapter only; no value of it enters a card)",
+      "kind": "observed",
+      "basis": "run_record",
+      "loci": [
+        "the adapter's trial under TMPDIR, back/log.rheoFoam and back/postProcessing/probes/0/U of its run folder"
+      ],
+      "capability": "observable",
+      "limitations": "one mesh and one time step; the run's own numerical error is not estimated, which a two-resolution run would give (discretization_error_from_two_resolutions)"
+    }
+  ],
+  "values_read": [
+    {
+      "name": "openfoam_version",
+      "value": "9",
+      "unit": "1",
+      "locus": "the banner of log.rheoFoam in the adapter's trial, 'Version:  9'",
+      "role": "the OpenFOAM the image carries"
+    },
+    {
+      "name": "openfoam_build",
+      "value": "9-b456138dc4bc",
+      "unit": "1",
+      "locus": "the banner of log.rheoFoam in the adapter's trial, 'Build  : 9-b456138dc4bc'",
+      "role": "the OpenFOAM build the adapter was tried on"
+    },
+    {
+      "name": "rheotool_commit",
+      "value": "81f3e8cf6079e84afd04c5d847389c338404b268",
+      "unit": "1",
+      "locus": "~/Desktop/Projects/rheotool-engine/Dockerfile, ARG RHEOTOOL_COMMIT, and the commit of the repository this seat read (mat-20261121-rheotool-of90-channel-oldroyd-b-constitutive)",
+      "role": "the rheoTool the image was built from"
+    }
+  ],
+  "environment_read": {
+    "os": "macOS on arm64",
+    "docker": "the docker CLI from Homebrew, the Colima profile rheotool (stopped until the trial started it) and the image rheotool:of90 in it, as the lab's README in ~/Desktop/Projects/rheotool-engine says",
+    "mounts": "Colima shares the home folder only, so the adapter sends the case through stdin and reads the results through stdout, wherever the bundle sits",
+    "trial": "the adapter (meta_agent/requests/req-rheotool-oldroyd-b-001/adapters/) was tried under TMPDIR in that image, as the lab's permission allows for the rheoTool engine"
+  },
+  "notes": {
+    "parameter_rows": "relaxation_time and polymer_viscosity take the MD agent's hand-over over thr-oldroyd-b, in s and Pa.s, which the card carries already; the solvent viscosity and every other row is the person's to give when asking for a run",
+    "scientific_tasks": "one task, held: see its reason; oldroyd_b_startup_channel_velocity@v1 is in the bundle so that a session can show the person the analytical velocity beside the solver's, through the runner",
+    "tools": "the image is already on this computer; no install tool. Starting the Colima profile is the person's, since it switches the docker command's current context (rheo-2)"
+  },
+  "questions_for_the_person": [
+    {
+      "n": 1,
+      "needed_before": "the goal: what the agent computes and hands over",
+      "question": "Task 034 (HOOMD -> OpenFOAM, under a hub): which viscoelastic properties should the MD agent compute and hand over to the CFD agent?",
+      "how": "one of the buttons, the recommendation marked",
+      "answer": {
+        "verbatim": "λ, η_p, η_s (Recommended)",
+        "date": "2026-11-21",
+        "gloss": "the relaxation time, the polymer viscosity and the solvent viscosity (given in the meta seat's conversation; relayed for docs/ideas by the note 20261121-meta-macbook-20261120-4-5)"
+      }
+    },
+    {
+      "n": 2,
+      "needed_before": "the goal: the flow the CFD runs and what it finds",
+      "question": "What flow should the OpenFOAM agent simulate with those properties, and what should it find?",
+      "how": "one of the buttons, the recommendation marked",
+      "answer": {
+        "verbatim": "Channel start-up (Recommended)",
+        "date": "2026-11-21",
+        "gloss": "the start-up of planar Poiseuille flow, its centreline velocity against time (given in the meta seat's conversation; relayed for docs/ideas by the note 20261121-meta-macbook-20261120-4-5)"
+      }
+    },
+    {
+      "n": 3,
+      "needed_before": "the goal: the engine the CFD agent runs",
+      "question": "Which OpenFOAM should the CFD agent run?",
+      "how": "one of the buttons, the recommendation marked",
+      "answer": {
+        "verbatim": "rheoTool image (Recommended)",
+        "date": "2026-11-21",
+        "gloss": "the image rheotool:of90 in this computer's Colima profile rheotool (given in the meta seat's conversation; relayed for docs/ideas by the note 20261121-meta-macbook-20261120-4-5)"
+      }
+    },
+    {
+      "n": 4,
+      "needed_before": "the tool contract: which engine settings the run tool fixes",
+      "question": "The rheoTool adapter uses the schemes and linear-solver settings of rheoTool's own Oldroyd-B channel tutorial, unchanged. Keep those as the CFD agent's fixed solver settings?",
+      "how": "one of the buttons, the recommendation marked",
+      "answer": {
+        "verbatim": "Keep the tutorial's (Recommended)",
+        "date": "2026-11-21",
+        "gloss": "the schemes and linear solvers of rheoTool's Oldroyd-BLog channel tutorial, unchanged (given in the meta seat's conversation; relayed for docs/ideas by the note 20261121-meta-macbook-20261120-4-7)"
+      }
+    }
+  ],
+  "tools": [
+    {
+      "contract": {
+        "artifact": "tool_contract",
+        "schema_version": "0.1",
+        "name": "run_startup_channel",
+        "description": "run rheoFoam (rheoTool on OpenFOAM, in the image rheotool:of90 of the Colima profile rheotool) on the start-up of a planar channel flow of an Oldroyd-B fluid: a channel periodic along the flow between two no-slip walls, the fluid at rest with no stress until the pressure gradient is applied, the constitutive model Oldroyd-BLog with the schemes and solvers of rheoTool's channel tutorial; the case goes into the container through stdin and the results come back through stdout; a new folder under runs/cfd for each run; it returns the centreline velocity against time as the solver writes it and computes nothing from it",
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "half_width": {
+              "type": "number",
+              "unit": "m",
+              "row": "half_width",
+              "description": "h, the distance from the centreline to each wall",
+              "minimum": 0
+            },
+            "density": {
+              "type": "number",
+              "unit": "kg/m^3",
+              "row": "density",
+              "description": "rho, the fluid's density",
+              "minimum": 0
+            },
+            "solvent_viscosity": {
+              "type": "number",
+              "unit": "Pa.s",
+              "row": "solvent_viscosity",
+              "description": "eta_s, the solvent's viscosity, the person's to give",
+              "minimum": 0
+            },
+            "polymer_viscosity": {
+              "type": "number",
+              "unit": "Pa.s",
+              "row": "polymer_viscosity",
+              "description": "eta_p, the polymer viscosity; the value src/handover.py values prints for the row polymer_viscosity",
+              "minimum": 0
+            },
+            "relaxation_time": {
+              "type": "number",
+              "unit": "s",
+              "row": "relaxation_time",
+              "description": "lambda, the relaxation time; the value src/handover.py values prints for the row relaxation_time",
+              "minimum": 0
+            },
+            "driving": {
+              "type": "number",
+              "unit": "Pa/m",
+              "row": "driving",
+              "description": "-dp/dx, the pressure gradient that drives the flow from rest, applied as a step; rheoFoam takes it over the density",
+              "minimum": 0
+            },
+            "cells_across": {
+              "type": "integer",
+              "unit": "count",
+              "row": "cells_across",
+              "description": "how many cells span the channel, an odd number so that one cell centre is on the centreline",
+              "minimum": 1
+            },
+            "dt": {
+              "type": "number",
+              "unit": "s",
+              "row": "dt",
+              "description": "the solver's time step",
+              "minimum": 0
+            },
+            "end_time": {
+              "type": "number",
+              "unit": "s",
+              "row": "end_time",
+              "description": "how long after the start the run ends",
+              "minimum": 0
+            },
+            "probe_every": {
+              "type": "integer",
+              "unit": "count",
+              "row": "probe_every",
+              "description": "how many time steps between two written values of the probe",
+              "minimum": 1
+            },
+            "budget_s": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "unit": "s",
+              "minimum": 0,
+              "default": null,
+              "description": "the running time the run may take before the call gives up on it, counted while it runs and not while it is paused; no limit when null"
+            }
+          },
+          "required": [
+            "half_width",
+            "density",
+            "solvent_viscosity",
+            "polymer_viscosity",
+            "relaxation_time",
+            "driving",
+            "cells_across",
+            "dt",
+            "end_time",
+            "probe_every"
+          ]
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "openfoam_version": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "the version OpenFOAM's banner prints in log.rheoFoam"
+            },
+            "openfoam_build": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "the build OpenFOAM's banner prints in log.rheoFoam"
+            },
+            "probe_location": {
+              "type": "array",
+              "description": "the probe's point, the channel's centre, in metres"
+            },
+            "centreline_velocity": {
+              "type": "array",
+              "description": "pairs [t, u]: the time in seconds and the streamwise velocity at the centreline in metres per second, as rheoFoam's probes function writes them"
+            },
+            "run_dir": {
+              "type": "string",
+              "description": "the run's folder, relative to this directory"
+            },
+            "inputs": {
+              "type": "object",
+              "description": "the call's inputs, the conditions the run held under"
+            }
+          },
+          "required": [
+            "probe_location",
+            "centreline_velocity",
+            "run_dir",
+            "inputs"
+          ]
+        },
+        "errors": [
+          "invalid_input",
+          "unavailable",
+          "refused_by_safety",
+          "execution_failure",
+          "timeout",
+          "cancelled"
+        ],
+        "side_effects": "runs_process",
+        "safety_gate": {
+          "required": true,
+          "place": "src/gate.py, consulted by src/run_tool.py before the call",
+          "opens_by": "execution_permission"
+        },
+        "idempotent": false,
+        "timeout_s": null
+      },
+      "adapter_source": "requests/req-rheotool-oldroyd-b-001/adapters/run_startup_channel.py",
+      "error_contracts": [
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-RUN-INPUT-001",
+          "category": "invalid_input",
+          "message": "a value the run needs is missing or not one the contract takes",
+          "retryable": false,
+          "remediation": {
+            "action": "give every value; relaxation_time and polymer_viscosity are what src/handover.py values prints for their rows, and every other value is the person's to give"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-ENV-001",
+          "category": "unavailable",
+          "message": "the docker command is not on this computer",
+          "retryable": false,
+          "remediation": {
+            "action": "the person installs Colima and the docker command as the lab's README for rheotool:of90 says"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-ENV-002",
+          "category": "unavailable",
+          "message": "the image rheotool:of90 is not reachable in the docker context colima-rheotool",
+          "retryable": true,
+          "remediation": {
+            "action": "the person starts the Colima profile rheotool, which also makes colima-rheotool the docker command's current context, then this call again"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-RUN-INPUT-002",
+          "category": "invalid_input",
+          "message": "a value that must be positive is not",
+          "retryable": false,
+          "remediation": {
+            "action": "give positive values"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-RUN-INPUT-003",
+          "category": "invalid_input",
+          "message": "a count is not a whole number of one or more",
+          "retryable": false,
+          "remediation": {
+            "action": "give a count"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-RUN-INPUT-004",
+          "category": "invalid_input",
+          "message": "cells_across is even, so no cell centre lies on the centreline",
+          "retryable": false,
+          "remediation": {
+            "action": "give an odd number of cells across the channel"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-RUN-002",
+          "category": "execution_failure",
+          "message": "the container returned no results",
+          "retryable": false,
+          "remediation": {
+            "action": "read container.err in the run folder"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RHEO-RUN-003",
+          "category": "execution_failure",
+          "message": "rheoFoam did not reach its end or wrote no probe",
+          "retryable": false,
+          "remediation": {
+            "action": "read back/log.blockMesh and back/log.rheoFoam in the run folder"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RUN_STARTUP_CHANNEL-GAVE-UP",
+          "category": "timeout",
+          "message": "the call gave up on the run after its budget of running time and stopped it",
+          "retryable": true,
+          "remediation": {
+            "action": "call again with a larger budget_s, or none"
+          }
+        },
+        {
+          "artifact": "error_contract",
+          "schema_version": "0.1",
+          "code": "RUN_STARTUP_CHANNEL-STOPPED",
+          "category": "cancelled",
+          "message": "the run was stopped from outside",
+          "retryable": true,
+          "remediation": {
+            "action": "call again with the same input to start the run over"
+          }
+        }
+      ]
+    }
+  ],
+  "skills": [
+    "oldroyd_b_startup_channel_velocity@v1",
+    "timestep_max_from_courant@v2",
+    "unit_convert@v2"
+  ],
+  "parameter_rows": [
+    {
+      "name": "relaxation_time",
+      "value": null,
+      "unit": "s",
+      "handover": {
+        "takes": {
+          "name": "relaxation_time",
+          "thread": "thr-oldroyd-b",
+          "from_agent": "hoomd-oldroyd-b"
+        }
+      }
+    },
+    {
+      "name": "polymer_viscosity",
+      "value": null,
+      "unit": "Pa.s",
+      "handover": {
+        "takes": {
+          "name": "polymer_viscosity",
+          "thread": "thr-oldroyd-b",
+          "from_agent": "hoomd-oldroyd-b"
+        }
+      }
+    },
+    {
+      "name": "solvent_viscosity",
+      "value": null,
+      "unit": "Pa.s",
+      "note": "the person gives it when asking for a run, as they chose (question 5 of req-hoomd-oldroyd-b-001, 'Give it to the CFD agent (Recommended)'); no hand-over carries it"
+    },
+    {
+      "name": "half_width",
+      "value": null,
+      "unit": "m",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "density",
+      "value": null,
+      "unit": "kg/m^3",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "driving",
+      "value": null,
+      "unit": "Pa/m",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "cells_across",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "dt",
+      "value": null,
+      "unit": "s",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "end_time",
+      "value": null,
+      "unit": "s",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    },
+    {
+      "name": "probe_every",
+      "value": null,
+      "unit": "count",
+      "note": "the person gives it when asking for a run; nothing in the bundle gives it"
+    }
+  ],
+  "interface_tasks": [
+    {
+      "id": "if-1",
+      "name": "a run with no input is refused by the runner's input check",
+      "call": {
+        "tool": "run_startup_channel",
+        "input": {}
+      },
+      "expected": {
+        "error": {
+          "category": "invalid_input",
+          "code": "RHEO-RUN-INPUT-001"
+        }
+      },
+      "expected_verdict": "pass"
+    },
+    {
+      "id": "if-2",
+      "name": "a relaxation time given in words is refused by the runner's input check",
+      "call": {
+        "tool": "run_startup_channel",
+        "input": {
+          "relaxation_time": "the received one"
+        }
+      },
+      "expected": {
+        "error": {
+          "category": "invalid_input",
+          "code": "RHEO-RUN-INPUT-001"
+        }
+      },
+      "expected_verdict": "pass"
+    }
+  ],
+  "scientific_tasks": [
+    {
+      "id": "sci-1",
+      "name": "the centreline velocity of the start-up against the analytical solution of the start-up of planar Poiseuille flow of an Oldroyd-B fluid",
+      "call": {
+        "tool": "run_startup_channel",
+        "input": {}
+      },
+      "measure": {},
+      "reference": {
+        "kind": "source",
+        "ref": "Amoreira and Oliveira (2010), section 2.1 (mat-20261121-amoreira-oliveira-2010-startup), and OpenFOAM-9's WatersKing.C (mat-20261121-openfoam-9-planarpoiseuille-watersking), as oldroyd_b_startup_channel_velocity@v1 computes it from the run's own settings"
+      },
+      "tolerance": null,
+      "held": {
+        "reason": "the reference is a series a library skill computes from the call's input at the times the solver wrote, which the bundle's check takes only as a function of its own, and the comparison is of a series, not of one value",
+        "needs": "a check that takes a reference a library skill computes from the call's input and compares a series point by point, and a tolerance the person gives or the standing rule derives"
+      },
+      "expected_verdict": "not_run"
+    }
+  ],
+  "replay_items": [
+    {
+      "id": "rp-001",
+      "name": "a run with no input is refused with RHEO-RUN-INPUT-001",
+      "call": {
+        "tool": "run_startup_channel",
+        "input": {}
+      },
+      "expected": {
+        "error": {
+          "category": "invalid_input",
+          "code": "RHEO-RUN-INPUT-001"
+        }
+      },
+      "expected_verdict": "pass"
+    }
+  ],
+  "held": [
+    {
+      "item": "the comparison of the centreline velocity with the analytical start-up solution",
+      "reason": "the bundle's check takes no reference a skill computes and compares no series"
+    }
+  ],
+  "workflow": [
+    "run_startup_channel"
+  ]
+}
