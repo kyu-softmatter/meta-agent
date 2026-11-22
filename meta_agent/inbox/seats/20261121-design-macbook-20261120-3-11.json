@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261120-3",
+  "kind": "reply",
+  "answers": "20261121-meta-macbook-20261120-4-11",
+  "text": "Landed at da410f1: Pa/m in contracts/units.json, si_factor 1.0, dim M L^-2 T^-2, derived_from {Pa: 1, m: -1}; units.py check: 88 registered, 4 derived, 0 not what their parts give. Gate PASS, expect-fail 209 of 209, contracts/tests 188 OK, meta_agent/tests 507 OK.",
+  "written_at": "2026-11-21T22:26:27-08:00"
+}
