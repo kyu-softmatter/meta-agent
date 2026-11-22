@@ -44,6 +44,13 @@
         "$ref": "common.schema.json#/$defs/number"
       }
     },
+    "series": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/series"
+      },
+      "description": "series the result quotes, each as a tool output gave it, where the producing build declares it (tasks/034, rheo-4)"
+    },
     "assumptions": {
       "type": "array"
     },

@@ -299,6 +299,48 @@ def check2(cards, c, report, tree):
                     label, n["grade"], derived, str(n["source"]).split(":", 1)[0], n["value_kind"]))
             if isinstance(n["source"], str) and n["source"].startswith("calibration:") and not n.get("expires"):
                 report.fail(2, r, "%s: a calibration number needs expires" % label)
+        check2_series(data, c, report, r, forbidden_g, forbidden_vk)
+
+
+def check2_series(data, c, report, r, forbidden_g, forbidden_vk):
+    """A series is judged as a number is (tasks/034, rheo-4): every part's unit is in contracts/units.json, every
+    point holds one number per part, and its grade is the one derived from (source, value_kind)."""
+    for i, s in enumerate(data.get("series") or []):
+        if not isinstance(s, dict):
+            report.fail(2, r, "series[%d]: not an object" % i)
+            continue
+        missing = [k for k in ("name", "parts", "points", "source", "grade", "value_kind") if k not in s]
+        if missing:
+            report.fail(2, r, "series[%d]: missing %s" % (i, ", ".join(missing)))
+            continue
+        label = "series[%d] (%s)" % (i, s.get("name"))
+        parts = s["parts"] if isinstance(s["parts"], list) else []
+        if not parts:
+            report.fail(2, r, "%s: no parts" % label)
+        for j, p in enumerate(parts):
+            unit = p.get("unit") if isinstance(p, dict) else None
+            if unit not in c.units:
+                report.fail(2, r, "%s: part %d's unit %r is not in contracts/units.json" % (label, j, unit))
+        points = s["points"] if isinstance(s["points"], list) else []
+        if not points:
+            report.fail(2, r, "%s: no points" % label)
+        for k, pt in enumerate(points):
+            if not isinstance(pt, list) or len(pt) != len(parts) \
+                    or any(not isinstance(v, (int, float)) or isinstance(v, bool) for v in pt):
+                report.fail(2, r, "%s: point %d is not %d numbers, one per part" % (label, k, len(parts)))
+                break
+        if s["value_kind"] in forbidden_vk:
+            report.fail(2, r, "%s: value_kind %r enters no card" % (label, s["value_kind"]))
+            continue
+        if s["grade"] in forbidden_g:
+            report.fail(2, r, "%s: grade %s enters no card" % (label, s["grade"]))
+            continue
+        derived, why = c.derive_grade(s["source"], s["value_kind"])
+        if derived is None:
+            report.fail(2, r, "%s: %s" % (label, why))
+        elif derived != s["grade"]:
+            report.fail(2, r, "%s: grade %s stated, %s derived from (%s, %s)" % (
+                label, s["grade"], derived, str(s["source"]).split(":", 1)[0], s["value_kind"]))
 
 
 # ----------------------------------------------------------------------------

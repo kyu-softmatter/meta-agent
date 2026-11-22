@@ -1,0 +1,88 @@
+{
+  "card": "result",
+  "schema_version": "0.1",
+  "id": "res-hoomd-h2-bond-r2",
+  "revision": 1,
+  "author": "hoomd-h2-bond",
+  "created_at": "2026-11-20T12:00:00Z",
+  "numbers": [
+    {
+      "name": "kinetic_temperature",
+      "value": 301.2,
+      "unit": "K",
+      "source": "computed:skill engine_reported_value@v1, runs/0002/record.json",
+      "grade": "E4",
+      "value_kind": "computed",
+      "uncertainty": null,
+      "conditions": {
+        "engine": "hoomd-blue",
+        "system": "H2 gas with the bond the DFT agent handed over",
+        "settings": "the person's, quoted in the assignment"
+      }
+    }
+  ],
+  "assumptions": [],
+  "degraded": [],
+  "status": "draft",
+  "thread": "thr-h2-bond-hub-hoomd-h2-bond",
+  "round": 2,
+  "from": {
+    "agent": "hoomd-h2-bond",
+    "build": "hoomd-h2-bond/0001"
+  },
+  "to": {
+    "agent": "h2-bond-hub",
+    "build": "h2-bond-hub/0001"
+  },
+  "answers": {
+    "assignment": "as-hoomd-h2-bond-r2",
+    "envelope": "inbox/thr-h2-bond-hub-hoomd-h2-bond/r2_envelope.json"
+  },
+  "state": "answered",
+  "produced_by": [
+    {
+      "skill": "engine_reported_value@v1",
+      "record": "runs/0002/record.json"
+    }
+  ],
+  "held": [],
+  "series": [
+    {
+      "name": "kinetic_temperature_against_time",
+      "parts": [
+        {
+          "name": "t",
+          "unit": "s",
+          "description": "time"
+        },
+        {
+          "name": "T",
+          "unit": "K",
+          "description": "the kinetic temperature at that time"
+        }
+      ],
+      "points": [
+        [
+          0.0,
+          300.0
+        ],
+        [
+          0.5,
+          301.0
+        ],
+        [
+          1.0,
+          301.2
+        ]
+      ],
+      "source": "computed:skill engine_reported_value@v1, runs/0002/record.json",
+      "grade": "E1",
+      "value_kind": "computed",
+      "conditions": {
+        "engine": "hoomd-blue",
+        "system": "H2 gas with the bond the DFT agent handed over",
+        "settings": "the person's, quoted in the assignment"
+      }
+    }
+  ]
+}

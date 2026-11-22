@@ -150,6 +150,78 @@
         "value_kind"
       ]
     },
+    "series": {
+      "description": "a series of points a library skill or an engine gave, each point one number per part, in the order of parts (a centreline velocity against time); like a number it states its source, its grade derived from contracts/grades.json and its value_kind, and each part's unit is in contracts/units.json (tasks/034, rheo-4)",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "unit",
+              "description"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "unit": {
+                "$ref": "common.schema.json#/$defs/unit"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "points": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "number"
+            }
+          },
+          "description": "each point holds as many numbers as there are parts (check 2)"
+        },
+        "source": {
+          "$ref": "common.schema.json#/$defs/source"
+        },
+        "grade": {
+          "$ref": "common.schema.json#/$defs/grade"
+        },
+        "value_kind": {
+          "$ref": "common.schema.json#/$defs/value_kind"
+        },
+        "conditions": {
+          "type": "object"
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "parts",
+        "points",
+        "source",
+        "grade",
+        "value_kind"
+      ]
+    },
     "evidence_item": {
       "type": "object",
       "properties": {
