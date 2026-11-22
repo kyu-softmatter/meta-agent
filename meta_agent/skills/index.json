@@ -2422,6 +2422,78 @@
       "sha256": "sha256:71fceb493a96aaa0eea51955420300c122785b7f9308692ff95be5ebe862f347"
     },
     {
+      "ref": "unit_convert@v2",
+      "id": "unit_convert",
+      "version": 2,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the factor between two registered units of one dimension, and a value converted by it, into or out of an engine's own unit only through the unit a scale says it stands for",
+      "description": "The factor between two registered units of one dimension and a value converted by it, read from the registry's entries its caller hands; into or out of an engine's own unit only through the registered unit a scale says it stands for, and nothing where the dimensions differ or no scale is handed. Take it whenever a value received from another agent, or read in one unit and wanted in another, changes unit.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "value",
+          "unit": "1",
+          "meaning": "the value to convert, in from_unit"
+        },
+        {
+          "name": "from_unit",
+          "unit": "1",
+          "meaning": "the registry's entry of the value's unit: name, si_factor and dim, as the registry holds them"
+        },
+        {
+          "name": "to_unit",
+          "unit": "1",
+          "meaning": "the registry's entry of the unit the value is wanted in"
+        },
+        {
+          "name": "stands_for",
+          "unit": "1",
+          "meaning": "where to_unit has no si_factor, the registry's entry of the registered unit a confirmed scale says it stands for; null otherwise"
+        },
+        {
+          "name": "from_stands_for",
+          "unit": "1",
+          "meaning": "where from_unit has no si_factor (a value an engine computed in its own unit), the registry's entry of the registered unit a confirmed scale says it stands for; null otherwise"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "converted | not_convertible"
+        },
+        {
+          "name": "factor",
+          "unit": "1",
+          "meaning": "si_factor(from, or the unit its scale stands for) over si_factor(to, or the unit its scale stands for); null when not convertible"
+        },
+        {
+          "name": "converted",
+          "unit": "1",
+          "meaning": "the value times the factor, in to_unit; null when not convertible"
+        },
+        {
+          "name": "value",
+          "unit": "1",
+          "meaning": "the value handed, unchanged, in from_unit"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why no factor exists; absent when converted"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/unit_convert@v2",
+      "sha256": "sha256:3b87c38b6e731c58cd1e77d80fbb8fd95ea62f7141553853152a82446f720b27"
+    },
+    {
       "ref": "diffusive_regime_from_msd@v1",
       "id": "diffusive_regime_from_msd",
       "version": 1,
