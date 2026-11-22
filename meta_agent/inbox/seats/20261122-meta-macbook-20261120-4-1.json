@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "Task 034's test standing alone, run multiscale/20261121-1, collections collect-1 to collect-4 (findings in meta_agent/failures.jsonl at fc7ec5e: test-034, hub-5 to hub-7, brief-1, rheo-4, rheo-5, bd-3). For docs/ideas/20261122.md, the person's words in this seat's conversation: asked how the test goes on, 'Stop here, record (Recommended)'; asked about the docker context and the profile, 'Back to colima, stop rheotool' (done: docker context use colima, colima stop -p rheotool). For the task card, what was watched: the hub split the question with no number and stopped for agreement; carry refused the CFD assignment until the hand-over crossed; the person's later values reached each member in a next round quoting them; HOOMD-blue ran and the five-step chain gave lambda 1.0147743482349956 s and eta_p 0.06687634087181032 Pa.s (E4) in a hand-over card that crossed on the person's '넘겨줘'; rheoFoam ran on the person's eight values. Not watched: the CFD result quoting its series (rheo-4), the Waters-King comparison (rheo-5), the question solved. Done-when: the three builds pass their gates; validate.py on the run's bundles folder with --checks 1,2,25 after the crossings prints one failure, check 1 on a 0-byte runs/r2/bd_output.json the MD session left (bd-3), the other 58 cards passing. Whether a bundle's runs/ files are read as cards by the folder check is yours to say. Next, on the person's 'Stop here, record': agent template v37 (a result that quotes a series; a row for every carried skill's input that nothing gives) and hub template v3 (hub-5 to hub-7), then new builds and a new test. The run stands until both roles have read it.",
+  "written_at": "2026-11-22T00:41:39-08:00"
+}
