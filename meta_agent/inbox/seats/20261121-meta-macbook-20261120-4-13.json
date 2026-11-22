@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "For docs/ideas/20261121.md, the person's answers in this seat's conversation for task 034's outside test (run multiscale/20261121-1, brief meta_agent/eval/briefs/hub-oldroyd-b.txt at 3d2fbac): asked what they ask the hub, 'MD로 Oldroyd-B유체를 구현하고 여기서 Viscoelastic properties를 계산한 뒤, 이를 바탕으로 CFD 시뮬레이션을 진행해줘.' (implement an Oldroyd-B fluid with MD, compute its viscoelastic properties from it, and then run a CFD simulation on that basis); asked how the run settings reach the agents, 'Asked as they come up (Recommended)'; asked the sessions' level, 'All high (Recommended)' (every session on claude-opus-5-5 at high effort, the members in mode auto); asked about the Colima profile rheotool, which the CFD agent needs, 'I'll start it myself'.",
+  "written_at": "2026-11-21T23:01:12-08:00"
+}
