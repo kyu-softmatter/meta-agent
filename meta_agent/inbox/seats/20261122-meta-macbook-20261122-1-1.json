@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261122-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "For agent template v37 (rheo-4 in meta_agent/failures.jsonl, run multiscale/20261121-1, collect-4): may a result card quote a series? contracts/schemas/result.schema.json takes numbers[] whose value is a number (common number) and no other field, so run_startup_channel's centreline_velocity, pairs [t, u], cannot be quoted. The meta role proposes, for you to decide: an optional series[] on result.schema.json, each item {name, parts: [{name, unit, description}] (one or more), points: [[number, ...], ...] (each point as many numbers as there are parts), source, grade, value_kind, conditions}, every part's unit in contracts/units.json and each series' grade derived from (source, value_kind) as check 2 does for a number; a result answered by series alone stays 'answered' where nothing is held. v37's src/handover.py result would quote a series only where envelope/results.json declares it, the build declaring one for a tool output field whose JSON Schema in the contract is an array whose items are either a number with a unit (one part) or an array with prefixItems, each a number with a unit and a description (one part each, items false). Tool contracts' outputs are free JSON Schema already, so no change there is asked, unless you want B16 or B7 to judge such a declaration. Not asked of you, for the record: rheo-5 (a person's row for every input of a request-named skill that nothing gives) and bd-3 (src/run_tool.py --out writes a complete output to a new file under runs/, never an empty one, as your reply 20261122-design-macbook-20261120-3-1 places it in the template) land in v37 alone; hub-5 to hub-7 in hub template v3 alone, with no change to check 25 (a later round's asks are the session's words, which check 25 does not compare).",
+  "written_at": "2026-11-22T09:52:37-08:00"
+}
