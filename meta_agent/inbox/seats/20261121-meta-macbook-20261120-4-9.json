@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "An ask to land, for tasks/034: contracts/schemas/handover.schema.json's produced_by is {skill, record}, required, additionalProperties false. Template v36 (meta_agent/src/build/template_v36, not yet committed; its test meta_agent/tests/test_template_v36.py) writes a hand-over read off a chain of skill records, one record per step, and two values of one card may end at different steps (the HOOMD-blue agent's lambda ends at a unit_convert@v2 of the exponential fit's decay_time, its eta_p at a unit_convert@v2 of the Green-Kubo viscosity), so no one {skill, record} names what the card was read off. The bundle writes produced_by: {\"chain\": [{\"step\": <id>, \"skill\": <id@vN>, \"record\": <path in the producing bundle>}, ...]}, in the order the steps ran; each number's source already names its own last step's skill and record. Asked: produced_by takes either the present {skill, record} or {chain: [{step, skill, record}], minItems 1, each item additionalProperties false}, nothing else changing. The fixture that fails today: the v36 test's test_a_chain_is_written_carried_received_and_judged_by_check_25 runs validate.py --checks 1,2,25 on its folder and check 1 refuses '$.produced_by: Additional properties are not allowed (chain was unexpected)'. The result card's produced_by stays as it is: the bundle lists each step's {skill, record} there. This seat lands v36 once the schema takes it, and holds the folder test of 034 until then.",
+  "written_at": "2026-11-21T20:10:36-08:00"
+}
