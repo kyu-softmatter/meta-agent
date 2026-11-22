@@ -212,7 +212,7 @@ class AnyAgentOfV35MayBeAMember(unittest.TestCase):
 
 class TheVersion(unittest.TestCase):
     def test_v35_is_the_latest_and_changes_one_script_its_text_its_settings_and_its_card(self):
-        self.assertEqual(template_mod.LATEST, "v35")
+        self.assertIn("v35", template_mod.SOURCES)                  # v36 is the latest since a hand-over may be read off a chain of steps
         self.assertEqual(sorted(set(cards.tree_files(V35)) ^ set(cards.tree_files(V34))), [])
         both = set(cards.tree_files(V34)) & set(cards.tree_files(V35))
         changed = sorted(r for r in both if cards.sha256_file(os.path.join(V34, r)) != cards.sha256_file(os.path.join(V35, r)))

@@ -256,6 +256,12 @@ v35 changes one script and the text so that an agent can be a member of a hub ag
     answer. Every build of this version writes envelope/results.json and makes outbox/, inbox/ and received/
     (handovers.results_declaration).
 
+v36 changes one script, CLAUDE.md and TEMPLATE.json (tasks/034, the first hand-over whose producer computes in its
+    engine's own units): src/handover.py write takes a hand-over read off a chain of steps the build declares, each a
+    library skill whose record the session names with --step, each step's declared inputs checked against a field of the
+    tool results, an earlier step's output, the registry's entry of a unit or the unit a person confirmed an engine unit
+    stands for (handovers.py); a value leaves the engine's own unit only through such a scale, by unit_convert@v2.
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -291,8 +297,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v32": os.path.join(HERE, "template_v32"),
            "v33": os.path.join(HERE, "template_v33"),
            "v34": os.path.join(HERE, "template_v34"),
-           "v35": os.path.join(HERE, "template_v35")}
-LATEST = "v35"
+           "v35": os.path.join(HERE, "template_v35"),
+           "v36": os.path.join(HERE, "template_v36")}
+LATEST = "v36"
 SOURCE = SOURCES[LATEST]
 
 

@@ -8,7 +8,13 @@ The request declares it on its parameter rows, so that no card of the design rol
   one_result), the tool whose results those are (`record_tool`, template v34: the build copies what its contract says
   of each field into the declaration, and the card's definition names it), the field of a tool result that states the conditions (`conditions_field`), the conditions the
   request states in words (`conditions`), the skill states a hand-over is written on (`accept_states`) and what the
-  values are for (`what`). The row's unit is the unit the value is handed in, and it has an si_factor: an engine's own
+  values are for (`what`). From template v36 a thread may instead be read off a chain of steps (`steps`, the same list on
+  every row of the thread): each step names an `id`, a library `skill` the bundle carries, the skill states it is
+  written on (`accept_states`) and, for each input that is not the session's to hand, where it comes from: a field of
+  the tool results (`field`), an output of an earlier step (`step`, `output`), the registry's entry of a unit
+  (`registry`), or the registry's entry of the unit a person confirmed one of the engine's own units stands for
+  (`scale_of`); the row then names the `step` and the `output` it is. A value leaves an engine's own unit only through
+  such a scale. The row's unit is the unit the value is handed in, and it has an si_factor: an engine's own
   unit means nothing outside its engine (check 25). The grade is derived here from contracts/grades.json for a
   computed value, never stated by the request.
 - a row the agent takes carries `handover.takes`: the value's name in the hand-over, the thread and the agent it comes
@@ -22,17 +28,20 @@ The request declares it on its parameter rows, so that no card of the design rol
 bundle needs the unit skill, the Hand-overs section) or raises ValueError naming every fault, before anything is
 written. Nothing here converts a value or chooses a scale.
 """
+import copy
 import json
 import os
+from fractions import Fraction
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
 UNITS = os.path.join(REPO, "contracts", "units.json")
 GRADES = os.path.join(REPO, "contracts", "grades.json")
 GIVE_KEYS = ("thread", "to_agent", "to_build", "skill", "output", "record_inputs", "record_inputs_from", "record_tool",
-             "conditions_field", "conditions", "accept_states", "what")
+             "conditions_field", "conditions", "accept_states", "what", "steps", "step")
 SHARED = ("to_agent", "to_build", "skill", "record_inputs", "record_inputs_from", "record_tool", "conditions_field",
-          "conditions", "accept_states", "what")
+          "conditions", "accept_states", "what", "steps")
+SOURCES_OF_INPUT = ("field", "step", "registry", "scale_of")
 
 
 def _load(p):
@@ -102,13 +111,16 @@ def declaration(rows, agent, build, template_meta, skills, contracts=None):
             if not isinstance(u, dict) or u.get("si_factor") is None:
                 faults.append("row %s is handed over in %r, which has no si_factor in the registry: an engine's own unit "
                               "means nothing outside its engine" % (name, r.get("unit")))
-            skill = by_ref.get(g.get("skill"))
-            if skill is None:
-                faults.append("row %s is read off %s, which the bundle does not carry" % (name, g.get("skill")))
-            elif g.get("output") not in {o["name"] for o in skill.get("outputs") or []}:
-                faults.append("row %s is the output %r, which %s does not give" % (name, g.get("output"), g.get("skill")))
-            elif skill and set(g.get("record_inputs") or {}) - {i["name"] for i in skill.get("inputs") or []}:
-                faults.append("row %s takes inputs of %s from tool results that the skill does not name" % (name, g.get("skill")))
+            if g.get("steps") is not None:
+                faults.extend(chain_faults(name, g, by_ref, units, template_meta))
+            else:
+                skill = by_ref.get(g.get("skill"))
+                if skill is None:
+                    faults.append("row %s is read off %s, which the bundle does not carry" % (name, g.get("skill")))
+                elif g.get("output") not in {o["name"] for o in skill.get("outputs") or []}:
+                    faults.append("row %s is the output %r, which %s does not give" % (name, g.get("output"), g.get("skill")))
+                elif skill and set(g.get("record_inputs") or {}) - {i["name"] for i in skill.get("inputs") or []}:
+                    faults.append("row %s takes inputs of %s from tool results that the skill does not name" % (name, g.get("skill")))
             if g.get("record_inputs_from", "each_result") not in ("each_result", "one_result"):
                 faults.append("row %s reads its skill's inputs from %r, neither each_result nor one_result" % (
                     name, g.get("record_inputs_from")))
@@ -118,10 +130,12 @@ def declaration(rows, agent, build, template_meta, skills, contracts=None):
             for k in SHARED:
                 if k in entry and entry[k] != g.get(k):
                     faults.append("rows over thread %s disagree on %s" % (g.get("thread"), k))
-                entry.setdefault(k, g.get(k))
-            entry["numbers"].append({"name": name, "output": g.get("output"), "unit": r.get("unit"),
-                                     "source_kind": "computed", "value_kind": "computed",
-                                     "grade": derived_grade("computed", "computed")})
+                entry.setdefault(k, copy.deepcopy(g.get(k)))
+            number = {"name": name, "output": g.get("output"), "unit": r.get("unit"),
+                      "source_kind": "computed", "value_kind": "computed", "grade": derived_grade("computed", "computed")}
+            if g.get("steps") is not None:
+                number["step"] = g.get("step")
+            entry["numbers"].append(number)
             continue
         if "takes" in h:
             t = h["takes"]
@@ -145,9 +159,15 @@ def declaration(rows, agent, build, template_meta, skills, contracts=None):
         if s.get("state") == "confirmed" and any(b.get("state") != "confirmed" for b in bases):
             faults.append("the scale of %s is confirmed while one it rests on is not" % s.get("unit"))
         parts = set((units.get(s.get("stands_for")) or {}).get("derived_from") or {})
-        if parts != {b.get("stands_for") for b in bases}:
-            faults.append("the scale of %s stands for %s, whose parts %s are not the units its bases stand for %s" % (
-                s.get("unit"), s.get("stands_for"), sorted(parts), sorted(b.get("stands_for") for b in bases)))
+        if parts:
+            if parts != {b.get("stands_for") for b in bases}:
+                faults.append("the scale of %s stands for %s, whose parts %s are not the units its bases stand for %s" % (
+                    s.get("unit"), s.get("stands_for"), sorted(parts), sorted(b.get("stands_for") for b in bases)))
+            continue
+        why = scale_by_dimension(units, s, bases)
+        if why:
+            faults.append("the scale of %s stands for %s, which its bases %s do not make: %s" % (
+                s.get("unit"), s.get("stands_for"), rests, why))
     # a row that takes a value into an engine's unit no scale names is no fault: its value is held at run time
     script = template_meta.get("handover_script")
     unit_skill = template_meta.get("unit_skill") if takes else None
@@ -159,6 +179,11 @@ def declaration(rows, agent, build, template_meta, skills, contracts=None):
         tool = entry.get("record_tool")
         if tool is None:
             entry.pop("record_tool", None)
+            if entry.get("steps") is not None:
+                entry.pop("skill", None)
+                if any("field" in (src or {}) for st in entry["steps"] for src in (st.get("inputs") or {}).values()):
+                    faults.append("thread %s: a step takes a tool result's field, and no record_tool names the tool"
+                                  % entry["thread"])
             continue
         if _version(template_meta) < 34:
             faults.append("thread %s names the tool its skill's inputs came from, which template %s does not carry into the "
@@ -166,6 +191,21 @@ def declaration(rows, agent, build, template_meta, skills, contracts=None):
         props = ((contracts.get(tool) or {}).get("outputs") or {}).get("properties") or {}
         if tool not in contracts:
             faults.append("thread %s: record_tool %r is not a tool of this bundle" % (entry["thread"], tool))
+            continue
+        if entry.get("steps") is not None:
+            for st in entry["steps"]:
+                fields = {}
+                for inp, src in sorted((st.get("inputs") or {}).items()):
+                    if not isinstance(src, dict) or "field" not in src:
+                        continue
+                    desc = (props.get(src["field"]) or {}).get("description")
+                    if not desc:
+                        faults.append("thread %s: the field %s of %s carries no description to name the input %s of the "
+                                      "step %s by" % (entry["thread"], src["field"], tool, inp, st.get("id")))
+                        continue
+                    fields[inp] = {"tool": tool, "field": src["field"], "description": desc}
+                st["fields"] = fields
+            entry.pop("skill", None)
             continue
         fields = {}
         for inp, field in sorted((entry.get("record_inputs") or {}).items()):
@@ -186,9 +226,140 @@ def declaration(rows, agent, build, template_meta, skills, contracts=None):
     return decl, kept, unit_skill, section(decl)
 
 
+def chain_faults(name, g, by_ref, units, template_meta):
+    """What is wrong with a row read off a chain of steps (template v36)."""
+    out = []
+    if _version(template_meta) < 36:
+        return ["row %s is read off a chain of steps, which template %s does not write; it needs v36 or later" % (
+            name, template_meta.get("version"))]
+    if g.get("skill") or g.get("record_inputs"):
+        out.append("row %s names both a chain of steps and one skill's record" % name)
+    steps = g.get("steps")
+    if not isinstance(steps, list) or not steps:
+        return out + ["row %s: steps is not a list of steps" % name]
+    seen = {}
+    for st in steps:
+        if not isinstance(st, dict) or not st.get("id") or not st.get("skill"):
+            out.append("row %s: a step names no id or no skill" % name)
+            continue
+        if st["id"] in seen:
+            out.append("row %s: the step %s is named twice" % (name, st["id"]))
+        skill = by_ref.get(st["skill"])
+        if skill is None:
+            out.append("row %s: the step %s runs %s, which the bundle does not carry" % (name, st["id"], st["skill"]))
+            seen[st["id"]] = None
+            continue
+        names = {i["name"] for i in skill.get("inputs") or []}
+        for inp, src in sorted((st.get("inputs") or {}).items()):
+            if inp not in names:
+                out.append("row %s: the step %s declares an input %s, which %s does not take" % (name, st["id"], inp, st["skill"]))
+            kinds = [k for k in SOURCES_OF_INPUT if isinstance(src, dict) and k in src]
+            if len(kinds) != 1:
+                out.append("row %s: the step %s's input %s comes from none, or more than one, of %s" % (
+                    name, st["id"], inp, ", ".join(SOURCES_OF_INPUT)))
+                continue
+            k = kinds[0]
+            if k == "step":
+                prior = seen.get(src["step"], False)
+                if prior is False:
+                    out.append("row %s: the step %s takes %s from %s, which is not a step before it" % (
+                        name, st["id"], inp, src["step"]))
+                elif prior is not None and src.get("output") not in {o["name"] for o in prior.get("outputs") or []}:
+                    out.append("row %s: the step %s takes %s from the output %r of %s, which it does not give" % (
+                        name, st["id"], inp, src.get("output"), src["step"]))
+            elif k in ("registry", "scale_of") and not isinstance(units.get(src[k]), dict):
+                out.append("row %s: the step %s's input %s names %r, which the registry does not hold" % (
+                    name, st["id"], inp, src[k]))
+            elif k == "scale_of" and (units.get(src[k]) or {}).get("si_factor") is not None:
+                out.append("row %s: the step %s's input %s takes the scale of %r, which is not an engine's own unit" % (
+                    name, st["id"], inp, src[k]))
+        seen[st["id"]] = skill
+    last = seen.get(g.get("step"), False)
+    if last is False:
+        out.append("row %s is the step %r, which the chain does not name" % (name, g.get("step")))
+    elif last is not None and g.get("output") not in {o["name"] for o in last.get("outputs") or []}:
+        out.append("row %s is the output %r of the step %s, which its skill does not give" % (name, g.get("output"), g.get("step")))
+    return out
+
+
+def scale_by_dimension(units, s, bases):
+    """None where the unit a composite scale stands for is what its base scales make of the engine unit's dimension;
+    otherwise why not. The engine unit's dimension is written as a product of powers of the base engine units'
+    dimensions, solved exactly; the unit it stands for must have that dimension and the si_factor the same powers of
+    the base scales' si_factors give."""
+    import math
+    eu, su = units.get(s.get("unit")) or {}, units.get(s.get("stands_for")) or {}
+    dims = sorted({k for b in bases for k, v in ((units.get(b.get("unit")) or {}).get("dim") or {}).items() if v}
+                  | {k for k, v in (eu.get("dim") or {}).items() if v})
+    rows = [[Fraction(((units.get(b.get("unit")) or {}).get("dim") or {}).get(d, 0)) for b in bases] +
+            [Fraction((eu.get("dim") or {}).get(d, 0))] for d in dims]
+    n = len(bases)
+    piv, r = [], 0
+    for c in range(n):
+        p = next((i for i in range(r, len(rows)) if rows[i][c] != 0), None)
+        if p is None:
+            continue
+        rows[r], rows[p] = rows[p], rows[r]
+        rows[r] = [x / rows[r][c] for x in rows[r]]
+        for i in range(len(rows)):
+            if i != r and rows[i][c] != 0:
+                rows[i] = [a - rows[i][c] * b for a, b in zip(rows[i], rows[r])]
+        piv.append(c)
+        r += 1
+    if any(all(x == 0 for x in row[:n]) and row[n] != 0 for row in rows):
+        return "the dimension of %s is no product of its bases' dimensions" % s.get("unit")
+    if len(piv) < n:
+        return "the bases' dimensions are not independent, so the powers are not one"
+    powers = [Fraction(0)] * n
+    for i, c in enumerate(piv):
+        powers[c] = rows[i][n]
+    factor = 1.0
+    for b, pw in zip(bases, powers):
+        sf = (units.get(b.get("stands_for")) or {}).get("si_factor")
+        if sf is None:
+            return "the base %s stands for %r, which has no si_factor" % (b.get("unit"), b.get("stands_for"))
+        factor *= sf ** float(pw)
+    if su.get("si_factor") is None or not math.isclose(factor, su["si_factor"], rel_tol=1e-9):
+        return "the bases make an si_factor of %r, and %s has %r" % (factor, s.get("stands_for"), su.get("si_factor"))
+    return None
+
+
+def chain_section(g):
+    """The Hand-overs section's lines for a thread read off a chain of steps (template v36)."""
+    lines = ["This agent gives, over the thread `%s`, to `%s` (build `%s`): %s. The values are read off a chain of "
+             "steps, each a library skill you run through the runner with `--record`, in this order, and name with "
+             "`--step <step> <record>` when you write the card:" % (g["thread"], g["to"]["agent"], g["to"]["build"], g["what"])]
+    for st in g["steps"]:
+        said = []
+        for inp, src in sorted((st.get("inputs") or {}).items()):
+            if "field" in src:
+                said.append("`%s` the tool result's `%s`" % (inp, src["field"]))
+            elif "step" in src:
+                said.append("`%s` the output `%s` of `%s`" % (inp, src["output"], src["step"]))
+            elif "registry" in src:
+                said.append("`%s` the registry's entry of `%s`" % (inp, src["registry"]))
+            elif "scale_of" in src:
+                said.append("`%s` the registry's entry of the unit a person confirmed `%s` stands for" % (inp, src["scale_of"]))
+        states = " It is written on the state%s %s." % ("" if len(st["accept_states"]) == 1 else "s", ", ".join(
+            "`%s`" % a for a in st["accept_states"])) if st.get("accept_states") else ""
+        lines.append("- `%s`: `%s`, %s; every other input is yours to hand, only where the person or a task gave it.%s" % (
+            st["id"], st["skill"], ("its inputs " + "; ".join(said)) if said else "no input declared", states))
+    lines.append("The values handed over:")
+    for n in g["numbers"]:
+        lines.append("- `%s`, the output `%s` of the step `%s`, handed over in `%s`." % (n["name"], n["output"], n["step"], n["unit"]))
+    if g.get("conditions_field"):
+        lines.append("The conditions each value holds under are the results' `%s`, which must be the same in every "
+                     "result." % g["conditions_field"])
+    lines.append("")
+    return lines
+
+
 def section(decl):
     lines = []
     for g in decl["gives"]:
+        if g.get("steps") is not None:
+            lines.extend(chain_section(g))
+            continue
         lines.append("This agent gives, over the thread `%s`, to `%s` (build `%s`): %s. Each value is the output of "
                      "`%s` named below, read off its record:" % (g["thread"], g["to"]["agent"], g["to"]["build"], g["what"],
                                                                g["skill"]))
