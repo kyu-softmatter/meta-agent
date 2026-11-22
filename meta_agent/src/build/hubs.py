@@ -12,6 +12,9 @@ check B19 reads the bridge's bytes from.
 v1  the first hub (tasks/033): CLAUDE.md, README.md, TEMPLATE.json, run-hub and choose-session-level, src/hub.py and a
     copy of contracts/tools/bridge.py as src/bridge.py, question/, assignments/, inbox/, sessions/, failures.jsonl, and
     .claude/settings.json; no tool, gate, envelope or library skill.
+v2  (tasks/034) hub-1, hub-2 and hub-3: carry waits for a hand-over a member takes, members lists each member's rows and
+    who chose their values, words and round let the person's later words reach a member in the next round of an
+    assignment of the agreed list, quoted; src/bridge.py as contracts/tools/bridge.py now is.
 
 A build makes builds/<hub>/<NNNN>/ beside the engine builds of one request: the bundle, its build card, the difference
 from the template. members.json names each member by its agent, its build, its folder ../<agent>-<NNNN> (the name a run
@@ -37,8 +40,8 @@ from .. import cards
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))          # meta_agent/
 REPO = os.path.dirname(ROOT)
-SOURCES = {"v1": os.path.join(HERE, "hub_template_v1")}
-LATEST = "v1"
+SOURCES = {"v1": os.path.join(HERE, "hub_template_v1"), "v2": os.path.join(HERE, "hub_template_v2")}
+LATEST = "v2"
 BRIDGE = os.path.join(REPO, "contracts", "tools", "bridge.py")
 BUILD_ID = re.compile(r"^[0-9]{4}$")
 NAME_RE = re.compile(r"^[a-z][a-z0-9-]{1,60}$")
