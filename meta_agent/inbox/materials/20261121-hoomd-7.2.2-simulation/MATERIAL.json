@@ -64,11 +64,10 @@
     "value": null,
     "state": "unknown"
   },
-  "may_quote": "unknown",
-  "state": "queued",
-  "state_reason": null,
+  "may_quote": true,
+  "state": "registered",
+  "state_reason": "the person, 2026-11-21, in the meta seat meta-macbook-20261120-4's conversation: asked whether Kim et al. 2018 and HOOMD-blue's Simulation page, found by search for tasks/034, may be registered and quoted, they answered \"Register both, may quote (Recommended)\"; relayed to the design role for docs/ideas/20261121.md by the note 20261121-meta-macbook-20261120-4-7",
   "questions": [
-    "registered: may this source, found by a seat's search for tasks/034, be registered?",
-    "may_quote: may an excerpt of it be kept?"
+    "license_note: the source states no licence that this seat read; it stays unknown until the person names it."
   ]
 }
