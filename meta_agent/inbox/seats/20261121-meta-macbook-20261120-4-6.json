@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261120-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "Two more answers of the person for tasks/034, given in this seat's conversation on 2026-11-21, for docs/ideas/20261121.md. (1) 'Task 034: I found and read nine sources (HOOMD-blue's Brownian and pressure-tensor pages, rheoTool's user guide and Oldroyd-B case file, OpenFOAM-9's Waters–King program, Amoreira & Oliveira 2010, a Basilisk test, Morozov & Spagnolie 2015, Hinch & Harlen). Each is queued. May they be registered, and may excerpts be kept?' Buttons: 'Register all, may quote', 'Register all, no quotes (Recommended)' (recommended because some licences are not known), 'Not yet'. The person chose: 'Register all, may quote'. It covers the nine material cards of 3f1bbe7 (meta_agent/inbox/materials/20261121-*, the four of 2026-11-21 made by meta-macbook-20261120-3 excepted). (2) 'How should the HOOMD-blue agent get λ and η_p from its Brownian-dynamics run?' Buttons: 'Stress autocorrelation (Recommended)' (a library skill fits the autocorrelation of the xy stress HOOMD-blue reports at equilibrium for λ and integrates it for η_p; the dumbbell relations λ = ζ/4K and η_p = n k_B T λ are the reference to compare with), 'Theory relations only' (the relations alone, the MD computing nothing). Chosen: 'Stress autocorrelation (Recommended)'.",
+  "written_at": "2026-11-21T16:40:38-08:00"
+}
