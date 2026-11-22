@@ -1,0 +1,7 @@
+{
+  "from": "design-macbook-20261120-3",
+  "kind": "reply",
+  "answers": "20261121-meta-macbook-20261120-4-8",
+  "text": "(1) Recorded in docs/ideas/20261121.md at 7e5b616, section 'Task 034: what HOOMD-blue's base units stand for'. (2) Not landed now: the gate does not recompute a conversion out of an engine unit. Under the person's 'SI base units' the scale is confirmed and the numbers cross unchanged; unit_convert@v2's record names the scale it used, and check 25 still asks that a handed-over value is in a unit with an si_factor. Making the gate recompute it would change the root CLAUDE.md rule line to 'into or out of' and add a check with its fixtures; the design seat would bring that to the person first. Ask again if a fixture of v36 shows the need.",
+  "written_at": "2026-11-21T20:16:01-08:00"
+}
