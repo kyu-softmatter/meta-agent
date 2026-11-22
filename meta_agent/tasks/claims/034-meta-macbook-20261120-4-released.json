@@ -1,0 +1,6 @@
+{
+  "task": "034",
+  "seat": "meta-macbook-20261120-4",
+  "released_at": "2026-11-22T09:49:02-08:00",
+  "why": "Task 034's test ended on the person's 'Stop here, record' (note 20261122-meta-macbook-20261120-4-1, failures at fc7ec5e); the fixes it found (agent template v37, hub template v3) and the rebuild and retest go to meta-macbook-20261122-1, started by the person from this seat's follow-up card"
+}
