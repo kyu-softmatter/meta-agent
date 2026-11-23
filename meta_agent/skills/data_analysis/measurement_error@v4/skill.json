@@ -1,0 +1,73 @@
+{
+  "schema_version": "0.1",
+  "id": "measurement_error",
+  "version": 4,
+  "kind": "data_analysis",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "the measurement error of a measured value against a reference value, and its magnitude, taken in decimal on the two values as written, so that it carries no digit that neither value has",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "measured",
+      "unit": "1",
+      "meaning": "the measured quantity value, in the quantity's unit: the text the run's output prints it as, its last digit kept as printed (a trailing zero included), or a number, taken at the shortest decimal that gives it back"
+    },
+    {
+      "name": "reference",
+      "unit": "1",
+      "meaning": "the reference quantity value it is compared with, in the same unit, as text as its source prints it or as a number, as for measured"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "error",
+      "unit": "1",
+      "meaning": "the measured value minus the reference value, in the quantity's unit, as a number; its sign says on which side of the reference the measured value lies; it is the decimal difference of the two values as written, so it has no digit beyond the finer of the two",
+      "unit_of": "measured"
+    },
+    {
+      "name": "magnitude",
+      "unit": "1",
+      "meaning": "the absolute value of the error, in the quantity's unit, as a number: what a tolerance in that unit is compared with",
+      "unit_of": "measured"
+    },
+    {
+      "name": "error_written",
+      "unit": "1",
+      "meaning": "the error as text, to exactly the decimal places it has (places), for a report: the digits the difference has and no float's",
+      "unit_of": "measured"
+    },
+    {
+      "name": "magnitude_written",
+      "unit": "1",
+      "meaning": "the magnitude as text, to the same decimal places",
+      "unit_of": "measured"
+    },
+    {
+      "name": "places",
+      "unit": "count",
+      "meaning": "the decimal places of the error, those of the finer of the two values as written"
+    },
+    {
+      "name": "places_common",
+      "unit": "count",
+      "meaning": "the decimal places both values carry, those of the coarser: where it is below places, the error's last digits come from one of the two values alone"
+    }
+  ],
+  "entry": {
+    "script": "scripts/analysis.py",
+    "function": "analysis"
+  },
+  "validity": "two values of one quantity in one unit, each a decimal number with or without an exponent. It judges nothing: whether the magnitude is small enough is a tolerance a person chooses, and whether the two are values of one quantity, under the same conditions and from runs that ended as they should, is decided before it is taken. It rounds nothing: where the two values carry different decimal places, the error carries the finer one's and places_common says how many both carry. A value handed as a number has lost a trailing zero its printed form had, so places_common may be lower than the print's; hand the text to keep it",
+  "source": {
+    "citation": "JCGM 200:2012, International vocabulary of metrology - Basic and general concepts and associated terms (VIM), 3rd edition, 2008 version with minor corrections, BIPM (read 2026-11-17, https://www.bipm.org/documents/20126/2071204/JCGM_200_2012.pdf; meta_agent/inbox/materials/20261117-jcgm-200-2012-vim)",
+    "locus": "entry 2.16 (3.10), measurement error, printed page 22: the measured quantity value minus a reference quantity value"
+  },
+  "note": "v3 with the error taken in decimal on the two values as written (meta_agent/failures.jsonl dft-20: a skill of a Quantum ESPRESSO bundle, built like v3, gave 0.18211444999999848 Ry for two values printed to eight decimals; v3's float subtraction of the first worked case's two values gives 0.18211445000000026). The definition is the VIM's, as in v3; that the difference of two decimal numbers is exact in decimal arithmetic is the definition of decimal subtraction and needs no source. It keeps v3's two inputs and its two outputs, which a caller of v3 reads, and adds the error and the magnitude as text and the two counts of decimal places; a value may be handed as text, so that its trailing zeros count. Its approach follows printed_difference@v1, which a clone's session of a test on the office computer made beside the agreement skill (run dft-windows/20261120-3, its repository, not landed); this version makes the agreement skill itself exact, so that every bundle carries it. It does not round to the coarser value's places: a rounded magnitude near a tolerance could turn the verdict, which is the tolerance's to give, and places_common says where that place is. No value of a source stands behind the worked cases: each is worked by hand in its worked field, on values made up to show the arithmetic, two of them v3's own. Common, as v3: every simulation bundle carries it (meta_agent/tasks/025).",
+  "cases": "cases.json",
+  "common": true
+}

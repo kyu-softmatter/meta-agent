@@ -1296,6 +1296,72 @@
       "sha256": "sha256:7d161db812154911c31735666a527b9190ebe50331e568ed31d9c861223cff1b"
     },
     {
+      "ref": "measurement_error@v4",
+      "id": "measurement_error",
+      "version": 4,
+      "kind": "data_analysis",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "the measurement error of a measured value against a reference value, and its magnitude, taken in decimal on the two values as written, so that it carries no digit that neither value has",
+      "description": "The measurement error of a measured value against a reference value, and its magnitude, taken on the two values as written so that it carries no digit neither has. Take it whenever a measured value is compared with a reference value of the same quantity, as a scientific task's agreement is, once the two are shown to be values of one quantity.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "measured",
+          "unit": "1",
+          "meaning": "the measured quantity value, in the quantity's unit: the text the run's output prints it as, its last digit kept as printed (a trailing zero included), or a number, taken at the shortest decimal that gives it back"
+        },
+        {
+          "name": "reference",
+          "unit": "1",
+          "meaning": "the reference quantity value it is compared with, in the same unit, as text as its source prints it or as a number, as for measured"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "error",
+          "unit": "1",
+          "meaning": "the measured value minus the reference value, in the quantity's unit, as a number; its sign says on which side of the reference the measured value lies; it is the decimal difference of the two values as written, so it has no digit beyond the finer of the two",
+          "unit_of": "measured"
+        },
+        {
+          "name": "magnitude",
+          "unit": "1",
+          "meaning": "the absolute value of the error, in the quantity's unit, as a number: what a tolerance in that unit is compared with",
+          "unit_of": "measured"
+        },
+        {
+          "name": "error_written",
+          "unit": "1",
+          "meaning": "the error as text, to exactly the decimal places it has (places), for a report: the digits the difference has and no float's",
+          "unit_of": "measured"
+        },
+        {
+          "name": "magnitude_written",
+          "unit": "1",
+          "meaning": "the magnitude as text, to the same decimal places",
+          "unit_of": "measured"
+        },
+        {
+          "name": "places",
+          "unit": "count",
+          "meaning": "the decimal places of the error, those of the finer of the two values as written"
+        },
+        {
+          "name": "places_common",
+          "unit": "count",
+          "meaning": "the decimal places both values carry, those of the coarser: where it is below places, the error's last digits come from one of the two values alone"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "data_analysis/measurement_error@v4",
+      "sha256": "sha256:a90639aaaa16f202a91a069b45e652c952759015f100123652dae5bcb89dade3"
+    },
+    {
       "ref": "observed_order_of_convergence@v1",
       "id": "observed_order_of_convergence",
       "version": 1,
@@ -2332,6 +2398,78 @@
       "uses_skills": [],
       "path": "diagnostic/power_law_exponent_along_sweep@v3",
       "sha256": "sha256:563f90b14d094b4cdb62a098771569c7abc851b1fdde001b6b8acf0de53a92cc"
+    },
+    {
+      "ref": "same_measurand@v1",
+      "id": "same_measurand",
+      "version": 1,
+      "kind": "diagnostic",
+      "side_effect": "none",
+      "status": "usable",
+      "summary": "whether a measured value and a reference value are values of one measurand, as far as the conditions each states and how each run ended show it, before their difference is taken",
+      "description": "Whether a measured value and a reference value are values of one measurand, judged on the conditions each states and on how each run ended, against the ends a row hands it. Take it before a measured value's difference from a reference is taken or reported, whenever the two come from separate runs or sources, as a run's output and the reference output its maker ships do.",
+      "applies_to": {
+        "parameters": [],
+        "engines": []
+      },
+      "inputs": [
+        {
+          "name": "measured_conditions",
+          "unit": "1",
+          "meaning": "the conditions the measured value was obtained under, as the run's output states them: an object, each key a condition's name and its value as stated (a number, or the text as printed); an empty object where it states none"
+        },
+        {
+          "name": "reference_conditions",
+          "unit": "1",
+          "meaning": "the conditions the reference value was obtained under, as its source states them, under the same names; an empty object where it states none"
+        },
+        {
+          "name": "measured_end",
+          "unit": "1",
+          "meaning": "how the run that gave the measured value ended, in the words or the code its engine or instrument reports (converged, the maximum number of steps reached); null where the output states none"
+        },
+        {
+          "name": "reference_end",
+          "unit": "1",
+          "meaning": "how the run that gave the reference value ended, as its source states it; null where the source states none, as a published value does"
+        },
+        {
+          "name": "accept_ends",
+          "unit": "1",
+          "meaning": "the ends a run may have for its value to be compared, a list in the same words or codes, handed by a row the person or the request gives; null where none is chosen"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state",
+          "unit": "1",
+          "meaning": "same | different | undecided: different where a condition stated by both differs or a run that states its end ended outside the ends handed; undecided where nothing differs and a condition is stated by one side only, an end is stated and no ends were handed, or ends were handed and the measured run states none; same otherwise"
+        },
+        {
+          "name": "differing",
+          "unit": "1",
+          "meaning": "the names of the conditions both state with different values"
+        },
+        {
+          "name": "one_sided",
+          "unit": "1",
+          "meaning": "the names of the conditions only one of the two states"
+        },
+        {
+          "name": "ends_not_accepted",
+          "unit": "1",
+          "meaning": "a list of measured, reference, both or neither: the runs whose stated end is not among the ends handed"
+        },
+        {
+          "name": "why",
+          "unit": "1",
+          "meaning": "why the state is different or undecided, in words; null where it is same"
+        }
+      ],
+      "calls_tools": [],
+      "uses_skills": [],
+      "path": "diagnostic/same_measurand@v1",
+      "sha256": "sha256:7c5800d1b76b2f6fa705bc38a8871af45adc7d607a3e1981592eb09757e85a45"
     },
     {
       "ref": "series_settled@v1",
