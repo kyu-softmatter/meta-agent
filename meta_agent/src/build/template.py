@@ -274,6 +274,12 @@ v37 changes two scripts, TEMPLATE.json, a session skill, the text and the builde
     engine_wait, and one that starts its engine through engine_wait and watches no folder
     (bundle.engine_wait_only_problems). CLAUDE.md and run-skill say that a pair is not matched by
     name, that outputs are read from what the run wrote, and that a long call runs in the background.
+v38 changes README.md, one sentence of CLAUDE.md, TEMPLATE.json and the builder (at the design
+    role's ask 20261118-design-macbook-20261117-3-1, (2), on the person's word of 2026-11-18 that
+    the builder learn from another collection's skills): README.md is named after the agent and
+    says whom it is for and what it is not for, which the build renders from the request and from
+    CAPABILITIES.json (bundle.for_whom_section, not_for_section; TEMPLATE.json readme_placeholders).
+    It names no other tool to use instead: which tool a lab uses is the lab's (MP12).
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -312,8 +318,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v34": os.path.join(HERE, "template_v34"),
            "v35": os.path.join(HERE, "template_v35"),
            "v36": os.path.join(HERE, "template_v36"),
-           "v37": os.path.join(HERE, "template_v37")}
-LATEST = "v37"
+           "v37": os.path.join(HERE, "template_v37"),
+           "v38": os.path.join(HERE, "template_v38")}
+LATEST = "v38"
 SOURCE = SOURCES[LATEST]
 
 

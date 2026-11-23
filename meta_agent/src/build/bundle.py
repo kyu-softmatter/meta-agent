@@ -537,6 +537,47 @@ def must_not_section(items):
     return "\n".join("- %s." % (i[:1].upper() + i[1:]).rstrip(".") for i in items) if items else "- (nothing beyond the common rules)"
 
 
+TOOL_KIND_WORDS = {"engine": "a simulation engine", "instrument": "an instrument", "analysis_software": "analysis software"}
+
+
+def for_whom_section(science_task, tool, tool_kind, rid):
+    """README.md's 'Whom it is for' (template v38; the design role's ask 20261118-design-macbook-20261117-3-1, (2)):
+    the person whose work is the request's science task on its tool, read off the fill and CAPABILITIES.json; the
+    science task's first paragraph only, since what the request holds is said under 'What it is not for'."""
+    task = str(science_task or "").split("\n\n")[0].strip().rstrip(".")
+    kind = TOOL_KIND_WORDS.get(tool_kind or "")
+    on = "`%s`%s" % (tool, ", " + kind if kind else "") if tool else "the tool under `tools/`"
+    return ("A person whose work is this, on %s: %s. The person asks for it in words, and a session in this directory "
+            "carries the request to the tool's calls through the gate and stops where a decision is the person's. It "
+            "was built for request `%s`, and its purpose as that request gave it is the Role section of `CLAUDE.md`."
+            % (on, task, rid))
+
+
+def not_for_section(tool, held):
+    """README.md's 'What it is not for' (template v38): another tool than its own, with none named in its place (which
+    tool a lab uses is the lab's; the builder ranks none, MP12); work beyond the science task; what CLAUDE.md says the
+    agent does not do; and each item CAPABILITIES.json holds, with its reason."""
+    lines = ["- Another tool, engine or instrument than %s. A session here calls only the tools under `tools/`, and "
+             "this directory names no other tool to use instead: which tool a lab uses is the lab's to say."
+             % ("`%s`" % tool if tool else "its own"),
+             "- Work beyond the science task above. Its checks under `validation/` and `replay/` show what it was built "
+             "for, and a request beyond it is outside what they show.",
+             "- What `CLAUDE.md` lists under \"What this agent does not do\"."]
+    for h in held or []:
+        if isinstance(h, dict) and h.get("skill"):
+            calls = h.get("calls_tools") or []
+            what = "the library skill `%s`%s" % (h["skill"], (" and the tools it would call (%s)" % ", ".join(
+                "`%s`" % t for t in calls)) if calls else "")
+        elif isinstance(h, dict):
+            what = str(h.get("item") or "an item")
+        else:
+            what, h = str(h), {}
+        reason = str(h.get("reason") or "").rstrip(".")
+        lines.append("- Not yet, while it is held: %s%s. It comes only with a new build, once a person releases it."
+                     % (what, (" (%s)" % reason) if reason else ""))
+    return "\n".join(lines)
+
+
 def skills_section(skills):
     """`skills` is a list of (name, trigger sentence); B8 looks for each name in backticks."""
     if not skills:
@@ -1154,6 +1195,19 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
         # allowed for named engines alone (the design role's message of 2026-11-18; 3a0c4ec)
         capabilities = dict(capabilities, engine=engine)
     cards.write_json(os.path.join(bundle_path, "CAPABILITIES.json"), capabilities)
+    readme_names = (cards.load_json(meta).get("readme_placeholders") if os.path.isfile(meta) else None) or []
+    if readme_names:
+        # whom the agent is for and what it is not for, for a person who opens the directory (template v38; the design
+        # role's ask 20261118-design-macbook-20261117-3-1, (2)), read off the fill and the capabilities just written
+        rfill = dict(fill)
+        rfill.setdefault("for_whom", for_whom_section(fill.get("science_task"), capabilities.get("tool"),
+                                                      capabilities.get("tool_kind"), fill.get("rid")))
+        rfill.setdefault("not_for", not_for_section(capabilities.get("tool"), capabilities.get("held")))
+        missing = [n for n in readme_names if n not in rfill]
+        if missing:
+            raise ValueError("README.md's placeholders are not filled: %s" % missing)
+        readme = os.path.join(bundle_path, "README.md")
+        cards.write_text(readme, render(cards.read_text(readme), {n: rfill[n] for n in readme_names}))
     for name, content in envelope.items():
         cards.write_json(os.path.join(bundle_path, "envelope", name + ".json"), content)
     for t in tools:

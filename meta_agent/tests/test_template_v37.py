@@ -285,7 +285,7 @@ class TheAgreementAndTheMeasurand(unittest.TestCase):
 
 class TheVersion(unittest.TestCase):
     def test_v37_is_the_latest_and_changes_two_scripts_a_skill_its_text_and_its_card(self):
-        self.assertEqual(template_mod.LATEST, "v37")
+        self.assertIn("v37", template_mod.SOURCES)                  # v38 is the latest since a README says whom it is for
         self.assertEqual(sorted(set(cards.tree_files(V37)) ^ set(cards.tree_files(V36))), [])
         both = set(cards.tree_files(V36)) & set(cards.tree_files(V37))
         changed = sorted(r for r in both if cards.sha256_file(os.path.join(V36, r)) != cards.sha256_file(os.path.join(V37, r)))
