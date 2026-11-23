@@ -256,6 +256,14 @@ v35 changes one script, the builder and the text (tasks/018, at the design role'
     (processes_error, launched); the builder refuses an adapter that waits through it and
     makes no new run folder (bundle.run_folder_problems).
 
+v36 changes two scripts and one session skill (tasks/018, at the design role's ask
+    20261117-design-macbook-20261117-2-4; dft-13, the meta side of dft-14): the runner checks an
+    output field's enum and const for every type, so a contract can say that a call which answers
+    ended well; the judge prints the error's message where an output was expected; the builder
+    refuses an interface task or replay item that expects an output and names no field of it, or
+    one the contract does not declare (expectations.py); classify-knowledge names a value an
+    engine printed in its maker's own run as computed, its kind of source waiting for the person.
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -291,8 +299,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v32": os.path.join(HERE, "template_v32"),
            "v33": os.path.join(HERE, "template_v33"),
            "v34": os.path.join(HERE, "template_v34"),
-           "v35": os.path.join(HERE, "template_v35")}
-LATEST = "v35"
+           "v35": os.path.join(HERE, "template_v35"),
+           "v36": os.path.join(HERE, "template_v36")}
+LATEST = "v36"
 SOURCE = SOURCES[LATEST]
 
 

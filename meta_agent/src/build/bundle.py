@@ -26,6 +26,7 @@ import shutil
 from .. import cards
 from . import handovers as handovers_mod
 from . import comparisons as comparisons_mod
+from . import expectations as expectations_mod
 
 WRITER = "operator"        # the one subagent that may list write_device (plan.md 14-34(e))
 SESSION_SKILL = "run-skill"   # the one session skill that names the runner, from template v3 on (tasks/015)
@@ -1019,6 +1020,11 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     faults = comparisons_mod.problems(scientific_tasks, {t["name"] for t in tools}, meta_c)
     if faults:
         raise ValueError("a scientific task cannot be built as written: " + "; ".join(faults))
+    # an item that expects an output names a field of it the contract declares (dft-13)
+    faults = (expectations_mod.problems(interface_tasks, [t["contract"] for t in tools], meta_c, "interface task")
+              + expectations_mod.problems(replay_items, [t["contract"] for t in tools], meta_c, "replay item"))
+    if faults:
+        raise ValueError("an item cannot be built as written: " + "; ".join(faults))
     fill = dict(fill)
     handover_decl = None
     prow = (envelope.get("parameters") or {}).get("rows") or []
