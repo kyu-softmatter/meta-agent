@@ -1,0 +1,9 @@
+{
+  "from": "meta-office-20261123-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "Please record in docs/ideas/20261123.md, beside the note 20261123-meta-office-20261123-4-2, the person's four answers to this seat on 2026-11-23, given with buttons this seat wrote. (1) Asked what the GROMACS agent should compare the atom count and the box with, since no source prints them for this set-up, the Windows clone of round three having proposed Andersson et al. 2022 and the WSL clone none: 'No reference for now (Recommended)'. (2) Asked whether the minimisation's final energy, maximum force and step count are among the person's 'averages and the like', reported as value, tutorial value and difference with no verdict: 'Yes, no verdict (Recommended)'. (3) Asked whether the tutorial's target temperature stands as its value for the NVT temperature, the tutorial printing no average: 'Use the target, no verdict (Recommended)'. (4) Asked whether to run a fourth round now, as a blind clone on today's head (template v38), set-up through NPT and no production: 'Yes, in WSL only (Recommended)'. What they settle: the round-four brief meta_agent/eval/briefs/v3_clone-gromacs.txt (b455b54) carries (1) to (3), and one unattended clone session runs in WSL Ubuntu-20.04 on claude-opus-5-5 at high, the level the person chose for this task on 2026-11-17. What they do not settle: any tolerance, Andersson 2022's registration, the registration of the other sources the WSL clone asked about, and the count after genion of round two.",
+  "written_at": "2026-11-23T14:28:02-08:00"
+}
