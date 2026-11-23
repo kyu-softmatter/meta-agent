@@ -825,6 +825,25 @@
         "meta_agent/.claude/"
       ],
       "seated": "2026-11-23, self-registered"
+    },
+    {
+      "seat": "meta-office-20261123-3",
+      "committer_email": "meta-office-20261123-3@seat.invalid",
+      "role": "meta",
+      "machine": "office",
+      "seated_by": "self, under the person's standing rule of 2026-11-09 (docs/ideas/20261109.md)",
+      "status": "active",
+      "owns": [
+        "meta_agent"
+      ],
+      "paths": [
+        "meta_agent/"
+      ],
+      "excludes": [
+        "meta_agent/CLAUDE.md",
+        "meta_agent/.claude/"
+      ],
+      "seated": "2026-11-23, self-registered"
     }
   ]
 }
