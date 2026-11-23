@@ -17,6 +17,7 @@ permission the build copied, whether the install runs.
 import json
 import os
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -164,22 +165,43 @@ def in_a_copy(bundle_path):
     return report, why, False
 
 
+def long_path(path):
+    """path in the form Windows reads past its default length limit (\\\\?\\ and the absolute path); elsewhere path."""
+    if os.name != "nt":
+        return path
+    path = os.path.abspath(path)
+    if path.startswith("\\\\?\\"):
+        return path
+    return "\\\\?\\UNC\\" + path[2:] if path.startswith("\\\\") else "\\\\?\\" + path
+
+
 def remove_copy(path):
     """Remove S6's isolated copy and look whether it is gone (failure line dft-8, test run dft/20261117-3). None when it
     is gone; otherwise a sentence naming what is left and the first errors the removal met, after a second try."""
     errors = []
+    # on Windows the removal goes by the \\?\ form, which reads past the default length of a path (a pixi cache, failure
+    # line office-7), and a file marked read-only (as git writes its objects, office-11) is made writable and removed
+    # again; a folder that refuses is still said
+    top = long_path(path)
 
     def met(func, p, exc):
         e = exc[1] if isinstance(exc, tuple) else exc
-        errors.append("%s %s: %s" % (getattr(func, "__name__", func), os.path.relpath(p, path), type(e).__name__))
+        if os.name == "nt" and isinstance(e, PermissionError) and func in (os.unlink, os.remove):
+            try:
+                os.chmod(p, stat.S_IWRITE | stat.S_IREAD)
+                func(p)
+                return
+            except OSError as again:
+                e = again
+        errors.append("%s %s: %s" % (getattr(func, "__name__", func), os.path.relpath(p, top), type(e).__name__))
     for _ in range(2):
-        if not os.path.lexists(path):
+        if not os.path.lexists(top):
             return None
         if sys.version_info >= (3, 12):
-            shutil.rmtree(path, onexc=met)
+            shutil.rmtree(top, onexc=met)
         else:
-            shutil.rmtree(path, onerror=met)
-    if not os.path.lexists(path):
+            shutil.rmtree(top, onerror=met)
+    if not os.path.lexists(top):
         return None
     return "the isolated copy %s was not removed (%d error(s), first: %s)" % (path, len(errors), "; ".join(errors[:3]) or "none")
 
