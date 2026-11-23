@@ -249,6 +249,13 @@ v34 changes two scripts and the text (tasks/032, at the design role's ask; dftmd
     registry before the rule and the agreement run (comparisons.py); a card's definition
     names the tool field each of the skill's inputs came from (record_tool).
 
+v35 changes one script, the builder and the text (tasks/018, at the design role's ask
+    20261118-design-macbook-20261117-2-2; dft-23, dft-24): src/engine_wait.py makes each call's
+    run folder new (new_run_folder, runs/<kind>/<UTC stamp>/), never opens a log that exists,
+    and starts an engine on a count of processes through the launcher the adapter names
+    (processes_error, launched); the builder refuses an adapter that waits through it and
+    makes no new run folder (bundle.run_folder_problems).
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -283,8 +290,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v31": os.path.join(HERE, "template_v31"),
            "v32": os.path.join(HERE, "template_v32"),
            "v33": os.path.join(HERE, "template_v33"),
-           "v34": os.path.join(HERE, "template_v34")}
-LATEST = "v34"
+           "v34": os.path.join(HERE, "template_v34"),
+           "v35": os.path.join(HERE, "template_v35")}
+LATEST = "v35"
 SOURCE = SOURCES[LATEST]
 
 

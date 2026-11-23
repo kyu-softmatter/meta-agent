@@ -128,6 +128,46 @@ def engine_wait_problems(tools, template_path):
     return out
 
 
+def _makes_a_new_folder(node):
+    """A call that makes a folder and refuses one that exists: engine_wait.new_run_folder(...), or os.mkdir(...) or
+    os.makedirs(...) without exist_ok=True."""
+    import ast
+    f = node.func
+    name = f.attr if isinstance(f, ast.Attribute) else (f.id if isinstance(f, ast.Name) else None)
+    if name == "new_run_folder":
+        return True
+    if name in ("mkdir", "makedirs"):
+        return not any(k.arg == "exist_ok" and not (isinstance(k.value, ast.Constant) and k.value.value is False)
+                       for k in node.keywords)
+    return False
+
+
+def run_folder_problems(tools, template_path):
+    """Under a template whose TEMPLATE.json names run_folders (v35 on): an adapter that starts an engine through
+    src/engine_wait.py and makes no new folder for the call, so that a call made again writes into an earlier run's
+    folder and over its outputs (dft-24). A new folder is engine_wait.new_run_folder's, or one os.mkdir or os.makedirs
+    makes without exist_ok. An adapter that does not parse is left to the checks that run it."""
+    import ast
+    meta = os.path.join(template_path, "TEMPLATE.json")
+    helper = cards.load_json(meta).get("run_folders") if os.path.isfile(meta) else None
+    if not helper:
+        return []
+    out = []
+    for t in tools:
+        try:
+            tree = ast.parse(t.get("adapter_source") or "")
+        except SyntaxError:
+            continue
+        calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call)]
+        starts = any(isinstance(n.func, ast.Attribute) and n.func.attr == "run" and isinstance(n.func.value, ast.Name)
+                     and n.func.value.id == "engine_wait" for n in calls)
+        if starts and not any(_makes_a_new_folder(n) for n in calls):
+            out.append("tool %s: its adapter starts an engine through %s and makes no new folder for the call, so a call "
+                       "made again writes into an earlier run's folder; it takes engine_wait.new_run_folder(<kind>), or makes "
+                       "its folder with os.makedirs and no exist_ok" % (t["name"], helper))
+    return out
+
+
 def gate_line(tc):
     """Where the gate is and which file opens it (test run 20261116-8: a session could not tell which of the two
     envelope files opened a tool's gate)."""
@@ -1024,6 +1064,9 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     faults = engine_wait_problems(tools, template_path)
     if faults:
         raise ValueError("a tool's adapter does not wait on its engine as this template's does: " + "; ".join(faults))
+    faults = run_folder_problems(tools, template_path)
+    if faults:
+        raise ValueError("a tool's adapter does not keep each run's outputs as this template's does: " + "; ".join(faults))
     shutil.copytree(template_path, bundle_path, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     if handover_decl is not None:
         for sub in ("outbox", "inbox", "received"):
