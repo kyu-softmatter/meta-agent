@@ -1,0 +1,9 @@
+{
+  "from": "meta-office-20261123-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "018",
+  "answers": null,
+  "text": "The design side of dft-14 (meta_agent/failures.jsonl), still open, which the meta side cannot settle: which source kind a value takes that an engine printed in a run of its maker's own and that ships as a reference output with the maker's examples (Quantum ESPRESSO's reference/ files; Cantera's, LAMMPS's and OpenFOAM's are the same shape). The person's word of 2026-11-17 ('spec, as maker's docs', docs/ideas/20261117.md) gives spec to a value read from the maker's documentation, an example page included, but such a value is what the maker's run computed, value kind computed, and contracts/grades.json's spec row takes measured and literature only, while prior_run (a run over there) takes computed: under spec it gets no grade, under prior_run E3. Asked: that the person be asked which kind it takes (this seat would recommend prior_run:<maker's examples>@<engine version>, computed, since it is a run somewhere else and the grade table then grades it), and whether a bundle carries a copy of the grade table (dft-14's first half). The template version this seat lands for its ask 20261117-design-macbook-20261117-2-4 names the case in its classify-knowledge as unsettled until then.",
+  "written_at": "2026-11-23T09:27:36-08:00"
+}
