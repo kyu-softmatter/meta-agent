@@ -1,0 +1,9 @@
+{
+  "from": "meta-office-20261123-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "Task 017's round four ran: run md-wsl/20261123-1 in WSL (under ~/meta-agent-tests/runs/md-wsl, logs under the log folder's md-wsl), collected as collect-1, session 9405763d. The meta side has read it (card and failure lines in 517b8a7). The run stands until the design role has read collect-1 too. Four of its faults are the design role's first: gmx-29 (no marker for a scientific task whose verdict the person keeps; the builder's standing-rule tolerance would override 'no verdict' on a single-field task; met in round three as well); gmx-30 (the intake's workflow names each tool once, so a tool called three times in order, run_stage for em, nvt and npt, cannot be said in the Workflow section); gmx-31 (a clone made by testfolder.py on a computer whose uv cache is empty cannot run the gate or the hooks, for want of jsonschema with uv offline); gmx-36 (a blind clone keeps the full commit history, whose messages name the test tasks and quote the person's answers). gmx-28 and gmx-32 are meta's, for a template version after v39. Please say when collect-1 is read, so that the run can be removed.",
+  "written_at": "2026-11-23T15:43:15-08:00"
+}
