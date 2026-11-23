@@ -877,8 +877,11 @@ NEEDS_ENV = ENV_HEAD + ("def run(payload):\n"
                         "    if not os.path.isfile(READY):\n"
                         "        return err('ECHO-ENV-001', 'unavailable', 'this agent has no environment yet')\n"
                         "    %s\n")
-ENGINE_BODY = ("out = subprocess.run([sys.executable, '-c', 'import sys; print(len(sys.argv[1]))', m], capture_output=True, "
-               "text=True, check=True)\n    return {'message': m, 'length': int(out.stdout)}")
+# the engine is started and waited on through src/engine_wait.py, in a new folder of the call's own, watching it, as the
+# latest template asks of a tool that runs a process (v30, v35, v37)
+ENGINE_BODY = ("import engine_wait\n    work = engine_wait.new_run_folder('echo')\n"
+               "    out = engine_wait.run([sys.executable, '-c', 'import sys; print(len(sys.argv[1]))', m], cwd=work, "
+               "poll_s=0.05, watch=[work])\n    return {'message': m, 'length': int(out['stdout'])}")
 WRITER_BODY = ("open(os.path.join(BUNDLE, 'runs', 'written.txt'), 'w').write(m)\n    return {'message': m, 'length': len(m)}")
 
 
@@ -904,8 +907,8 @@ class ValidatedInItsEnvironment(unittest.TestCase):
         i["lab_profile_ref"] = self.LAB
         i["tool"]["kind"] = kind
         gate = {"required": True, "place": "src/gate.py, consulted by src/run_tool.py before the call", "opens_by": "execution_permission"}
-        echo = dict(i.pop("tool_contract"), side_effects=effects, errors=["invalid_input", "unavailable", "refused_by_safety"],
-                    safety_gate=gate)
+        errors = ["invalid_input", "unavailable", "refused_by_safety"] + (["timeout", "cancelled"] if body == ENGINE_BODY else [])
+        echo = dict(i.pop("tool_contract"), side_effects=effects, errors=errors, safety_gate=gate)
         install = {"artifact": "tool_contract", "schema_version": "0.1", "name": "install_environment",
                    "description": "make this agent's own environment from the listed source, once, before the first run",
                    "inputs": {"type": "object", "properties": {}, "required": []},

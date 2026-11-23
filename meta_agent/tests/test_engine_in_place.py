@@ -26,21 +26,22 @@ PERMISSION = {"artifact": "execution_permission", "schema_version": "0.1", "reac
 
 
 def adapter(field, value):
-    return ("import os, subprocess, sys\n"
-            "BUNDLE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))\n"
+    # the engine is started and waited on through src/engine_wait.py, in a new folder of the call's own, watching it, as
+    # the latest template asks of a tool that runs a process (v30, v35, v37)
+    return ("import os, sys\n"
+            "import engine_wait\n"
             "def run(payload):\n"
-            "    case = os.path.join(BUNDLE, 'runs', 'case')\n"
-            "    os.makedirs(case, exist_ok=True)\n"
-            "    p = subprocess.run([sys.executable, '-c', 'print(%r)'], capture_output=True, text=True, cwd=case)\n"
-            "    open(os.path.join(case, 'log'), 'w').write(p.stdout)\n"
-            "    return {%r: float(p.stdout)}\n" % (value, field))
+            "    case = engine_wait.new_run_folder('case')\n"
+            "    log = os.path.join(case, 'log')\n"
+            "    engine_wait.run([sys.executable, '-c', 'print(%r)'], cwd=case, poll_s=0.05, stdout_path=log, watch=[case])\n"
+            "    return {%r: float(open(log).read())}\n" % (value, field))
 
 
 def contract(tool, field, engine=True):
     c = {"artifact": "tool_contract", "schema_version": "0.1", "name": tool, "description": "starts the engine",
          "inputs": {"type": "object", "properties": {}, "required": []},
          "outputs": {"type": "object", "properties": {field: {"type": "number", "unit": "1"}}, "required": [field]},
-         "errors": ["invalid_input", "permission_required"], "side_effects": "runs_process",
+         "errors": ["invalid_input", "permission_required", "timeout", "cancelled"], "side_effects": "runs_process",
          "safety_gate": {"required": True, "place": "src/gate.py", "opens_by": "execution_permission"},
          "idempotent": True, "timeout_s": None}
     if engine:

@@ -264,6 +264,17 @@ v36 changes two scripts and one session skill (tasks/018, at the design role's a
     one the contract does not declare (expectations.py); classify-knowledge names a value an
     engine printed in its maker's own run as computed, its kind of source waiting for the person.
 
+v37 changes two scripts, TEMPLATE.json, a session skill, the text and the builder (tasks/018, at
+    the design role's ask 20261118-design-macbook-20261117-2-1; dft-16, dft-17, dft-19, dft-20):
+    the agreement skill is measurement_error@v4, the difference in decimal of the two values as
+    written, and src/validate_tasks.py hands it the reference as printed; the common set carries
+    same_measurand@v1, which says whether a pair is of one measurand before its agreement is taken;
+    src/engine_wait.py returns the files a run wrote under the folders it watched. The builder
+    refuses an adapter of a tool that runs a process and waits on it other than through
+    engine_wait, and one that starts its engine through engine_wait and watches no folder
+    (bundle.engine_wait_only_problems). CLAUDE.md and run-skill say that a pair is not matched by
+    name, that outputs are read from what the run wrote, and that a long call runs in the background.
+
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
 changes is a version no build names and no session may remove.
@@ -300,8 +311,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v33": os.path.join(HERE, "template_v33"),
            "v34": os.path.join(HERE, "template_v34"),
            "v35": os.path.join(HERE, "template_v35"),
-           "v36": os.path.join(HERE, "template_v36")}
-LATEST = "v36"
+           "v36": os.path.join(HERE, "template_v36"),
+           "v37": os.path.join(HERE, "template_v37")}
+LATEST = "v37"
 SOURCE = SOURCES[LATEST]
 
 

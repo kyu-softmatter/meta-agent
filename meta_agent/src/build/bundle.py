@@ -169,6 +169,66 @@ def run_folder_problems(tools, template_path):
     return out
 
 
+SUBPROCESS_WAITS = ("run", "call", "check_call", "check_output")   # the subprocess functions that wait on what they start
+
+
+def engine_wait_only_problems(tools, template_path):
+    """Under a template whose TEMPLATE.json names engine_waits and written_files (v37 on), two faults of an adapter.
+
+    A tool whose contract says it runs a process (side_effects runs_process) and whose adapter waits on a process other
+    than through src/engine_wait.py: subprocess.run, call, check_call or check_output, a process's wait or communicate,
+    or os.system. Such a wait has no budget the call can give up on unless the adapter adds one, and v30 refused only a
+    wait that adds a wall-clock timeout; an example then ran for hours with no way for its call to give up (dft-17).
+
+    An adapter that starts an engine through engine_wait.run and names no folder to watch (watch=): what the run wrote
+    is then the adapter's assumption, and an engine's own script that writes elsewhere is read as not run (dft-16).
+
+    An adapter that does not parse is left to the checks that run it."""
+    import ast
+    meta = os.path.join(template_path, "TEMPLATE.json")
+    card = cards.load_json(meta) if os.path.isfile(meta) else {}
+    waits_helper, written_helper = card.get("engine_waits"), card.get("written_files")
+    if not waits_helper and not written_helper:
+        return []
+    out = []
+    for t in tools:
+        try:
+            tree = ast.parse(t.get("adapter_source") or "")
+        except SyntaxError:
+            continue
+        imported = {a.asname or a.name for n in ast.walk(tree) if isinstance(n, ast.ImportFrom) and n.module == "subprocess"
+                    for a in n.names if a.name in SUBPROCESS_WAITS}
+        calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call)]
+        if waits_helper and ((t.get("contract") or {}).get("side_effects") == "runs_process"):
+            bare = set()
+            for n in calls:
+                f = n.func
+                if isinstance(f, ast.Attribute) and isinstance(f.value, ast.Name):
+                    if f.value.id == "subprocess" and f.attr in SUBPROCESS_WAITS:
+                        bare.add("subprocess.%s" % f.attr)
+                    elif f.value.id == "os" and f.attr == "system":
+                        bare.add("os.system")
+                    elif f.value.id != "engine_wait" and f.attr in ("wait", "communicate"):
+                        bare.add("%s.%s" % (f.value.id, f.attr))
+                elif isinstance(f, ast.Attribute) and f.attr in ("wait", "communicate"):
+                    bare.add(f.attr)
+                elif isinstance(f, ast.Name) and f.id in imported:
+                    bare.add(f.id)
+            if bare:
+                out.append("tool %s: its contract says it runs a process and its adapter waits on one other than through "
+                           "%s (%s), with no budget a call can give up on; it starts and waits on its engine through "
+                           "engine_wait.run" % (t["name"], waits_helper, ", ".join(sorted(bare))))
+        if written_helper:
+            unwatched = [n for n in calls if isinstance(n.func, ast.Attribute) and n.func.attr == "run"
+                         and isinstance(n.func.value, ast.Name) and n.func.value.id == "engine_wait"
+                         and not any(k.arg == "watch" for k in n.keywords)]
+            if unwatched:
+                out.append("tool %s: its adapter starts an engine through %s and names no folder to watch, so what the run "
+                           "wrote is assumed; it passes watch=[<the call's folder>, <any folder the engine's script writes "
+                           "into>] and reads the outputs from the record's written" % (t["name"], written_helper))
+    return out
+
+
 def gate_line(tc):
     """Where the gate is and which file opens it (test run 20261116-8: a session could not tell which of the two
     envelope files opened a tool's gate)."""
@@ -1073,6 +1133,10 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     faults = run_folder_problems(tools, template_path)
     if faults:
         raise ValueError("a tool's adapter does not keep each run's outputs as this template's does: " + "; ".join(faults))
+    faults = engine_wait_only_problems(tools, template_path)
+    if faults:
+        raise ValueError("a tool's adapter does not wait on its engine or see what it wrote as this template's does: "
+                         + "; ".join(faults))
     shutil.copytree(template_path, bundle_path, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     if handover_decl is not None:
         for sub in ("outbox", "inbox", "received"):
