@@ -20,6 +20,7 @@ UNDECIDED and PENDING are not passes: --strict counts PENDING as failure.
 
 Requires jsonschema (Anaconda ships it). Without it the script re-executes itself through
 `uv run --offline --no-project --with jsonschema` when uv is present, and otherwise refuses to judge.
+Imported by another program, it never re-executes itself: it raises ImportError (office-5).
 """
 import argparse
 import datetime
@@ -92,6 +93,11 @@ try:
     import jsonschema
     from jsonschema import Draft202012Validator
 except ImportError:  # pragma: no cover - environment dependent
+    if __name__ != "__main__":
+        # imported by another program (the intake, the Designer): relaunching would run the gate with that
+        # program's arguments (office-5), so the importer is told and decides
+        raise ImportError("contracts/validate.py needs jsonschema, which this Python cannot import; run the importing "
+                          "program with a Python that has it (uv run --with jsonschema ...)")
     if os.environ.get("META_AGENT_VALIDATE_REEXEC") != "1":
         import shutil
         uv = shutil.which("uv")

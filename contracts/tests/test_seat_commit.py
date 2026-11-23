@@ -28,7 +28,8 @@ class TempRepo(unittest.TestCase):
                         ignore=shutil.ignore_patterns("__pycache__", "examples", "tests"))
         shutil.copy(os.path.join(REPO, "bootstrap.py"), self.dir)
         self.write("README.md", "a temporary repository\n")
-        self.git("init", "-q", "-b", "main")
+        self.git("init", "-q")                              # no init -b: git 2.25 of WSL Ubuntu 20.04 has none (office-5)
+        self.git("symbolic-ref", "HEAD", "refs/heads/main")
         self.git("config", "user.name", "a person")
         self.git("config", "user.email", "person@example.invalid")
         self.git("config", "core.hooksPath", "contracts/hooks")
@@ -122,6 +123,43 @@ class SeatCommit(TempRepo):
         p = self.tool(DESIGN, "README.md")
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
         self.assertEqual(self.head()[1], ["README.md"])
+
+    def test_a_folder_spelled_another_way_is_still_the_repository(self):
+        # git prints the long form of a folder that the temporary folder names in its 8.3 short form
+        # (C:\Users\KYUHWA~1, office-4); on macOS and Linux a link to the folder is the other spelling
+        alias = other_spelling(self.dir)
+        if alias is None:
+            self.skipTest("this computer gives the folder no second spelling")
+        if os.path.islink(alias):
+            self.addCleanup(os.remove, alias)
+        self.write("NOTES.md", "named through the other spelling\n")
+        p = run(alias, sys.executable, os.path.join(alias, "contracts", "tools", "seat_commit.py"),
+                "--seat", DESIGN, "-m", "a commit", os.path.join(alias, "NOTES.md"))
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertEqual(self.head()[1], ["NOTES.md"])
+
+    @unittest.skipUnless(os.name == "nt", "a path on another drive is Windows' own")
+    def test_a_path_on_another_drive_is_outside(self):
+        here = os.path.splitdrive(os.path.abspath(self.dir))[0].upper()
+        other = "Q:" if here != "Q:" else "R:"
+        p = self.tool(DESIGN, other + "\\NOTES.md")
+        self.assertEqual(p.returncode, 1)
+        self.assertIn("is outside the repository", p.stderr)
+
+
+def other_spelling(folder):
+    """A second name of folder: its 8.3 short or long form on Windows, a link to it elsewhere; None if none."""
+    if os.name == "nt":
+        import ctypes
+        buf = ctypes.create_unicode_buffer(32768)
+        for f in (ctypes.windll.kernel32.GetShortPathNameW, ctypes.windll.kernel32.GetLongPathNameW):
+            n = f(folder, buf, len(buf))
+            if n and os.path.normcase(buf.value) != os.path.normcase(folder):
+                return buf.value
+        return None
+    link = folder.rstrip("/") + "-alias"
+    os.symlink(folder, link)
+    return link
 
 
 if __name__ == "__main__":

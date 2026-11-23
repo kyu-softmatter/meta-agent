@@ -21,8 +21,12 @@ class SelfRegistrationAtCommit(TempRepo):
         return p.stdout.split()[1]
 
     def test_a_meta_session_seats_itself_then_works(self):
+        with open(os.path.join(self.dir, "contracts", "seats.json"), encoding="utf-8") as f:
+            taken = {s.get("seat") for s in json.load(f)["seats"]}
         name = self.seat("meta")
-        self.assertEqual(name, "meta-office-%s-1" % datetime.date.today().strftime("%Y%m%d"))
+        # the table is this repository's copy, so seats of the same day may already stand in it (2026-11-23: -1 to -3)
+        self.assertRegex(name, r"^meta-office-%s-[1-9][0-9]*$" % datetime.date.today().strftime("%Y%m%d"))
+        self.assertNotIn(name, taken)
         p = self.tool(name, "contracts/seats.json", message="contracts/seats: %s seats itself" % name)
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
         self.assertEqual(self.head(), ("%s@seat.invalid|person@example.invalid" % name, ["contracts/seats.json"]))

@@ -39,6 +39,32 @@ def git(root, *args, env=None, check=True):
     return p
 
 
+def _real(path):
+    """path with its links and Windows' short 8.3 names resolved, as far as it exists: a deleted file being
+    committed does not exist, so its folder is resolved and its name kept."""
+    path = os.path.abspath(path)
+    head, tail = path, []
+    while not os.path.exists(head):
+        head, t = os.path.split(head)
+        if not t:
+            break
+        tail.insert(0, t)
+    return os.path.join(os.path.realpath(head), *tail)
+
+
+def repo_rel(path, root):
+    """path relative to the repository's top level, in git's spelling, or None when it lies outside. The
+    two are compared resolved: git prints the long form of a folder that the temporary folder may name by
+    its 8.3 short form (C:\\Users\\KYUHWA~1, office-4), and a path on another drive has no relative path."""
+    try:
+        r = os.path.relpath(_real(path), _real(root)).replace(os.sep, "/")
+    except ValueError:                          # another drive
+        return None
+    if r == ".." or r.startswith("../"):
+        return None
+    return r
+
+
 def refuse(msg):
     sys.stderr.write("seat_commit: refused: %s\n" % msg)
     return 1
@@ -58,8 +84,8 @@ def main(argv=None):
     email = seat_rules.email_of(name)
     paths = []
     for p in args.paths:
-        r = os.path.relpath(os.path.abspath(p), root).replace(os.sep, "/")
-        if r.startswith("../") or r == "..":
+        r = repo_rel(p, root)
+        if r is None:
             return refuse("%s is outside the repository" % p)
         if r not in paths:
             paths.append(r)

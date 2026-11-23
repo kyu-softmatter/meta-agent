@@ -51,18 +51,57 @@ def sh(cwd, *args):
                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
+def init_main(cwd):
+    """git init on branch main, also with a git older than `init -b` (2.28; WSL Ubuntu 20.04 has 2.25, office-5)."""
+    sh(cwd, "init", "--quiet")
+    sh(cwd, "symbolic-ref", "HEAD", "refs/heads/main")
+
+
 def put(root, rel, text):
+    # the bytes as given, on every computer: a build card's digest is taken over the files as committed
     path = os.path.join(root, *rel.split("/"))
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write(text)
     return path
+
+
+def rmtree_all(path):
+    """A test's clean-up: read-only files go too (git writes its objects so on Windows)."""
+    import stat
+
+    def again(func, p, _):
+        try:
+            os.chmod(p, stat.S_IWRITE | stat.S_IREAD)
+            func(p)
+        except OSError:
+            pass
+    shutil.rmtree(path, onerror=again)
+
+
+def long_name(path):
+    """path as Windows reads it past its default length limit; elsewhere path itself (the test's own, not the tool's)."""
+    return "\\\\?\\" + os.path.abspath(path) if os.name == "nt" else path
+
+
+def wsl_link(target, link):
+    """Make link -> target from inside WSL, as a pixi that runs there does; False when this computer has no WSL."""
+    if os.name != "nt" or not shutil.which("wsl"):
+        return False
+    folder = os.path.dirname(link).replace("\\", "/")
+    p = subprocess.run(["wsl", "-e", "wslpath", "-a", folder], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if p.returncode != 0:
+        return False
+    where = p.stdout.decode("utf-8", "replace").strip()
+    p = subprocess.run(["wsl", "-e", "ln", "-s", target, where + "/" + os.path.basename(link)],
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return p.returncode == 0 and os.path.lexists(link)
 
 
 class TestFolder(unittest.TestCase):
     def setUp(self):
         self.top = os.path.realpath(tempfile.mkdtemp(prefix="testfolder-"))
-        self.addCleanup(shutil.rmtree, self.top, True)
+        self.addCleanup(rmtree_all, self.top)
         self.repo, self.root, self.logs, self.projects = (os.path.join(self.top, n) for n in ("source", "tests", "logs", "projects"))
         put(self.repo, "contracts/validate.py", "print('VERDICT PASS tree=fixture')\n")
         put(self.repo, "contracts/hooks/.gitkeep", "")
@@ -75,7 +114,7 @@ class TestFolder(unittest.TestCase):
                                                              "bundle_path": bdir + "/bundle", "bundle_sha256": digest}))
         for rel, text in BLIND_FIXTURE.items():
             put(self.repo, rel, text)
-        sh(self.repo, "init", "--quiet", "-b", "main")
+        init_main(self.repo)
         sh(self.repo, "config", "meta-agent.machine", "bench")
         sh(self.repo, "add", ".")
         sh(self.repo, "commit", "--quiet", "-m", "fixture")
@@ -261,6 +300,16 @@ class TestFolder(unittest.TestCase):
         self.assertIn("the build card says", err)
         self.assertEqual(tf.run_names(self.root, self.logs), [])                       # nothing half made is left
 
+    def test_a_copy_is_the_committed_bytes_whatever_the_line_ending_setting(self):
+        # Git for Windows sets core.autocrlf=true, and git archive wrote CRLF, so no bundle's digest matched (office-1)
+        sh(self.repo, "config", "core.autocrlf", "true")
+        run = self.make()
+        made = tf.read_json(os.path.join(self.logs, run, "made.json"))
+        for it in made["items"][1:]:
+            with open(os.path.join(self.root, run, *it["path"].split("/"), "CLAUDE.md"), "rb") as f:
+                self.assertNotIn(b"\r", f.read())
+        self.assertEqual([it["name"] for it in made["items"]], ["repo", "balance-0001", "echo-0002"])
+
     def test_a_folder_inside_the_repository_or_under_instructions_is_refused(self):
         code, _, err = tf_main(self, ["--root", os.path.join(self.repo, "tests"), "--logs", self.logs, "make"])
         self.assertEqual(code, 1)
@@ -361,6 +410,26 @@ class TestFolder(unittest.TestCase):
         self.assertEqual(self.run_tool("collect", run)[0], 0)                           # a second collection overwrites nothing
         self.assertTrue(os.path.isdir(self.collection(run, 2)))
 
+    def test_a_link_that_wsl_made_is_collected_by_its_text(self):
+        # a pixi run inside WSL from a Windows folder leaves links Windows does not take for links, and open()
+        # failed on them with EINVAL, so no collection was written (office-3). Two unrelated kinds: a library a
+        # package cache links, and a folder an environment links.
+        run = self.make("--no-clone")
+        runs = os.path.join(self.root, run, "bundles", "balance-0001", "runs")
+        put(runs, "cache/pkgs/lib/libgomp.so.1.0.0", "a library\n")
+        os.makedirs(os.path.join(runs, "env", "share"))
+        if not (wsl_link("libgomp.so.1.0.0", os.path.join(runs, "cache", "pkgs", "lib", "libgomp.so.1"))
+                and wsl_link("share", os.path.join(runs, "env", "data"))):
+            self.skipTest("a link WSL makes on an NTFS folder needs Windows with WSL")
+        code, _, err = self.run_tool("collect", run)
+        self.assertEqual(code, 0, err)
+        b = tf.read_json(os.path.join(self.collection(run), "collection.json"))["items"][0]
+        self.assertIn("runs/cache/pkgs/lib/libgomp.so.1", b["added"])
+        self.assertNotIn("runs/env/data", b["added"])                                  # a link to a folder is passed over, as elsewhere
+        self.assertEqual(tf.lx_link_target(os.path.join(runs, "cache", "pkgs", "lib", "libgomp.so.1")), "libgomp.so.1.0.0")
+        self.assertEqual(self.run_tool("wipe", run)[0], 0)                              # and a wipe removes the links too
+        self.assertFalse(os.path.lexists(os.path.join(self.root, run)))
+
     # ------------------------------------------------------------------ session
     @unittest.skipIf(sys.platform == "win32", "the stand-in for the command-line claude is a shell script")
     def test_a_session_is_run_in_the_item_from_a_brief_and_what_it_was_asked_is_kept(self):
@@ -440,6 +509,65 @@ class TestFolder(unittest.TestCase):
         self.assertEqual(self.run_tool("collect", run)[0], 0)                           # transcripts may still be taken later
         self.assertTrue(tf.read_json(os.path.join(self.collection(run, 2), "collection.json"))["items"][0]["gone"])
 
+    def test_wipe_removes_read_only_files_and_long_paths(self):
+        # git's read-only objects under origin.git stopped a wipe half way on Windows (office-4, office-11), and a
+        # pixi cache's paths are longer than Windows allows by default (office-7). Two unrelated kinds: a
+        # repository's objects, and a package cache.
+        run = self.make()
+        path = os.path.join(self.root, run)
+        ro = put(path, "bundles/echo-0002/runs/cache/locked/f.txt", "read only\n")
+        os.chmod(ro, 0o444)
+        os.chmod(os.path.dirname(ro), 0o555)
+        deep = os.path.join(path, "bundles", "echo-0002", "runs", "cache", *(["pkgs-of-a-package-cache-" + "x" * 40] * 6))
+        self.assertGreater(len(deep), 300)
+        os.makedirs(long_name(deep))
+        with open(long_name(os.path.join(deep, "info.json")), "w", encoding="utf-8") as f:
+            f.write("{}\n")
+        code, _, err = self.run_tool("wipe", run)
+        self.assertEqual(code, 0, err)
+        self.assertFalse(os.path.lexists(path))
+        self.assertEqual(tf.read_json(os.path.join(self.logs, run, "wiped.json"))["collected_first"], "collect-1")
+
+    def test_a_wipe_that_stopped_part_way_is_finished_and_keeps_its_record(self):
+        # after a wipe stopped, the run was finished with --no-collect and its record said collected_first null
+        # although collect-2 had been made minutes before (office-11)
+        run = self.make("--no-clone")
+        self.session(os.path.join(self.root, run, "bundles", "echo-0002"), "gggg", [])
+        real = tf.remove_tree if hasattr(tf, "remove_tree") else None
+
+        def stops(p):
+            raise PermissionError(13, "Access is denied", p)
+        tf.remove_tree = stops
+        try:
+            code, _, err = self.run_tool("wipe", run, "--sessions")
+        finally:
+            if real is None:
+                del tf.remove_tree
+            else:
+                tf.remove_tree = real
+        self.assertEqual(code, 1)
+        self.assertIn("could not be removed whole", err)
+        self.assertFalse(os.path.isfile(os.path.join(self.logs, run, "wiped.json")))
+        self.assertIn("half-removed", self.run_tool("status")[1])
+        code, _, err = self.run_tool("wipe", run, "--no-collect")
+        self.assertEqual(code, 0, err)
+        rec = tf.read_json(os.path.join(self.logs, run, "wiped.json"))
+        self.assertEqual((rec["collected_first"], rec["sessions_removed"]), ("collect-1", ["gggg"]))
+        self.assertFalse(os.path.isfile(os.path.join(self.logs, run, "wiping.json")))
+
+    def test_status_passes_over_a_collection_that_did_not_finish(self):
+        # a collect that stopped (office-3) left collect-1 with no collection.json, and status stopped on it (office-11)
+        run = self.make("--no-clone")
+        os.makedirs(os.path.join(self.logs, run, "collect-1"))
+        code, out, err = self.run_tool("status")
+        self.assertEqual(code, 0, err)
+        self.assertIn("0 collection(s); unfinished, with no collection.json: collect-1", out)
+        self.assertEqual(self.run_tool("collect", run)[0], 0)
+        code, out, err = self.run_tool("status")
+        self.assertEqual(code, 0, err)
+        self.assertIn("collect-2 at", out)
+        self.assertIn("unfinished, with no collection.json: collect-1", out)
+
     def test_wipe_removes_only_a_folder_this_tool_made(self):
         mine = os.path.join(self.root, "20261116-7")
         put(mine, "thesis.txt", "not a test\n")
@@ -466,7 +594,7 @@ class ThisRepository(unittest.TestCase):
         builds = tf.newest_builds(REPO)
         self.assertGreaterEqual(len({b.split("/")[-2] for b in builds}), 2)             # two unrelated kinds
         top = tempfile.mkdtemp(prefix="testfolder-")
-        self.addCleanup(shutil.rmtree, top, True)
+        self.addCleanup(rmtree_all, top)
         for rel in builds:
             item = tf.make_bundle(REPO, rel, os.path.join(top, rel.replace("/", "-")))
             self.assertEqual(item["bundle_sha256"], json.loads(tf.git(REPO, "show", "HEAD:%s/build.json" % rel))["bundle_sha256"])
