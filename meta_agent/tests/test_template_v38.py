@@ -144,7 +144,7 @@ class TheSections(unittest.TestCase):
 
 class TheVersion(unittest.TestCase):
     def test_v38_is_the_latest_and_changes_its_readme_one_sentence_and_its_card(self):
-        self.assertEqual(template_mod.LATEST, "v38")
+        self.assertIn("v38", template_mod.SOURCES)                  # v39 is the latest since its checks call no install
         self.assertEqual(sorted(set(cards.tree_files(NEW_V)) ^ set(cards.tree_files(OLD_V))), [])
         both = set(cards.tree_files(OLD_V)) & set(cards.tree_files(NEW_V))
         changed = sorted(r for r in both if cards.sha256_file(os.path.join(OLD_V, r)) != cards.sha256_file(os.path.join(NEW_V, r)))

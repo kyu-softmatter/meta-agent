@@ -280,6 +280,12 @@ v38 changes README.md, one sentence of CLAUDE.md, TEMPLATE.json and the builder 
     says whom it is for and what it is not for, which the build renders from the request and from
     CAPABILITIES.json (bundle.for_whom_section, not_for_section; TEMPLATE.json readme_placeholders).
     It names no other tool to use instead: which tool a lab uses is the lab's (MP12).
+v39 changes tasks/001-start.md, TEMPLATE.json and the builder, after the two bundles built on
+    Windows were tested standing alone (failures.jsonl office-9): the start task names the lines
+    it asks for after the install, and under checks_call the builder refuses a check whose call is
+    an install, an error code that does not begin with its tool's name as the runner spells it, and
+    an expected error that names no code where its tool has more than one of that category
+    (bundle.checks_call_problems).
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then
@@ -319,8 +325,9 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v35": os.path.join(HERE, "template_v35"),
            "v36": os.path.join(HERE, "template_v36"),
            "v37": os.path.join(HERE, "template_v37"),
-           "v38": os.path.join(HERE, "template_v38")}
-LATEST = "v38"
+           "v38": os.path.join(HERE, "template_v38"),
+           "v39": os.path.join(HERE, "template_v39")}
+LATEST = "v39"
 SOURCE = SOURCES[LATEST]
 
 

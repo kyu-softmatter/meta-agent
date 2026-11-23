@@ -229,6 +229,52 @@ def engine_wait_only_problems(tools, template_path):
     return out
 
 
+def checks_call_problems(tools, interface_tasks, scientific_tasks, replay_items, template_path):
+    """Under a template whose TEMPLATE.json names checks_call (v39 on), three faults of what a build's checks call, after
+    the two bundles built on Windows were tested standing alone (meta_agent/failures.jsonl office-9):
+
+    - an interface task, a scientific task or a replay item whose call is a tool that names installs_from: the check
+      then makes the network install, which the start task leaves to the session as its own step after a not_run;
+    - an error contract whose code does not begin with the tool's name in capitals and a hyphen, the prefix the runner of
+      tools gives the codes it makes itself, so that one tool's codes are spelled one way;
+    - an item that expects an error of a category of which its tool has more than one contract (the runner's own
+      unavailable error of an install counted) and names no code, so that it would pass on another error than the one
+      it is for."""
+    meta = os.path.join(template_path, "TEMPLATE.json")
+    runner = (cards.load_json(meta) if os.path.isfile(meta) else {}).get("checks_call")
+    if not runner:
+        return []
+    by_name = {t["name"]: t for t in tools}
+    out = []
+    for t in tools:
+        prefix = t["name"].upper() + "-"
+        for e in t.get("errors") or []:
+            code = e.get("code")
+            if isinstance(code, str) and not code.startswith(prefix):
+                out.append("tool %s: its error code %s does not begin with %s, the prefix %s gives the codes it makes "
+                           "itself" % (t["name"], code, prefix, runner))
+    for label, items in (("interface task", interface_tasks), ("scientific task", scientific_tasks),
+                         ("replay item", replay_items)):
+        for item in items or []:
+            call = item.get("call") if isinstance(item.get("call"), dict) else {}
+            t = by_name.get(call.get("tool"))
+            if t is None:
+                continue
+            contract = t.get("contract") or {}
+            if contract.get("installs_from"):
+                out.append("%s %s: its call is %s, which installs from the network; the install is the session's own "
+                           "step after a not_run, and a check makes no install" % (label, item.get("id"), t["name"]))
+            want = (item.get("expected") or {}).get("error") if isinstance(item.get("expected"), dict) else None
+            if isinstance(want, dict) and want.get("category") and not want.get("code"):
+                same = [e for e in t.get("errors") or [] if e.get("category") == want["category"]]
+                own = 1 if contract.get("installs_from") and want["category"] == "unavailable" else 0
+                if len(same) + own > 1:
+                    out.append("%s %s: it expects an error of category %s and names no code, and %s has %d contracts "
+                               "of that category; it names the code of the one it is for"
+                               % (label, item.get("id"), want["category"], t["name"], len(same) + own))
+    return out
+
+
 def gate_line(tc):
     """Where the gate is and which file opens it (test run 20261116-8: a session could not tell which of the two
     envelope files opened a tool's gate)."""
@@ -1178,6 +1224,9 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     if faults:
         raise ValueError("a tool's adapter does not wait on its engine or see what it wrote as this template's does: "
                          + "; ".join(faults))
+    faults = checks_call_problems(tools, interface_tasks, scientific_tasks, replay_items, template_path)
+    if faults:
+        raise ValueError("the bundle's checks cannot be built as written: " + "; ".join(faults))
     shutil.copytree(template_path, bundle_path, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     if handover_decl is not None:
         for sub in ("outbox", "inbox", "received"):
@@ -1232,6 +1281,10 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
         if items and os.path.exists(gk):
             os.remove(gk)
     mark_builder_records(bundle_path, words, ids=ids or (), questions=questions)
+    # every text file as the repository's `* text=auto eol=lf` stores it, so that the digest is one the commit
+    # reproduces: a skill, a template file or an adapter a session wrote with CRLF on Windows was copied byte for byte
+    # and its digest refused by testfolder.py make (office-2)
+    cards.lf_tree(bundle_path)
     return cards.sha256_tree(bundle_path)
 
 

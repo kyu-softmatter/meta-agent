@@ -119,5 +119,39 @@ def sha256_tree(root):
     return "sha256:" + h.hexdigest()
 
 
+def git_text(data):
+    """Whether git's `text=auto` takes these bytes for text, as its convert.c does: no NUL, no CR alone, and fewer
+    bytes that do not print than one in 128 of those that do (a DOS end-of-file byte at the end not counted)."""
+    if b"\0" in data or data.replace(b"\r\n", b"").count(b"\r"):
+        return False
+    printable = nonprintable = 0
+    for c in data:
+        if c in (10, 13):
+            continue
+        if c == 127 or (c < 32 and c not in (8, 9, 12, 27)):
+            nonprintable += 1
+        else:
+            printable += 1
+    if data.endswith(b"\x1a"):
+        nonprintable -= 1
+    return (printable >> 7) >= nonprintable
+
+
+def lf_tree(root):
+    """Write every file under root that git takes for text with LF line endings, as the repository's
+    `* text=auto eol=lf` stores it, so that a digest taken over root is one its commit reproduces (office-2).
+    A file git takes for binary is left as it was. Returns the relative paths rewritten, sorted."""
+    out = []
+    for rel in tree_files(root):
+        path = os.path.join(root, rel)
+        with open(path, "rb") as f:
+            data = f.read()
+        if b"\r\n" in data and git_text(data):
+            with open(path, "wb") as f:
+                f.write(data.replace(b"\r\n", b"\n"))
+            out.append(rel)
+    return out
+
+
 def short_hash(text, n=12):
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:n]
