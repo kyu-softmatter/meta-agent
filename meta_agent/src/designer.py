@@ -90,8 +90,7 @@ REPO = os.path.dirname(ROOT)
 
 def rel_repo(path, root):
     """A repository-relative, posix path for a file under the working root."""
-    base = os.path.dirname(root)
-    return os.path.relpath(path, base).replace(os.sep, "/")
+    return cards.rel_posix(path, os.path.dirname(root))
 
 
 def search_cases(signature, root, what):

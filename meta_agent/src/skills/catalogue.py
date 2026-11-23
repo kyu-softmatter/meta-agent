@@ -127,4 +127,4 @@ def listing(rows):
 
 
 def rel_repo(path):
-    return os.path.relpath(path, REPO).replace(os.sep, "/")
+    return cards.rel_posix(path, REPO)

@@ -11,6 +11,24 @@ import os
 SCHEMA_VERSION = "0.1"
 
 
+def rel_posix(path, start, pathmod=os.path):
+    """`path` relative to `start`, in posix form; where the two are on different drives (Windows, a working copy on D:
+    and a temporary folder on C:), where no relative path exists, the absolute path in posix form (office-10)."""
+    try:
+        return pathmod.relpath(path, start).replace(pathmod.sep, "/")
+    except ValueError:
+        return pathmod.abspath(path).replace(pathmod.sep, "/")
+
+
+def is_under(path, tree, pathmod=os.path):
+    """Whether `path` lies in `tree` (both resolved first); a path on another drive than the tree is not (office-10)."""
+    path, tree = pathmod.realpath(path), pathmod.realpath(tree)
+    try:
+        return pathmod.commonpath([path, tree]) == tree
+    except ValueError:
+        return False
+
+
 def now_iso(now=None):
     """An ISO-8601 UTC timestamp; `now` overrides it for reproducible runs."""
     if now:

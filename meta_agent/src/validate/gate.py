@@ -65,8 +65,7 @@ def install_tools(bundle_path):
 
 
 def outside(path, tree=REPO):
-    path, tree = os.path.realpath(path), os.path.realpath(tree)
-    return os.path.commonpath([path, tree]) != tree
+    return not cards.is_under(path, tree)
 
 
 def call_tool(bundle_path, tool, payload, timeout=None):
