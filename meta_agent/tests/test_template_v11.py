@@ -16,13 +16,13 @@ Run from the repository root:
 import json
 import os
 import shutil
-import stat
 import subprocess
 import sys
 import tempfile
 import unittest
 
 from meta_agent.src import cards
+from meta_agent.tests import childproc
 from meta_agent.src.build import bundle as bundle_mod
 from meta_agent.src.build import template as template_mod
 from meta_agent.src.intake import card as card_mod
@@ -72,9 +72,7 @@ class TheInstaller(unittest.TestCase):
         os.makedirs(self.empty)
         os.makedirs(self.full)
         for src in INSTALLERS.values():
-            exe = os.path.join(self.full, src["installer"])
-            cards.write_text(exe, "#!/bin/sh\nexit 0\n")
-            os.chmod(exe, os.stat(exe).st_mode | stat.S_IEXEC)
+            childproc.stand_in(self.full, src["installer"])
 
     def test_an_installer_not_on_the_computer_is_named_and_is_the_person_s_step(self):
         for name, src in INSTALLERS.items():

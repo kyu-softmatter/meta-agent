@@ -23,6 +23,7 @@ import tempfile
 import unittest
 
 from meta_agent.src import cards
+from meta_agent.tests import childproc
 from meta_agent.src.build import template as template_mod
 from meta_agent.tests.test_template_v8 import IO, permission, self_check
 
@@ -84,7 +85,7 @@ def call(bundle, tool, path_dir):
     """The runner in a fresh process whose PATH is path_dir alone: an installer is there only where a test put one."""
     p = subprocess.run([sys.executable, "-I", os.path.join(bundle, "src", "run_tool.py"), tool],
                        input=json.dumps({"message": "four"}), capture_output=True, text=True, cwd=bundle,
-                       env={"PATH": path_dir, "PYTHONUTF8": "1"})
+                       env=childproc.bare_env(PATH=path_dir, PYTHONUTF8="1"))
     assert p.returncode == 0, p.stdout + p.stderr
     return json.loads(p.stdout)
 
@@ -107,9 +108,7 @@ class AReadOfDataFromListedHosts(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.path, True)
 
     def put_installer(self, name):
-        exe = os.path.join(self.path, name)
-        cards.write_text(exe, "#!/bin/sh\nexit 0\n")
-        os.chmod(exe, 0o755)
+        childproc.stand_in(self.path, name)
 
     def run_with(self, kind, perm):
         tmp, bundle = make_bundle(kind, perm)

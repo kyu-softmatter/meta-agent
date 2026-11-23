@@ -27,6 +27,7 @@ import tempfile
 import unittest
 
 from meta_agent.src import cards, designer
+from meta_agent.tests import childproc
 from meta_agent.src.build import bundle as bundle_mod
 from meta_agent.src.build import template as template_mod
 from meta_agent.src.skills import catalogue as catalogue_mod
@@ -145,7 +146,7 @@ class TheHook(unittest.TestCase):
         elsewhere = os.path.join(self.tmp, "elsewhere")
         os.makedirs(elsewhere, exist_ok=True)
         env = dict(os.environ, CLAUDE_PROJECT_DIR=b)
-        return subprocess.run(command, shell=True, cwd=elsewhere, env=env, capture_output=True, text=True).returncode
+        return childproc.run_hook(command, cwd=elsewhere, env=env, capture_output=True, text=True).returncode
 
     def test_the_self_check_runs_from_another_working_directory(self):
         self.assertEqual(self.hook(V27), 0)
