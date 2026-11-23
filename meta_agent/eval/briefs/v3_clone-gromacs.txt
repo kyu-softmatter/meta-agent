@@ -1,0 +1,22 @@
+Your role is `meta`.
+
+http://www.mdtutorials.com/gmx/lysozyme/
+
+이것을 자동화 하고싶어
+
+I have already answered these, in an earlier session; do not ask them again:
+
+- A built agent may fetch, read-only and anonymously, from files.rcsb.org (the structure 1AKI), mackerell.umaryland.edu (the CHARMM36 force field) and www.mdtutorials.com (the tutorial's parameter files), beside its own environment made with pixi from conda-forge.
+- The force field is CHARMM36, with the TIP3P water model.
+- GROMACS 2025.2.
+- The tutorial may be registered and quoted. It is one author's tutorial, not the maker's documentation: a value taken from it is a prior run's (source kind prior_run), a run over there and not a run over here.
+- The chloride count and the net charge after genion are compared with the tutorial's exactly.
+- The water counts, after solvate and after genion, are reported as the agent's value, the tutorial's and their difference, with no verdict; that judgement is mine.
+- The atom count and the box are reported with no reference for now, and with no verdict: no source found so far prints either for this set-up.
+- The minimisation's final energy, maximum force and number of steps are reported like the averages below: the agent's value, the tutorial's and their difference, with no verdict.
+- The tutorial gives no NVT temperature average, only that the temperature reaches its target. That target stands as the tutorial's value for it: the agent reports its average, the target and their difference, with no verdict.
+- For averages of the simulation (temperature, pressure, density and the like) the agent reports its value, the tutorial's and their difference, and gives no verdict; that judgement is mine.
+- In this round the agent runs the set-up, minimisation and the two equilibrations (NVT and NPT) at the tutorial's own lengths, as its parameter files give them, and does not run production. Hydrogen bonds, secondary structure and the production averages are for a later round that runs production.
+- Build on the newest agent template.
+
+Carry the request through as far as it goes without me. Report when you stop: what you did, what the gate printed, what is open, and what you ran on.
