@@ -58,6 +58,27 @@ class SelfRegistrationAtCommit(TempRepo):
         self.assertRegex(p.stdout + p.stderr, r"FAIL\s+check 6")
         self.assertEqual(self.count(), n)
 
+    def test_seats_seated_at_the_same_time_each_commit_their_own_entry(self):
+        # three sessions ran bootstrap.py seat meta --write within one minute, and none could commit while the
+        # others' entries stood uncommitted in the file (2026-11-23, meta-office-20261123-1, -2 and -3). Two
+        # unrelated roles here: a meta seat and a design seat.
+        first, second = self.seat("meta"), self.seat("design")
+        n = self.count()
+        p = self.tool(second, "contracts/seats.json", message="contracts/seats: %s seats itself" % second)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        committed = json.loads(self.git("show", "HEAD:contracts/seats.json"))
+        self.assertIn(second, [s["seat"] for s in committed["seats"]])
+        self.assertNotIn(first, [s["seat"] for s in committed["seats"]])      # the other entry stays uncommitted
+        self.assertEqual(self.git("diff", "--cached", "--name-only").strip(), "")
+        self.assertIn("contracts/seats.json", self.git("status", "--porcelain"))
+        p = self.tool(first, "contracts/seats.json", message="contracts/seats: %s seats itself" % first)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertEqual(self.count(), n + 2)
+        self.assertEqual(self.git("status", "--porcelain").strip(), "")       # the file is what HEAD holds
+        first_line = self.git("rev-list", "--max-parents=0", "HEAD").strip()
+        p = run(self.dir, sys.executable, "contracts/validate.py", "--checks", "6", "--commit-range", first_line + "..HEAD")
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+
     def test_a_registration_with_another_file_is_refused(self):
         name = self.seat("meta")
         self.write("meta_agent/work.txt", "too early\n")

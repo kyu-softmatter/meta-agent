@@ -40,6 +40,8 @@ python -m unittest discover -s meta_agent/tests -t .
 
 The second is needed when `contracts/` changed, the tests when code changed. Every number you report is read off these runs, and the verdict line names the tree it judged.
 
+When other seats share the folder and `git status` shows paths that are not yours, the test suites in the working copy judge their unfinished work beside yours. Run the suites on an export of the head with your own changed files copied over: `git archive HEAD` unpacked into a folder of the scratchpad, short enough on Windows for the repository's longest paths, then `python -m unittest …` from that folder, and say in the report which tree was judged. The gate needs no export: at commit time the hook judges the commit's own tree.
+
 ## Report
 
 Ten lines or fewer, in the form the `open-sessions` skill gives: the task, what landed with its commit, the verdict line, what you asked and of whom, what comes next. Say plainly what is not done and what you did not check.

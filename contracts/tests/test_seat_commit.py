@@ -138,6 +138,27 @@ class SeatCommit(TempRepo):
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
         self.assertEqual(self.head()[1], ["NOTES.md"])
 
+    def test_a_byte_order_mark_does_not_enter_the_message(self):
+        # Windows PowerShell 5.1's Out-File -Encoding utf8 begins a file with a mark, and git kept it as the
+        # subject's first character (office-12, 182ae68); from a file and from standard input alike
+        path = os.path.join(self.dir, "message.txt")
+        with open(path, "wb") as f:
+            f.write("﻿a subject\n\nand a body\n".encode("utf-8"))
+        self.write("NOTES.md", "x\n")
+        p = self.tool_file(DESIGN, path, "NOTES.md")
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertEqual(self.git("log", "-1", "--format=%B").encode("utf-8")[:9], b"a subject")
+        self.write("NOTES.md", "y\n")
+        p = subprocess.run([sys.executable, os.path.join("contracts", "tools", "seat_commit.py"), "--seat", DESIGN,
+                            "-F", "-", "NOTES.md"], cwd=self.dir, input="﻿another subject\n".encode("utf-8"),
+                           capture_output=True)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertEqual(self.git("log", "-1", "--format=%s").strip(), "another subject")
+
+    def tool_file(self, seat, message_file, *paths):
+        return run(self.dir, sys.executable, os.path.join("contracts", "tools", "seat_commit.py"),
+                   "--seat", seat, "-F", message_file, *paths)
+
     @unittest.skipUnless(os.name == "nt", "a path on another drive is Windows' own")
     def test_a_path_on_another_drive_is_outside(self):
         here = os.path.splitdrive(os.path.abspath(self.dir))[0].upper()

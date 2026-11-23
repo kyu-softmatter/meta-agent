@@ -1323,7 +1323,7 @@ def check17(cards, c, report, tree):
 # B checks: one built bundle (plan.md 5.1 S5, 8). Run with --bundle PATH, on every
 # bundle a build card points at, and on <fixture>/bundle/ under --expect-fail.
 # ----------------------------------------------------------------------------
-B_IMPLEMENTED = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B11", "B15", "B16", "B17", "B18"]  # a plain list literal: a test of the meta role reads it from this source
+B_IMPLEMENTED = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B11", "B15", "B16", "B17", "B18", "B19"]  # a plain list literal: a test of the meta role reads it from this source
 BUNDLE_FILES = ["CLAUDE.md", ".claude/settings.json", "CAPABILITIES.json", "envelope/safety.json",
                 "envelope/snapshot.json", "envelope/parameters.json", "failures.jsonl",
                 "src/gate.py", "src/run_tool.py", "src/replay.py", "src/validate_tasks.py"]
@@ -1841,6 +1841,43 @@ def checkB17(bundle, label, report):
         report.fail("B17", relpath, msg)
 
 
+B19_FROM = 40       # v38 was the newest committed and v39 was being written when B19 landed (dft-14)
+B19_COPY = "envelope/grades.json"
+
+
+def checkB19(bundle, label, report):
+    """A bundle of template v40 or later carries the grade table, envelope/grades.json, so that a bundle standing
+    alone derives a grade and never states one (dft-14; the person, 2026-11-23, "Yes, carry a copy
+    (Recommended)"). Each row of the copy is a row of contracts/grades.json, its note and a later retired_on aside,
+    since a revision of the table is a new row and the old one stays; its forbidden lists and its rule for an
+    unregistered source kind are the table's. A copy made before a row was added lacks that row and passes."""
+    version = session_skill_rules.template_version(bundle)
+    if version is None or version < B19_FROM:
+        return
+    if not os.path.isfile(os.path.join(bundle, *B19_COPY.split("/"))):
+        report.fail("B19", B19_COPY, "missing: a bundle standing alone derives no grade without the table")
+        return
+    copy = bundle_json(bundle, B19_COPY, report, "B19")
+    if not isinstance(copy, dict) or not isinstance(copy.get("rules"), list) or not copy["rules"]:
+        report.fail("B19", B19_COPY, "holds no rules")
+        return
+    table = load_json(os.path.join(HERE, "grades.json"))
+
+    def row(r):
+        # what grades a number; a row's note explains it, and a later retired_on does not change it
+        return json.dumps({k: v for k, v in r.items() if k not in ("retired_on", "note")}, sort_keys=True) \
+            if isinstance(r, dict) else None
+    rows = {row(r) for r in table.get("rules", [])}
+    for i, r in enumerate(copy["rules"]):
+        if row(r) not in rows:
+            report.fail("B19", B19_COPY, "rules[%d] (source_kind %r, value_kinds %r) is not a row of contracts/grades.json"
+                        % (i, r.get("source_kind") if isinstance(r, dict) else None,
+                           r.get("value_kinds") if isinstance(r, dict) else None))
+    for key in ("forbidden_grades", "forbidden_value_kinds", "unregistered_source_kind"):
+        if copy.get(key) != table.get(key):
+            report.fail("B19", B19_COPY, "%s is %r, and contracts/grades.json says %r" % (key, copy.get(key), table.get(key)))
+
+
 def run_bundle_checks(bundle, c, report, checks, knowledge_root, label=None):
     bundle = os.path.abspath(bundle)
     label = label or rel(bundle, REPO)
@@ -1876,6 +1913,8 @@ def run_bundle_checks(bundle, c, report, checks, knowledge_root, label=None):
         checkB17(bundle, label, report)
     if "B18" in checks:
         checkB18(bundle, label, report)
+    if "B19" in checks:
+        checkB19(bundle, label, report)
     report.ran.update(ch for ch in checks if isinstance(ch, str))
 
 
