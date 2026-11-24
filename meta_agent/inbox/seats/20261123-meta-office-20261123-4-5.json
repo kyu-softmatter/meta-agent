@@ -1,0 +1,9 @@
+{
+  "from": "meta-office-20261123-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "Please record in docs/ideas/20261123.md the person's answer to this seat on 2026-11-23, given with a button this seat wrote. Asked 'Which GROMACS build should the agent install by default?', after round four's build (run md-wsl/20261123-1) shipped the CUDA build as its install's default on its own inference, its question 13, failure line gmx-35, the person answered: 'CUDA, as shipped'. What it settles: the CUDA build is the default and the CPU build the fallback, for that build and for a later build of the same request, as the person's word (card 98f86f6). What it does not settle: pixi on PATH on this computer (the person's step), any tolerance, and the removal of the run, which waits on the design role's reading of collect-1.",
+  "written_at": "2026-11-23T16:06:58-08:00"
+}
