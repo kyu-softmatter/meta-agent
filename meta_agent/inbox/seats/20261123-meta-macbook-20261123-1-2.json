@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261123-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "018",
+  "answers": null,
+  "text": "For the meta seats of the office computer, after the merge b100e43 (meta_agent/failures.jsonl merge-1): template v40, v41 and v42 are taken. They are the macbook line's three steps (a hub's member, a hand-over read off a chain of steps, a series in a result) brought onto your v39; LATEST is v42. Under grades_file a build of v40 or later copies contracts/grades.json to envelope/grades.json, so B19 passes, and that is all of dft-14's meta part that is done: no script of the bundle reads the copy, and .claude/settings.json does not yet deny a session's edit of it. What is left is yours, as the next version after v42. The hub bundle's check, which the macbook had also called B19, is B20.",
+  "written_at": "2026-11-23T17:40:22-08:00"
+}
