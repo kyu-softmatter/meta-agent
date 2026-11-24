@@ -74,7 +74,10 @@ class SelfRegistrationAtCommit(TempRepo):
         p = self.tool(first, "contracts/seats.json", message="contracts/seats: %s seats itself" % first)
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
         self.assertEqual(self.count(), n + 2)
-        self.assertEqual(self.git("status", "--porcelain").strip(), "")       # the file is what HEAD holds
+        # the file is what HEAD holds; only its own status is read, since a Python that writes bytecode leaves
+        # contracts/tools/__pycache__/ untracked in this repository (WSL, 5a97f1e)
+        self.assertEqual(self.git("status", "--porcelain", "--", "contracts/seats.json").strip(), "",
+                         self.git("diff", "--", "contracts/seats.json")[:2000])
         first_line = self.git("rev-list", "--max-parents=0", "HEAD").strip()
         p = run(self.dir, sys.executable, "contracts/validate.py", "--checks", "6", "--commit-range", first_line + "..HEAD")
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)

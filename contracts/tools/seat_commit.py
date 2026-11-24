@@ -83,16 +83,24 @@ def read_message(args):
     return text[1:] if text.startswith("﻿") else text
 
 
+def head_mode(root):
+    """The mode HEAD records for contracts/seats.json: a copy made on WSL's /mnt drives holds it as 100755, and
+    a mode written here would differ from the file's own (run of 5a97f1e in WSL Ubuntu-20.04)."""
+    line = git(root, "ls-tree", "HEAD", "--", seat_rules.SEATS_REL).stdout.split()
+    return line[0] if line and line[0] in ("100644", "100755") else "100644"
+
+
 def commit_registration(root, text, message, env):
     """Commit contracts/seats.json as `text` (HEAD's table and the seat's own entry) through an index of its
     own, so that neither what other seats have written into the working file nor what they have staged
     comes along; the pre-commit hook judges that index as it judges any commit's."""
     blob = git(root, "hash-object", "-w", "--stdin", input=text).stdout.strip()
+    mode = head_mode(root)
     index = os.path.join(root, git(root, "rev-parse", "--git-path", "seat-commit-%d.index" % os.getpid()).stdout.strip())
     env = dict(env, GIT_INDEX_FILE=os.path.abspath(index))
     try:
         git(root, "read-tree", "HEAD", env=env)
-        git(root, "update-index", "--add", "--cacheinfo", "100644,%s,%s" % (blob, seat_rules.SEATS_REL), env=env)
+        git(root, "update-index", "--add", "--cacheinfo", "%s,%s,%s" % (mode, blob, seat_rules.SEATS_REL), env=env)
         return git(root, "commit", "-F", "-", env=env, check=False, input=message)
     finally:
         if os.path.exists(index):
@@ -196,7 +204,7 @@ def main(argv=None):
         return refuse("no commit was made (the hook's verdict is above); the named paths stay staged")
     if registration is not None:                # the index agrees with the commit; the others' entries stay unstaged
         blob = git(root, "rev-parse", "HEAD:" + seat_rules.SEATS_REL).stdout.strip()
-        git(root, "update-index", "--cacheinfo", "100644,%s,%s" % (blob, seat_rules.SEATS_REL))
+        git(root, "update-index", "--cacheinfo", "%s,%s,%s" % (head_mode(root), blob, seat_rules.SEATS_REL))
         settle_order(root)
 
     got_email = git(root, "log", "-1", "--format=%ce").stdout.strip()
