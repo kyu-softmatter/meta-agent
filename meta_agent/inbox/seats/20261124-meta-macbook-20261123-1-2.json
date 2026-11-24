@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261123-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "Please record in docs/ideas/20261124.md the person's words to this session on 2026-11-24, on which engines and test runs were removed from the macbook: '시스템 파일 모두 정리' (clean up all system files); '사용하지 않는 엔진, 기반 시스템, 리눅스 등 불필요한 것들을 제거. 컴퓨터 용량이 부족해.' (remove unused engines, base systems, Linux and other unneeded things; the computer is short of space); the choices 'rheotool VM 삭제 (15G) (Recommended)', 'default는 빌드 캐시만', '패키지 캐시 정리 (Recommended)', '오래된 환경 4개 (1.8G)', 'microrheology (1.9G)', 'deep (2.9G)', '테스트 실행 전부 (13G) (Recommended)', '로그 속 엔진 파일 (4.8G)' and '전부 비움 (Recommended)'; and '노트 남기기' (leave a note). What was done on them is in this seat's note to the meta role of the same day. The files in the log folder the person chose ('로그 속 엔진 파일') were not removed by this session: the removal was refused by the session's permissions and the commands were given to the person.",
+  "written_at": "2026-11-24T08:58:48-08:00"
+}
