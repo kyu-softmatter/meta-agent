@@ -280,12 +280,13 @@ v38 changes README.md, one sentence of CLAUDE.md, TEMPLATE.json and the builder 
     says whom it is for and what it is not for, which the build renders from the request and from
     CAPABILITIES.json (bundle.for_whom_section, not_for_section; TEMPLATE.json readme_placeholders).
     It names no other tool to use instead: which tool a lab uses is the lab's (MP12).
-v39 changes tasks/001-start.md, TEMPLATE.json and the builder, after the two bundles built on
-    Windows were tested standing alone (failures.jsonl office-9): the start task names the lines
-    it asks for after the install, and under checks_call the builder refuses a check whose call is
-    an install, an error code that does not begin with its tool's name as the runner spells it, and
-    an expected error that names no code where its tool has more than one of that category
-    (bundle.checks_call_problems).
+v39 changes tasks/001-start.md, one sentence of CLAUDE.md, TEMPLATE.json and the builder, after
+    the two bundles built on Windows were tested standing alone (failures.jsonl office-9): the start
+    task names the lines it asks for after the install; CLAUDE.md says that a check makes the calls
+    its items name, an install among them, and that it is not a call the session makes; and under
+    checks_call the builder refuses an error code that spells its tool's name otherwise than the
+    runner does, and an expected error that names no code where its tool has more than one of that
+    category (bundle.checks_call_problems).
 
 A version is materialized by the Designer when it builds, and by nothing
 else: a folder under templates/ made by hand from a tree that then

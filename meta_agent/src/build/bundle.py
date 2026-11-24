@@ -230,13 +230,13 @@ def engine_wait_only_problems(tools, template_path):
 
 
 def checks_call_problems(tools, interface_tasks, scientific_tasks, replay_items, template_path):
-    """Under a template whose TEMPLATE.json names checks_call (v39 on), three faults of what a build's checks call, after
+    """Under a template whose TEMPLATE.json names checks_call (v39 on), two faults of what a build's checks meet, after
     the two bundles built on Windows were tested standing alone (meta_agent/failures.jsonl office-9):
 
-    - an interface task, a scientific task or a replay item whose call is a tool that names installs_from: the check
-      then makes the network install, which the start task leaves to the session as its own step after a not_run;
-    - an error contract whose code does not begin with the tool's name in capitals and a hyphen, the prefix the runner of
-      tools gives the codes it makes itself, so that one tool's codes are spelled one way;
+    - an error contract whose code spells its tool's name otherwise than the runner of tools does in the codes it makes
+      itself (the name in capitals, underscores kept, and a hyphen): RUN-TUTORIAL-001 beside the runner's
+      RUN_TUTORIAL-INSTALLER-MISSING, so that one tool's codes are spelled two ways. A prefix that is not the tool's name
+      (a lab's or an instrument's, RHEO-) is the build's to choose and is not judged;
     - an item that expects an error of a category of which its tool has more than one contract (the runner's own
       unavailable error of an install counted) and names no code, so that it would pass on another error than the one
       it is for."""
@@ -247,12 +247,13 @@ def checks_call_problems(tools, interface_tasks, scientific_tasks, replay_items,
     by_name = {t["name"]: t for t in tools}
     out = []
     for t in tools:
-        prefix = t["name"].upper() + "-"
+        own = t["name"].upper()
+        others = {own.replace("_", "-"), own.replace("_", "")} - {own}
         for e in t.get("errors") or []:
             code = e.get("code")
-            if isinstance(code, str) and not code.startswith(prefix):
-                out.append("tool %s: its error code %s does not begin with %s, the prefix %s gives the codes it makes "
-                           "itself" % (t["name"], code, prefix, runner))
+            if isinstance(code, str) and any(code.startswith(o + "-") for o in others):
+                out.append("tool %s: its error code %s spells the tool's name otherwise than %s does in the codes it "
+                           "makes itself, which begin %s-" % (t["name"], code, runner, own))
     for label, items in (("interface task", interface_tasks), ("scientific task", scientific_tasks),
                          ("replay item", replay_items)):
         for item in items or []:
@@ -261,9 +262,6 @@ def checks_call_problems(tools, interface_tasks, scientific_tasks, replay_items,
             if t is None:
                 continue
             contract = t.get("contract") or {}
-            if contract.get("installs_from"):
-                out.append("%s %s: its call is %s, which installs from the network; the install is the session's own "
-                           "step after a not_run, and a check makes no install" % (label, item.get("id"), t["name"]))
             want = (item.get("expected") or {}).get("error") if isinstance(item.get("expected"), dict) else None
             if isinstance(want, dict) and want.get("category") and not want.get("code"):
                 same = [e for e in t.get("errors") or [] if e.get("category") == want["category"]]

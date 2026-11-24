@@ -1,18 +1,19 @@
 """Template v39 and the builder, after the two bundles built on Windows were tested standing alone (meta_agent/failures.jsonl
 office-9; runs mc-windows/20261122-1 and md-windows/20261120-8).
 
-- Under checks_call the builder refuses what a build's checks would get wrong: a check whose call is an install (the
-  install ran inside a check in the lattice engine's bundle), an error code that does not begin with its tool's name as
-  the runner spells it (RUN_TUTORIAL- and RUN-TUTORIAL- in one bundle), and an expected error that names no code where
-  its tool has more than one contract of that category (a replay item named for reading a run that does not exist passed
-  on the missing environment, both unavailable).
+- Under checks_call the builder refuses an error code that spells its tool's name otherwise than the runner does
+  (RUN_TUTORIAL- and RUN-TUTORIAL- in one bundle), a prefix that is not the tool's name standing, and an expected error
+  that names no code where its tool has more than one contract of that category (a replay item named for reading a run
+  that does not exist passed on the missing environment, both unavailable); the runner's own unavailable error of an
+  install counts, shown on an install by pixi and one by uv.
+- CLAUDE.md says that a check makes the calls its items name, an install among them, where v38 said only that the checks
+  are not calls of a tool, and an interface task's install then ran inside a check.
 - tasks/001-start.md names the lines it asks for after the install, where v38 said 'the second line of each of the last
   two', which both sessions found unclear.
 
 Two unrelated kinds, neither rheology, as the v38 test composes them: a plane-wave DFT engine and an optical
-spectrometer; and, for the install, an engine's environment made with pixi beside an analysis package made with uv. Each
-tool is a mock adapter that starts no engine, reaches no instrument and installs nothing. Watched failing with v38's tree
-in v39's place and before compose called the check.
+spectrometer. Each tool is a mock adapter that starts no engine, reaches no instrument and installs nothing. Watched
+failing with v38's tree in v39's place.
 
 Run from the repository root:
     PYTHONUTF8=1 python -m unittest discover -s meta_agent/tests -t .
@@ -74,21 +75,19 @@ def compose(tmp, kind, template, t, items):
     return path
 
 
-class TheChecksCallNoInstall(unittest.TestCase):
-    def test_a_check_whose_call_installs_is_refused(self):
+class TheChecksSayTheyMakeTheirItemsCalls(unittest.TestCase):
+    def test_claude_md_says_a_check_makes_an_install_its_item_names(self):
+        new = cards.read_text(os.path.join(NEW_V, "CLAUDE.md"))
+        self.assertIn("checks of this directory and not calls of a tool that you make", new)
+        self.assertIn("A check makes the calls its items name, through the runner and the gate as every call goes, and "
+                      "where an item's call is an install, the check makes that install", new)
+        self.assertNotIn("A check makes the calls its items name", cards.read_text(os.path.join(OLD_V, "CLAUDE.md")))
+
+    def test_a_check_whose_call_installs_is_still_built(self):
+        # the Designer's own S6 runs such checks in its isolated copy (test_designer ExecutionPermission)
         for kind, installer in (("dft", "pixi"), ("spectrometer", "uv")):
             t = tool(kind, installs=installer)
-            for label, args in (("interface task", (interface(kind), [], [])), ("scientific task", ([], interface(kind), [])),
-                                ("replay item", ([], [], replay(kind)))):
-                faults = bundle_mod.checks_call_problems([t], *args, template_path=NEW_V)
-                self.assertEqual(len(faults), 1, (kind, label, faults))
-                self.assertIn("%s %s: its call is %s, which installs from the network" % (
-                    label, args[0][0]["id"] if args[0] else (args[1] or args[2])[0]["id"], t["name"]), faults[0])
-                self.assertEqual(bundle_mod.checks_call_problems([t], *args, template_path=OLD_V), [], (kind, label))
-
-    def test_a_check_of_a_tool_that_installs_nothing_stands(self):
-        for kind in v38.KINDS:
-            self.assertEqual(bundle_mod.checks_call_problems([tool(kind)], interface(kind), [], replay(kind), NEW_V), [])
+            self.assertEqual(bundle_mod.checks_call_problems([t], interface(kind), interface(kind), replay(kind), NEW_V), [])
 
 
 class TheErrorCodes(unittest.TestCase):
@@ -103,15 +102,17 @@ class TheErrorCodes(unittest.TestCase):
             t = tool(kind, codes=[("execution_failure", wrong)])
             with self.assertRaises(ValueError) as e:
                 compose(os.path.join(self.tmp, "new-" + kind), kind, NEW_V, t, replay(kind))
-            self.assertIn("its error code %s does not begin with %s-" % (wrong, name.upper()), str(e.exception))
+            self.assertIn("its error code %s spells the tool's name otherwise than src/run_tool.py does in the codes it "
+                          "makes itself, which begin %s-" % (wrong, name.upper()), str(e.exception))
             compose(os.path.join(self.tmp, "old-" + kind), kind, OLD_V, t, replay(kind))   # v38 built it
 
-    def test_a_code_the_runner_s_way_is_built(self):
+    def test_a_code_the_runner_s_way_or_of_another_prefix_is_built(self):
         for kind in v38.KINDS:
             name = v38.KINDS[kind]["call"]
-            t = tool(kind, codes=[("execution_failure", name.upper() + "-001")])
-            path = compose(os.path.join(self.tmp, "ok-" + kind), kind, NEW_V, t, replay(kind))
-            self.assertTrue(os.path.isfile(os.path.join(path, "tools", name, "errors", "execution_failure.json")))
+            for i, code in enumerate((name.upper() + "-001", "LAB-UNAVAILABLE-001")):
+                t = tool(kind, codes=[("execution_failure", code)])
+                path = compose(os.path.join(self.tmp, "ok-%s-%d" % (kind, i)), kind, NEW_V, t, replay(kind))
+                self.assertTrue(os.path.isfile(os.path.join(path, "tools", name, "errors", "execution_failure.json")))
 
 
 class TheExpectedError(unittest.TestCase):
@@ -147,12 +148,12 @@ class TheStartTask(unittest.TestCase):
 
 
 class TheVersion(unittest.TestCase):
-    def test_v39_is_the_latest_and_changes_its_start_task_and_its_card(self):
+    def test_v39_is_the_latest_and_changes_its_start_task_one_sentence_and_its_card(self):
         self.assertEqual(template_mod.LATEST, "v39")
         self.assertEqual(sorted(set(cards.tree_files(NEW_V)) ^ set(cards.tree_files(OLD_V))), [])
         both = set(cards.tree_files(OLD_V)) & set(cards.tree_files(NEW_V))
         changed = sorted(r for r in both if cards.sha256_file(os.path.join(OLD_V, r)) != cards.sha256_file(os.path.join(NEW_V, r)))
-        self.assertEqual(changed, ["TEMPLATE.json", "tasks/001-start.md"])
+        self.assertEqual(changed, ["CLAUDE.md", "TEMPLATE.json", "tasks/001-start.md"])
         card = cards.load_json(os.path.join(NEW_V, "TEMPLATE.json"))
         self.assertEqual(card["version"], "v39")
         self.assertEqual(card["checks_call"], "src/run_tool.py")
