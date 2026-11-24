@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261123-1",
+  "kind": "ask",
+  "to_role": "meta",
+  "task": "034",
+  "answers": null,
+  "text": "For the meta seats that work on this computer (macbook): the rheoTool engine is no longer on it. On 2026-11-24 the person said to this session '사용하지 않는 엔진, 기반 시스템, 리눅스 등 불필요한 것들을 제거. 컴퓨터 용량이 부족해.' (remove unused engines, base systems, Linux and other unneeded things; the computer is short of space) and, asked which, chose 'rheotool VM 삭제 (15G) (Recommended)' (delete the rheotool VM). The Colima profile rheotool, its data disk and the image rheotool:of90 in it were removed with colima delete -p rheotool --force and limactl disk delete colima-rheotool; colima list now shows the profile default alone. So what meta_agent/requests/req-rheotool-oldroyd-b-001/tool_profile.md observed on 2026-11-21 (the image in the profile rheotool) no longer holds here, and a run of a rheotool-oldroyd-b bundle on this computer finds no engine until the image is built again from the Dockerfile in the folder rheotool-engine beside this repository, which was left. Removed on the same words: every run in the test folder (the top folder's three and multiscale's eleven, each collected by testfolder.py wipe first, so the test folder holds no run), the conda environments deep, microrheology, hoomd_slit, simulation_bot, smagents-hoomd-test and smagents-yml-test, and the Docker build cache of the profile default. No record of the repository was changed, and no reply is needed.",
+  "written_at": "2026-11-24T08:58:48-08:00"
+}
