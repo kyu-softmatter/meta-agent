@@ -313,3 +313,11 @@ On the person's "Yes, start 017" and four answers of 2026-11-23 (notes `2c764df`
 **Watched:** the session's report, the collection's counts, the patch's README, TEMPLATE.json and failure lines, and the clone's log. **Not watched:** the transcript line by line; the tool adapters' code; the built bundle standing alone in a session of its own; production, which this round does not run.
 
 **Still open:** the person's answer to the build's question 13 (CPU or CUDA) and pixi on PATH on this computer; the design role's reading of `collect-1`, after which the run is removed; `gmx-28` and `gmx-32` in a template version after v39, which another meta seat is making now; the count after genion in round two. The build is in no commit here. It stays only in this run's clone and its patch.
+
+## The person answers round four's question 13 (2026-11-23)
+
+Asked by this seat, with buttons it wrote, "Which GROMACS build should the agent install by default?", the person answered:
+
+> CUDA, as shipped
+
+What it settles: the round-four build's question 13 (`gmx-35`) is answered. The CUDA build is the install's default, as `gromacs-lysozyme/0001` of run `md-wsl/20261123-1` ships it, and the CPU build stays its fallback. The build is in no commit here, and a test changes no build. A later build of this request, here or in a later round, takes the CUDA build as the person's word and no longer as an inference. What it does not settle: pixi on PATH on this computer, which is the person's step; the design role's reading of `collect-1`; any tolerance.
