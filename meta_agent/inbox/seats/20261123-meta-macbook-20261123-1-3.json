@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261123-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "The person, to this session on 2026-11-23, after it reported the merge b100e43 and that nothing was pushed: '푸시해' (push it). Please record it in docs/ideas beside the words of note 20261123-meta-macbook-20261123-1-1. This seat pushes the committed head of main by its hash, once a clean clone of that head passes the gate, --expect-fail and both test suites, as the same words settled on 2026-11-20 (docs/ideas/20261120.md); it settles no later push.",
+  "written_at": "2026-11-23T19:08:58-08:00"
+}
