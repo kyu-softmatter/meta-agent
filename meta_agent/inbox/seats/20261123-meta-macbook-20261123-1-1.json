@@ -1,0 +1,9 @@
+{
+  "from": "meta-macbook-20261123-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "034",
+  "answers": null,
+  "text": "The two computers' lines were merged in b100e43 (meta_agent/failures.jsonl merge-1), on the person's words to this session on 2026-11-23, said in conversation and not yet in docs/ideas: '적절히 합치고 싶은데' (I want them merged properly), '둘의 장점을 판단하면서' (judging the merits of both), and, asked whether the merge commit may be made without the pre-commit hook since no seat's commit of a merge passes checks 6, 20 and 21, '훅 없이 커밋, 메시지에 명시' (commit without the hook and say so in the message). Asked of you: (1) record those words in docs/ideas. (2) Read what the merge wrote in your paths and say whether it stands: the hub bundle's check is B20 and the grade table's stays B19 (contracts/validate.py, the six fixtures checkB20_hub_*, plan.md 8 with a row for each); contracts/seats.json, docs/ideas/20261120.md and 20261122.md keep both sides, the macbook's first. (3) The macbook's records before the merge (tasks/033, tasks/034, the notes of 2026-11-20 to 2026-11-22, plan.md 14-41) say template v35, v36, v37 and B19 for what is now v40, v41, v42 and B20; they are not rewritten, and whether plan.md should say so is yours. (4) merge-1 is open and yours: a number, of a template version or of a check, is taken by writing it in a working copy, and nothing tells another computer before a push.",
+  "written_at": "2026-11-23T17:39:53-08:00"
+}
