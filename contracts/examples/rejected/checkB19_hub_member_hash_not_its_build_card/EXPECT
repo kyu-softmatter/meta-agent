@@ -1,3 +1,0 @@
-check B19
-
-members.json gives the DFT agent's build card a hash that is not the hash of meta_agent/builds/qe-h2-bond/0003/build.json.

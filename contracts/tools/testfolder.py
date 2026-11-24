@@ -85,14 +85,13 @@ Standard library only, Python 3.9 or later.
 import argparse
 import datetime
 import hashlib
-import io
 import json
 import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
-import tarfile
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BUILDS_REL = "meta_agent/builds"
@@ -160,8 +159,48 @@ def read_json(path):
         return json.load(f)
 
 
+LX_SYMLINK = 0xA000001D           # IO_REPARSE_TAG_LX_SYMLINK: a link WSL writes on an NTFS folder
+
+
+def lx_link_target(path):
+    """The target of a link WSL wrote on an NTFS folder, read from its reparse data, or None when path is not
+    one. Windows Python does not take such a link for a link: os.path.islink says no, os.path.exists says no,
+    and open() fails with EINVAL (office-3, a pixi cache made inside WSL). Elsewhere always None."""
+    if os.name != "nt" or getattr(os.lstat(path), "st_reparse_tag", 0) != LX_SYMLINK:
+        return None
+    import ctypes
+    import struct
+    from ctypes import wintypes
+    k = ctypes.WinDLL("kernel32", use_last_error=True)
+    k.CreateFileW.restype = wintypes.HANDLE
+    k.CreateFileW.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD, wintypes.LPVOID, wintypes.DWORD,
+                              wintypes.DWORD, wintypes.HANDLE]
+    k.DeviceIoControl.argtypes = [wintypes.HANDLE, wintypes.DWORD, wintypes.LPVOID, wintypes.DWORD, wintypes.LPVOID,
+                                  wintypes.DWORD, ctypes.POINTER(wintypes.DWORD), wintypes.LPVOID]
+    k.CloseHandle.argtypes = [wintypes.HANDLE]
+    # no access asked, every sharing mode, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS
+    h = k.CreateFileW(path, 0, 7, None, 3, 0x00200000 | 0x02000000, None)
+    if h is None or h == wintypes.HANDLE(-1).value:
+        raise OSError("a WSL link that cannot be opened: %s" % path)
+    try:
+        buf, got = ctypes.create_string_buffer(16 * 1024), wintypes.DWORD(0)
+        if not k.DeviceIoControl(h, 0x000900A8, None, 0, buf, len(buf), ctypes.byref(got), None):   # FSCTL_GET_REPARSE_POINT
+            raise OSError("a WSL link whose reparse data cannot be read: %s" % path)
+        raw = buf.raw[:got.value]
+        tag, length = struct.unpack_from("<IH", raw, 0)
+        # REPARSE_DATA_BUFFER: tag, data length, reserved; an LX link's data is a version and the target in UTF-8
+        return raw[8 + 4:8 + length].decode("utf-8", "surrogateescape") if tag == LX_SYMLINK else None
+    finally:
+        k.CloseHandle(h)
+
+
 def sha256_file(path):
     h = hashlib.sha256()
+    lx = lx_link_target(path)
+    if lx is not None:
+        # a link WSL made (office-3): Windows cannot follow it, so its own text is what it is
+        h.update(b"symlink\0" + lx.encode("utf-8", "surrogateescape"))
+        return h.hexdigest()
     if os.path.islink(path) and not os.path.exists(path):
         # a link whose target is not there (a package cache makes them): its own text is what it is
         h.update(b"symlink\0" + os.readlink(path).encode("utf-8", "surrogateescape"))
@@ -172,11 +211,69 @@ def sha256_file(path):
     return h.hexdigest()
 
 
+def _long(path):
+    """path in the form Windows reads past its default length limit (office-7); elsewhere path itself."""
+    if os.name != "nt":
+        return path
+    path = os.path.abspath(path)
+    if path.startswith("\\\\?\\"):
+        return path
+    return "\\\\?\\UNC\\" + path[2:] if path.startswith("\\\\") else "\\\\?\\" + path
+
+
+def remove_tree(path):
+    """Remove path and everything under it, as it is on any computer: a link (a WSL one included) goes as a
+    link and its target stays; a read-only file goes (git writes its objects read-only, office-4 and
+    office-11); a path longer than Windows allows by default goes (a pixi cache, office-7). Raises the first
+    error it cannot get past; a path already gone is no error."""
+    def one(p):
+        try:
+            st = os.lstat(p)
+        except FileNotFoundError:
+            return
+        attrs = getattr(st, "st_file_attributes", 0)
+        link = stat.S_ISLNK(st.st_mode) or bool(attrs & stat.FILE_ATTRIBUTE_REPARSE_POINT if os.name == "nt" else 0)
+        if stat.S_ISDIR(st.st_mode) and not link:
+            if os.name != "nt" and not st.st_mode & stat.S_IWUSR:
+                os.chmod(p, stat.S_IMODE(st.st_mode) | stat.S_IRWXU)   # a read-only folder keeps its files
+            with os.scandir(p) as it:
+                names = [e.name for e in it]
+            for n in names:
+                one(os.path.join(p, n))
+            _writable(p, st)
+            os.rmdir(p)
+        elif link and os.name == "nt" and attrs & stat.FILE_ATTRIBUTE_DIRECTORY:
+            os.rmdir(p)                         # a link to a folder: its reparse point alone
+        else:
+            if not link:
+                _writable(p, st)
+            os.unlink(p)
+
+    one(_long(path))
+
+
+def _writable(p, st):
+    if os.name == "nt" and getattr(st, "st_file_attributes", 0) & stat.FILE_ATTRIBUTE_READONLY:
+        os.chmod(p, stat.S_IWRITE | stat.S_IREAD)
+
+
+def _folder_link(path):
+    if os.name != "nt":
+        return False
+    try:
+        return bool(os.lstat(path).st_file_attributes & stat.FILE_ATTRIBUTE_REPARSE_POINT)
+    except OSError:
+        return False
+
+
 def tree_hashes(root):
     """{relative posix path: sha256} of every file under root, as the build card's digest reads a tree."""
     out = {}
+    root = _long(root)                          # a package cache's paths pass Windows' default limit (office-7)
     for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = sorted(d for d in dirnames if d not in HASH_SKIP)
+        # a link to a folder is passed over, as os.walk does on macOS and Linux; on Windows a WSL link or a
+        # junction is listed as a folder and is not followed either (office-3)
+        dirnames[:] = sorted(d for d in dirnames if d not in HASH_SKIP and not _folder_link(os.path.join(dirpath, d)))
         for fn in sorted(filenames):
             full = os.path.join(dirpath, fn)
             try:
@@ -317,17 +414,41 @@ def build_rel(repo, given):
 
 
 def export_tree(repo, rel, dest):
-    """The tree at HEAD:<rel> as committed, written to dest. Nothing uncommitted and nothing ignored comes along."""
-    data = git(repo, "archive", "--format=tar", "HEAD:" + rel, raw=True)
+    """The tree at HEAD:<rel> as committed, written to dest, each file the bytes of its blob. Nothing
+    uncommitted and nothing ignored comes along, and no filter of this computer's configuration or of an
+    attribute touches a byte: `git archive` converts line endings by core.autocrlf (office-1), and a copy
+    that read the computer's setting would not be the tree the build card names."""
+    listing = git(repo, "ls-tree", "-r", "-z", "HEAD:" + rel, raw=True)
+    entries = []
+    for rec in listing.split(b"\0"):
+        if not rec:
+            continue
+        head, name = rec.split(b"\t", 1)
+        mode, kind, sha = head.decode("ascii").split()
+        name = name.decode("utf-8", "surrogateescape")
+        if name.startswith("/") or ".." in name.split("/") or kind != "blob" or mode not in ("100644", "100755"):
+            raise Refused("%s holds %s, which is not a plain file under it" % (rel, name))
+        entries.append((mode, sha, name))
     os.makedirs(dest)
-    with tarfile.open(fileobj=io.BytesIO(data)) as tf:
-        for m in tf.getmembers():
-            if m.name.startswith("/") or ".." in m.name.split("/") or not (m.isfile() or m.isdir()):
-                raise Refused("%s holds %s, which is not a plain file under it" % (rel, m.name))
-        try:
-            tf.extractall(dest, filter="data")
-        except TypeError:                       # Python before the extraction filters
-            tf.extractall(dest)
+    env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+    p = subprocess.run(["git", "cat-file", "--batch"], cwd=repo, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                       input="".join(sha + "\n" for _, sha, _ in entries).encode("ascii"))
+    if p.returncode != 0:
+        raise Refused("git cat-file --batch: %s" % p.stderr.decode("utf-8", "replace").strip())
+    out, at = p.stdout, 0
+    for mode, sha, name in entries:
+        eol = out.index(b"\n", at)
+        got_sha, kind, size = out[at:eol].decode("ascii").split()
+        if got_sha != sha or kind != "blob":
+            raise Refused("git cat-file gave %s %s for %s" % (got_sha, kind, name))
+        start = eol + 1
+        path = os.path.join(dest, *name.split("/"))
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "wb") as f:
+            f.write(out[start:start + int(size)])
+        if mode == "100755":
+            os.chmod(path, 0o755)
+        at = start + int(size) + 1              # the blob, then a newline
 
 
 def make_bundle(repo, rel, run_path):
@@ -485,7 +606,10 @@ def make(args, repo=REPO):
                                                   "logs": os.path.join(logs, run)})
         write_json(os.path.join(logs, run, "made.json"), made)
     except BaseException:
-        shutil.rmtree(run_path, ignore_errors=True)
+        try:
+            remove_tree(run_path)
+        except OSError:
+            pass                                # the refusal is what is reported
         raise
     print("run     %s" % run)
     print("folder  %s" % run_path)
@@ -1032,17 +1156,34 @@ def wipe(args, repo=REPO):
         if args.sessions and args.no_collect:
             raise Refused("a session's transcript is removed only after it has been collected; drop --no-collect")
         projects = transcripts_dir(args.transcripts)
+        # a wipe that stopped part way (office-11) left this: what it had collected and removed is carried over
+        wiping_path = os.path.join(logs, run, "wiping.json")
+        before = read_json(wiping_path) if os.path.isfile(wiping_path) else {}
         if not args.no_collect:
             dest, sessions, items = collect_run(root, logs, run, projects, not args.no_gate)
             report_collection(run, dest, sessions, items)
             collection = os.path.basename(dest)
         if args.sessions:
             gone = remove_transcripts(projects, path, os.path.join(logs, run, collection))
-        shutil.rmtree(path)
+        collection = collection or before.get("collected_first")
+        gone = list(before.get("sessions_removed") or []) + [g for g in gone if g not in (before.get("sessions_removed") or [])]
+        write_json(wiping_path, {"run": run, "started_at": before.get("started_at") or now(),
+                                 "collected_first": collection, "sessions_removed": gone})
+        try:
+            for n in sorted(os.listdir(path)):
+                if n != MARK:                   # the mark goes last, so a wipe that stops part way can be run again
+                    remove_tree(os.path.join(path, n))
+            remove_tree(path)
+        except OSError as e:
+            raise Refused("%s could not be removed whole (%s); %s records what was collected and removed, and a "
+                          "wipe of the run again finishes it" % (path, e, wiping_path))
         if os.path.lexists(path):
             raise Refused("%s could not be removed whole" % path)
-        write_json(os.path.join(logs, run, "wiped.json"),
-                   {"run": run, "wiped_at": now(), "collected_first": collection, "sessions_removed": gone})
+        record = {"run": run, "wiped_at": now(), "collected_first": collection, "sessions_removed": gone}
+        if before:
+            record["finished_a_wipe_begun_at"] = before.get("started_at")
+        write_json(os.path.join(logs, run, "wiped.json"), record)
+        os.remove(wiping_path)
         print("removed     %s%s" % (path, "" if collection else "  (not collected first)"))
         if args.sessions:
             print("removed     %d session transcript(s) from %s" % (len(gone), projects))
@@ -1062,11 +1203,19 @@ def status(args, repo=REPO):
             if os.path.isdir(ldir) else []
         where = "stands" if marked(root, run) else ("removed" if os.path.isfile(os.path.join(ldir, "wiped.json")) else
                                                     ("not this tool's" if os.path.isdir(os.path.join(root, run)) else "gone"))
+        if where == "stands" and os.path.isfile(os.path.join(ldir, "wiping.json")):
+            where = "half-removed"              # a wipe stopped part way; a wipe of it again finishes it
         held = ", ".join(it["name"] for it in made["items"]) if made else "no entry in the log folder"
+        # a collect that stopped part way (office-3, office-11) leaves a folder with no collection.json in it
+        done = [n for n in cols if os.path.isfile(os.path.join(ldir, n, "collection.json"))]
+        unfinished = [n for n in cols if n not in done]
         last = ""
-        if cols:
-            c = read_json(os.path.join(ldir, cols[-1], "collection.json"))
-            last = "; %s at %s: %d session(s)" % (cols[-1], c["collected_at"], len(c["sessions"]))
+        if done:
+            c = read_json(os.path.join(ldir, done[-1], "collection.json"))
+            last = "; %s at %s: %d session(s)" % (done[-1], c["collected_at"], len(c["sessions"]))
+        if unfinished:
+            last += "; unfinished, with no collection.json: %s" % ", ".join(unfinished)
+        cols = done
         print("%-12s %-8s made %s at %s; %s; %d collection(s)%s"
               % (run, where, made["made_at"] if made else "?", made["source"]["head"][:7] if made else "?", held, len(cols), last))
     return 0

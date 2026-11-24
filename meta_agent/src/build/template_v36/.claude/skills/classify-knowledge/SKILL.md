@@ -17,6 +17,7 @@ A value with the wrong kind gets the wrong grade. A wrong type breaks the code t
 Where the kinds are most often confused:
 
 - The maker's documentation, a specification or a tutorial page, is not a measurement of this system.
+- A value an engine printed in a run its maker made, such as a reference output shipped with the maker's examples, is what that run computed: its kind of value is `computed`, not one the documentation states. Two kinds of source both seem to fit it: `spec` because it comes from the maker, and `prior_run` because it is a run somewhere else. They are not settled for it yet, and the grade table gives `spec` a grade only for a measured or a literature value. Write its source as you read it (the file and the version that printed it), its kind of value `computed`, and say that its kind of source and its grade wait for the person's word. Do not choose one.
 - A run somewhere else is not a run here.
 - A fitted or empirical relation gives a `correlation`, not an exact `computed` value.
 - A value in a paper may be measured there, computed there, or quoted from another paper: follow it to where it was obtained, or say that you could not.

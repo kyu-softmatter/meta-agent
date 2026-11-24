@@ -7,7 +7,7 @@
 
 The template's source trees live in hub_template_v<N>/ beside this file, one folder per version, as the agent
 template's do; `materialize` copies a version to templates/hub@<hash>/, and a build names that folder, which bundle
-check B19 reads the bridge's bytes from.
+check B20 reads the bridge's bytes from.
 
 v1  the first hub (tasks/033): CLAUDE.md, README.md, TEMPLATE.json, run-hub and choose-session-level, src/hub.py and a
     copy of contracts/tools/bridge.py as src/bridge.py, question/, assignments/, inbox/, sessions/, failures.jsonl, and
@@ -26,7 +26,7 @@ A build makes builds/<hub>/<NNNN>/ beside the engine builds of one request: the 
 from the template. members.json names each member by its agent, its build, its folder ../<agent>-<NNNN> (the name a run
 gives the bundle, which is where the person places it beside the hub) and the sha256 of its build card. The builder
 refuses a member whose bundle is not the digest its build card states, one whose template cannot answer an assignment
-(the agent template before v35, which has no results_file), fewer than two members, and two members of one agent.
+(the agent template before v40, which has no results_file), fewer than two members, and two members of one agent.
 Its gate is the hub's own: in a temporary folder laid out as the members' folders say, `python src/hub.py members` must
 find each member there, holding the build members.json names and able to answer an assignment. The hub computes
 nothing, so its scientific gate is not_run. A build of the latest version refuses a template whose src/bridge.py is not
@@ -52,7 +52,7 @@ LATEST = "v4"
 BRIDGE = os.path.join(REPO, "contracts", "tools", "bridge.py")
 BUILD_ID = re.compile(r"^[0-9]{4}$")
 NAME_RE = re.compile(r"^[a-z][a-z0-9-]{1,60}$")
-NUM_RE = re.compile(r"(?<![\w./:+-])[-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?(?![\w/:%-])")   # as check 24 and B19 read one
+NUM_RE = re.compile(r"(?<![\w./:+-])[-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?(?![\w/:%-])")   # as check 24 and B20 read one
 
 
 def template_name(root=None):
@@ -84,7 +84,7 @@ def member_entry(root, build):
         raise ValueError("%s: its bundle is not the digest its build card states; a member is a build as it was made" % build)
     t = cards.load_json(os.path.join(bundle, "TEMPLATE.json"))
     if t.get("template") != "agent" or not t.get("results_file"):
-        raise ValueError("%s is of template %s %s, which cannot answer an assignment; it needs the agent template v35 or "
+        raise ValueError("%s is of template %s %s, which cannot answer an assignment; it needs the agent template v40 or "
                          "later" % (build, t.get("template"), t.get("version")))
     return {"agent": parts[0], "build": build, "folder": "../%s-%s" % (parts[0], parts[1]),
             "build_card_sha256": "sha256:" + cards.sha256_file(card_path), "bundle": bundle, "card": card}
@@ -125,7 +125,7 @@ def build(name, members, purpose, lab_profile, seat, build_id=None, now=None, ro
 
     template: a version of SOURCES. Left out, the build is of the latest version, and that version's src/bridge.py must
     be the bytes of contracts/tools/bridge.py, so that a new hub carries the bridge as it now is. Named, the version is
-    built as it was made, with the bridge its tree carries, which bundle check B19 reads from templates/hub@<hash>/; a
+    built as it was made, with the bridge its tree carries, which bundle check B20 reads from templates/hub@<hash>/; a
     test of one version names it, and does not depend on the bridge as it now is (the design role's ask
     20261121-design-macbook-20261120-3-3)."""
     if template is not None and template not in SOURCES:
@@ -135,7 +135,7 @@ def build(name, members, purpose, lab_profile, seat, build_id=None, now=None, ro
     if not isinstance(purpose, str) or not purpose.strip():
         raise ValueError("say in words what the hub is for")
     if NUM_RE.search(purpose):
-        raise ValueError("the hub's purpose carries a number: a hub's CLAUDE.md holds no number (B19)")
+        raise ValueError("the hub's purpose carries a number: a hub's CLAUDE.md holds no number (B20)")
     if len(members or []) < 2:
         raise ValueError("a hub coordinates two members at least")
     entries = [member_entry(root, b) for b in members]

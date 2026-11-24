@@ -50,5 +50,42 @@ class RemoveCopy(unittest.TestCase):
         self.assertIn("PermissionError", said)
 
 
+def deep(root, length):
+    """A folder under root whose path is at least `length` characters, made by the form Windows reads it in."""
+    p = root
+    while len(p) < length:
+        p = os.path.join(p, "pkgs-cache-" + "x" * 40)
+    os.makedirs(gate_mod.long_path(p))
+    return p
+
+
+class RemoveCopyOnWindows(unittest.TestCase):
+    """Failure lines office-7 and office-11: on Windows a pixi package cache in the copy has paths longer than Windows
+    allows by default, and a clone's git objects are read-only files; shutil.rmtree met both. Two unrelated kinds: an
+    engine's environment cache and a data repository's object store. Watched failing on Windows (LongPathsEnabled 0)
+    before remove_copy went by the long form and made a read-only file writable."""
+
+    def test_a_cache_with_a_path_past_the_default_limit_goes(self):
+        tmp = tempfile.mkdtemp(prefix="ma-s6-probe-")
+        self.addCleanup(shutil.rmtree, gate_mod.long_path(tmp), True)
+        leaf = deep(os.path.join(tmp, "bundle", "runs", "env", ".pixi"), 300)
+        with open(os.path.join(gate_mod.long_path(leaf), "info.json"), "w") as f:
+            f.write("{}")
+        self.assertIsNone(gate_mod.remove_copy(tmp))
+        self.assertFalse(os.path.lexists(gate_mod.long_path(tmp)))
+
+    def test_read_only_files_go(self):
+        tmp = tempfile.mkdtemp(prefix="ma-s6-probe-")
+        self.addCleanup(shutil.rmtree, gate_mod.long_path(tmp), True)
+        objects = os.path.join(tmp, "bundle", "data", "origin.git", "objects", "36")
+        os.makedirs(objects)
+        obj = os.path.join(objects, "bc9057e43d7130c0c495895427e461bd2783be")
+        with open(obj, "wb") as f:
+            f.write(b"x\0")
+        os.chmod(obj, stat.S_IREAD)
+        self.assertIsNone(gate_mod.remove_copy(tmp))
+        self.assertFalse(os.path.lexists(tmp))
+
+
 if __name__ == "__main__":
     unittest.main()

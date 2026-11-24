@@ -1,25 +1,23 @@
-"""Template v37 and the builder (tasks/034, after its first test standing alone, run multiscale/20261121-1; rheo-4, rheo-5
-and bd-3 of meta_agent/failures.jsonl).
+"""Template v37 (meta_agent/failures.jsonl dft-16, dft-17, dft-19, dft-20; the design role's ask
+20261118-design-macbook-20261117-2-1, tasks/018), each change shown on two unrelated kinds, neither rheology:
 
-- rheo-4: the build declares in envelope/results.json each tool output that is a series (an array of numbers with a unit,
-  or of arrays of prefixItems each a number with a unit, a title and a description), and refuses one declared short of
-  that; src/handover.py result quotes such a field whole, point by point, with the name and unit of each part, under
-  series; src/run_tool.py checks an array output item by item.
-- rheo-5: the build gives each input of a skill the request names that no row, no tool output field, no hand-over, no
-  decision and no analysis gives a row with no value, the person's; a row may say it gives an input of another name
-  (gives_inputs); the build refuses an input whose unit the registry lacks, and one name taken in two dimensions.
-- bd-3: src/run_tool.py --out keeps what it printed in a new .json file under runs/, whole, and leaves no file where the
-  call failed; src/handover.py result refuses an empty kept output, saying what to do, where v36 stopped on a traceback.
+- src/engine_wait.py returns, under written, the files a run made or changed under the folders it was told to watch
+  (dft-16): an example script of a plane-wave code that writes one output into reference/, over a file the examples
+  ship, and another into results_dscf/, leaving results/ as it was; and a flow solver that writes a profile into a
+  time folder of postProcessing/. Under v36, engine_wait.run takes no watch.
+- the builder refuses, under v37, an adapter that starts its engine through engine_wait and watches no folder (dft-16),
+  and an adapter of a tool that runs a process and waits on it with subprocess.run and no budget (dft-17); v36's builder
+  takes both.
+- the agreement skill is measurement_error@v4 and src/validate_tasks.py hands it the reference as printed, so that the
+  error has the printed digits and no float's (dft-20): a total energy printed to eight decimals and a drag coefficient
+  printed with a trailing zero. Under v36 the agreement is v3's float difference.
+- the common set carries same_measurand@v1 (dft-19): two outputs made under each other's target, and a flow run that
+  stopped at its maximum number of steps, are each different, through the bundle's runner of skills.
 
-Two unrelated kinds for each: a flow solver whose tool returns the centreline velocity of a start-up flow as pairs of a
-time and a velocity, and whose analytical skill takes inputs no row gives; and a photonic mode solver whose tool returns
-a transmission spectrum as pairs of a wavelength and a transmittance and a list of effective indices, beside an MD agent
-whose oscillation period and diffusive regime take inputs the rows give under other names or not at all. Each tool is a
-mock adapter that returns its output and starts no engine.
-
-Run from the repository root:
+Watched failing with v36's tree in v37's place. Every bundle call runs in a fresh process. Run from the repository root:
     PYTHONUTF8=1 python -m unittest discover -s meta_agent/tests -t .
 """
+import importlib.util
 import json
 import os
 import shutil
@@ -30,324 +28,275 @@ import unittest
 
 from meta_agent.src import cards
 from meta_agent.src.build import bundle as bundle_mod
-from meta_agent.src.build import skill_inputs as skill_inputs_mod
 from meta_agent.src.build import template as template_mod
-from meta_agent.src.skills import catalogue as catalogue_mod
-from meta_agent.tests.test_template_v35 import card, run
 
-REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 V36, V37 = template_mod.SOURCES["v36"], template_mod.SOURCES["v37"]
-BRIDGE = os.path.join(REPO, "contracts", "tools", "bridge.py")
-VALIDATE = os.path.join(REPO, "contracts", "validate.py")
+
+# two fake engines whose own scripts choose where they write: the examples kind as a plane-wave code's example script
+# does (one output over a shipped reference file, one into a folder of its own), the flow kind as a solver writing its
+# post-processing into a time folder
+ENGINE = r'''
+import os, sys
+kind, work = sys.argv[1], sys.argv[2]
+if kind == "examples":
+    os.makedirs(os.path.join(work, "reference"), exist_ok=True)
+    with open(os.path.join(work, "reference", "si.scf.out"), "w") as f:
+        f.write("!    total energy              =     -15.85521263 Ry\n     convergence has been achieved\n")
+    os.makedirs(os.path.join(work, "results_dscf"), exist_ok=True)
+    with open(os.path.join(work, "results_dscf", "si.dscf.out"), "w") as f:
+        f.write("!    total energy              =     -15.71000000 Ry\n")
+else:
+    os.makedirs(os.path.join(work, "postProcessing", "0.5"), exist_ok=True)
+    with open(os.path.join(work, "postProcessing", "0.5", "profile.dat"), "w") as f:
+        f.write("0.0 1.0\n0.5 0.4\n1.0 0.0\n")
+print("done", flush=True)
+'''
+
+EXPECTED = {"examples": ["reference/si.scf.out", "results_dscf/si.dscf.out"],
+            "flow": ["postProcessing/0.5/profile.dat"]}
+KINDS = {"examples": "run_example", "flow": "run_flow"}
 
 
-def part(unit, title, description):
-    return {"type": "number", "unit": unit, "title": title, "description": description}
-
-
-def pairs(a, b):
-    return {"type": "array", "prefixItems": [a, b], "items": False}
-
-
-KINDS = {
-    "flow": {
-        "tool": "run_channel",
-        "outputs": {
-            "centreline_velocity": {"type": "array", "description": "the centreline velocity the probe wrote",
-                                    "items": pairs(part("s", "t", "the time since the gradient was applied"),
-                                                   part("m/s", "u", "the streamwise velocity at the centreline"))},
-            "probe_location": {"type": "array", "description": "the probe's point, in metres"},
-            "run_dir": {"type": "string", "description": "the run's folder"}},
-        "result": {"centreline_velocity": [[0.0, 0.0], [0.5, 0.012], [1.0, 0.019]], "probe_location": [0.0, 0.0, 0.0],
-                   "run_dir": "runs/cfd/1"},
-        "series": {"centreline_velocity": [("t", "s"), ("u", "m/s")]},
-        "skills": ["oldroyd_b_startup_channel_velocity@v1"],
-        "rows": ["half_width", "density", "solvent_viscosity", "polymer_viscosity", "relaxation_time", "driving"],
-        "added": [("position", "1"), ("times", "1"), ("terms", "count")],
-    },
-    "photonic": {
-        "tool": "run_modes",
-        "outputs": {
-            "transmission": {"type": "array", "description": "the transmission spectrum the solver wrote",
-                             "items": pairs(part("nm", "wavelength", "the vacuum wavelength"),
-                                            part("1", "transmittance", "the transmitted fraction of the power"))},
-            "effective_indices": {"type": "array", "description": "the guided modes' effective indices",
-                                  "items": {"type": "number", "unit": "1", "title": "n_eff",
-                                            "description": "a guided mode's effective index"}},
-            "temperature": {"type": "number", "unit": "K", "description": "the device's temperature the run held"}},
-        "result": {"transmission": [[1500.0, 0.91], [1550.0, 0.95], [1600.0, 0.89]], "effective_indices": [2.41, 1.98],
-                   "temperature": 300.0},
-        "series": {"transmission": [("wavelength", "nm"), ("transmittance", "1")], "effective_indices": [("n_eff", "1")]},
-        # an MD agent's skills beside the photonic tool: the temperature is a tool field, a mass a row, the force constant
-        # nothing; the diffusive regime's window is the row msd_window under another name, its tolerance nothing
-        "skills": ["thermal_energy@v1", "harmonic_oscillation_period@v1", "diffusive_regime_from_msd@v2"],
-        "rows": ["mass_a", "mass_b", "lags", "msd"],
-        "extra_rows": [{"name": "msd_window", "value": None, "unit": "count", "note": "the person's",
-                        "gives_inputs": [{"skill": "diffusive_regime_from_msd@v2", "input": "window"}]}],
-        "added": [("force_constant", "engine_energy/engine_length^2"), ("tolerance", "1")],
-    },
-}
-
-
-def contract(k):
-    return {"artifact": "tool_contract", "schema_version": "0.1", "name": k["tool"], "description": "a mock that returns its output",
-            "inputs": {"type": "object", "properties": {}, "required": []},
-            "outputs": {"type": "object", "properties": k["outputs"], "required": sorted(k["outputs"])},
-            "errors": ["invalid_input", "execution_failure"], "side_effects": "none",
-            "safety_gate": {"required": False, "place": "a mock touches nothing"}, "idempotent": True, "timeout_s": None}
-
-
-def compose(root, name, kind, template=V37, build_id="0001", adapter_result=None, outputs=None, rows=None, skills=None):
-    k = dict(KINDS[kind])
-    if outputs is not None:
-        k["outputs"] = outputs
-    path = os.path.join(root, name, build_id, "bundle")
-    os.makedirs(os.path.dirname(path))
-    refs = k["skills"] if skills is None else skills
-    rows = rows if rows is not None else [{"name": n, "value": None, "unit": "1", "note": "the person's"} for n in k["rows"]] \
-        + k.get("extra_rows", [])
-    fill = {"agent_name": name, "template": "agent@test", "rid": "req-%s" % name, "purpose": "p", "science_task": "t",
-            "tools_section": bundle_mod.tools_section([contract(k)]), "must_not": bundle_mod.must_not_section([]),
-            "skills_section": bundle_mod.skills_section([]), "seat_form": "x-<machine>-<YYYYMMDD>-<n>"}
-    sci = {"id": "sci-1", "name": "held", "call": {"tool": k["tool"], "input": {}}, "measure": {},
-           "reference": {"kind": "source", "ref": "none yet"}, "held": {"reason": "no tolerance", "needs": "one"},
-           "tolerance": None, "expected_verdict": "not_run"}
-    if adapter_result is None:
-        adapter = "def run(payload):\n    return %r\n" % (k["result"],)
+def prepare(work, kind):
+    """The folder as the engine finds it: the examples ship a reference output and an earlier results/ file."""
+    os.makedirs(work, exist_ok=True)
+    if kind == "examples":
+        cards.write_text(os.path.join(work, "reference", "si.scf.out"), "shipped reference\n")
+        cards.write_text(os.path.join(work, "results", "old.out"), "an earlier run\n")
     else:
-        adapter = adapter_result
-    bundle_mod.compose(template, path, fill, [{"name": k["tool"], "contract": contract(k), "adapter_source": adapter, "errors": []}],
-                       {"capabilities": []}, {"safety": {}, "parameters": {"rows": rows}}, [], [sci], [],
-                       skills=catalogue_mod.take(refs), simulation=False, tool_kind="engine")
+        cards.write_text(os.path.join(work, "system", "controlDict"), "endTime 0.5;\n")
+
+
+def engine_wait_of(template, tag):
+    spec = importlib.util.spec_from_file_location("engine_wait_%s" % tag, os.path.join(template, "src", "engine_wait.py"))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+ADAPTER = '''import os
+import sys
+
+import engine_wait
+
+ENGINE, KIND = %r, %r
+
+
+def run(payload):
+    work = engine_wait.new_run_folder(KIND)
+    r = engine_wait.run([sys.executable, ENGINE, KIND, work], cwd=work, poll_s=0.05%s)
+    return {"run_dir": os.path.relpath(work, engine_wait.BUNDLE), "returncode": r["returncode"],
+            "written": r.get("written") or []}
+'''
+
+BARE = '''import os
+import subprocess
+import sys
+
+import engine_wait
+
+ENGINE, KIND = %r, %r
+
+
+def run(payload):
+    work = engine_wait.new_run_folder(KIND)
+    p = subprocess.run([sys.executable, ENGINE, KIND, work], cwd=work, capture_output=True, text=True)
+    return {"run_dir": os.path.relpath(work, engine_wait.BUNDLE), "returncode": p.returncode, "written": []}
+'''
+
+
+def contract(tool, side_effects="none"):
+    return {"artifact": "tool_contract", "schema_version": "0.1", "name": tool, "description": "runs the fake engine once",
+            "inputs": {"type": "object", "required": [], "properties": {}},
+            "outputs": {"type": "object", "required": ["run_dir", "returncode"],
+                        "properties": {"run_dir": {"type": "string"}, "returncode": {"type": "integer", "unit": "1"},
+                                       "written": {"type": "array"}}},
+            "errors": ["invalid_input", "unavailable", "execution_failure", "timeout", "cancelled"],
+            "side_effects": side_effects, "safety_gate": {"required": False, "place": "no side effects"},
+            "idempotent": False, "timeout_s": None}
+
+
+def compose(tmp, kind, template=V37, adapter=None, side_effects="none", name=None, simulation=False):
+    tool = KINDS[kind]
+    engine = os.path.join(tmp, "engine.py")
+    if not os.path.isfile(engine):
+        cards.write_text(engine, ENGINE)
+    con = contract(tool, side_effects)
+    fill = {"agent_name": kind, "template": "agent@test", "rid": "req-%s" % kind, "purpose": "p", "science_task": "t",
+            "tools_section": bundle_mod.tools_section([con]), "must_not": bundle_mod.must_not_section([]),
+            "skills_section": bundle_mod.skills_section([]), "seat_form": "x-<machine>-<YYYYMMDD>-<n>"}
+    path = os.path.join(tmp, name or "%s-%s" % (kind, os.path.basename(template)))
+    source = adapter if adapter is not None else ADAPTER % (engine, kind, ", watch=[work]")
+    bundle_mod.compose(template, path, fill, [{"name": tool, "contract": con, "adapter_source": source, "errors": []}],
+                       {"capabilities": []}, {"safety": {}, "parameters": {"rows": []}}, [], [], [], skills=[],
+                       simulation=simulation)
     return path
 
 
-def hub_beside(tmp, member, build):
-    hub = os.path.join(tmp, "test-hub")
-    for d in ("question", "assignments", "inbox"):
-        os.makedirs(os.path.join(hub, d))
-    me = {"agent": "test-hub", "build": "test-hub/0001"}
-    cards.write_json(os.path.join(hub, "members.json"), card(
-        "hub_members", "members-test-hub", "builder", hub=me,
-        members=[{"agent": member, "build": build, "folder": "../%s" % build.replace("/", "-"),
-                  "build_card_sha256": "sha256:" + "0" * 64},
-                 {"agent": "other-agent", "build": "other-agent/0001", "folder": "../other-agent-0001",
-                  "build_card_sha256": "sha256:" + "0" * 64}]))
-    cards.write_json(os.path.join(hub, "question", "q-test-hub-001.json"), card(
-        "hub_question", "q-test-hub-001", "test-hub", question="a test question", done_when=[{"id": "dw-1", "what": "x"}],
-        assignments=["as-001-%s-r1" % member], agreed={"words": "a test's words", "at": "2026-11-22T12:00:00Z"}))
-    cards.write_json(os.path.join(hub, "assignments", "as-001-%s-r1.json" % member), card(
-        "assignment", "as-001-%s-r1" % member, "test-hub", thread="thr-test-hub-%s" % member, round=1,
-        question="q-test-hub-001", **{"from": me}, to={"agent": member, "build": build},
-        asks="report the series your tool gives", answers_items=["dw-1"], returns=[{"card": "result", "to": me}],
-        done_when="the series, or what holds it"))
-    return hub
+def python(code, cwd):
+    p = subprocess.run([sys.executable, "-I", "-c", code], capture_output=True, text=True, cwd=cwd, timeout=120)
+    try:
+        return json.loads(p.stdout)
+    except ValueError:
+        return {"not_json": p.stdout, "stderr": p.stderr[-2000:]}
 
 
-def carried(tmp, kind, template=V37):
-    """A member built from `template`, beside a hub whose assignment has been carried into it; (member, envelope)."""
-    name = "agent-" + kind
-    built = compose(os.path.join(tmp, "builds"), name, kind, template=template)
-    hub = hub_beside(tmp, name, name + "/0001")
-    member = os.path.join(tmp, name + "-0001")
-    shutil.copytree(built, member)
-    c, out = run(REPO, BRIDGE, "carry", "--trigger", "hub", "--card", os.path.join(hub, "assignments", "as-001-%s-r1.json" % name),
-                 "--to", member, "--released-by", "hub", "--ran-by", "hub", "--session", "test-session")
-    assert c == 0, out
-    c, out = run(member, "src/handover.py", "receive")
-    assert c == 0, out
-    env = json.loads(run(member, "src/handover.py", "assignments")[1])["assignments"][0]["envelope"]
-    return member, env, hub
+def run_skill(bundle, ref, inputs):
+    code = ("import json, sys; sys.path.insert(0, %r); import run_skill\n"
+            "print(json.dumps(run_skill.run(%r, json.loads(%r))))") % (os.path.join(bundle, "src"), ref, json.dumps(inputs))
+    return python(code, bundle)
 
 
-class AResultQuotesASeries(unittest.TestCase):
+def agreement_of(bundle, out, stated, printed):
+    """src/validate_tasks.py's comparison of an output with a source's stated values, the task carrying them printed."""
+    item = {"measure": {"stated": stated, "printed": printed}}
+    code = ("import json, sys; sys.path.insert(0, %r); import validate_tasks\n"
+            "print(json.dumps(validate_tasks.against_stated(json.loads(%r), json.loads(%r), json.loads(%r))))") % (
+        os.path.join(bundle, "src"), json.dumps(out), json.dumps(stated), json.dumps(item))
+    return python(code, bundle)
+
+
+class WhatARunWrote(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.mkdtemp(prefix="ma-v37-series-")
+        self.tmp = tempfile.mkdtemp(prefix="ma-template-v37-")
         self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.engine = os.path.join(self.tmp, "engine.py")
+        cards.write_text(self.engine, ENGINE)
 
-    def test_the_build_declares_each_series_with_its_parts(self):
-        for kind, k in KINDS.items():
-            path = compose(os.path.join(self.tmp, kind, "builds"), "agent-" + kind, kind)
-            d = cards.load_json(os.path.join(path, "envelope", "results.json"))
-            got = {r["field"]: [(p["name"], p["unit"]) for p in r["parts"]] for r in d["reports"] if r.get("kind") == "series"}
-            self.assertEqual(got, k["series"], kind)
-            self.assertNotIn("probe_location", {r["field"] for r in d["reports"]})            # an array with no unit
-            old = compose(os.path.join(self.tmp, kind, "old"), "agent-" + kind, kind, template=V36)
-            self.assertFalse(any(r.get("kind") == "series" for r in cards.load_json(
-                os.path.join(old, "envelope", "results.json"))["reports"]), kind)       # v36 declared none
+    def test_written_lists_what_the_run_made_or_changed_and_nothing_else(self):
+        ew = engine_wait_of(V37, "v37")
+        for kind in KINDS:
+            work = os.path.join(self.tmp, kind)
+            prepare(work, kind)
+            r = ew.run([sys.executable, self.engine, kind, work], cwd=work, poll_s=0.05, watch=[work])
+            self.assertEqual(r["returncode"], 0, (kind, r))
+            self.assertEqual(r["written"], EXPECTED[kind], kind)
+            self.assertEqual(r["watched"], [os.path.abspath(work)], kind)
 
-    def test_a_series_declared_short_of_its_parts_is_refused(self):
-        for kind, k in KINDS.items():
-            outputs = json.loads(json.dumps(k["outputs"]))
-            field = sorted(f for f in k["series"] if len(k["series"][f]) > 1)[0]
-            del outputs[field]["items"]["prefixItems"][1]["title"]
-            with self.assertRaises(ValueError) as e:
-                compose(os.path.join(self.tmp, kind, "short"), "agent-" + kind, kind, outputs=outputs)
-            self.assertIn(field, str(e.exception))
-            self.assertFalse(os.path.exists(os.path.join(self.tmp, kind, "short", "agent-" + kind, "0001", "bundle")))
-        outputs = json.loads(json.dumps(KINDS["photonic"]["outputs"]))
-        del outputs["effective_indices"]["items"]["description"]
-        del outputs["effective_indices"]["description"]
-        with self.assertRaises(ValueError) as e:
-            compose(os.path.join(self.tmp, "one-part"), "agent-photonic", "photonic", outputs=outputs)
-        self.assertIn("effective_indices", str(e.exception))         # a part says what it is (common series, 69f329b)
+    def test_with_no_folder_watched_written_is_none(self):
+        ew = engine_wait_of(V37, "v37b")
+        work = os.path.join(self.tmp, "flow")
+        prepare(work, "flow")
+        r = ew.run([sys.executable, self.engine, "flow", work], cwd=work, poll_s=0.05)
+        self.assertIsNone(r["written"])
 
-    def test_result_quotes_the_series_point_by_point(self):
-        for kind, k in KINDS.items():
-            member, env, _ = carried(os.path.join(self.tmp, kind), kind)
-            c, out = run(member, "src/run_tool.py", k["tool"], "--out", "runs/r1/out.json", stdin=b"{}")
-            self.assertEqual(c, 0, out)
-            argv = ["src/handover.py", "result", "--assignment", env]
-            for field in sorted(k["series"]):
-                argv += ["--report", k["tool"], field, "runs/r1/out.json"]
-            c, out = run(member, *argv)
-            self.assertEqual(c, 0, out)
-            res = json.loads(out)["card"]
-            self.assertEqual(res["state"], "answered")
-            for s in res["series"]:
-                self.assertEqual([(p["name"], p["unit"]) for p in s["parts"]], k["series"][s["name"]], kind)
-                want = k["result"][s["name"]]
-                self.assertEqual(s["points"], [p if isinstance(p, list) else [p] for p in want], kind)
-                self.assertEqual((s["grade"], s["value_kind"]), ("E4", "computed"))
-            self.assertEqual(res["numbers"], [])
-
-    def test_v36_cannot_quote_the_series(self):
-        for kind, k in KINDS.items():
-            member, env, _ = carried(os.path.join(self.tmp, kind), kind, template=V36)
-            c, out = run(member, "src/run_tool.py", k["tool"], stdin=b"{}")
-            os.makedirs(os.path.join(member, "runs"))
-            with open(os.path.join(member, "runs", "out.json"), "w") as f:
-                f.write(out)
-            field = sorted(k["series"])[0]
-            c, out = run(member, "src/handover.py", "result", "--assignment", env, "--report", k["tool"], field, "runs/out.json")
-            self.assertEqual(c, 3, out)
-            self.assertIn("declares no report", out)
-
-    def test_the_folder_passes_checks_1_2_25_with_a_series_carried_back(self):
-        for kind, k in KINDS.items():
-            tmp = os.path.join(self.tmp, kind)
-            member, env, hub = carried(tmp, kind)
-            run(member, "src/run_tool.py", k["tool"], "--out", "runs/out.json", stdin=b"{}")
-            field = sorted(k["series"])[0]
-            c, out = run(member, "src/handover.py", "result", "--assignment", env, "--report", k["tool"], field, "runs/out.json")
-            self.assertEqual(c, 0, out)
-            c, out = run(REPO, BRIDGE, "carry", "--trigger", "hub", "--card", os.path.join(member, json.loads(out)["written"]),
-                         "--to", hub, "--released-by", "hub", "--ran-by", "hub", "--session", "test-session")
-            self.assertEqual(c, 0, out)
-            shutil.rmtree(os.path.join(tmp, "builds"))
-            c, out = run(REPO, VALIDATE, tmp, "--checks", "1,2,25")
-            self.assertEqual(c, 0, out)
+    def test_v36s_engine_wait_takes_no_watch(self):
+        ew = engine_wait_of(V36, "v36")
+        for kind in KINDS:
+            work = os.path.join(self.tmp, "v36-" + kind)
+            prepare(work, kind)
+            with self.assertRaises(TypeError):
+                ew.run([sys.executable, self.engine, kind, work], cwd=work, poll_s=0.05, watch=[work])
 
 
-class TheRunnerKeepsWholeOutputs(unittest.TestCase):
+class TheBuilder(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.mkdtemp(prefix="ma-v37-out-")
+        self.tmp = tempfile.mkdtemp(prefix="ma-template-v37-")
         self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.engine = os.path.join(self.tmp, "engine.py")
+        cards.write_text(self.engine, ENGINE)
 
-    def test_out_writes_a_new_file_whole_and_refuses_one_that_exists_or_lies_outside_runs(self):
-        for kind, k in KINDS.items():
-            path = compose(os.path.join(self.tmp, kind), "agent-" + kind, kind)
-            c, out = run(path, "src/run_tool.py", k["tool"], "--out", "runs/a/out.json", stdin=b"{}")
-            self.assertEqual(c, 0, out)
-            self.assertEqual(cards.load_json(os.path.join(path, "runs", "a", "out.json")), k["result"])
-            self.assertEqual(os.listdir(os.path.join(path, "runs", "a")), ["out.json"])           # no part file left
-            before = cards.sha256_file(os.path.join(path, "runs", "a", "out.json"))
-            c, out = run(path, "src/run_tool.py", k["tool"], "--out", "runs/a/out.json", stdin=b"{}")
-            self.assertEqual(c, 1, out)
-            self.assertEqual(cards.sha256_file(os.path.join(path, "runs", "a", "out.json")), before)
-            for bad in ("out.json", "runs/out.txt", "../runs/out.json"):
-                c, out = run(path, "src/run_tool.py", k["tool"], "--out", bad, stdin=b"{}")
-                self.assertEqual(c, 1, (bad, out))
+    def test_v37_refuses_an_adapter_that_watches_no_folder_and_v36_took_it(self):
+        for kind in KINDS:
+            unwatched = ADAPTER % (self.engine, kind, "")
+            with self.assertRaises(ValueError) as cm:
+                compose(self.tmp, kind, adapter=unwatched, name="%s-unwatched-v37" % kind)
+            self.assertIn("names no folder to watch", str(cm.exception), kind)
+            self.assertTrue(os.path.isdir(compose(self.tmp, kind, template=V36, adapter=unwatched,
+                                                  name="%s-unwatched-v36" % kind)))
 
-    def test_a_call_that_fails_leaves_no_file_and_an_empty_one_is_refused_with_what_to_do(self):
-        for kind, k in KINDS.items():
-            member, env, _ = carried(os.path.join(self.tmp, kind), kind)
-            # an adapter whose call dies: --out leaves nothing behind
-            os.chmod(os.path.join(member, "tools", k["tool"], "adapter.py"), 0o644)
-            with open(os.path.join(member, "tools", k["tool"], "adapter.py"), "w") as f:
-                f.write("def run(payload):\n    raise RuntimeError('cut short')\n")
-            c, out = run(member, "src/run_tool.py", k["tool"], "--out", "runs/r2/out.json", stdin=b"{}")
-            self.assertNotEqual(c, 0, out)
-            self.assertFalse(os.path.exists(os.path.join(member, "runs", "r2", "out.json")))
-            # what a shell redirect left in bd-3: an empty file the result is refused on, by name
-            os.makedirs(os.path.join(member, "runs", "r2"), exist_ok=True)
-            open(os.path.join(member, "runs", "r2", "lost.json"), "w").close()
-            c, out = run(member, "src/handover.py", "result", "--assignment", env, "--report", k["tool"],
-                         sorted(k["series"])[0], "runs/r2/lost.json")
-            self.assertEqual(c, 3, out)
-            self.assertIn("--out", json.loads(out)["refused"])
+    def test_v37_refuses_a_process_tool_that_waits_with_no_budget_and_v36_took_it(self):
+        for kind in KINDS:
+            bare = BARE % (self.engine, kind)
+            with self.assertRaises(ValueError) as cm:
+                compose(self.tmp, kind, adapter=bare, side_effects="runs_process", name="%s-bare-v37" % kind)
+            self.assertIn("subprocess.run", str(cm.exception), kind)
+            self.assertIn("other than through", str(cm.exception), kind)
+            self.assertTrue(os.path.isdir(compose(self.tmp, kind, template=V36, adapter=bare, side_effects="runs_process",
+                                                  name="%s-bare-v36" % kind)))
 
-    def test_an_output_whose_series_breaks_the_contract_is_an_error(self):
-        for kind, k in KINDS.items():
-            bad = json.loads(json.dumps(k["result"]))
-            field = sorted(f for f in k["series"] if len(k["series"][f]) > 1)[0]
-            bad[field][1] = bad[field][1] + [7.0]
-            path = compose(os.path.join(self.tmp, kind, "bad"), "agent-" + kind, kind,
-                           adapter_result="def run(payload):\n    return %r\n" % (bad,))
-            c, out = run(path, "src/run_tool.py", k["tool"], stdin=b"{}")
-            self.assertEqual(c, 0, out)
-            e = json.loads(out)
-            self.assertEqual(e.get("artifact"), "error_contract", out)
-            self.assertIn("%s[1]" % field, e["message"])
+    def test_v37_takes_a_watched_adapter_and_its_call_names_what_the_run_wrote(self):
+        for kind in KINDS:
+            b = compose(self.tmp, kind, side_effects="runs_process", name="%s-good" % kind)
+            code = ("import json, sys; sys.path.insert(0, %r); import run_tool\n"
+                    "print(json.dumps(run_tool.run_call(%r, {})))") % (os.path.join(b, "src"), KINDS[kind])
+            out = python(code, b)
+            self.assertEqual(out.get("returncode"), 0, (kind, out))
+            self.assertEqual(out.get("written"), EXPECTED[kind], kind)
 
 
-class EveryInputOfANamedSkillHasARow(unittest.TestCase):
-    def setUp(self):
-        self.tmp = tempfile.mkdtemp(prefix="ma-v37-rows-")
-        self.addCleanup(shutil.rmtree, self.tmp, True)
+class TheAgreementAndTheMeasurand(unittest.TestCase):
+    """measurement_error@v4 and same_measurand@v1 in a simulation bundle of v37, against the same bundle of v36."""
 
-    def test_the_build_gives_the_person_a_row_for_each_input_nothing_gives(self):
-        for kind, k in KINDS.items():
-            path = compose(os.path.join(self.tmp, kind), "agent-" + kind, kind)
-            rows = cards.load_json(os.path.join(path, "envelope", "parameters.json"))["rows"]
-            added = [(r["name"], r["unit"]) for r in rows if r.get("for_skill_inputs")]
-            self.assertEqual(added, k["added"], kind)
-            for r in rows:
-                if r.get("for_skill_inputs"):
-                    self.assertIsNone(r["value"])
-                    self.assertNotIn("chosen_by", r)
-                    self.assertIn(r["for_skill_inputs"][0]["skill"], r["note"])
-            old = compose(os.path.join(self.tmp, kind, "old"), "agent-" + kind, kind, template=V36)
-            self.assertFalse(any(r.get("for_skill_inputs") for r in cards.load_json(
-                os.path.join(old, "envelope", "parameters.json"))["rows"]), kind)     # v36 gave none (rheo-5)
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.mkdtemp(prefix="ma-template-v37-")
+        cls.v37 = compose(cls.tmp, "flow", simulation=True, name="sim-v37")
+        cls.v36 = compose(cls.tmp, "flow", template=V36, simulation=True, name="sim-v36",
+                          adapter=ADAPTER % (os.path.join(cls.tmp, "engine.py"), "flow", ""))
 
-    def test_a_row_naming_an_input_that_no_skill_takes_is_refused(self):
-        rows = [{"name": "msd_window", "value": None, "unit": "count",
-                 "gives_inputs": [{"skill": "diffusive_regime_from_msd@v2", "input": "span"}]}]
-        with self.assertRaises(ValueError) as e:
-            compose(os.path.join(self.tmp, "x"), "agent-x", "photonic", rows=rows)
-        self.assertIn("msd_window", str(e.exception))
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, True)
 
-    def test_an_input_no_row_can_hold_is_refused(self):
-        units = {"ref": "made_up@v1", "inputs": [{"name": "dose", "unit": "furlong", "meaning": "a dose"}]}
-        two = [{"ref": "a@v1", "inputs": [{"name": "size", "unit": "engine_length", "meaning": "a size"}]},
-               {"ref": "b@v1", "inputs": [{"name": "size", "unit": "engine_time", "meaning": "a time"}]}]
-        same = [{"ref": "a@v1", "inputs": [{"name": "size", "unit": "engine_length", "meaning": "a size"}]},
-                {"ref": "b@v1", "inputs": [{"name": "size", "unit": "engine_length", "meaning": "a size too"}]}]
-        meta = cards.load_json(os.path.join(V37, "TEMPLATE.json"))
-        rows, faults = skill_inputs_mod.rows_for(["made_up@v1"], [units], [], {}, template_meta=meta)
-        self.assertEqual((rows, len(faults)), ([], 1))
-        self.assertIn("furlong", faults[0])
-        rows, faults = skill_inputs_mod.rows_for(["a@v1", "b@v1"], two, [], {}, template_meta=meta)
-        self.assertIn("different dimensions", faults[0])
-        rows, faults = skill_inputs_mod.rows_for(["a@v1", "b@v1"], same, [], {}, template_meta=meta)
-        self.assertEqual(([r["name"] for r in rows], faults), (["size"], []))
-        self.assertEqual([x["skill"] for x in rows[0]["for_skill_inputs"]], ["a@v1", "b@v1"])
-        rows, faults = skill_inputs_mod.rows_for([meta["agreement_skill"]], catalogue_mod.take([meta["agreement_skill"]]),
-                                                 [], {}, template_meta=meta)
-        self.assertEqual((rows, faults), ([], []))                     # the template's own scripts hand those
+    PAIRS = [  # (the output, the stated value, its printed text, the error as written, its places)
+        ({"total_energy": -15.85521263}, {"total_energy": -16.03732708}, {"total_energy": "-16.03732708"}, "0.18211445", 8),
+        ({"drag_coefficient": 3.2299}, {"drag_coefficient": 3.23}, {"drag_coefficient": "3.2300"}, "-0.0001", 4),
+    ]
+
+    def test_v37_carries_the_two_skills_and_names_the_agreement(self):
+        card = cards.load_json(os.path.join(self.v37, "TEMPLATE.json"))
+        self.assertEqual(card["agreement_skill"], "measurement_error@v4")
+        self.assertEqual(card["measurand_skill"], "same_measurand@v1")
+        for ref in ("measurement_error@v4", "same_measurand@v1"):
+            self.assertTrue(os.path.isfile(os.path.join(self.v37, "skills", ref, "skill.json")), ref)
+
+    def test_the_check_hands_the_reference_as_printed_and_the_error_has_its_digits(self):
+        for out, stated, printed, written, places in self.PAIRS:
+            r = agreement_of(self.v37, out, stated, printed)
+            field = next(iter(stated))
+            run = (r.get("agreement_runs") or {}).get(field) or {}
+            self.assertEqual(run.get("inputs", {}).get("reference"), printed[field], r)
+            self.assertEqual(run.get("outputs", {}).get("error_written"), written, r)
+            self.assertEqual(run.get("outputs", {}).get("places"), places, r)
+
+    def test_under_v36_the_agreement_is_a_float_difference(self):
+        for out, stated, printed, written, places in self.PAIRS:
+            r = agreement_of(self.v36, out, stated, printed)
+            run = (r.get("agreement_runs") or {}).get(next(iter(stated))) or {}
+            self.assertEqual(run.get("skill"), "measurement_error@v3", r)
+            self.assertNotIn("error_written", run.get("outputs") or {}, r)
+            self.assertNotEqual(repr(run["outputs"]["error"]), written, r)    # the float's digits, not the printed ones
+
+    def test_same_measurand_tells_a_pair_of_two_kinds_apart_through_the_runner(self):
+        pairs = [
+            ({"measured_conditions": {"target_fermi_energy": "-0.5"}, "reference_conditions": {"target_fermi_energy": "0.5"},
+              "measured_end": "converged", "reference_end": "converged", "accept_ends": ["converged"]}, "different"),
+            ({"measured_conditions": {"inlet_velocity": 0.3}, "reference_conditions": {"inlet_velocity": "0.30"},
+              "measured_end": "maximum steps reached", "reference_end": "converged", "accept_ends": ["converged"]}, "different"),
+            ({"measured_conditions": {"inlet_velocity": 0.3}, "reference_conditions": {"inlet_velocity": "0.30"},
+              "measured_end": "converged", "reference_end": "converged", "accept_ends": None}, "undecided"),
+        ]
+        for inputs, state in pairs:
+            r = run_skill(self.v37, "same_measurand@v1", inputs)
+            self.assertEqual((r.get("verdict"), (r.get("outputs") or {}).get("state")), ("ran", state), r)
+        self.assertFalse(os.path.isdir(os.path.join(self.v36, "skills", "same_measurand@v1")))
 
 
 class TheVersion(unittest.TestCase):
-    def test_v37_is_the_latest_and_changes_three_scripts_and_the_text(self):
-        self.assertEqual(template_mod.LATEST, "v37")
-        meta = cards.load_json(os.path.join(V37, "TEMPLATE.json"))
-        self.assertEqual(meta["version"], "v37")
-        self.assertEqual(sorted(cards.tree_files(V37)), sorted(cards.tree_files(V36)))
-        changed = sorted(r for r in cards.tree_files(V36)
-                         if cards.sha256_file(os.path.join(V36, r)) != cards.sha256_file(os.path.join(V37, r)))
-        self.assertEqual(changed, [".claude/skills/run-skill/SKILL.md", "CLAUDE.md", "TEMPLATE.json", "src/handover.py",
-                                   "src/run_tool.py"])
+    def test_v37_is_the_latest_and_changes_two_scripts_a_skill_its_text_and_its_card(self):
+        self.assertIn("v37", template_mod.SOURCES)                  # v38 is the latest since a README says whom it is for
+        self.assertEqual(sorted(set(cards.tree_files(V37)) ^ set(cards.tree_files(V36))), [])
+        both = set(cards.tree_files(V36)) & set(cards.tree_files(V37))
+        changed = sorted(r for r in both if cards.sha256_file(os.path.join(V36, r)) != cards.sha256_file(os.path.join(V37, r)))
+        self.assertEqual(changed, [".claude/skills/run-skill/SKILL.md", "CLAUDE.md", "TEMPLATE.json", "src/engine_wait.py",
+                                   "src/validate_tasks.py"])
+        card = cards.load_json(os.path.join(V37, "TEMPLATE.json"))
+        self.assertEqual(card.get("written_files"), "src/engine_wait.py")
+        self.assertEqual(card.get("engine_waits"), "src/engine_wait.py")
+        self.assertIn("measurement_error@v4", card["common_skills"])
+        self.assertIn("same_measurand@v1", card["common_skills"])
+        self.assertNotIn("measurement_error@v3", card["common_skills"])
 
 
 if __name__ == "__main__":

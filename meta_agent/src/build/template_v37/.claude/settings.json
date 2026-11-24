@@ -38,9 +38,7 @@
       "Edit(envelope/handovers.json)",
       "Write(envelope/handovers.json)",
       "Edit(envelope/units.json)",
-      "Write(envelope/units.json)",
-      "Edit(envelope/results.json)",
-      "Write(envelope/results.json)"
+      "Write(envelope/units.json)"
     ]
   },
   "hooks": {

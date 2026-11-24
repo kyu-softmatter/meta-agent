@@ -6,7 +6,9 @@ Reads one JSON object from stdin, applies the gate, checks the input against
 tools/<tool>/tool.json, calls tools/<tool>/adapter.py and checks the output
 against the contract's outputs before it prints it (a field whose unit is
 count is never below zero; a contract that needs a value for "none" declares
-it). Before the install the gate opens (a tool whose contract names
+it; a field's enum or const holds for every type, so that a contract can say
+that a call which answers ended well, and an output whose engine ended
+otherwise comes back as an error, v36). Before the install the gate opens (a tool whose contract names
 installs_from; a read of data from listed hosts needs no installer), it looks for the installer the
 contract names on PATH, and returns an unavailable error that names it when
 it is not there (putting it there is the person's step); then it points the
@@ -43,6 +45,13 @@ def of_type(value, name):
     return py is not None and isinstance(value, py) and not (name in ("number", "integer") and isinstance(value, bool))
 
 
+def same(a, b):
+    """Equality as JSON means it: a boolean equals only a boolean, so true is not 1 and false is not 0."""
+    if isinstance(a, bool) or isinstance(b, bool):
+        return isinstance(a, bool) and isinstance(b, bool) and a == b
+    return a == b
+
+
 def schema_errors(schema, value, where="input"):
     """A small, deterministic checker for the subset of JSON Schema the contracts use."""
     errs = []
@@ -77,8 +86,12 @@ def schema_errors(schema, value, where="input"):
     if t == "string" and isinstance(value, str):
         if "minLength" in schema and len(value) < schema["minLength"]:
             errs.append("%s: shorter than minLength" % where)
-        if "enum" in schema and value not in schema["enum"]:
-            errs.append("%s: not one of %s" % (where, schema["enum"]))
+    # the values a field may take at all, for every type (v36; dft-13): under v35 an integer's or a boolean's enum was
+    # not looked at, so a contract could not say that a call which answers ended well (an exit status of 0, a flag)
+    if "enum" in schema and not any(same(value, e) for e in schema["enum"]):
+        errs.append("%s: not one of %s" % (where, json.dumps(schema["enum"])))
+    if "const" in schema and not same(value, schema["const"]):
+        errs.append("%s: not %s, the one value the contract allows" % (where, json.dumps(schema["const"])))
     if t in ("number", "integer") and isinstance(value, (int, float)):
         if schema.get("unit") == "count" and value < 0:
             errs.append("%s: a count is never below zero" % where)

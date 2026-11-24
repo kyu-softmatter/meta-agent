@@ -25,10 +25,37 @@ checkpoint. Here:
   resumes from the checkpoint the adapter names (evidence.resumable) or starts over. A call that gave up comes back
   as category timeout, a stop from outside as cancelled.
 
+Each call keeps its own outputs (v35; failure line dft-24 of the builder's tree, where a rerun of a tool wrote over an
+example's earlier outputs and log and left no record of the run it replaced):
+
+    work = engine_wait.new_run_folder("scan")      # runs/scan/<UTC stamp>/, made new, never one that exists
+    result = engine_wait.run(argv, cwd=work, stdout_path=os.path.join(work, "engine.out"), ...)
+
+- new_run_folder(kind) makes runs/<kind>/<UTC stamp>/ inside this bundle and never takes a folder that exists, so an
+  earlier call's folder is never written into; the stamp is the time the call began, in UTC.
+- run() opens the logs it is given for stdout and stderr only where no file of that name exists, and raises
+  FileExistsError naming it otherwise: it never writes over a log.
+
+A call may run its engine on a number of processes (v35; dft-23, where a tool had no input for one and the reference's
+conditions could not be reached):
+
+    bad = engine_wait.processes_error("<tool>", payload.get("n_processes"), launcher=LAUNCHER)
+    if bad is not None:
+        return bad
+    result = engine_wait.run(argv, n_processes=payload.get("n_processes"), launcher=LAUNCHER, ...)
+
+- launcher is the adapter's: the argv of the program that starts the engine on several processes, one of its items
+  "{n}" where the count goes (an MPI launcher's ["<path>/mpirun", "-np", "{n}"], say). With n_processes None the engine
+  starts directly and the launcher is not used. The count is the call's input, a person's or a task's; this module
+  chooses none and sets no ceiling: the gate reads the lab's permission level, which names no count.
+- processes_error() returns an invalid_input error for a count that is not a positive integer, and an unavailable one
+  where a count is asked for and the launcher is not there; run() refuses either with ValueError.
+
 What the engine finished, failed or printed is the adapter's to read: this module judges no result and computes no
 quantity. The numbers it takes are the adapter's arguments; the defaults are only how often it looks and how long it
 waits after TERM. Standard library only.
 """
+import datetime
 import os
 import signal
 import subprocess
@@ -37,6 +64,80 @@ import time
 
 STOP_SIGNALS = ("SIGTERM", "SIGINT", "SIGHUP")
 TAIL = 4000          # characters of stdout and stderr kept in an error's evidence
+HERE = os.path.dirname(os.path.abspath(__file__))
+BUNDLE = os.path.dirname(HERE)
+COUNT = "{n}"        # the launcher's item the count replaces
+
+
+def new_run_folder(kind):
+    """Make runs/<kind>/<UTC stamp>/ in this bundle, a folder no call made before, and return its path. A stamp taken
+    twice within one microsecond gets a suffix; a folder that exists is never taken."""
+    if not kind or os.sep in kind or (os.altsep and os.altsep in kind) or kind in (".", ".."):
+        raise ValueError("a run folder's kind is one folder name, not %r" % (kind,))
+    base = os.path.join(BUNDLE, "runs", kind)
+    os.makedirs(base, exist_ok=True)
+    stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    for n in range(1000):
+        path = os.path.join(base, stamp if n == 0 else "%s-%d" % (stamp, n))
+        try:
+            os.mkdir(path)          # refuses a folder that exists
+            return path
+        except FileExistsError:
+            continue
+    raise FileExistsError("no new run folder could be made under %s" % base)
+
+
+def _count_ok(n):
+    return isinstance(n, int) and not isinstance(n, bool) and n >= 1
+
+
+def _launcher_ok(launcher):
+    return (isinstance(launcher, (list, tuple)) and launcher and all(isinstance(a, str) for a in launcher)
+            and COUNT in launcher)
+
+
+def processes_error(tool, n_processes, launcher=None):
+    """None where the call may run on n_processes (None: the engine starts directly), else an error contract: a count
+    that is not a positive integer is invalid_input; a count asked for where the adapter names no launcher, or where
+    the launcher's program is not there, is unavailable."""
+    if n_processes is None:
+        return None
+    import run_tool   # here, not at the top: run_tool loads the adapter that imports this module
+    if not _count_ok(n_processes):
+        e = run_tool.error_template(tool, "invalid_input")
+        e.update(code="%s-PROCESSES" % tool.upper(), category="invalid_input", retryable=False,
+                 message="the number of processes is %r, not a positive integer" % (n_processes,),
+                 remediation={"action": "name a positive count of processes, or none to start the engine directly"},
+                 evidence={"n_processes": n_processes})
+        return e
+    program = launcher[0] if _launcher_ok(launcher) else None
+    if program is None or not (os.path.isfile(program) or (not os.path.dirname(program) and _on_path(program))):
+        e = run_tool.error_template(tool, "unavailable")
+        e.update(code="%s-LAUNCHER" % tool.upper(), category="unavailable", retryable=False,
+                 message="%d processes were asked for and %s" % (
+                     n_processes, "this tool names no launcher" if program is None else "its launcher %s is not there" % program),
+                 remediation={"action": "call with no count of processes, to start the engine directly, or remake the "
+                                        "environment that holds the launcher"},
+                 evidence={"n_processes": n_processes, "launcher": list(launcher) if launcher else None})
+        return e
+    return None
+
+
+def _on_path(program):
+    import shutil
+    return shutil.which(program) is not None
+
+
+def launched(argv, n_processes=None, launcher=None):
+    """The argv that is started: argv itself where n_processes is None, else the launcher with the count in place of
+    its "{n}", then argv. ValueError for a count that is not a positive integer or a launcher with no "{n}"."""
+    if n_processes is None:
+        return list(argv)
+    if not _count_ok(n_processes):
+        raise ValueError("the number of processes is %r, not a positive integer" % (n_processes,))
+    if not _launcher_ok(launcher):
+        raise ValueError("a count of processes needs a launcher, a list of strings with %r where the count goes" % COUNT)
+    return [str(n_processes) if a == COUNT else a for a in launcher] + list(argv)
 
 
 def _group_states(pgid):
@@ -111,16 +212,26 @@ def _tail(path):
 
 
 def run(argv, cwd=None, env=None, budget_s=None, stall_s=None, progress=(), stop_markers=(), poll_s=2.0, grace_s=120.0,
-        stdout_path=None, stderr_path=None):
-    """Start argv in a process group of its own and wait for it. Returns a record:
+        stdout_path=None, stderr_path=None, n_processes=None, launcher=None):
+    """Start argv in a process group of its own and wait for it; on n_processes through the launcher, where a count is
+    given (see launched()). Returns a record:
 
-    returncode, ended (exited | signal | stopped_by_call | killed_by_call), signal (its name, or None), gave_up (None,
-    budget or stalled), running_s, paused_s, stop_marker (the first of stop_markers the output shows, or None), and
-    stdout and stderr (the text, where no path was given for it; else None, and the path is in stdout_path or
-    stderr_path)."""
+    argv (what was started, the launcher included), n_processes, returncode, ended (exited | signal | stopped_by_call |
+    killed_by_call), signal (its name, or None), gave_up (None, budget or stalled), running_s, paused_s, stop_marker
+    (the first of stop_markers the output shows, or None), and stdout and stderr (the text, where no path was given for
+    it; else None, and the path is in stdout_path or stderr_path). A log path that exists is never opened: it raises
+    FileExistsError, since a log is never written over."""
+    argv = launched(argv, n_processes, launcher)
+    if stdout_path and stderr_path and os.path.abspath(stdout_path) == os.path.abspath(stderr_path):
+        raise ValueError("stdout and stderr are given one log, %s; each needs its own" % stdout_path)
     outs = {}
-    for name, path in (("stdout", stdout_path), ("stderr", stderr_path)):
-        outs[name] = open(path, "wb") if path else tempfile.TemporaryFile()
+    try:
+        for name, path in (("stdout", stdout_path), ("stderr", stderr_path)):
+            outs[name] = open(path, "xb") if path else tempfile.TemporaryFile()   # "x": never over a log that exists
+    except FileExistsError:
+        for f in outs.values():
+            f.close()
+        raise
     started = time.monotonic()
     proc = subprocess.Popen(argv, cwd=cwd, env=env, stdin=subprocess.DEVNULL, stdout=outs["stdout"], stderr=outs["stderr"],
                             start_new_session=(os.name == "posix"))
@@ -171,7 +282,7 @@ def run(argv, cwd=None, env=None, budget_s=None, stall_s=None, progress=(), stop
     shown += "".join(_tail(p) for p in (stdout_path, stderr_path) if p)
     shown += "".join(_tail(p) for p in progress or ())
     marker = next((m for m in stop_markers or () if m and m in shown), None)
-    return {"argv": list(argv), "returncode": returncode, "ended": ended, "signal": _signal_name(returncode),
+    return {"argv": list(argv), "n_processes": n_processes, "returncode": returncode, "ended": ended, "signal": _signal_name(returncode),
             "gave_up": gave_up, "running_s": round(running_s, 3), "paused_s": round(paused_s, 3),
             "budget_s": budget_s, "stall_s": stall_s, "stop_marker": marker,
             "stdout": text["stdout"], "stderr": text["stderr"], "stdout_path": stdout_path, "stderr_path": stderr_path}
@@ -212,7 +323,7 @@ def stop_error(tool, result, resumes_from=None):
     e["remediation"] = {"action": "call the tool again with the same input" + (
         ": it resumes from %s" % resumes_from if resumable else ""),
         "note": "a stop is not a fault of the engine or of the input; the run's results so far are the engine's to report"}
-    evidence = {k: result.get(k) for k in ("argv", "returncode", "ended", "signal", "gave_up", "running_s", "paused_s",
+    evidence = {k: result.get(k) for k in ("argv", "n_processes", "returncode", "ended", "signal", "gave_up", "running_s", "paused_s",
                                            "budget_s", "stall_s", "stop_marker", "stdout_path", "stderr_path")}
     for k in ("stdout", "stderr"):
         if result.get(k):

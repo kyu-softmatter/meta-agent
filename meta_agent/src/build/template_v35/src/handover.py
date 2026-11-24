@@ -1,13 +1,10 @@
 """Hand values to another agent, and take the values another agent handed here (v32; v33 carries each value's definition;
-v34 names in it the tool field each of the skill's inputs came from; v35 reads an assignment a hub sent and answers it).
+v34 names in it the tool field each of the skill's inputs came from).
 
     python src/handover.py write --record <skill record> --runs <tool result> [<tool result> ...] [--thread <thread>]
     python src/handover.py receive [--thread <thread>]
     python src/handover.py values
     python src/handover.py board
-    python src/handover.py assignments
-    python src/handover.py result --assignment <inbox/<thread>/rN_envelope.json> [--handover <outbox/handover-...json>]...
-                                  [--report <tool> <field> <tool result>]... [--held <what> <reason> <needs>]...
 
 What this agent gives and takes is in envelope/handovers.json, written by the build: `agent` names this agent and its
 build; `gives` lists each hand-over it may write, to which agent, over which thread, read off which library skill's
@@ -31,23 +28,9 @@ receive reads each envelope in inbox/<thread>/ that has no receipt yet, checks t
         the registry carried here, into the row's unit (into an engine's own unit only through a scale a person
         confirmed); `held` with its reason otherwise. A payload whose bytes are not the envelope's is refused and
         nothing is written for it.
-        An envelope that carried an assignment or a result is passed over here: it holds no value to take, and
-        `assignments` reads it.
 values  prints, for each row that takes a hand-over, the value of its latest used receipt, read off the record of
         the conversion, with the definition the hand-over carried: what a tool's input that names the row is given.
 board   prints what is in outbox/, inbox/ and received/, and for each envelope who ran the bridge.
-assignments
-        prints each assignment a hub sent here (v35): the envelope that carried it, whether its payload is the bytes the
-        envelope states, the hub it came from, what it asks in words, the items of the hub's question it answers,
-        what it is to return and when it is done, and the result in outbox/ that answers it, if one does.
-result  writes one result card in outbox/ to the hub that sent the assignment the envelope names (v35). Its values are
-        quoted, never computed: each number of a hand-over card this agent wrote in outbox/ (--handover), unchanged,
-        with its source, grade and conditions; or a field of a tool result the session kept under runs/ (--report),
-        only where envelope/results.json declares that tool's field, with the unit its contract gives, the grade the
-        build derived and what the contract says the field is. What the result cannot answer is held, each with what,
-        why and what it needs (--held). A result with no value and nothing held is refused; its state is answered,
-        held or partly_held as the two say. The assignment must be the bytes its envelope states and must ask for a
-        result to the hub it came from. A result is never written over: one envelope, one result.
 
 Wherever an envelope is shown, its ran_by is shown with it, as the envelope says it: the person ran the bridge, or a
 session ran it on the person's words, quoted (v33; the bridge records it since tasks/032). The person's word is behind
@@ -332,17 +315,15 @@ def record_of(thread, rnd, ident):
 
 
 def receive(thread=None):
-    decl = load(DECL) if os.path.isfile(path(DECL)) else {"agent": results_decl().get("agent"), "takes": []}
+    decl = load(DECL)
+    units = load(UNITS)["units"]
+    rows = {r.get("name"): r for r in load(PARAMS).get("rows") or [] if isinstance(r, dict)}
+    ref = unit_skill()
     done = []
     pattern = path("inbox/%s/r*_envelope.json" % (thread or "*"))
     for env_path in sorted(glob.glob(pattern), key=lambda p: (os.path.dirname(p), int(re.findall(r"r(\d+)_", os.path.basename(p))[0]))):
         env_rel = rel_of(env_path)
         env = load(env_rel)
-        if (env.get("payload") or {}).get("card") != "handover":
-            continue        # an assignment or a result carries no value to take (v35): `assignments` reads it
-        units = load(UNITS)["units"]
-        rows = {r.get("name"): r for r in load(PARAMS).get("rows") or [] if isinstance(r, dict)}
-        ref = unit_skill()
         mark = "received/%s-r%s-" % (env.get("thread"), env.get("round"))
         if glob.glob(path(mark + "*.json")):
             continue
@@ -384,7 +365,7 @@ def values():
 def board():
     out = {"outbox": sorted(rel_of(p) for p in glob.glob(path("outbox/*.json"))),
            "inbox": sorted(rel_of(p) for p in glob.glob(path("inbox/*/*.json"))),
-           "carried": [{"envelope": rel_of(p), "carried": carried_by_hub(load(rel_of(p)))}
+           "carried": [{"envelope": rel_of(p), "carried": carried_by(load(rel_of(p)))}
                        for p in sorted(glob.glob(path("inbox/*/r*_envelope.json")))],
            "received": []}
     for rp in sorted(glob.glob(path("received/*.json"))):
@@ -394,171 +375,8 @@ def board():
     return out
 
 
-# ---------------------------------------------------------------------------------------------------- a hub's assignments (v35)
-
-RESULTS = "envelope/results.json"
-
-
-def results_decl():
-    """What this agent may report to a hub from its tools' results, written by the build (v35)."""
-    return load(RESULTS) if os.path.isfile(path(RESULTS)) else {"agent": None, "reports": []}
-
-
-def me_agent():
-    for rel in (RESULTS, DECL):
-        if os.path.isfile(path(rel)):
-            a = load(rel).get("agent")
-            if isinstance(a, dict) and a.get("agent") and a.get("build"):
-                return {"agent": a["agent"], "build": a["build"]}
-    raise Refused("neither %s nor %s names this agent and its build" % (RESULTS, DECL))
-
-
-def assignment_of(env_rel):
-    """(envelope, payload rel, assignment) for an envelope in inbox/<thread>/ that carried an assignment; Refused otherwise."""
-    if not re.match(r"^inbox/[^/]+/r[0-9]+_envelope\.json$", env_rel):
-        raise Refused("%s is not an envelope in inbox/<thread>/" % env_rel)
-    if not os.path.isfile(path(env_rel)):
-        raise Refused("%s is not here" % env_rel)
-    env = load(env_rel)
-    pl = env.get("payload") or {}
-    if pl.get("card") != "assignment":
-        raise Refused("%s carried a %s, not an assignment" % (env_rel, pl.get("card")))
-    p_rel = os.path.dirname(env_rel) + "/" + str(pl.get("file"))
-    if not os.path.isfile(path(p_rel)) or sha256_file(path(p_rel)) != pl.get("sha256"):
-        raise Refused("%s is not the bytes %s states: it changed after the hub wrote it, and it is not answered" % (
-            p_rel, env_rel))
-    a = load(p_rel)
-    if a.get("card") != "assignment" or a.get("id") != pl.get("id"):
-        raise Refused("%s is not the assignment %s names" % (p_rel, env_rel))
-    return env, p_rel, a
-
-
-def results_written():
-    out = {}
-    for rp in sorted(glob.glob(path("outbox/result-*.json"))):
-        r = load(rel_of(rp))
-        env = (r.get("answers") or {}).get("envelope")
-        if r.get("card") == "result" and env:
-            out[env] = (rel_of(rp), r)
-    return out
-
-
-def assignments():
-    done = results_written()
-    out = []
-    for env_path in sorted(glob.glob(path("inbox/*/r*_envelope.json"))):
-        env_rel = rel_of(env_path)
-        env = load(env_rel)
-        if (env.get("payload") or {}).get("card") != "assignment":
-            continue
-        entry = {"envelope": env_rel, "carried": carried_by_hub(env)}
-        try:
-            _, p_rel, a = assignment_of(env_rel)
-        except Refused as e:
-            entry["refused"] = str(e)
-            out.append(entry)
-            continue
-        entry.update({"assignment": p_rel, "id": a.get("id"), "from": a.get("from"), "thread": a.get("thread"),
-                      "round": env.get("round"), "asks": a.get("asks"), "answers_items": a.get("answers_items") or [],
-                      "returns": a.get("returns") or [], "done_when": a.get("done_when"),
-                      "result": done[env_rel][0] if env_rel in done else None,
-                      "result_state": done[env_rel][1].get("state") if env_rel in done else None})
-        out.append(entry)
-    return out
-
-
-def carried_by_hub(env):
-    r = env.get("ran_by") if isinstance(env.get("ran_by"), dict) else None
-    if r and r.get("by") == "hub":
-        return "the hub's session (%s) ran the bridge on the hub's trigger" % r.get("session")
-    return carried_by(env)
-
-
-def result(env_rel, handovers=(), reports=(), helds=()):
-    me = me_agent()
-    env, p_rel, a = assignment_of(env_rel)
-    if (a.get("to") or {}).get("agent") != me["agent"] or (a.get("to") or {}).get("build") != me["build"]:
-        raise Refused("the assignment goes to %s, not to this agent %s" % (json.dumps(a.get("to")), json.dumps(me)))
-    hub = a.get("from") or {}
-    if not any(r.get("card") == "result" and r.get("to") == hub for r in a.get("returns") or []):
-        raise Refused("the assignment asks for no result to the hub it came from (its returns: %s)" % json.dumps(
-            a.get("returns")))
-    if env_rel in results_written():
-        raise Refused("%s already has a result: %s" % (env_rel, results_written()[env_rel][0]))
-    numbers, produced, sources = [], [], []
-    for h_rel in handovers:
-        h_rel = rel_of(path(h_rel)) if not os.path.isabs(h_rel) else rel_of(h_rel)
-        if not re.match(r"^outbox/handover-[^/]+\.json$", h_rel) or not os.path.isfile(path(h_rel)):
-            raise Refused("%s is not a hand-over card in this agent's outbox/" % h_rel)
-        h = load(h_rel)
-        if h.get("card") != "handover" or (h.get("from") or {}).get("agent") != me["agent"]:
-            raise Refused("%s is not a hand-over this agent wrote" % h_rel)
-        for n in h.get("numbers") or []:
-            numbers.append(dict(n, conditions=dict(n.get("conditions") or {}, quoted_from=h_rel)))
-        pb = h.get("produced_by")
-        if isinstance(pb, dict) and pb.get("skill") and pb.get("record"):
-            produced.append({"skill": pb["skill"], "record": pb["record"]})
-        sources.append(h_rel)
-    declared = {(d.get("tool"), d.get("field")): d for d in results_decl().get("reports") or []}
-    for tool, field, run_rel in reports:
-        d = declared.get((tool, field))
-        if d is None:
-            raise Refused("envelope/results.json declares no report of the field %s of %s" % (field, tool))
-        run_rel = rel_of(run_rel if os.path.isabs(run_rel) else path(run_rel))
-        if not run_rel.startswith("runs/") or not os.path.isfile(path(run_rel)):
-            raise Refused("%s is not a tool result the session kept under runs/" % run_rel)
-        out = load(run_rel)
-        if isinstance(out, dict) and out.get("artifact") == "error_contract":
-            raise Refused("%s is an error contract, not a result of %s" % (run_rel, tool))
-        value = out.get(field) if isinstance(out, dict) else None
-        if not isinstance(value, (int, float)) or isinstance(value, bool):
-            raise Refused("%s gives no number as %s (%r)" % (run_rel, field, value))
-        numbers.append({"name": d.get("name") or field, "value": value, "unit": d["unit"],
-                        "source": "%s:tool %s, %s" % (d["source_kind"], tool, run_rel), "grade": d["grade"],
-                        "value_kind": d["value_kind"], "uncertainty": None,
-                        "conditions": {"definition": "%s, the field %s of the result of %s: %s" % (
-                            d.get("name") or field, field, tool, d.get("description") or "its contract says no more"),
-                            "run": run_rel}})
-        sources.append(run_rel)
-    held = []
-    for what, reason, needs in helds:
-        if not (str(what).strip() and str(reason).strip() and str(needs).strip()):
-            raise Refused("a held entry says what is held, why and what it needs, each in words")
-        held.append({"what": what, "reason": reason, "needs": needs})
-    if not numbers and not held:
-        raise Refused("a result quotes at least one value or holds at least one thing")
-    state = "answered" if not held else ("held" if not numbers else "partly_held")
-    rnd = env.get("round")
-    ident = "res-%s-r%s" % (a["thread"], rnd)
-    card = skeleton("result", ident, me["agent"])
-    card.update({"numbers": numbers, "thread": a["thread"], "round": rnd, "from": me,
-                 "to": {"agent": hub.get("agent"), "build": hub.get("build")},
-                 "answers": {"assignment": a["id"], "envelope": env_rel}, "state": state,
-                 "produced_by": produced, "held": held,
-                 "note": "the values are quoted from %s; nothing was computed to write this card" % (
-                     ", ".join(sources) if sources else "nothing: everything asked is held")})
-    rel = "outbox/result-%s-r%s.json" % (a["thread"], rnd)
-    write_new(rel, card)
-    return rel, card
-
-
-def take_groups(rest, flag, n):
-    out, keep, i = [], [], 0
-    while i < len(rest):
-        if rest[i] == flag:
-            group = rest[i + 1:i + 1 + n]
-            if len(group) != n or any(g.startswith("--") for g in group):
-                raise Refused("%s takes %d value(s)" % (flag, n))
-            out.append(tuple(group) if n > 1 else group[0])
-            i += 1 + n
-        else:
-            keep.append(rest[i])
-            i += 1
-    return out, keep
-
-
 def main(argv):
-    if not argv or argv[0] not in ("write", "receive", "values", "board", "assignments", "result"):
+    if not argv or argv[0] not in ("write", "receive", "values", "board"):
         print(__doc__)
         return 1
     cmd, rest = argv[0], argv[1:]
@@ -585,20 +403,6 @@ def main(argv):
                                            "reason": c.get("reason"), "carried": carried_by(load(c["envelope"]))}
                                           for r, c in done]}, indent=2, ensure_ascii=False))
             return 4 if any(c["state"] == "held" for _, c in done) else 0
-        if cmd == "assignments":
-            print(json.dumps({"assignments": assignments()}, indent=2, ensure_ascii=False))
-            return 0
-        if cmd == "result":
-            envs, rest = take_groups(rest, "--assignment", 1)
-            hos, rest = take_groups(rest, "--handover", 1)
-            reps, rest = take_groups(rest, "--report", 3)
-            helds, rest = take_groups(rest, "--held", 3)
-            if len(envs) != 1 or rest:
-                print(__doc__)
-                return 1
-            rel, card = result(envs[0], hos, reps, helds)
-            print(json.dumps({"written": rel, "card": card}, indent=2, ensure_ascii=False))
-            return 4 if card["state"] != "answered" else 0
         if cmd == "values":
             print(json.dumps(values(), indent=2, ensure_ascii=False))
             return 0

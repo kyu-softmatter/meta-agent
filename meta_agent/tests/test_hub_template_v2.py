@@ -26,7 +26,7 @@ import unittest
 
 from meta_agent.src import cards
 from meta_agent.src.build import hubs as hubs_mod
-from meta_agent.tests import test_template_v35 as v35
+from meta_agent.tests import test_template_v40 as v40
 from meta_agent.tests.test_hub_template_v1 import (BUILDS, DFT, MD, PURPOSE, REPO, VALIDATE, WORDS, copy_build, draft,
                                                    lay_out, ok, run)
 
@@ -141,7 +141,7 @@ class ThreeEnginesOneHub(unittest.TestCase):
         root = os.path.join(self.tmp, "meta_agent")
         self.bundles = {}
         for n in self.NAMES:
-            b = v35.compose(os.path.join(root, "builds"), n, "engine")
+            b = v40.compose(os.path.join(root, "builds"), n, "engine")
             cards.write_json(os.path.join(os.path.dirname(b), "build.json"),
                              {"card": "build", "bundle_path": b, "bundle_sha256": cards.sha256_tree(b)})
             self.bundles[n + "/0001"] = b

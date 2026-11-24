@@ -650,6 +650,8 @@ class Template(unittest.TestCase):
         left a folder made by hand from a tree it then changed). So templates/ holds only what a version's tree
         gives, under that tree's name, and the latest version need not be there before a build names it."""
         names = {template_mod.template_name(root): root for root in template_mod.SOURCES.values()}
+        # and the trees a merged line built from, kept because builds name them (template.KEPT; the merge of 2026-11-23)
+        names.update({template_mod.template_name(root): root for root in template_mod.KEPT.values()})
         from meta_agent.src.build import hubs as hubs_mod      # the hub template's versions, named hub@<hash> (tasks/033)
         names.update({hubs_mod.template_name(root): root for root in hubs_mod.SOURCES.values()})
         there = sorted(n for n in os.listdir(os.path.join(META, "templates")) if os.path.isdir(os.path.join(META, "templates", n)))
@@ -828,7 +830,7 @@ class Template(unittest.TestCase):
             self.assertEqual(cards.load_json(os.path.join(req, "spec_a5.json"))["content"]["rows"], intake["safety_rows"])
             self.assertEqual(cards.load_json(os.path.join(bundle, "envelope", "safety.json")), {"highest_angular_velocity": None})
             rows = cards.load_json(os.path.join(bundle, "envelope", "parameters.json"))["rows"]
-            # from template v37 the build adds a row, the person's, for each input of a named skill nothing gives (rheo-5)
+            # from template v42 the build adds a row, the person's, for each input of a named skill nothing gives (rheo-5)
             self.assertEqual([r for r in rows if not r.get("for_skill_inputs")], intake["parameter_rows"])
             self.assertTrue(all(r["value"] is None for r in rows if r.get("for_skill_inputs")))
         finally:

@@ -29,7 +29,7 @@ import unittest
 
 from meta_agent.src import cards
 from meta_agent.src.build import hubs as hubs_mod
-from meta_agent.tests import test_template_v35 as v35
+from meta_agent.tests import test_template_v40 as v40
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BUILDS = os.path.join(REPO, "meta_agent", "builds")
@@ -121,12 +121,12 @@ class TheBuilder(unittest.TestCase):
             hubs_mod.build("h2-bond-hub", [DFT, DFT], PURPOSE, "lab", "seat", root=self.root, template=V1)
         with self.assertRaises(ValueError):
             hubs_mod.build("h2-bond-hub", [DFT, MD], "a purpose with 3 parts", "lab", "seat", root=self.root, template=V1)
-        old = v35.compose(os.path.join(self.root, "builds"), "old-agent", "engine", template=v35.V34)
+        old = v40.compose(os.path.join(self.root, "builds"), "old-agent", "engine", template=v40.V39)
         cards.write_json(os.path.join(os.path.dirname(old), "build.json"),
                          {"card": "build", "bundle_path": old, "bundle_sha256": cards.sha256_tree(old)})
         with self.assertRaises(ValueError) as e:
             hubs_mod.build("h2-bond-hub", [DFT, "old-agent/0001"], PURPOSE, "lab", "seat", root=self.root, template=V1)
-        self.assertIn("v35", str(e.exception))
+        self.assertIn("v40", str(e.exception))
         # a member changed after it was built is not the build its card names
         bundle = os.path.join(self.root, "builds", "hoomd-h2-bond", "0004", "bundle")
         card = cards.load_json(os.path.join(self.root, "builds", "hoomd-h2-bond", "0004", "build.json"))
@@ -263,7 +263,7 @@ class ThreeEnginesOneHub(unittest.TestCase):
         root = os.path.join(self.tmp, "meta_agent")
         self.bundles = {}
         for n in self.NAMES:
-            b = v35.compose(os.path.join(root, "builds"), n, "engine")
+            b = v40.compose(os.path.join(root, "builds"), n, "engine")
             cards.write_json(os.path.join(os.path.dirname(b), "build.json"),
                              {"card": "build", "bundle_path": b, "bundle_sha256": cards.sha256_tree(b)})
             self.bundles[n + "/0001"] = b

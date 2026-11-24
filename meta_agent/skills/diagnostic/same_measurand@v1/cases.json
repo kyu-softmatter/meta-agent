@@ -1,0 +1,93 @@
+[
+  {
+    "name": "two outputs made under each other's target: different, and the condition named",
+    "inputs": {
+      "measured_conditions": {"target_fermi_energy": "-0.5"},
+      "reference_conditions": {"target_fermi_energy": "0.5"},
+      "measured_end": "converged",
+      "reference_end": "converged",
+      "accept_ends": ["converged"]
+    },
+    "expect": {
+      "state": "different",
+      "differing": ["target_fermi_energy"],
+      "one_sided": [],
+      "ends_not_accepted": []
+    },
+    "worked": "target_fermi_energy is stated by both, -0.5 against 0.5, not equal as numbers: different; both ends are converged, which is handed",
+    "system": "a plane-wave density functional theory run"
+  },
+  {
+    "name": "a run that stopped at its maximum number of steps against a reference that converged: different",
+    "inputs": {
+      "measured_conditions": {"inlet_velocity": 0.3, "mesh": "M2"},
+      "reference_conditions": {"inlet_velocity": "0.30", "mesh": "M2"},
+      "measured_end": "maximum steps reached",
+      "reference_end": "converged",
+      "accept_ends": ["converged"]
+    },
+    "expect": {
+      "state": "different",
+      "differing": [],
+      "one_sided": [],
+      "ends_not_accepted": ["measured"]
+    },
+    "worked": "0.3 and 0.30 are equal as numbers and M2 equals M2, so no condition differs; the measured run ended 'maximum steps reached', not among ['converged']: different",
+    "system": "a fluid flow simulation"
+  },
+  {
+    "name": "the same conditions and accepted ends: same",
+    "inputs": {
+      "measured_conditions": {"temperature": 298.15, "pressure": 1},
+      "reference_conditions": {"temperature": "298.15", "pressure": "1"},
+      "measured_end": "converged",
+      "reference_end": null,
+      "accept_ends": ["converged"]
+    },
+    "expect": {
+      "state": "same",
+      "differing": [],
+      "one_sided": [],
+      "ends_not_accepted": [],
+      "why": null
+    },
+    "worked": "298.15 equals 298.15 and 1 equals 1; the measured run ended converged, which is handed; the reference states no end, as a published value does: same",
+    "system": "a molecular dynamics run"
+  },
+  {
+    "name": "a stated end and no ends handed: undecided",
+    "inputs": {
+      "measured_conditions": {"field": "0.1"},
+      "reference_conditions": {"field": "0.1"},
+      "measured_end": "converged",
+      "reference_end": "converged",
+      "accept_ends": null
+    },
+    "expect": {
+      "state": "undecided",
+      "differing": [],
+      "one_sided": [],
+      "ends_not_accepted": []
+    },
+    "worked": "field is 0.1 on both sides, so nothing differs; the runs state their ends and no accepted end was handed, so how a run must end is not judged: undecided",
+    "system": "a plane-wave density functional theory run"
+  },
+  {
+    "name": "a condition stated on one side only: undecided, and the condition named",
+    "inputs": {
+      "measured_conditions": {"wavelength": "532", "slit_width": "0.1"},
+      "reference_conditions": {"wavelength": "532"},
+      "measured_end": null,
+      "reference_end": null,
+      "accept_ends": null
+    },
+    "expect": {
+      "state": "undecided",
+      "differing": [],
+      "one_sided": ["slit_width"],
+      "ends_not_accepted": []
+    },
+    "worked": "wavelength is 532 on both; slit_width is stated by the measured side only, so whether it is the same is not shown: undecided; neither states an end and none is handed, so no end is judged",
+    "system": "a spectrometer reading"
+  }
+]

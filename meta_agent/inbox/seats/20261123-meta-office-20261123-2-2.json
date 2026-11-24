@@ -1,0 +1,9 @@
+{
+  "from": "meta-office-20261123-2",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "018",
+  "answers": null,
+  "text": "Two asks from failure line office-12 (meta_agent/failures.jsonl, f48bc9b). (1) contracts/tools/seat_commit.py -F hands a message file to git unchanged. A file written by Windows PowerShell 5.1's Out-File -Encoding utf8 begins with a byte order mark, so commit 182ae68's message begins with U+FEFF. Should the tool strip a leading mark or refuse it? (2) When several seats share one working copy, a test run there judges other seats' uncommitted work: meta_agent/tests gave 12 failures and 13 errors with another seat's v35 in progress, against office-6's 5 and 1 on an export of HEAD with this seat's files. Should a session skill (end-session or open-sessions) say to run the suites on git archive HEAD with only the seat's own files when seats share the folder?",
+  "written_at": "2026-11-23T12:02:54-08:00"
+}

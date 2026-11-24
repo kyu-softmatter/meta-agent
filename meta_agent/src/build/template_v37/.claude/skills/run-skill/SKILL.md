@@ -28,10 +28,16 @@ A status other than `0` from the runner of skills is reported with the record it
 `library/index.md` says so: it lists no skill, or none whose page names the tool. Then call the tool itself, through the runner of tools, with one JSON object for the inputs its contract (`tools/<name>/tool.json`) names:
 
 ```
-python src/run_tool.py <tool> [--out runs/<file>.json] < input.json
+python src/run_tool.py <tool> < input.json
 ```
 
-The runner asks the gate, checks the input against the contract and prints the output or an error contract. Report what it printed, unchanged. An error contract is reported as it is, and a refusal by the gate is a refusal. The runner of tools writes a file only when it is told to: when its output is to be kept, name a new file ending in `.json` in the folder named runs with `--out`, and the runner writes it whole once the call has returned. Do not send the output to a file with the shell, which can leave an empty file behind.
+The runner asks the gate, checks the input against the contract and prints the output or an error contract. Report what it printed, unchanged. An error contract is reported as it is, and a refusal by the gate is a refusal. The runner of tools prints and writes no file: when its output is to be kept, send it to a file of your own in the folder named runs.
+
+A call whose run may last longer than one command of the session may is started in the background, with what the runner prints sent to a file of your own in the folder named runs, and read when it has ended (`CLAUDE.md`, Tools). Read an engine's outputs from the files the call's output says its run wrote.
+
+## When you compare a measured value with a reference
+
+The pair is put together from what each states, not from a file's name or the last value printed. Before the agreement skill is run on it, run the skill whose sentence in `CLAUDE.md` says it judges whether two values are of one measurand, with the conditions the tool's output and the reference state and how each run ended, and the ends a row hands it. Report its answer with the pair. A pair it calls `different` has no agreement: report the pair, the answer and why. A pair it calls `undecided` is reported with its agreement and with what the skill says would settle it. Hand the agreement skill each value as the text it was printed as, where you have it.
 
 ## When a task has you make a replay item's call
 
@@ -43,7 +49,7 @@ Do not compute it yourself and do not write a script for it. Say what is missing
 
 ## When a skill needs an input that nothing here gives
 
-Supply no value for it, and do not let another value stand in for it: a value the device reports about itself is not the value a specification states. Run the skill without the input when you want the runner's own refusal on record. Say what the task needed, where you looked, and what would settle it: a source, a measurement, the person. Write that as one line in `failures.jsonl` and report it, as for a missing skill. Where the build gave the input a row of `envelope/parameters.json` with no value, its note naming the skill and the input, the value is the person's: their words in a task, or an assignment's quote of them, and never one you choose.
+Supply no value for it, and do not let another value stand in for it: a value the device reports about itself is not the value a specification states. Run the skill without the input when you want the runner's own refusal on record. Say what the task needed, where you looked, and what would settle it: a source, a measurement, the person. Write that as one line in `failures.jsonl` and report it, as for a missing skill.
 
 ## What a session may change
 

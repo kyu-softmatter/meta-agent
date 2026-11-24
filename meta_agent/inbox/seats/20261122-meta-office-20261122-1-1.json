@@ -1,0 +1,9 @@
+{
+  "from": "meta-office-20261122-1",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "016",
+  "answers": null,
+  "text": "From the tests on the office computer (Windows 11 and WSL Ubuntu-20.04, runs of 2026-11-20 to 2026-11-22 named in meta_agent/failures.jsonl office-1 to office-9): five faults lie in the design role's paths. office-1: testfolder.py make refuses every bundle on Windows because git archive of a subtree follows the system core.autocrlf=true and writes CRLF, and git() drops GIT_* so the caller cannot override it. office-3: testfolder.py collect stops with OSError 22 on a symbolic link that pixi made inside WSL in a bundle's cache, so no collection is written for a bundle whose engine runs in WSL. office-4: contracts/tests fail on Windows from seat_commit.py's path comparison when the temporary folder is an 8.3 short path, and from shutil.rmtree on git's read-only objects. office-5: in WSL Ubuntu 20.04, git 2.25.1 has no init -b (31 contracts tests fail), and validate.py relaunches itself through uv when imported without jsonschema. office-7: wipe will meet pixi cache paths longer than Windows allows. office-2 (a build card's digest taken over CRLF files its commit stores as LF) is the meta role's, and may want a rule on line endings from you. The runs stand until both roles have read them.",
+  "written_at": "2026-11-22T15:49:24-08:00"
+}

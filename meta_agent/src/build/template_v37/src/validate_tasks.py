@@ -236,9 +236,13 @@ def against_stated(out, stated, item):
     if absent:
         return {"verdict": "fail", "measured": measured, "reference": dict(stated),
                 "reason": "field(s) %s: not a number in the output or in the task" % ", ".join(absent)}
+    printed = (item.get("measure") or {}).get("printed") or {}
     try:
         for field in sorted(measured):
-            differences[field], runs[field] = agreement(measured[field], stated[field])
+            # the reference as its source prints it, where the task carries the text, so that the agreement skill keeps
+            # its last digit (v37, dft-20); else the stated number
+            ref = printed.get(field) if isinstance(printed, dict) and isinstance(printed.get(field), str) else stated[field]
+            differences[field], runs[field] = agreement(measured[field], ref)
     except NoAgreement as exc:
         return {"verdict": "fail", "measured": measured, "reference": dict(stated), "agreement_runs": runs, "reason": str(exc)}
     r = {"measured": measured, "reference": dict(stated), "differences": differences, "agreement": max(differences.values()),
@@ -320,7 +324,7 @@ def in_reference_unit(item, out):
     if not is_number(value):
         return out, None
     from_unit, to_unit = units_pair
-    skill = _template().get("unit_skill") or "unit_convert@v2"
+    skill = _template().get("unit_skill") or "unit_convert@v1"
     try:
         units = _units()
     except (OSError, ValueError, KeyError):
@@ -330,8 +334,7 @@ def in_reference_unit(item, out):
     if fu is None or tu is None:
         return None, {"verdict": "not_run", "reason": "%s or %s is not in this bundle's unit registry" % (from_unit, to_unit)}
     try:
-        rec = run_skill.run(skill, {"value": value, "from_unit": fu, "to_unit": tu, "stands_for": None,
-                                         "from_stands_for": None})
+        rec = run_skill.run(skill, {"value": value, "from_unit": fu, "to_unit": tu, "stands_for": None})
     except FileNotFoundError:
         return None, {"verdict": "fail", "reason": "this bundle does not carry %s, the unit skill" % skill}
     o = rec.get("outputs") or {}

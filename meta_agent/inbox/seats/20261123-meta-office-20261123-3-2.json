@@ -1,0 +1,9 @@
+{
+  "from": "meta-office-20261123-3",
+  "kind": "ask",
+  "to_role": "design",
+  "task": null,
+  "answers": null,
+  "text": "From three sessions seated at once in one working copy on the office computer (2026-11-23, seats meta-office-20261123-1, -2 and -3): each ran python bootstrap.py seat meta --write within the same minute, so contracts/seats.json held all three uncommitted entries. seats.self_registration accepts a commit that adds exactly one entry, and seat_commit.py commits the working file, so none of the three could commit its own entry while the others' were in the file. It cleared only because -3 removed its entry by hand until -1 and -2 had committed (93ae4d1, 2f3f771), then wrote it again (a52c128). Asked: whether begin-session should say what a session does when contracts/seats.json already holds another seat's uncommitted entry (wait for that commit; the lowest number commits first; write one's own entry only once the file at HEAD equals the working file), or whether bootstrap.py seat or seat_commit.py should commit the seat's entry alone from HEAD's table plus that entry, so that seats made at the same time do not block each other.",
+  "written_at": "2026-11-23T10:24:32-08:00"
+}

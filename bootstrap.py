@@ -523,7 +523,7 @@ def seat(rest):
             table = seat_rules.load()       # re-read: another session may have written its entry meanwhile
             name, entry = choose(table)
             table["seats"].append(entry)
-            with open(seat_rules.SEATS_PATH, "w", encoding="utf-8") as f:
+            with open(seat_rules.SEATS_PATH, "w", encoding="utf-8", newline="\n") as f:   # LF, as committed (office-2)
                 f.write(seat_rules.dump(table))
         print("written   contracts/seats.json (this entry only). Register it in its own commit before any other work:")
     else:
@@ -561,7 +561,7 @@ def machine(rest):
               "configuration.")
         return 0
     machines[tag] = description
-    with open(seat_rules.SEATS_PATH, "w", encoding="utf-8") as f:
+    with open(seat_rules.SEATS_PATH, "w", encoding="utf-8", newline="\n") as f:   # LF, as committed (office-2)
         f.write(seat_rules.dump(table))
     code, _ = capture(["git", "config", "meta-agent.machine", tag], cwd=HERE)
     if code != 0:

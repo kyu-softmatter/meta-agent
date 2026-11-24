@@ -1,0 +1,3 @@
+check B19
+
+A bundle of template v40 whose tool is an instrument (a laboratory balance) carries an envelope/grades.json whose spec row also takes computed values: a row the repository's contracts/grades.json does not hold, so a value the maker computed would be graded as the maker's documentation, where the person chose prior_run for it (dft-14, 2026-11-23, "prior_run (Recommended)").

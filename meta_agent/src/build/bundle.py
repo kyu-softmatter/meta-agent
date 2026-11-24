@@ -26,6 +26,7 @@ import shutil
 from .. import cards
 from . import handovers as handovers_mod
 from . import comparisons as comparisons_mod
+from . import expectations as expectations_mod
 from . import skill_inputs as skill_inputs_mod
 
 WRITER = "operator"        # the one subagent that may list write_device (plan.md 14-34(e))
@@ -126,6 +127,150 @@ def engine_wait_problems(tools, template_path):
         if uses and not {"timeout", "cancelled"} <= declared:
             out.append("tool %s: its adapter waits through %s, whose stop returns timeout or cancelled, and its contract "
                        "declares %s" % (t["name"], helper, ", ".join(sorted(declared)) or "no error"))
+    return out
+
+
+def _makes_a_new_folder(node):
+    """A call that makes a folder and refuses one that exists: engine_wait.new_run_folder(...), or os.mkdir(...) or
+    os.makedirs(...) without exist_ok=True."""
+    import ast
+    f = node.func
+    name = f.attr if isinstance(f, ast.Attribute) else (f.id if isinstance(f, ast.Name) else None)
+    if name == "new_run_folder":
+        return True
+    if name in ("mkdir", "makedirs"):
+        return not any(k.arg == "exist_ok" and not (isinstance(k.value, ast.Constant) and k.value.value is False)
+                       for k in node.keywords)
+    return False
+
+
+def run_folder_problems(tools, template_path):
+    """Under a template whose TEMPLATE.json names run_folders (v35 on): an adapter that starts an engine through
+    src/engine_wait.py and makes no new folder for the call, so that a call made again writes into an earlier run's
+    folder and over its outputs (dft-24). A new folder is engine_wait.new_run_folder's, or one os.mkdir or os.makedirs
+    makes without exist_ok. An adapter that does not parse is left to the checks that run it."""
+    import ast
+    meta = os.path.join(template_path, "TEMPLATE.json")
+    helper = cards.load_json(meta).get("run_folders") if os.path.isfile(meta) else None
+    if not helper:
+        return []
+    out = []
+    for t in tools:
+        try:
+            tree = ast.parse(t.get("adapter_source") or "")
+        except SyntaxError:
+            continue
+        calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call)]
+        starts = any(isinstance(n.func, ast.Attribute) and n.func.attr == "run" and isinstance(n.func.value, ast.Name)
+                     and n.func.value.id == "engine_wait" for n in calls)
+        if starts and not any(_makes_a_new_folder(n) for n in calls):
+            out.append("tool %s: its adapter starts an engine through %s and makes no new folder for the call, so a call "
+                       "made again writes into an earlier run's folder; it takes engine_wait.new_run_folder(<kind>), or makes "
+                       "its folder with os.makedirs and no exist_ok" % (t["name"], helper))
+    return out
+
+
+SUBPROCESS_WAITS = ("run", "call", "check_call", "check_output")   # the subprocess functions that wait on what they start
+
+
+def engine_wait_only_problems(tools, template_path):
+    """Under a template whose TEMPLATE.json names engine_waits and written_files (v37 on), two faults of an adapter.
+
+    A tool whose contract says it runs a process (side_effects runs_process) and whose adapter waits on a process other
+    than through src/engine_wait.py: subprocess.run, call, check_call or check_output, a process's wait or communicate,
+    or os.system. Such a wait has no budget the call can give up on unless the adapter adds one, and v30 refused only a
+    wait that adds a wall-clock timeout; an example then ran for hours with no way for its call to give up (dft-17).
+
+    An adapter that starts an engine through engine_wait.run and names no folder to watch (watch=): what the run wrote
+    is then the adapter's assumption, and an engine's own script that writes elsewhere is read as not run (dft-16).
+
+    An adapter that does not parse is left to the checks that run it."""
+    import ast
+    meta = os.path.join(template_path, "TEMPLATE.json")
+    card = cards.load_json(meta) if os.path.isfile(meta) else {}
+    waits_helper, written_helper = card.get("engine_waits"), card.get("written_files")
+    if not waits_helper and not written_helper:
+        return []
+    out = []
+    for t in tools:
+        try:
+            tree = ast.parse(t.get("adapter_source") or "")
+        except SyntaxError:
+            continue
+        imported = {a.asname or a.name for n in ast.walk(tree) if isinstance(n, ast.ImportFrom) and n.module == "subprocess"
+                    for a in n.names if a.name in SUBPROCESS_WAITS}
+        calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call)]
+        if waits_helper and ((t.get("contract") or {}).get("side_effects") == "runs_process"):
+            bare = set()
+            for n in calls:
+                f = n.func
+                if isinstance(f, ast.Attribute) and isinstance(f.value, ast.Name):
+                    if f.value.id == "subprocess" and f.attr in SUBPROCESS_WAITS:
+                        bare.add("subprocess.%s" % f.attr)
+                    elif f.value.id == "os" and f.attr == "system":
+                        bare.add("os.system")
+                    elif f.value.id != "engine_wait" and f.attr in ("wait", "communicate"):
+                        bare.add("%s.%s" % (f.value.id, f.attr))
+                elif isinstance(f, ast.Attribute) and f.attr in ("wait", "communicate"):
+                    bare.add(f.attr)
+                elif isinstance(f, ast.Name) and f.id in imported:
+                    bare.add(f.id)
+            if bare:
+                out.append("tool %s: its contract says it runs a process and its adapter waits on one other than through "
+                           "%s (%s), with no budget a call can give up on; it starts and waits on its engine through "
+                           "engine_wait.run" % (t["name"], waits_helper, ", ".join(sorted(bare))))
+        if written_helper:
+            unwatched = [n for n in calls if isinstance(n.func, ast.Attribute) and n.func.attr == "run"
+                         and isinstance(n.func.value, ast.Name) and n.func.value.id == "engine_wait"
+                         and not any(k.arg == "watch" for k in n.keywords)]
+            if unwatched:
+                out.append("tool %s: its adapter starts an engine through %s and names no folder to watch, so what the run "
+                           "wrote is assumed; it passes watch=[<the call's folder>, <any folder the engine's script writes "
+                           "into>] and reads the outputs from the record's written" % (t["name"], written_helper))
+    return out
+
+
+def checks_call_problems(tools, interface_tasks, scientific_tasks, replay_items, template_path):
+    """Under a template whose TEMPLATE.json names checks_call (v39 on), two faults of what a build's checks meet, after
+    the two bundles built on Windows were tested standing alone (meta_agent/failures.jsonl office-9):
+
+    - an error contract whose code spells its tool's name otherwise than the runner of tools does in the codes it makes
+      itself (the name in capitals, underscores kept, and a hyphen): RUN-TUTORIAL-001 beside the runner's
+      RUN_TUTORIAL-INSTALLER-MISSING, so that one tool's codes are spelled two ways. A prefix that is not the tool's name
+      (a lab's or an instrument's, RHEO-) is the build's to choose and is not judged;
+    - an item that expects an error of a category of which its tool has more than one contract (the runner's own
+      unavailable error of an install counted) and names no code, so that it would pass on another error than the one
+      it is for."""
+    meta = os.path.join(template_path, "TEMPLATE.json")
+    runner = (cards.load_json(meta) if os.path.isfile(meta) else {}).get("checks_call")
+    if not runner:
+        return []
+    by_name = {t["name"]: t for t in tools}
+    out = []
+    for t in tools:
+        own = t["name"].upper()
+        others = {own.replace("_", "-"), own.replace("_", "")} - {own}
+        for e in t.get("errors") or []:
+            code = e.get("code")
+            if isinstance(code, str) and any(code.startswith(o + "-") for o in others):
+                out.append("tool %s: its error code %s spells the tool's name otherwise than %s does in the codes it "
+                           "makes itself, which begin %s-" % (t["name"], code, runner, own))
+    for label, items in (("interface task", interface_tasks), ("scientific task", scientific_tasks),
+                         ("replay item", replay_items)):
+        for item in items or []:
+            call = item.get("call") if isinstance(item.get("call"), dict) else {}
+            t = by_name.get(call.get("tool"))
+            if t is None:
+                continue
+            contract = t.get("contract") or {}
+            want = (item.get("expected") or {}).get("error") if isinstance(item.get("expected"), dict) else None
+            if isinstance(want, dict) and want.get("category") and not want.get("code"):
+                same = [e for e in t.get("errors") or [] if e.get("category") == want["category"]]
+                own = 1 if contract.get("installs_from") and want["category"] == "unavailable" else 0
+                if len(same) + own > 1:
+                    out.append("%s %s: it expects an error of category %s and names no code, and %s has %d contracts "
+                               "of that category; it names the code of the one it is for"
+                               % (label, item.get("id"), want["category"], t["name"], len(same) + own))
     return out
 
 
@@ -435,6 +580,47 @@ def words_by_record(*cards_in):
 
 def must_not_section(items):
     return "\n".join("- %s." % (i[:1].upper() + i[1:]).rstrip(".") for i in items) if items else "- (nothing beyond the common rules)"
+
+
+TOOL_KIND_WORDS = {"engine": "a simulation engine", "instrument": "an instrument", "analysis_software": "analysis software"}
+
+
+def for_whom_section(science_task, tool, tool_kind, rid):
+    """README.md's 'Whom it is for' (template v38; the design role's ask 20261118-design-macbook-20261117-3-1, (2)):
+    the person whose work is the request's science task on its tool, read off the fill and CAPABILITIES.json; the
+    science task's first paragraph only, since what the request holds is said under 'What it is not for'."""
+    task = str(science_task or "").split("\n\n")[0].strip().rstrip(".")
+    kind = TOOL_KIND_WORDS.get(tool_kind or "")
+    on = "`%s`%s" % (tool, ", " + kind if kind else "") if tool else "the tool under `tools/`"
+    return ("A person whose work is this, on %s: %s. The person asks for it in words, and a session in this directory "
+            "carries the request to the tool's calls through the gate and stops where a decision is the person's. It "
+            "was built for request `%s`, and its purpose as that request gave it is the Role section of `CLAUDE.md`."
+            % (on, task, rid))
+
+
+def not_for_section(tool, held):
+    """README.md's 'What it is not for' (template v38): another tool than its own, with none named in its place (which
+    tool a lab uses is the lab's; the builder ranks none, MP12); work beyond the science task; what CLAUDE.md says the
+    agent does not do; and each item CAPABILITIES.json holds, with its reason."""
+    lines = ["- Another tool, engine or instrument than %s. A session here calls only the tools under `tools/`, and "
+             "this directory names no other tool to use instead: which tool a lab uses is the lab's to say."
+             % ("`%s`" % tool if tool else "its own"),
+             "- Work beyond the science task above. Its checks under `validation/` and `replay/` show what it was built "
+             "for, and a request beyond it is outside what they show.",
+             "- What `CLAUDE.md` lists under \"What this agent does not do\"."]
+    for h in held or []:
+        if isinstance(h, dict) and h.get("skill"):
+            calls = h.get("calls_tools") or []
+            what = "the library skill `%s`%s" % (h["skill"], (" and the tools it would call (%s)" % ", ".join(
+                "`%s`" % t for t in calls)) if calls else "")
+        elif isinstance(h, dict):
+            what = str(h.get("item") or "an item")
+        else:
+            what, h = str(h), {}
+        reason = str(h.get("reason") or "").rstrip(".")
+        lines.append("- Not yet, while it is held: %s%s. It comes only with a new build, once a person releases it."
+                     % (what, (" (%s)" % reason) if reason else ""))
+    return "\n".join(lines)
 
 
 def skills_section(skills):
@@ -981,6 +1167,11 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     faults = comparisons_mod.problems(scientific_tasks, {t["name"] for t in tools}, meta_c)
     if faults:
         raise ValueError("a scientific task cannot be built as written: " + "; ".join(faults))
+    # an item that expects an output names a field of it the contract declares (dft-13)
+    faults = (expectations_mod.problems(interface_tasks, [t["contract"] for t in tools], meta_c, "interface task")
+              + expectations_mod.problems(replay_items, [t["contract"] for t in tools], meta_c, "replay item"))
+    if faults:
+        raise ValueError("an item cannot be built as written: " + "; ".join(faults))
     fill = dict(fill)
     handover_decl = None
     prow = (envelope.get("parameters") or {}).get("rows") or []
@@ -1000,7 +1191,7 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
                         units=cards.load_json(handovers_mod.UNITS))
     fill.setdefault("handovers_section", handovers_mod.no_handovers_section())
     if handovers_mod._version(meta_c) >= skill_inputs_mod.FROM_VERSION:
-        # every input of a skill the request names that nothing in the bundle gives gets a row, the person's (v37, rheo-5)
+        # every input of a skill the request names that nothing in the bundle gives gets a row, the person's (v42, rheo-5)
         prow = (envelope.get("parameters") or {}).get("rows") or []
         added, faults = skill_inputs_mod.rows_for(named, skills, prow, {t["name"]: t["contract"] for t in tools},
                                                   handover_decl, decisions, scientific_tasks, meta_c)
@@ -1035,15 +1226,29 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
     faults = engine_wait_problems(tools, template_path)
     if faults:
         raise ValueError("a tool's adapter does not wait on its engine as this template's does: " + "; ".join(faults))
+    faults = run_folder_problems(tools, template_path)
+    if faults:
+        raise ValueError("a tool's adapter does not keep each run's outputs as this template's does: " + "; ".join(faults))
+    faults = engine_wait_only_problems(tools, template_path)
+    if faults:
+        raise ValueError("a tool's adapter does not wait on its engine or see what it wrote as this template's does: "
+                         + "; ".join(faults))
+    faults = checks_call_problems(tools, interface_tasks, scientific_tasks, replay_items, template_path)
+    if faults:
+        raise ValueError("the bundle's checks cannot be built as written: " + "; ".join(faults))
     results_file = meta_c.get("results_file")
     if results_file:
-        # any agent of template v35 or later may be a member of a hub (tasks/033): it declares what it may report from its
+        # any agent of template v40 or later may be a member of a hub (tasks/033): it declares what it may report from its
         # tools' results, and has the folders an assignment arrives in and a result leaves from
         agent = fill.get("agent_name")
         build = "%s/%s" % (agent, os.path.basename(os.path.dirname(os.path.abspath(bundle_path))))
         envelope = dict(envelope, results=handovers_mod.results_declaration(
             agent, build, {t["name"]: t["contract"] for t in tools}, tool_kind,
-            series=handovers_mod._version(meta_c) >= 37))
+            series=handovers_mod._version(meta_c) >= 42))
+    if meta_c.get("grades_file"):
+        # a bundle standing alone derives a grade from the table it carries and never states one (bundle check B19,
+        # dft-14; the person, 2026-11-23, 'Yes, carry a copy (Recommended)'): the table as it stands at the build
+        envelope = dict(envelope, grades=cards.load_json(handovers_mod.GRADES))
     shutil.copytree(template_path, bundle_path, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     if handover_decl is not None or results_file:
         for sub in ("outbox", "inbox", "received"):
@@ -1061,6 +1266,19 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
         # allowed for named engines alone (the design role's message of 2026-11-18; 3a0c4ec)
         capabilities = dict(capabilities, engine=engine)
     cards.write_json(os.path.join(bundle_path, "CAPABILITIES.json"), capabilities)
+    readme_names = (cards.load_json(meta).get("readme_placeholders") if os.path.isfile(meta) else None) or []
+    if readme_names:
+        # whom the agent is for and what it is not for, for a person who opens the directory (template v38; the design
+        # role's ask 20261118-design-macbook-20261117-3-1, (2)), read off the fill and the capabilities just written
+        rfill = dict(fill)
+        rfill.setdefault("for_whom", for_whom_section(fill.get("science_task"), capabilities.get("tool"),
+                                                      capabilities.get("tool_kind"), fill.get("rid")))
+        rfill.setdefault("not_for", not_for_section(capabilities.get("tool"), capabilities.get("held")))
+        missing = [n for n in readme_names if n not in rfill]
+        if missing:
+            raise ValueError("README.md's placeholders are not filled: %s" % missing)
+        readme = os.path.join(bundle_path, "README.md")
+        cards.write_text(readme, render(cards.read_text(readme), {n: rfill[n] for n in readme_names}))
     for name, content in envelope.items():
         cards.write_json(os.path.join(bundle_path, "envelope", name + ".json"), content)
     for t in tools:
@@ -1085,6 +1303,10 @@ def compose(template_path, bundle_path, fill, tools, capabilities, envelope, int
         if items and os.path.exists(gk):
             os.remove(gk)
     mark_builder_records(bundle_path, words, ids=ids or (), questions=questions)
+    # every text file as the repository's `* text=auto eol=lf` stores it, so that the digest is one the commit
+    # reproduces: a skill, a template file or an adapter a session wrote with CRLF on Windows was copied byte for byte
+    # and its digest refused by testfolder.py make (office-2)
+    cards.lf_tree(bundle_path)
     return cards.sha256_tree(bundle_path)
 
 

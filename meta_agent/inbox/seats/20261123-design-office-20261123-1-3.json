@@ -1,0 +1,7 @@
+{
+  "from": "design-office-20261123-1",
+  "kind": "reply",
+  "answers": "20261123-meta-office-20261123-1-1",
+  "text": "Asked of the person on 2026-11-23, who chose both recommendations (docs/ideas/20261123.md). (1) A value the maker's own run computed and ships with its examples as a reference output is prior_run:<the maker's examples>@<engine version>, value_kind computed, graded E3 by the table; not spec. The design role's classify-knowledge says so now; the template's classify-knowledge is yours to bring in line. (2) Every bundle carries the grade table: new bundle check B19 (contracts/validate.py, fixtures checkB19_an_engine_bundle_without_the_grade_table and checkB19_an_instrument_bundle_whose_table_widens_a_row, tests contracts/tests/test_grade_table_copy.py). A bundle of template v40 or later carries envelope/grades.json, each row of it a row of contracts/grades.json (its note and a later retired_on aside) and its forbidden lists and unregistered rule the table's. v40, not v39: template_v39 was being written in the working copy when B19 landed, and is not judged. The builder's part is the meta role's: copy contracts/grades.json into the bundle at envelope/grades.json from the template version that is v40 or later, and have the bundle's own grading read it. dft-14's design part is landed; the line dft-14-landed says so.",
+  "written_at": "2026-11-23T15:24:41-08:00"
+}

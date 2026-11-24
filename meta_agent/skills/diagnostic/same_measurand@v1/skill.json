@@ -1,0 +1,79 @@
+{
+  "schema_version": "0.1",
+  "id": "same_measurand",
+  "version": 1,
+  "kind": "diagnostic",
+  "side_effect": "none",
+  "status": "usable",
+  "summary": "whether a measured value and a reference value are values of one measurand, as far as the conditions each states and how each run ended show it, before their difference is taken",
+  "applies_to": {
+    "parameters": [],
+    "engines": []
+  },
+  "inputs": [
+    {
+      "name": "measured_conditions",
+      "unit": "1",
+      "meaning": "the conditions the measured value was obtained under, as the run's output states them: an object, each key a condition's name and its value as stated (a number, or the text as printed); an empty object where it states none"
+    },
+    {
+      "name": "reference_conditions",
+      "unit": "1",
+      "meaning": "the conditions the reference value was obtained under, as its source states them, under the same names; an empty object where it states none"
+    },
+    {
+      "name": "measured_end",
+      "unit": "1",
+      "meaning": "how the run that gave the measured value ended, in the words or the code its engine or instrument reports (converged, the maximum number of steps reached); null where the output states none"
+    },
+    {
+      "name": "reference_end",
+      "unit": "1",
+      "meaning": "how the run that gave the reference value ended, as its source states it; null where the source states none, as a published value does"
+    },
+    {
+      "name": "accept_ends",
+      "unit": "1",
+      "meaning": "the ends a run may have for its value to be compared, a list in the same words or codes, handed by a row the person or the request gives; null where none is chosen"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "state",
+      "unit": "1",
+      "meaning": "same | different | undecided: different where a condition stated by both differs or a run that states its end ended outside the ends handed; undecided where nothing differs and a condition is stated by one side only, an end is stated and no ends were handed, or ends were handed and the measured run states none; same otherwise"
+    },
+    {
+      "name": "differing",
+      "unit": "1",
+      "meaning": "the names of the conditions both state with different values"
+    },
+    {
+      "name": "one_sided",
+      "unit": "1",
+      "meaning": "the names of the conditions only one of the two states"
+    },
+    {
+      "name": "ends_not_accepted",
+      "unit": "1",
+      "meaning": "a list of measured, reference, both or neither: the runs whose stated end is not among the ends handed"
+    },
+    {
+      "name": "why",
+      "unit": "1",
+      "meaning": "why the state is different or undecided, in words; null where it is same"
+    }
+  ],
+  "entry": {
+    "script": "scripts/diagnostic.py",
+    "function": "diagnostic"
+  },
+  "validity": "two values whose conditions are handed under the same names. It compares only what it is handed: which conditions define the measurand (a target, a field, a temperature, a step count) and how a run's end is read off its output are the caller's, the tool's or the reader's, and a condition left out is not compared. Two stated values are the same where they are equal as numbers (a text that reads as a number is one, so 0.50 and 0.5 are the same) and otherwise where they are equal as written. It holds no criterion: the ends a run may have are handed, and without them a stated end leaves it undecided. It judges sameness and not agreement: the difference of the two values is another skill's, and whether it is small enough is a tolerance's",
+  "source": {
+    "citation": "JCGM 200:2012, International vocabulary of metrology - Basic and general concepts and associated terms (VIM), 3rd edition, 2008 version with minor corrections, BIPM (read 2026-11-23, https://www.bipm.org/documents/20126/2071204/JCGM_200_2012.pdf, sha256:8a603e99d236a65d771f38b6dcf627953146fe023a5266b3307681ada30f4fe7, the file meta_agent/inbox/materials/20261117-jcgm-200-2012-vim records)",
+    "locus": "entry 2.3 (2.6), measurand, printed page 17, note 1: the specification of a measurand requires the kind of quantity and a description of the state of the phenomenon, body or substance carrying it; note 3: the conditions of a measurement may change what is measured, so that the quantity measured differs from the measurand as defined; entry 2.16 (3.10), measurement error, printed page 22, the measured quantity value minus a reference quantity value"
+  },
+  "note": "Made for meta_agent/failures.jsonl dft-19: a Quantum ESPRESSO bundle asked to compare every example's output with the reference output its maker ships paired outputs by file name and took the last printed value of each, and so compared outputs made under each other's target Fermi energies and runs that stopped at their maximum number of steps with references that converged; the session found each by reading the outputs, and nothing it ran said so. A measurement error is taken between values of one measurand, and a measurand is specified with the state of what carries the quantity (VIM 2.3, note 1): two values whose stated conditions differ are not values of one measurand, and a run that did not end as its method requires did not give a value of the measurand its method defines (note 3). Which ends a method requires is a criterion and an input. No value of the source stands behind the worked cases: each is worked by hand in its worked field, on conditions and ends made up to show the judgement, on systems of unrelated kinds. Common: every simulation bundle carries it beside the agreement skill (meta_agent/tasks/025).",
+  "cases": "cases.json",
+  "common": true
+}

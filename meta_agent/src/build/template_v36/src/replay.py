@@ -41,7 +41,7 @@ def judge(item):
             return "fail", "expected code %s, got %s" % (want["code"], out.get("code"))
         return "pass", "error %s as expected" % out.get("code")
     if is_error:
-        return "fail", "expected an output, got error %s (%s)" % (out.get("code"), out.get("category"))
+        return "fail", "expected an output, got error %s (%s): %s" % (out.get("code"), out.get("category"), out.get("message"))
     want = expected.get("output")
     if want is not None:
         for k, v in want.items():

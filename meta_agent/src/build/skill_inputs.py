@@ -1,4 +1,4 @@
-"""A row, the person's, for each input of a library skill a request names that nothing in its bundle gives (template v37;
+"""A row, the person's, for each input of a library skill a request names that nothing in its bundle gives (template v42;
 meta_agent/tasks/034, rheo-5 of meta_agent/failures.jsonl: oldroyd_b_startup_channel_velocity@v1's `terms` had no row, so
 neither the hub nor the person was asked for it, and the agent's comparison was held).
 
@@ -24,7 +24,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
 UNITS = os.path.join(REPO, "contracts", "units.json")
 
-FROM_VERSION = 37
+FROM_VERSION = 42
 
 
 def machinery(template_meta):
@@ -113,7 +113,7 @@ def rows_for(named, skills, rows, contracts, handover_decl=None, decisions=None,
     for name in order:
         r = new[name]
         r["note"] = ("the person gives it: nothing in the bundle gives the input %s of %s (%s), so the build gave it this "
-                     "row with no value (template v37)" % (
+                     "row with no value (template v42)" % (
                          name, ", ".join(x["skill"] for x in r["for_skill_inputs"]), r["for_skill_inputs"][0]["meaning"]))
         out.append(r)
     return out, faults

@@ -320,7 +320,7 @@ def in_reference_unit(item, out):
     if not is_number(value):
         return out, None
     from_unit, to_unit = units_pair
-    skill = _template().get("unit_skill") or "unit_convert@v2"
+    skill = _template().get("unit_skill") or "unit_convert@v1"
     try:
         units = _units()
     except (OSError, ValueError, KeyError):
@@ -330,8 +330,7 @@ def in_reference_unit(item, out):
     if fu is None or tu is None:
         return None, {"verdict": "not_run", "reason": "%s or %s is not in this bundle's unit registry" % (from_unit, to_unit)}
     try:
-        rec = run_skill.run(skill, {"value": value, "from_unit": fu, "to_unit": tu, "stands_for": None,
-                                         "from_stands_for": None})
+        rec = run_skill.run(skill, {"value": value, "from_unit": fu, "to_unit": tu, "stands_for": None})
     except FileNotFoundError:
         return None, {"verdict": "fail", "reason": "this bundle does not carry %s, the unit skill" % skill}
     o = rec.get("outputs") or {}

@@ -1,0 +1,80 @@
+[
+  {
+    "name": "two values printed to eight decimals, handed as text: the error has their eight places and no float's digits",
+    "inputs": {
+      "measured": "-15.85521263",
+      "reference": "-16.03732708"
+    },
+    "expect": {
+      "error": 0.18211445,
+      "magnitude": 0.18211445,
+      "error_written": "0.18211445",
+      "magnitude_written": "0.18211445",
+      "places": 8,
+      "places_common": 8
+    },
+    "worked": "-15.85521263 - (-16.03732708) = 16.03732708 - 15.85521263 = 0.18211445, eight places as both inputs; a binary float subtraction of the same two gives 0.18211445000000026",
+    "system": "a plane-wave density functional theory run"
+  },
+  {
+    "name": "two values handed as numbers whose float difference is not exact: the error is the decimal one",
+    "inputs": {
+      "measured": 0.0809,
+      "reference": 0.0807
+    },
+    "expect": {
+      "error_written": "0.0002",
+      "places": 4,
+      "places_common": 4
+    },
+    "worked": "0.0809 - 0.0807 = 0.0002, four places as both; a binary float subtraction of the same two gives 0.00019999999999999185",
+    "system": "a fluid flow simulation"
+  },
+  {
+    "name": "a value printed with a trailing zero against one printed to more places: the error has the finer places, and both carry two",
+    "inputs": {
+      "measured": "1.50",
+      "reference": "1.234"
+    },
+    "expect": {
+      "error": 0.266,
+      "magnitude": 0.266,
+      "error_written": "0.266",
+      "places": 3,
+      "places_common": 2
+    },
+    "worked": "1.50 - 1.234 = 0.266; places: 1.50 has two, 1.234 has three, the error three, the two in common two",
+    "system": "a thermometer reading"
+  },
+  {
+    "name": "v3's first case, unchanged: a measured value above its reference",
+    "inputs": {
+      "measured": 2.5,
+      "reference": 2.0
+    },
+    "expect": {
+      "error": 0.5,
+      "magnitude": 0.5,
+      "error_written": "0.5",
+      "places": 1
+    },
+    "worked": "2.5 - 2.0 = 0.5; |0.5| = 0.5",
+    "system": "a fluid flow simulation"
+  },
+  {
+    "name": "v3's second case, unchanged: a measured value below its reference, the sign turns and the magnitude does not",
+    "inputs": {
+      "measured": -0.25,
+      "reference": 0.25
+    },
+    "expect": {
+      "error": -0.5,
+      "magnitude": 0.5,
+      "error_written": "-0.50",
+      "magnitude_written": "0.50",
+      "places": 2
+    },
+    "worked": "-0.25 - 0.25 = -0.50; |-0.50| = 0.50, two places as both inputs",
+    "system": "a spectrometer reading"
+  }
+]

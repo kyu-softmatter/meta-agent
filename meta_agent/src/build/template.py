@@ -249,20 +249,65 @@ v34 changes two scripts and the text (tasks/032, at the design role's ask; dftmd
     registry before the rule and the agreement run (comparisons.py); a card's definition
     names the tool field each of the skill's inputs came from (record_tool).
 
-v35 changes one script and the text so that an agent can be a member of a hub agent (tasks/033): src/handover.py
-    passes over an envelope that carried an assignment or a result in receive (v34 refused it and stopped), lists the
+v35 changes one script, the builder and the text (tasks/018, at the design role's ask
+    20261118-design-macbook-20261117-2-2; dft-23, dft-24): src/engine_wait.py makes each call's
+    run folder new (new_run_folder, runs/<kind>/<UTC stamp>/), never opens a log that exists,
+    and starts an engine on a count of processes through the launcher the adapter names
+    (processes_error, launched); the builder refuses an adapter that waits through it and
+    makes no new run folder (bundle.run_folder_problems).
+
+v36 changes two scripts and one session skill (tasks/018, at the design role's ask
+    20261117-design-macbook-20261117-2-4; dft-13, the meta side of dft-14): the runner checks an
+    output field's enum and const for every type, so a contract can say that a call which answers
+    ended well; the judge prints the error's message where an output was expected; the builder
+    refuses an interface task or replay item that expects an output and names no field of it, or
+    one the contract does not declare (expectations.py); classify-knowledge names a value an
+    engine printed in its maker's own run as computed, its kind of source waiting for the person.
+
+v37 changes two scripts, TEMPLATE.json, a session skill, the text and the builder (tasks/018, at
+    the design role's ask 20261118-design-macbook-20261117-2-1; dft-16, dft-17, dft-19, dft-20):
+    the agreement skill is measurement_error@v4, the difference in decimal of the two values as
+    written, and src/validate_tasks.py hands it the reference as printed; the common set carries
+    same_measurand@v1, which says whether a pair is of one measurand before its agreement is taken;
+    src/engine_wait.py returns the files a run wrote under the folders it watched. The builder
+    refuses an adapter of a tool that runs a process and waits on it other than through
+    engine_wait, and one that starts its engine through engine_wait and watches no folder
+    (bundle.engine_wait_only_problems). CLAUDE.md and run-skill say that a pair is not matched by
+    name, that outputs are read from what the run wrote, and that a long call runs in the background.
+v38 changes README.md, one sentence of CLAUDE.md, TEMPLATE.json and the builder (at the design
+    role's ask 20261118-design-macbook-20261117-3-1, (2), on the person's word of 2026-11-18 that
+    the builder learn from another collection's skills): README.md is named after the agent and
+    says whom it is for and what it is not for, which the build renders from the request and from
+    CAPABILITIES.json (bundle.for_whom_section, not_for_section; TEMPLATE.json readme_placeholders).
+    It names no other tool to use instead: which tool a lab uses is the lab's (MP12).
+v39 changes tasks/001-start.md, one sentence of CLAUDE.md, TEMPLATE.json and the builder, after
+    the two bundles built on Windows were tested standing alone (failures.jsonl office-9): the start
+    task names the lines it asks for after the install; CLAUDE.md says that a check makes the calls
+    its items name, an install among them, and that it is not a call the session makes; and under
+    checks_call the builder refuses an error code that spells its tool's name otherwise than the
+    runner does, and an expected error that names no code where its tool has more than one of that
+    category (bundle.checks_call_problems).
+v40, v41 and v42 bring onto v39 what the macbook computer's line had numbered v35, v36 and v37 while the office
+    computer's line wrote v35 to v39 above. The two lines were merged on 2026-11-23; the office's numbers, pushed first,
+    stay, and the macbook's three trees are kept under templates/ as the builds made from them name them
+    (agent@37150aba223f, agent@b52c0875253c, agent@316f0fba00be). Each step is the macbook's change, file by file,
+    merged onto the tree before it.
+
+v40 changes one script and the text so that an agent can be a member of a hub agent (tasks/033): src/handover.py
+    passes over an envelope that carried an assignment or a result in receive (v39 refuses it and stops), lists the
     assignments a hub sent, and writes a result card answering one, quoting a hand-over card the agent wrote or a tool
     result field that envelope/results.json declares, with the grade the build derived, and holding what it cannot
     answer. Every build of this version writes envelope/results.json and makes outbox/, inbox/ and received/
-    (handovers.results_declaration).
+    (handovers.results_declaration), and copies the grade table to envelope/grades.json, which bundle check B19 asks
+    of a bundle of v40 or later (dft-14; grades_file). No script of the bundle reads the copy yet.
 
-v36 changes one script, CLAUDE.md and TEMPLATE.json (tasks/034, the first hand-over whose producer computes in its
+v41 changes two scripts, CLAUDE.md and TEMPLATE.json (tasks/034, the first hand-over whose producer computes in its
     engine's own units): src/handover.py write takes a hand-over read off a chain of steps the build declares, each a
     library skill whose record the session names with --step, each step's declared inputs checked against a field of the
     tool results, an earlier step's output, the registry's entry of a unit or the unit a person confirmed an engine unit
     stands for (handovers.py); a value leaves the engine's own unit only through such a scale, by unit_convert@v2.
 
-v37 changes three scripts, CLAUDE.md, run-skill and TEMPLATE.json (tasks/034, after its first test standing alone;
+v42 changes two scripts, CLAUDE.md, run-skill and TEMPLATE.json (tasks/034, after its first test standing alone;
     rheo-4, rheo-5, bd-3): a result quotes a series the build declared, with the unit of each part; src/run_tool.py
     checks an array output item by item and keeps an output with --out, whole, never as an empty file; the build gives
     a row, the person's, to each input of a skill the request named that nothing in the bundle gives
@@ -305,9 +350,22 @@ SOURCES = {"v1": os.path.join(HERE, "template_v1"), "v2": os.path.join(HERE, "te
            "v34": os.path.join(HERE, "template_v34"),
            "v35": os.path.join(HERE, "template_v35"),
            "v36": os.path.join(HERE, "template_v36"),
-           "v37": os.path.join(HERE, "template_v37")}
-LATEST = "v37"
+           "v37": os.path.join(HERE, "template_v37"),
+           "v38": os.path.join(HERE, "template_v38"),
+           "v39": os.path.join(HERE, "template_v39"),
+           "v40": os.path.join(HERE, "template_v40"),
+           "v41": os.path.join(HERE, "template_v41"),
+           "v42": os.path.join(HERE, "template_v42")}
+LATEST = "v42"
 SOURCE = SOURCES[LATEST]
+
+# The trees the macbook computer's line built from under the numbers v35, v36 and v37, before the two computers' lines
+# were merged on 2026-11-23 and those numbers stayed the office's. No build is made from them again: what they added is
+# in v40, v41 and v42. They are kept because builds name them by hash (agent@37150aba223f, agent@b52c0875253c,
+# agent@316f0fba00be), and a build's template stays as the build was made.
+KEPT = {"macbook-v35": os.path.join(HERE, "template_macbook_v35"),
+        "macbook-v36": os.path.join(HERE, "template_macbook_v36"),
+        "macbook-v37": os.path.join(HERE, "template_macbook_v37")}
 
 
 def template_hash(root=SOURCE):

@@ -8,7 +8,7 @@ The request declares it on its parameter rows, so that no card of the design rol
   one_result), the tool whose results those are (`record_tool`, template v34: the build copies what its contract says
   of each field into the declaration, and the card's definition names it), the field of a tool result that states the conditions (`conditions_field`), the conditions the
   request states in words (`conditions`), the skill states a hand-over is written on (`accept_states`) and what the
-  values are for (`what`). From template v36 a thread may instead be read off a chain of steps (`steps`, the same list on
+  values are for (`what`). From template v41 a thread may instead be read off a chain of steps (`steps`, the same list on
   every row of the thread): each step names an `id`, a library `skill` the bundle carries, the skill states it is
   written on (`accept_states`) and, for each input that is not the session's to hand, where it comes from: a field of
   the tool results (`field`), an output of an earlier step (`step`, `output`), the registry's entry of a unit
@@ -227,10 +227,10 @@ def declaration(rows, agent, build, template_meta, skills, contracts=None):
 
 
 def chain_faults(name, g, by_ref, units, template_meta):
-    """What is wrong with a row read off a chain of steps (template v36)."""
+    """What is wrong with a row read off a chain of steps (template v41)."""
     out = []
-    if _version(template_meta) < 36:
-        return ["row %s is read off a chain of steps, which template %s does not write; it needs v36 or later" % (
+    if _version(template_meta) < 41:
+        return ["row %s is read off a chain of steps, which template %s does not write; it needs v41 or later" % (
             name, template_meta.get("version"))]
     if g.get("skill") or g.get("record_inputs"):
         out.append("row %s names both a chain of steps and one skill's record" % name)
@@ -325,7 +325,7 @@ def scale_by_dimension(units, s, bases):
 
 
 def chain_section(g):
-    """The Hand-overs section's lines for a thread read off a chain of steps (template v36)."""
+    """The Hand-overs section's lines for a thread read off a chain of steps (template v41)."""
     lines = ["This agent gives, over the thread `%s`, to `%s` (build `%s`): %s. The values are read off a chain of "
              "steps, each a library skill you run through the runner with `--record`, in this order, and name with "
              "`--step <step> <record>` when you write the card:" % (g["thread"], g["to"]["agent"], g["to"]["build"], g["what"])]
@@ -399,10 +399,10 @@ def no_handovers_section():
 
 
 def results_declaration(agent, build, contracts, tool_kind, series=False):
-    """envelope/results.json for a bundle of template v35 or later (tasks/033): what the agent may report to a hub from
+    """envelope/results.json for a bundle of template v40 or later (tasks/033): what the agent may report to a hub from
     its tools' results. One entry for each output field of a tool contract that is a number in a unit, with what the
     contract says it is and the grade derived here from contracts/grades.json: an engine's value is computed, an
-    instrument's measured. With `series` (template v37; tasks/034, rheo-4), also one entry for each output field that is
+    instrument's measured. With `series` (template v42; tasks/034, rheo-4), also one entry for each output field that is
     a series: an array whose items the contract declares as a number with a unit (one part, named by the items' title or
     the field), or as an array of prefixItems, each a number with a unit, a title naming the part and a description, with
     items false (one part each). An array that declares prefixItems short of that is refused with ValueError, since a
@@ -435,7 +435,7 @@ def results_declaration(agent, build, contracts, tool_kind, series=False):
     if faults:
         raise ValueError("a tool's series cannot be declared for a result: " + "; ".join(faults))
     return {"note": "what this agent may report to a hub agent from its tools' results, written by its build (template "
-                    "v35; a series from v37); src/handover.py result quotes a field only where it is listed here, with "
+                    "v40; a series from v42); src/handover.py result quotes a field only where it is listed here, with "
                     "this unit and grade, a series with the unit of each part",
             "agent": {"agent": agent, "build": build}, "tool_kind": tool_kind, "reports": reports}
 
@@ -443,7 +443,7 @@ def results_declaration(agent, build, contracts, tool_kind, series=False):
 def series_parts(f, field, units):
     """([{name, unit, description}], None) for an array output a result may quote as a series, ([], None) for an array
     that declares no unit for its items (not a series), or (None, why) for one that declares a series short of what a
-    result needs (template v37)."""
+    result needs (template v42)."""
     items = f.get("items")
     if not isinstance(items, dict):
         return [], None

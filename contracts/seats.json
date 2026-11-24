@@ -806,6 +806,133 @@
         "meta_agent/.claude/"
       ],
       "seated": "2026-11-23, self-registered"
+    },
+    {
+      "seat": "meta-office-20261122-1",
+      "committer_email": "meta-office-20261122-1@seat.invalid",
+      "role": "meta",
+      "machine": "office",
+      "seated_by": "self, under the person's standing rule of 2026-11-09 (docs/ideas/20261109.md)",
+      "status": "active",
+      "owns": [
+        "meta_agent"
+      ],
+      "paths": [
+        "meta_agent/"
+      ],
+      "excludes": [
+        "meta_agent/CLAUDE.md",
+        "meta_agent/.claude/"
+      ],
+      "seated": "2026-11-22, self-registered"
+    },
+    {
+      "seat": "meta-office-20261123-1",
+      "committer_email": "meta-office-20261123-1@seat.invalid",
+      "role": "meta",
+      "machine": "office",
+      "seated_by": "self, under the person's standing rule of 2026-11-09 (docs/ideas/20261109.md)",
+      "status": "active",
+      "owns": [
+        "meta_agent"
+      ],
+      "paths": [
+        "meta_agent/"
+      ],
+      "excludes": [
+        "meta_agent/CLAUDE.md",
+        "meta_agent/.claude/"
+      ],
+      "seated": "2026-11-23, self-registered"
+    },
+    {
+      "seat": "meta-office-20261123-2",
+      "committer_email": "meta-office-20261123-2@seat.invalid",
+      "role": "meta",
+      "machine": "office",
+      "seated_by": "self, under the person's standing rule of 2026-11-09 (docs/ideas/20261109.md)",
+      "status": "active",
+      "owns": [
+        "meta_agent"
+      ],
+      "paths": [
+        "meta_agent/"
+      ],
+      "excludes": [
+        "meta_agent/CLAUDE.md",
+        "meta_agent/.claude/"
+      ],
+      "seated": "2026-11-23, self-registered"
+    },
+    {
+      "seat": "meta-office-20261123-3",
+      "committer_email": "meta-office-20261123-3@seat.invalid",
+      "role": "meta",
+      "machine": "office",
+      "seated_by": "self, under the person's standing rule of 2026-11-09 (docs/ideas/20261109.md)",
+      "status": "active",
+      "owns": [
+        "meta_agent"
+      ],
+      "paths": [
+        "meta_agent/"
+      ],
+      "excludes": [
+        "meta_agent/CLAUDE.md",
+        "meta_agent/.claude/"
+      ],
+      "seated": "2026-11-23, self-registered"
+    },
+    {
+      "seat": "design-office-20261123-1",
+      "committer_email": "design-office-20261123-1@seat.invalid",
+      "role": "design",
+      "machine": "office",
+      "seated_by": "self, under the person's standing rule of 2026-11-09 (docs/ideas/20261109.md)",
+      "status": "active",
+      "owns": [
+        "design"
+      ],
+      "paths": [
+        "*",
+        "contracts/",
+        "docs/",
+        ".claude/",
+        "meta_agent/CLAUDE.md",
+        "meta_agent/README.md",
+        "meta_agent/.claude/",
+        "meta_agent/tasks/",
+        "meta_agent/templates/",
+        "meta_agent/eval/",
+        "meta_agent/failures.jsonl",
+        "meta_agent/envelope/observed.json",
+        "meta_agent/inbox/materials/README.md",
+        "meta_agent/inbox/materials/LINKS.md",
+        "meta_agent/inbox/materials/drop/.gitkeep",
+        ".github/",
+        "meta_agent/inbox/seats/"
+      ],
+      "excludes": [],
+      "seated": "2026-11-23, self-registered"
+    },
+    {
+      "seat": "meta-office-20261123-4",
+      "committer_email": "meta-office-20261123-4@seat.invalid",
+      "role": "meta",
+      "machine": "office",
+      "seated_by": "self, under the person's standing rule of 2026-11-09 (docs/ideas/20261109.md)",
+      "status": "active",
+      "owns": [
+        "meta_agent"
+      ],
+      "paths": [
+        "meta_agent/"
+      ],
+      "excludes": [
+        "meta_agent/CLAUDE.md",
+        "meta_agent/.claude/"
+      ],
+      "seated": "2026-11-23, self-registered"
     }
   ]
 }

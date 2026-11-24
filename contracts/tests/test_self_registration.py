@@ -21,8 +21,12 @@ class SelfRegistrationAtCommit(TempRepo):
         return p.stdout.split()[1]
 
     def test_a_meta_session_seats_itself_then_works(self):
+        with open(os.path.join(self.dir, "contracts", "seats.json"), encoding="utf-8") as f:
+            taken = {s.get("seat") for s in json.load(f)["seats"]}
         name = self.seat("meta")
-        self.assertEqual(name, "meta-office-%s-1" % datetime.date.today().strftime("%Y%m%d"))
+        # the table is this repository's copy, so seats of the same day may already stand in it (2026-11-23: -1 to -3)
+        self.assertRegex(name, r"^meta-office-%s-[1-9][0-9]*$" % datetime.date.today().strftime("%Y%m%d"))
+        self.assertNotIn(name, taken)
         p = self.tool(name, "contracts/seats.json", message="contracts/seats: %s seats itself" % name)
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
         self.assertEqual(self.head(), ("%s@seat.invalid|person@example.invalid" % name, ["contracts/seats.json"]))
@@ -53,6 +57,30 @@ class SelfRegistrationAtCommit(TempRepo):
         self.assertNotEqual(p.returncode, 0)
         self.assertRegex(p.stdout + p.stderr, r"FAIL\s+check 6")
         self.assertEqual(self.count(), n)
+
+    def test_seats_seated_at_the_same_time_each_commit_their_own_entry(self):
+        # three sessions ran bootstrap.py seat meta --write within one minute, and none could commit while the
+        # others' entries stood uncommitted in the file (2026-11-23, meta-office-20261123-1, -2 and -3). Two
+        # unrelated roles here: a meta seat and a design seat.
+        first, second = self.seat("meta"), self.seat("design")
+        n = self.count()
+        p = self.tool(second, "contracts/seats.json", message="contracts/seats: %s seats itself" % second)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        committed = json.loads(self.git("show", "HEAD:contracts/seats.json"))
+        self.assertIn(second, [s["seat"] for s in committed["seats"]])
+        self.assertNotIn(first, [s["seat"] for s in committed["seats"]])      # the other entry stays uncommitted
+        self.assertEqual(self.git("diff", "--cached", "--name-only").strip(), "")
+        self.assertIn("contracts/seats.json", self.git("status", "--porcelain"))
+        p = self.tool(first, "contracts/seats.json", message="contracts/seats: %s seats itself" % first)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertEqual(self.count(), n + 2)
+        # the file is what HEAD holds; only its own status is read, since a Python that writes bytecode leaves
+        # contracts/tools/__pycache__/ untracked in this repository (WSL, 5a97f1e)
+        self.assertEqual(self.git("status", "--porcelain", "--", "contracts/seats.json").strip(), "",
+                         self.git("diff", "--", "contracts/seats.json")[:2000])
+        first_line = self.git("rev-list", "--max-parents=0", "HEAD").strip()
+        p = run(self.dir, sys.executable, "contracts/validate.py", "--checks", "6", "--commit-range", first_line + "..HEAD")
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
 
     def test_a_registration_with_another_file_is_refused(self):
         name = self.seat("meta")

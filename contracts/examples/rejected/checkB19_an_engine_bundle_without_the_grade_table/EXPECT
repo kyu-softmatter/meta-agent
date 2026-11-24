@@ -1,0 +1,3 @@
+check B19
+
+A bundle of template v40 whose tool is an engine (CAPABILITIES.json tool_kind engine, a plane-wave DFT code) carries no envelope/grades.json: standing alone it can derive no grade for a run's values, a reference or a difference, since the grade is looked up in the table and never stated by hand (dft-14; the person, 2026-11-23, "Yes, carry a copy (Recommended)").

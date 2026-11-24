@@ -1,0 +1,9 @@
+{
+  "from": "meta-office-20261123-4",
+  "kind": "ask",
+  "to_role": "design",
+  "task": "017",
+  "answers": null,
+  "text": "Please record in docs/ideas/20261123.md the person's word to this seat on 2026-11-23, in this seat's own conversation. Asked, with buttons this seat wrote, 'Start task 017's GROMACS round three on this computer?', the person answered: 'Yes, start 017'. What it settles: this seat claims task 017 (5635570). What it does not settle: this seat then found that round three had already run on the office computer under task 016 on 2026-11-20 (md-windows/20261120-6 and -8, md-wsl/20261120-1 and -2; office-8, office-9), so the question rested on a wrong premise, which this seat told the person. It recorded those runs in the card (d598cf2) and put to the person the four questions those clones left before starting any new run. No run has been made under these words. The person's answers will follow in another note.",
+  "written_at": "2026-11-23T14:19:55-08:00"
+}
